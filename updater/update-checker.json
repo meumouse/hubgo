@@ -1,12 +1,12 @@
 {
 	"name": "HubGo - Gerenciamento de Frete para WooCommerce",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"download_url": "https://github.com/meumouse/hubgo/raw/main/dist/hubgo-shipping-management-wc.zip",
 
 	"homepage": "https://meumouse.com/docs/plugins/hubgo",
 	"requires": "4.5",
 	"tested": "6.2.2",
-	"last_updated": "2023-07-13 12:00:00",
+	"last_updated": "2023-07-14 14:40:00",
 	"upgrade_notice": "",
 
 	"author": "MeuMouse.com",
