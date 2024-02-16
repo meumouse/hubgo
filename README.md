@@ -28,6 +28,11 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 1.3.0 (16/02/2024)
+* Correção de bugs
+* Otimizações
+* Novo recurso adicionado: Ativar cálculo automático de frete
+
 Versão 1.2.6 (18/12/2023)
 * Correção de bugs
 
