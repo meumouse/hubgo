@@ -1,0 +1,229 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HubGo - Gerenciamento de Frete para WooCommerce\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-16 13:53+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.6; wp-6.4.3\n"
+"X-Domain: hubgo-shipping-management-wc"
+
+#: includes/classes/class-hubgo-shipping-management-wc-shipping-calculator.php:241
+#, php-format
+msgid "(Entrega em %s dias úteis)"
+msgstr ""
+
+#: hubgo-shipping-management-wc.php:244
+msgid ""
+"<strong>HubGo - Gerenciamento de Frete para WooCommerce</strong> requer a "
+"versão do PHP 7.2 ou maior. Contate o suporte da sua hospedagem para "
+"realizar a atualização."
+msgstr ""
+
+#: hubgo-shipping-management-wc.php:232
+msgid ""
+"<strong>HubGo - Gerenciamento de Frete para WooCommerce</strong> requer a "
+"versão do WooCommerce 5.0 ou maior. Faça a atualização do plugin WooCommerce."
+msgstr ""
+
+#: hubgo-shipping-management-wc.php:223
+msgid ""
+"<strong>HubGo - Gerenciamento de Frete para WooCommerce</strong> requer que "
+"<strong>WooCommerce</strong> esteja instalado e ativado."
+msgstr ""
+
+#: includes/classes/class-hubgo-shipping-management-updater.php:250
+msgid ""
+"A versão do plugin HubGo - Gerenciamento de Frete para WooCommerce é a mais "
+"recente."
+msgstr ""
+
+#: hubgo-shipping-management-wc.php:257
+msgid "Ajuda"
+msgstr ""
+
+#: includes/admin/options.php:38
+msgid "Antes do carrinho"
+msgstr ""
+
+#: includes/admin/settings.php:22
+msgid "As configurações foram atualizadas!"
+msgstr ""
+
+#: includes/admin/options.php:10
+msgid "Ativar calculadora de frete"
+msgstr ""
+
+#: includes/admin/options.php:21
+msgid "Ativar cálculo automático de frete"
+msgstr ""
+
+#: includes/admin/options.php:11
+msgid ""
+"Ative esta opção para adicionar uma calculadora de frete na página de "
+"produto individual."
+msgstr ""
+
+#: includes/admin/options.php:22
+msgid "Ative esta opção para que o frete seja calculado de forma automática."
+msgstr ""
+
+#: includes/admin/settings.php:12
+msgid "Central de ajuda"
+msgstr ""
+
+#: hubgo-shipping-management-wc.php:256
+msgid "Configurar"
+msgstr ""
+
+#: includes/admin/options.php:46
+msgid "Cor principal"
+msgstr ""
+
+#: includes/admin/options.php:56 includes/admin/options.php:65
+#: includes/admin/options.php:74 includes/admin/options.php:83
+#: includes/admin/options.php:92 includes/admin/options.php:101
+msgid "Deixe em branco para não exibir."
+msgstr ""
+
+#: includes/admin/options.php:37
+msgid "Depois do carrinho (Padrão)"
+msgstr ""
+
+#. Description of the plugin
+msgid "Extensão que permite gerenciar opções de frete para lojas WooCommerce."
+msgstr ""
+
+#: includes/admin/settings.php:11
+msgid ""
+"Extensão que permite gerenciar opções de frete para lojas WooCommerce. Se "
+"precisar de ajuda para configurar, acesse nossa"
+msgstr ""
+
+#: includes/admin/options.php:39
+msgid "Final das informações adicionais"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://meumouse.com/"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://meumouse.com/plugins/hubgo/"
+msgstr ""
+
+#. page title
+#: includes/admin/class-hubgo-shipping-management-wc-admin-options.php:34
+msgid "HubGo"
+msgstr ""
+
+#. parent page slug
+#. Name of the plugin
+#: includes/admin/class-hubgo-shipping-management-wc-admin-options.php:33
+msgid "HubGo - Gerenciamento de Frete para WooCommerce"
+msgstr ""
+
+#. Author of the plugin
+msgid "MeuMouse.com"
+msgstr ""
+
+#: includes/classes/class-hubgo-shipping-management-wc-shipping-calculator.php:94
+#: includes/classes/class-hubgo-shipping-management-wc-shipping-calculator.php:257
+msgid "Nenhuma forma de entrega disponível."
+msgstr ""
+
+#: includes/classes/class-hubgo-shipping-management-wc-shipping-calculator.php:112
+msgid "Não foi possível calcular a entrega deste produto"
+msgstr ""
+
+#: includes/classes/class-hubgo-shipping-management-wc-shipping-calculator.php:116
+msgid ""
+"Não foi possível calcular a entrega deste produto, pois o mesmo não está "
+"disponível."
+msgstr ""
+
+#: includes/classes/class-hubgo-shipping-management-updater.php:254
+msgid ""
+"Não foi possível verificar atualizações para o plugin HubGo - Gerenciamento "
+"de Frete para WooCommerce."
+msgstr ""
+
+#: includes/classes/class-hubgo-shipping-management-wc-shipping-calculator.php:296
+msgid "Não sei meu CEP"
+msgstr ""
+
+#: includes/classes/class-hubgo-shipping-management-wc-shipping-calculator.php:48
+msgid "Por favor, escolha uma opção antes de calcular."
+msgstr ""
+
+#: includes/classes/class-hubgo-shipping-management-wc-shipping-calculator.php:120
+msgid "Por favor, insira um CEP válido."
+msgstr ""
+
+#: includes/admin/options.php:32
+msgid "Posição da calculadora de frete"
+msgstr ""
+
+#: includes/admin/settings.php:19
+msgid "Salvo com sucesso"
+msgstr ""
+
+#: includes/admin/options.php:47
+msgid "Selecione a cor principal para botões e outros estilos."
+msgstr ""
+
+#: includes/admin/options.php:33
+msgid ""
+"Selecione onde o gancho que será exibido as formas de pagamento na página de "
+"produto individual. Shortcode disponível: [hubgo_shipping_calculator]"
+msgstr ""
+
+#: includes/admin/options.php:40
+msgid "Shortcode"
+msgstr ""
+
+#: includes/admin/options.php:100
+msgid "Texto de observação inferior das opções de frete"
+msgstr ""
+
+#: includes/admin/options.php:64
+msgid "Texto do botão da calculadora de frete"
+msgstr ""
+
+#: includes/admin/options.php:73
+msgid "Texto do cabeçalho das formas de entrega"
+msgstr ""
+
+#: includes/admin/options.php:82
+msgid "Texto do cabeçalho do valor das formas de entrega"
+msgstr ""
+
+#: includes/admin/options.php:91
+msgid "Texto do espaço reservado do campo de CEP"
+msgstr ""
+
+#: includes/admin/options.php:55
+msgid "Texto informativo antes do campo de CEP"
+msgstr ""
+
+#: hubgo-shipping-management-wc.php:285 hubgo-shipping-management-wc.php:294
+msgid "Trapaceando?"
+msgstr ""
+
+#: includes/classes/class-hubgo-shipping-management-updater.php:239
+msgid ""
+"Uma nova versão do plugin HubGo - Gerenciamento de Frete para WooCommerce "
+"está disponível."
+msgstr ""
+
+#: includes/classes/class-hubgo-shipping-management-updater.php:209
+msgid "Verificar atualizações"
+msgstr ""
