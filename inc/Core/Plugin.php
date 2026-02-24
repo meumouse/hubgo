@@ -69,7 +69,7 @@ final class Plugin {
         $this->plugin_version = $plugin_version;
 
         // Hook before plugin init.
-        do_action( 'Hubgo/Before_Init' );
+        do_action('Hubgo/Before_Init');
 
         $this->define_constants();
 
@@ -89,7 +89,7 @@ final class Plugin {
         $this->register_class_hooks();
 
         // Hook after plugin init.
-        do_action( 'Hubgo/After_Init' );
+        do_action('Hubgo/After_Init');
     }
 
 
@@ -179,13 +179,11 @@ final class Plugin {
             'init' => array(
                 'MeuMouse\\Hubgo\\Core\\Assets',
                 'MeuMouse\\Hubgo\\Core\\Ajax',
-                'MeuMouse\\Hubgo\\Views\\Custom_Colors',
+                'MeuMouse\\Hubgo\\Admin\\Settings',
             ),
             'wp_loaded' => array(
-                'MeuMouse\\Hubgo\\Views\\ShippingCalculator',
-            ),
-            'admin_init' => array(
-                'MeuMouse\\Hubgo\\Admin\\Settings',
+                'MeuMouse\\Hubgo\\Views\\Shipping_Calculator',
+                'MeuMouse\\Hubgo\\Views\\Custom_Colors',
             ),
             'plugins_loaded' => array(
                 'MeuMouse\\Hubgo\\API\\Updater',

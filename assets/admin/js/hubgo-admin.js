@@ -33,8 +33,7 @@
          */
         elements: {
             $form: null,
-            $toast: null,
-            $hideToast: null,
+            $toastContainer: null,
         },
 
         /**
@@ -55,7 +54,7 @@
         config: {
             formSelector: 'form[name="hubgo-shipping-management-wc"]',
             toastSelector: '.update-notice-spm-wp',
-            hideToastSelector: '.hide-toast',
+            toastContainerClass: 'hubgo-toast-container',
             notificationDuration: 3000,
             activeClass: 'active',
             fadeSpeed: 'fast',
@@ -84,9 +83,10 @@
         cacheDom: function() {
             this.elements = {
                 $form: $(this.config.formSelector),
-                $toast: $(this.config.toastSelector),
-                $hideToast: $(this.config.hideToastSelector),
+                $toastContainer: null,
             };
+
+            this.createToast();
         },
 
 
@@ -106,10 +106,7 @@
                 this.handleFormChange.bind(this)
             );
             
-            this.elements.$hideToast.on(
-                'click',
-                this.hideNotification.bind(this)
-            );
+            $(document).on( 'click', this.config.toastSelector + ' .hide-toast', this.hideNotification.bind(this) );
         },
 
 
@@ -277,11 +274,11 @@
         showNotification: function() {
             const self = this;
 
-            if ( ! this.elements.$toast.length ) {
+            if ( ! this.elements.$toastContainer || ! this.elements.$toastContainer.length ) {
                 return;
             }
 
-            this.elements.$toast
+            this.elements.$toastContainer.find( this.config.toastSelector )
                 .addClass( this.config.activeClass )
                 .fadeIn( this.config.fadeSpeed );
 
@@ -311,12 +308,13 @@
          */
         hideNotification: function() {
             const self = this;
+            const $toast = this.elements.$toastContainer ? this.elements.$toastContainer.find( this.config.toastSelector ) : $();
 
-            if ( ! this.elements.$toast.length ) {
+            if ( ! $toast.length ) {
                 return;
             }
 
-            this.elements.$toast.fadeOut(
+            $toast.fadeOut(
                 this.config.fadeSpeed,
                 function() {
                     $(this)
@@ -349,6 +347,51 @@
             }
         },
 
+
+        /**
+         * Get localized parameter with fallback
+         *
+         * @since 2.0.0
+         * @param {string} key
+         * @param {string} fallback
+         * @return {string}
+         */
+        getParam: function( key, fallback ) {
+            if ( typeof hubgo_admin_params === 'undefined' || typeof hubgo_admin_params[ key ] === 'undefined' ) {
+                return fallback;
+            }
+
+            return hubgo_admin_params[ key ];
+        },
+
+
+        /**
+         * Create toast markup dynamically
+         *
+         * @since 2.0.0
+         * @return {void}
+         */
+        createToast: function() {
+            if ( ! this.elements.$form.length ) {
+                return;
+            }
+
+            const toastHtml = [
+                '<div class="toast update-notice-spm-wp" style="display:none;">',
+                    '<div class="toast-header bg-success text-white">',
+                        '<span class="me-auto">' + this.getParam( 'toast_title', 'Salvo com sucesso' ) + '</span>',
+                        '<button class="btn-close btn-close-white ms-2 hide-toast" type="button" aria-label="Close"></button>',
+                    '</div>',
+                    '<div class="toast-body">' + this.getParam( 'toast_message', 'As configurações foram atualizadas!' ) + '</div>',
+                '</div>'
+            ].join('');
+
+            const $container = $( '<div/>' ).addClass( this.config.toastContainerClass ).html( toastHtml );
+
+            this.elements.$form.before( $container );
+            this.elements.$toastContainer = $container;
+        },
+        
 
         /**
          * Manually trigger save

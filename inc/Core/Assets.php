@@ -58,6 +58,29 @@ class Assets {
      */
     const SETTINGS_PAGE_ID = 'hubgo-settings';
 
+    /**
+     * Plugin instance.
+     *
+     * @since 2.0.0
+     * @var Assets
+     */
+    private static $instance = null;
+
+
+    /**
+     * Get class instance
+     *
+     * @since 2.0.0
+     * @return Assets
+     */
+    public static function get_instance() {
+        if ( null === self::$instance ) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
 
     /**
      * Constructor
@@ -104,6 +127,10 @@ class Assets {
         $style_url = $this->get_asset_url( 'front/css/hubgo-front.css' );
         $version = $this->get_asset_version();
 
+        if ( empty( $style_url ) ) {
+            return;
+        }
+
         wp_enqueue_style(
             self::FRONT_STYLE_HANDLE,
             $style_url,
@@ -122,6 +149,10 @@ class Assets {
     private function register_frontend_scripts() {
         $script_url = $this->get_asset_url( 'front/js/hubgo-front.js' );
         $version = $this->get_asset_version();
+
+        if ( empty( $script_url ) ) {
+            return;
+        }
 
         wp_enqueue_script(
             self::FRONT_SCRIPT_HANDLE,
@@ -237,6 +268,10 @@ class Assets {
         $style_url = $this->get_asset_url( 'admin/css/hubgo-admin.css' );
         $version = $this->get_asset_version();
 
+        if ( empty( $style_url ) ) {
+            return;
+        }
+
         wp_enqueue_style(
             self::ADMIN_STYLE_HANDLE,
             $style_url,
@@ -255,6 +290,10 @@ class Assets {
     private function register_admin_scripts() {
         $script_url = $this->get_asset_url( 'admin/js/hubgo-admin.js' );
         $version = $this->get_asset_version();
+
+        if ( empty( $script_url ) ) {
+            return;
+        }
 
         wp_enqueue_script(
             self::ADMIN_SCRIPT_HANDLE,
@@ -293,6 +332,9 @@ class Assets {
         return array(
             'ajax_url' => esc_url( admin_url( 'admin-ajax.php' ) ),
             'nonce'    => wp_create_nonce( 'hubgo_admin_nonce' ),
+            'unsaved_changes_warning' => __( 'Existem alterações não salvas. Deseja realmente sair?', 'hubgo' ),
+            'toast_title' => __( 'Salvo com sucesso', 'hubgo' ),
+            'toast_message' => __( 'As configurações foram atualizadas!', 'hubgo' ),
         );
     }
 
@@ -311,7 +353,7 @@ class Assets {
             return '';
         }
 
-        return $assets_base . $path;
+        return trailingslashit( $assets_base ) . ltrim( $path, '/' );
     }
 
 
