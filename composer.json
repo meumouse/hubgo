@@ -1,0 +1,21 @@
+{
+    "name": "meumouse/hubgo",
+    "description": "HubGo - Gerenciamento de Frete para WooCommerce",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "MeuMouse.com",
+            "homepage": "https://meumouse.com/"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "MeuMouse\\Hubgo\\": "inc/"
+        }
+    }
+}
