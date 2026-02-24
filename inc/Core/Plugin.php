@@ -4,14 +4,13 @@ namespace MeuMouse\Hubgo\Core;
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use ReflectionClass;
+use Exception;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
 /**
- * Class Plugin
- *
- * Main plugin class that handles initialization, requirements checking, and core setup
+ * Plugin core class.
  *
  * @since 2.0.0
  * @package MeuMouse\Hubgo\Core
@@ -20,15 +19,15 @@ defined('ABSPATH') || exit;
 final class Plugin {
 
     /**
-     * Plugin version
+     * Plugin version.
      *
      * @since 2.0.0
      * @var string
      */
-    public $version;
+    private $plugin_version;
 
     /**
-     * Instance of this class
+     * Plugin instance.
      *
      * @since 2.0.0
      * @var Plugin|null
@@ -36,37 +35,22 @@ final class Plugin {
     private static $instance = null;
 
     /**
-     * Default plugin constants
+     * Cache for instantiated classes.
      *
      * @since 2.0.0
      * @var array
      */
-    private $default_constants = array(
-        'HUBGO_VERSION' => '',
-        'HUBGO_FILE' => '',
-        'HUBGO_PATH' => '',
-        'HUBGO_URL' => '',
-        'HUBGO_ASSETS' => '',
-        'HUBGO_BASENAME' => '',
-    );
-
-    /**
-     * Track instanced classes
-     *
-     * @since 2.0.0
-     * @var array
-     */
-    private static $instanced_classes = array();
+    private $instances = array();
 
 
     /**
-     * Get instance of this class
+     * Get plugin instance.
      *
      * @since 2.0.0
      * @return Plugin
      */
     public static function get_instance() {
-        if ( is_null( self::$instance ) ) {
+        if ( null === self::$instance ) {
             self::$instance = new self();
         }
 
@@ -75,56 +59,69 @@ final class Plugin {
 
 
     /**
-     * Initialize plugin
+     * Initialize the plugin.
      *
      * @since 2.0.0
-     * @param string $plugin_version Plugin version
+     * @param string $plugin_version Plugin version.
      * @return void
      */
     public function init( $plugin_version ) {
-        $this->version = $plugin_version;
-        
+        $this->plugin_version = $plugin_version;
+
+        // Hook before plugin init.
+        do_action( 'Hubgo/Before_Init' );
+
         $this->define_constants();
-        $this->init_hooks();
-        $this->load_components();
+
+        // Load text domain.
+        add_action( 'init', array( $this, 'load_textdomain' ) );
+
+        // Check dependencies early.
+        add_action( 'plugins_loaded', array( $this, 'check_dependencies' ), 5 );
+
+        // Set compatibility with WooCommerce HPOS.
+        add_action( 'before_woocommerce_init', array( $this, 'setup_hpos_compatibility' ) );
+
+        // Add plugin action links.
+        add_filter( 'plugin_action_links_' . $this->get_constant( 'HUBGO_BASENAME' ), array( $this, 'plugin_action_links' ) );
+
+        // Register all class hooks for lazy instantiation.
+        $this->register_class_hooks();
+
+        // Hook after plugin init.
+        do_action( 'Hubgo/After_Init' );
     }
 
 
     /**
-     * Define plugin constants
+     * Define plugin constants used across modules.
      *
      * @since 2.0.0
      * @return void
      */
     private function define_constants() {
+        $base_file = dirname( __DIR__, 2 ) . '/hubgo.php';
+        $base_dir = plugin_dir_path( $base_file );
+        $base_url = plugin_dir_url( $base_file );
+
         $constants = array(
-            'HUBGO_VERSION' => $this->version,
-            'HUBGO_FILE' => dirname( dirname( __DIR__ ) ) . '/hubgo.php',
-            'HUBGO_BASENAME' => plugin_basename( $this->get_constant( 'HUBGO_FILE' ) ),
+            'HUBGO_BASENAME'   => plugin_basename( $base_file ),
+            'HUBGO_FILE'       => $base_file,
+            'HUBGO_PATH'       => $base_dir,
+            'HUBGO_INC_PATH'   => $base_dir . 'inc/',
+            'HUBGO_URL'        => $base_url,
+            'HUBGO_ASSETS'     => $base_url . 'assets/',
+            'HUBGO_ABSPATH'    => dirname( $base_file ) . '/',
+            'HUBGO_SLUG'       => 'hubgo',
+            'HUBGO_VERSION'    => $this->plugin_version,
+            'HUBGO_DEBUG_MODE' => defined( 'WP_DEBUG' ) && WP_DEBUG,
+            'HUBGO_DEV_MODE'   => true,
         );
 
-        // Calculate dependent constants
-        $constants['HUBGO_PATH'] = plugin_dir_path( $constants['HUBGO_FILE'] );
-        $constants['HUBGO_URL'] = plugin_dir_url( $constants['HUBGO_FILE'] );
-        $constants['HUBGO_ASSETS'] = $constants['HUBGO_URL'] . 'assets/';
-
-        foreach ( $constants as $name => $value ) {
-            $this->define_constant( $name, $value );
-        }
-    }
-
-
-    /**
-     * Define constant if not already set
-     *
-     * @since 2.0.0
-     * @param string $name Constant name
-     * @param mixed $value Constant value
-     * @return void
-     */
-    private function define_constant( $name, $value ) {
-        if ( ! defined( $name ) ) {
-            define( $name, $value );
+        foreach ( $constants as $key => $value ) {
+            if ( ! defined( $key ) ) {
+                define( $key, $value );
+            }
         }
     }
 
@@ -143,19 +140,125 @@ final class Plugin {
 
 
     /**
-     * Initialize WordPress hooks
+     * Register all class hooks for lazy instantiation.
+     *
+     * This will only instantiate the classes at the hooks defined in the map.
      *
      * @since 2.0.0
      * @return void
      */
-    private function init_hooks() {
-        add_action( 'init', array( $this, 'load_textdomain' ), -1 );
-        add_action( 'plugins_loaded', array( $this, 'check_requirements' ), 5 );
+    private function register_class_hooks() {
+        $map = $this->get_hook_class_map();
+
+        foreach ( $map as $hook => $classes ) {
+            if ( empty( $hook ) || empty( $classes ) || ! is_array( $classes ) ) {
+                continue;
+            }
+
+            foreach ( $classes as $class ) {
+                if ( empty( $class ) || ! is_string( $class ) ) {
+                    continue;
+                }
+
+                add_action( $hook, function() use ( $class ) {
+                    $this->safe_instance_class( $class );
+                }, 1 );
+            }
+        }
     }
 
 
     /**
-     * Load plugin textdomain
+     * Get hook => classes map used to lazy-load plugin components.
+     *
+     * @since 2.0.0
+     * @return array
+     */
+    private function get_hook_class_map() {
+        return array(
+            'init' => array(
+                'MeuMouse\\Hubgo\\Core\\Assets',
+                'MeuMouse\\Hubgo\\Core\\Ajax',
+                'MeuMouse\\Hubgo\\Views\\Custom_Colors',
+            ),
+            'wp_loaded' => array(
+                'MeuMouse\\Hubgo\\Views\\ShippingCalculator',
+            ),
+            'admin_init' => array(
+                'MeuMouse\\Hubgo\\Admin\\Settings',
+            ),
+            'plugins_loaded' => array(
+                'MeuMouse\\Hubgo\\API\\Updater',
+            ),
+        );
+    }
+
+
+    /**
+     * Check plugin dependencies.
+     *
+     * @since 2.0.0
+     * @return bool
+     */
+    public function check_dependencies() {
+        $dependencies_met = true;
+
+        // Check PHP version.
+        if ( version_compare( phpversion(), '7.4', '<' ) ) {
+            add_action( 'admin_notices', function() {
+                ?>
+                <div class="notice notice-error">
+                    <p>
+                        <strong><?php echo esc_html__( 'HubGo', 'hubgo' ); ?></strong> 
+                        <?php echo esc_html__( 'requer PHP 7.4 ou superior.', 'hubgo' ); ?>
+                    </p>
+                </div>
+                <?php
+            } );
+
+            $dependencies_met = false;
+        }
+
+        // Check if WooCommerce is active.
+        if ( ! class_exists( 'WooCommerce' ) ) {
+            add_action( 'admin_notices', function() {
+                ?>
+                <div class="notice notice-error">
+                    <p>
+                        <strong><?php echo esc_html__( 'HubGo', 'hubgo' ); ?></strong> 
+                        <?php echo esc_html__( 'requer que o', 'hubgo' ); ?> 
+                        <strong><?php echo esc_html__( 'WooCommerce', 'hubgo' ); ?></strong> 
+                        <?php echo esc_html__( 'esteja instalado e ativado.', 'hubgo' ); ?>
+                    </p>
+                </div>
+                <?php
+            } );
+
+            $dependencies_met = false;
+        }
+
+        // Check WC version.
+        if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '6.0', '<' ) ) {
+            add_action( 'admin_notices', function() {
+                ?>
+                <div class="notice notice-error">
+                    <p>
+                        <strong><?php echo esc_html__( 'HubGo', 'hubgo' ); ?></strong> 
+                        <?php echo esc_html__( 'requer WooCommerce 6.0 ou superior.', 'hubgo' ); ?>
+                    </p>
+                </div>
+                <?php
+            } );
+
+            $dependencies_met = false;
+        }
+
+        return $dependencies_met;
+    }
+
+
+    /**
+     * Load plugin text domain.
      *
      * @since 2.0.0
      * @return void
@@ -176,115 +279,84 @@ final class Plugin {
 
 
     /**
-     * Check plugin requirements
+     * Safely instantiate a class.
+     *
+     * - Skips if dependencies are not met.
+     * - Skips if the class does not exist.
+     * - Skips if it's not instantiable.
+     * - Skips if it has required constructor parameters.
+     * - Prevents duplicate instantiation.
+     * - Calls init() if available.
      *
      * @since 2.0.0
+     * @param string $class Class name.
      * @return void
      */
-    public function check_requirements() {
-        if ( ! $this->verify_requirements() ) {
+    private function safe_instance_class( $class ) {
+        // Run dependency checks before loading any mapped class.
+        if ( ! $this->check_dependencies() ) {
             return;
         }
 
-        $this->setup_compatibility();
-        $this->add_plugin_links_filter();
+        // Avoid double instantiation.
+        if ( isset( $this->instances[ $class ] ) ) {
+            return;
+        }
+
+        // Ensure class exists.
+        if ( ! class_exists( $class ) ) {
+            return;
+        }
+
+        try {
+            $reflection = new ReflectionClass( $class );
+
+            if ( ! $reflection->isInstantiable() ) {
+                return;
+            }
+
+            $constructor = $reflection->getConstructor();
+
+            // Only instantiate classes without required constructor parameters.
+            if ( $constructor && $constructor->getNumberOfRequiredParameters() > 0 ) {
+                return;
+            }
+
+            $instance = new $class();
+
+            $this->instances[ $class ] = $instance;
+
+            // Call init method if exists.
+            if ( method_exists( $instance, 'init' ) ) {
+                $instance->init();
+            }
+        } catch ( Exception $e ) {
+            if ( defined( 'HUBGO_DEBUG_MODE' ) && HUBGO_DEBUG_MODE ) {
+                error_log( 'HubGo: Error instancing class ' . $class . ' - ' . $e->getMessage() );
+            }
+        }
     }
 
 
     /**
-     * Verify all plugin requirements
-     *
-     * @since 2.0.0
-     * @return bool
-     */
-    private function verify_requirements() {
-        // Check WooCommerce
-        if ( ! $this->is_woocommerce_active() ) {
-            deactivate_plugins( $this->get_constant( 'HUBGO_BASENAME' ) );
-            add_action( 'admin_notices', array( $this, 'notice_woocommerce_missing' ) );
-            
-            return false;
-        }
-
-        // Check PHP version
-        if ( version_compare( phpversion(), '7.4', '<' ) ) {
-            add_action( 'admin_notices', array( $this, 'notice_php_version' ) );
-            
-            return false;
-        }
-
-        // Check WC version
-        if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '6.0', '<' ) ) {
-            add_action( 'admin_notices', array( $this, 'notice_wc_version' ) );
-            
-            return false;
-        }
-
-        return true;
-    }
-
-
-    /**
-     * Check if WooCommerce is active
-     *
-     * @since 2.0.0
-     * @return bool
-     */
-    private function is_woocommerce_active() {
-        if ( ! function_exists( 'is_plugin_active' ) ) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-
-        return is_plugin_active( 'woocommerce/woocommerce.php' );
-    }
-
-
-    /**
-     * Setup plugin compatibility features
-     *
-     * @since 2.0.0
-     * @return void
-     */
-    private function setup_compatibility() {
-        add_action( 'before_woocommerce_init', array( $this, 'setup_hpos_compatibility' ) );
-    }
-
-
-    /**
-     * Setup HPOS compatibility
+     * Setup HPOS compatibility.
      *
      * @since 2.0.0
      * @return void
      */
     public function setup_hpos_compatibility() {
-        if ( ! class_exists( FeaturesUtil::class ) ) {
-            return;
+        if ( class_exists( FeaturesUtil::class ) ) {
+            FeaturesUtil::declare_compatibility(
+                'custom_order_tables',
+                $this->get_constant( 'HUBGO_FILE' ),
+                true
+            );
         }
-
-        FeaturesUtil::declare_compatibility(
-            'custom_order_tables',
-            $this->get_constant( 'HUBGO_FILE' ),
-            true
-        );
     }
 
 
     /**
-     * Add plugin action links filter
-     *
-     * @since 2.0.0
-     * @return void
-     */
-    private function add_plugin_links_filter() {
-        add_filter(
-            'plugin_action_links_' . $this->get_constant( 'HUBGO_BASENAME' ),
-            array( $this, 'plugin_action_links' )
-        );
-    }
-
-
-    /**
-     * Add custom plugin action links
+     * Add custom plugin action links.
      *
      * @since 2.0.0
      * @param array $links Existing plugin links
@@ -305,124 +377,23 @@ final class Plugin {
 
 
     /**
-     * Display WooCommerce missing notice
+     * Cloning is forbidden.
      *
      * @since 2.0.0
      * @return void
      */
-    public function notice_woocommerce_missing() {
-        ?>
-        <div class="notice notice-error is-dismissible">
-            <p>
-                <strong><?php echo esc_html__( 'HubGo', 'hubgo' ); ?></strong> 
-                <?php echo esc_html__( 'requer que o', 'hubgo' ); ?> 
-                <strong><?php echo esc_html__( 'WooCommerce', 'hubgo' ); ?></strong> 
-                <?php echo esc_html__( 'esteja instalado e ativado.', 'hubgo' ); ?>
-            </p>
-        </div>
-        <?php
+    public function __clone() {
+        _doing_it_wrong( __FUNCTION__, esc_html__( 'Trapaceando?', 'hubgo' ), '2.0.0' );
     }
 
 
     /**
-     * Display PHP version notice
+     * Unserializing instances of this class is forbidden.
      *
      * @since 2.0.0
      * @return void
      */
-    public function notice_php_version() {
-        ?>
-        <div class="notice notice-error is-dismissible">
-            <p>
-                <strong><?php echo esc_html__( 'HubGo', 'hubgo' ); ?></strong> 
-                <?php echo esc_html__( 'requer PHP 7.4 ou superior.', 'hubgo' ); ?>
-            </p>
-        </div>
-        <?php
-    }
-
-
-    /**
-     * Display WC version notice
-     *
-     * @since 2.0.0
-     * @return void
-     */
-    public function notice_wc_version() {
-        ?>
-        <div class="notice notice-error is-dismissible">
-            <p>
-                <strong><?php echo esc_html__( 'HubGo', 'hubgo' ); ?></strong> 
-                <?php echo esc_html__( 'requer WooCommerce 6.0 ou superior.', 'hubgo' ); ?>
-            </p>
-        </div>
-        <?php
-    }
-
-
-    /**
-     * Load plugin components
-     *
-     * @since 2.0.0
-     * @return void
-     */
-    private function load_components() {
-        $component_map = array(
-            'MeuMouse\Hubgo\Core\Assets' => array(),
-            'MeuMouse\Hubgo\Core\Ajax' => array(),
-            'MeuMouse\Hubgo\Admin\Settings' => array(
-                'condition' => function() {
-                    return is_admin();
-                },
-            ),
-            'MeuMouse\Hubgo\API\Updater' => array(),
-            'MeuMouse\Hubgo\Views\ShippingCalculator' => array(),
-            'MeuMouse\Hubgo\Views\Custom_Colors' => array(),
-        );
-
-        foreach ( $component_map as $class_name => $config ) {
-            $this->safe_instance_class( $class_name, $config );
-        }
-    }
-
-
-    /**
-     * Safely instantiate a class
-     *
-     * @since 2.0.0
-     * @param string $class Fully qualified class name
-     * @param array $config Configuration array with optional condition
-     * @return void
-     */
-    private function safe_instance_class( $class, $config = array() ) {
-        // Check if already instanced
-        if ( isset( self::$instanced_classes[ $class ] ) ) {
-            return;
-        }
-
-        // Check condition if provided
-        if ( isset( $config['condition'] ) && is_callable( $config['condition'] ) ) {
-            if ( ! call_user_func( $config['condition'] ) ) {
-                return;
-            }
-        }
-
-        try {
-            $reflection = new ReflectionClass( $class );
-
-            if ( ! $reflection->isInstantiable() ) {
-                return;
-            }
-
-            $instance = new $class();
-            self::$instanced_classes[ $class ] = $instance;
-
-            // Call init method if exists
-            if ( method_exists( $instance, 'init' ) ) {
-                $instance->init();
-            }
-        } catch ( \Exception $e ) {
-            error_log( 'HubGo Plugin Error: Failed to instantiate class ' . $class . ' - ' . $e->getMessage() );
-        }
+    public function __wakeup() {
+        _doing_it_wrong( __FUNCTION__, esc_html__( 'Trapaceando?', 'hubgo' ), '2.0.0' );
     }
 }

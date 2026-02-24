@@ -21,7 +21,7 @@ class Updater {
     /**
      * URL to the update checker JSON file
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @var string
      */
     public $update_checker_file = 'https://packages.meumouse.com/v1/updates/hubgo?path=updater&file=update-checker.json';
@@ -29,7 +29,7 @@ class Updater {
     /**
      * Plugin slug
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @var string
      */
     public $plugin_slug;
@@ -37,7 +37,7 @@ class Updater {
     /**
      * Current plugin version
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @var string
      */
     public $version;
@@ -45,7 +45,7 @@ class Updater {
     /**
      * Cache key for update checks
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @var string
      */
     public $cache_key;
@@ -53,7 +53,7 @@ class Updater {
     /**
      * Cache key for remote data
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @var string
      */
     public $cache_data_base_key;
@@ -61,7 +61,7 @@ class Updater {
     /**
      * Whether caching is allowed
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @var bool
      */
     public $cache_allowed = true;
@@ -69,7 +69,7 @@ class Updater {
     /**
      * Cache time in seconds
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @var int
      */
     public $time_cache = DAY_IN_SECONDS;
@@ -77,7 +77,7 @@ class Updater {
     /**
      * Update available data
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @var object|null
      */
     public $update_available;
@@ -85,7 +85,7 @@ class Updater {
     /**
      * Download URL for the update
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @var string
      */
     public $download_url;
@@ -93,7 +93,7 @@ class Updater {
     /**
      * Instance of this class
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @var Updater|null
      */
     private static $instance = null;
@@ -102,7 +102,7 @@ class Updater {
     /**
      * Constructor
      *
-     * @since 2.0.0
+     * @since 1.4.0
      */
     public function __construct() {
         $this->setup_constants();
@@ -149,7 +149,7 @@ class Updater {
     /**
      * Initialize WordPress hooks
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @return void
      */
     private function init_hooks() {
@@ -180,7 +180,7 @@ class Updater {
     /**
      * Get instance of this class
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @return Updater
      */
     public static function get_instance() {
@@ -195,7 +195,7 @@ class Updater {
     /**
      * Request data from remote server
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @return object|false
      */
     public function request() {
@@ -239,7 +239,7 @@ class Updater {
     /**
      * Get plugin information for WordPress plugin API
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @param mixed  $response | Existing response object
      * @param string $action   | API action being performed
      * @param object $args     | Arguments for the API call
@@ -299,7 +299,7 @@ class Updater {
     /**
      * Update plugin information in WordPress update transient
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @param object $transient | Update transient
      * @return object
      */
@@ -330,7 +330,7 @@ class Updater {
     /**
      * Purge cache after plugin update
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @param object $upgrader | WP_Upgrader instance
      * @param array  $options  | Update options
      * @return void
@@ -347,7 +347,7 @@ class Updater {
     /**
      * Add check updates link to plugin row meta
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @param array  $plugin_meta | Plugin meta links
      * @param string $plugin_file | Plugin file path
      * @return array
@@ -368,7 +368,7 @@ class Updater {
     /**
      * Check for manual update query parameter and display notices
      *
-     * @since 2.0.0
+     * @since 1.4.0
      * @return void
      */
     public function check_manual_update_query_arg() {
