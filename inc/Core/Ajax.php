@@ -22,7 +22,7 @@ class Ajax {
      * @since 2.0.0
      * @var string
      */
-    const SETTINGS_OPTION_NAME = 'hubgo-shipping-management-wc-setting';
+    const SETTINGS_OPTION_NAME = 'hubgo_settings';
 
     /**
      * Nonce action for admin

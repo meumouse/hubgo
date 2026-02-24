@@ -66,6 +66,7 @@
             notificationDuration: 3000,
             activeClass: 'active',
             fadeSpeed: 'fast',
+            buttonOriginalHtml: '',
         },
 
 
@@ -79,8 +80,13 @@
             this.cacheDom();
             this.initTabs();
             this.bindEvents();
+            this.initColorFields();
             this.storeOriginalValues();
             this.updateSaveButtonState();
+
+            if ( this.elements.$saveButton.length ) {
+                this.config.buttonOriginalHtml = this.elements.$saveButton.html();
+            }
         },
 
 
@@ -143,6 +149,118 @@
             this.elements.$tabs.on( 'click', this.handleTabClick.bind(this) );
             
             $(document).on( 'click', this.config.toastSelector + ' .hide-toast', this.hideNotification.bind(this) );
+        },
+
+
+        /**
+         * Initialize color field interactions
+         *
+         * @since 2.0.0
+         * @return {void}
+         */
+        initColorFields: function() {
+            const self = this;
+            const $colorContainers = this.elements.$form.find( '.color-container' );
+
+            if ( ! $colorContainers.length ) {
+                return;
+            }
+
+            $colorContainers.each(
+                function() {
+                    self.syncColorContainer( $( this ) );
+                }
+            );
+
+            this.elements.$form.on(
+                'input change',
+                '.color-container input[type="color"]',
+                function( event ) {
+                    const $container = $( event.currentTarget ).closest( '.color-container' );
+                    const value = $( event.currentTarget ).val();
+
+                    self.syncColorContainer( $container, value );
+                }
+            );
+
+            this.elements.$form.on(
+                'input change',
+                '.color-container .get-color-selected',
+                function( event ) {
+                    const $input = $( event.currentTarget );
+                    const $container = $input.closest( '.color-container' );
+                    const value = self.normalizeHexColor( $input.val() );
+
+                    if ( ! value ) {
+                        return;
+                    }
+
+                    self.syncColorContainer( $container, value );
+                }
+            );
+
+            this.elements.$form.on(
+                'click',
+                '.color-container .reset-color',
+                function( event ) {
+                    event.preventDefault();
+
+                    const $button = $( event.currentTarget );
+                    const $container = $button.closest( '.color-container' );
+                    const defaultColor = self.normalizeHexColor( $button.data( 'color' ) );
+
+                    if ( ! defaultColor ) {
+                        return;
+                    }
+
+                    self.syncColorContainer( $container, defaultColor );
+                    $container.find( 'input[type="color"], .get-color-selected' ).trigger( 'change' );
+                }
+            );
+        },
+
+
+        /**
+         * Sync color container input values
+         *
+         * @since 2.0.0
+         * @param {jQuery} $container
+         * @param {string} value
+         * @return {void}
+         */
+        syncColorContainer: function( $container, value ) {
+            const $colorInput = $container.find( 'input[type="color"]' );
+            const $textInput = $container.find( '.get-color-selected' );
+            const normalized = this.normalizeHexColor( value || $colorInput.val() || $textInput.val() );
+
+            if ( ! normalized ) {
+                return;
+            }
+
+            $colorInput.val( normalized );
+            $textInput.val( normalized );
+        },
+
+
+        /**
+         * Normalize color value to #RRGGBB
+         *
+         * @since 2.0.0
+         * @param {string} value
+         * @return {string}
+         */
+        normalizeHexColor: function( value ) {
+            if ( 'string' !== typeof value ) {
+                return '';
+            }
+
+            const normalized = value.trim();
+
+            if ( ! /^#([0-9A-Fa-f]{6})$/.test( normalized ) ) {
+                return '';
+            }
+
+            return normalized.toUpperCase();
         },
 
 
@@ -246,6 +364,7 @@
             const self = this;
 
             this.setState( 'isSaving', true );
+            const buttonState = this.keepButtonState();
 
             $.ajax({
                 url: hubgo_admin_params.ajax_url,
@@ -258,7 +377,7 @@
                 },
                 beforeSend: function() {
                     if ( self.elements.$saveButton.length ) {
-                        self.elements.$saveButton.prop( 'disabled', true );
+                        self.elements.$saveButton.prop( 'disabled', true ).html('<span class="spinner-border spinner-border-sm"></span>');
                     }
                 },
                 success: function( response ) {
@@ -266,6 +385,7 @@
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     self.handleError( textStatus, errorThrown );
+                    self.restoreButtonState(buttonState);
                 },
                 complete: function() {
                     self.setState( 'isSaving', false );
@@ -287,6 +407,7 @@
                 this.state.originalValues = this.elements.$form.serialize();
                 this.updateSaveButtonState();
                 this.showNotification();
+                this.restoreButtonState();
                 
                 /**
                  * Trigger event after settings saved
@@ -296,6 +417,7 @@
                 $(document).trigger( 'hubgo:settings_saved', [ response.data ] );
             } else {
                 this.handleSaveError( response.data.message );
+                this.restoreButtonState();
             }
         },
 
@@ -365,6 +487,54 @@
             this.state[ key ] = value;
         },
 
+        /**
+         * Keep button state before modification
+         * 
+         * @since 2.0.0
+         * @returns {Object} Current button state
+         */
+        keepButtonState: function() {
+            if ( ! this.elements.$saveButton.length ) {
+                return { html: '' };
+            }
+
+            let btn = this.elements.$saveButton;
+            var w = btn.width();
+            var h = btn.height();
+            var html = btn.html();
+
+            btn.width(w);
+            btn.height(h);
+            
+            return {
+                width: w,
+                height: h,
+                html: html,
+            };
+        },
+
+        /**
+         * Restore button to original state
+         * 
+         * @since 2.0.0
+         * @param {Object} buttonState Optional button state to restore
+         * @return {void}
+         */
+        restoreButtonState: function( buttonState ) {
+            const self = this;
+            
+            if ( ! this.elements.$saveButton.length ) {
+                return;
+            }
+
+            const htmlToRestore = buttonState && buttonState.html ? buttonState.html : this.config.buttonOriginalHtml;
+            
+            setTimeout( function() {
+                self.elements.$saveButton.prop('disabled', false).html( htmlToRestore );
+                self.setState('isSaving', false);
+                self.updateSaveButtonState();
+            }, 100 );
+        },
 
         /**
          * Enable/disable save button based on form state
