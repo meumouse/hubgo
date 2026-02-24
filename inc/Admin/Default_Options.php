@@ -28,9 +28,10 @@ class Default_Options {
     public static function get_defaults() {
         return apply_filters( 'Hubgo/Admin/Default_Options', array(
             'enable_shipping_calculator'           => 'yes',
-            'enable_auto_shipping_calculator'      => 'yes',
+            'enable_auto_shipping_calculator'      => 'no',
             'primary_main_color'                   => '#008aff',
             'hook_display_shipping_calculator'     => 'after_cart',
+            'shipping_methods_display'             => 'table',
             'text_info_before_input_shipping_calc' => 'Consultar prazo e valor da entrega',
             'text_button_shipping_calc'            => 'Calcular',
             'text_header_ship'                     => 'Entrega',

@@ -50,7 +50,6 @@ defined('ABSPATH') || exit; ?>
             __( 'Texto de observação inferior das opções de frete', 'hubgo' ),
             __( 'Deixe em branco para não exibir.', 'hubgo' ),
             array(
-                'class' => 'form-control input-control-wd-40',
                 'placeholder' => __( '*Este resultado é apenas uma estimativa...', 'hubgo' ),
             )
         );

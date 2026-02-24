@@ -30,7 +30,7 @@ class Color {
      * @return void
      */
     public static function render( $id, $name, $label, $description = '', $args = array() ) {
-        $value = Settings::get_setting( $name, '#008aff' );
+        $value = Settings::get_setting( $name, Settings::get_default_value( $name, '#008aff' ) );
         
         $args = wp_parse_args( $args, array(
             'class' => 'form-control-color',

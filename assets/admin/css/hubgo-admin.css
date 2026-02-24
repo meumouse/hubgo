@@ -1,15 +1,43 @@
+:root {
+    --meumouse-primary: #008aff;
+    --meumouse-primary-rgb: 0, 138, 255;
+    --meumouse-primary-hover: #0069e2;
+    --meumouse-success: #22c55e;
+    --meumouse-success-rgb: 34, 197, 94;
+    --meumouse-danger: #ef4444;
+    --meumouse-danger-rgb: 239, 68, 68;
+    --meumouse-warning: #ffba08;
+    --meumouse-warning-rgb: 255, 186, 8;
+    --bs-primary: #008aff !important;
+    --bs-primary-rgb: 13, 110, 253 !important;
+    --bs-success: #22c55e !important;
+    --bs-success-rgb: 34, 197, 94 !important;
+    --bs-info: #0dcaf0 !important;
+    --bs-info-rgb: 13, 202, 240 !important;
+    --bs-warning: #ffba08 !important;
+    --bs-danger: #ef4444 !important;
+    --bs-danger-rgb: 239, 68, 68 !important;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6,
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.h5, h5 {
+    font-size: 1.25rem;
+}
+
 .hubgo-shipping-management-wc-admin-section-tile {
     font-size: 1.4rem;
     font-weight: 400;
     margin: 2rem 0.5rem 0;
 }
 
-.hubgo-shipping-management-wc-admin-title-description {
-    margin: 1rem 0.5rem 0;
-}
-
 .hubgo-shipping-management-wc-wrapper {
-    margin: 2rem 3rem 0 0.5rem;
     background: #fff;
     border-radius: 0.5rem;
     overflow: hidden;
@@ -17,7 +45,8 @@
 }
 
 .hubgo-shipping-management-wc-tab-wrapper {
-    margin-bottom: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
     padding-top: 0;
     border-bottom: 1px solid #e2e5f1;
 }
@@ -66,14 +95,14 @@ table tr {
     margin-bottom: 39px;
 }
 
-.hubgo-shipping-management-wc-wrapper .hubgo-shipping-management-wc-description {
+.hubgo-field-description {
     display: block;
-    font-size: 13px;
+    font-size: .815rem;
     line-height: 1.3;
     font-style: italic;
     font-weight: 400;
-    color: #555;
-    margin-top: 3px;
+    color: #6C757D;
+    margin-top: .25rem;
 }
 
 .hubgo-shipping-management-wc-wrapper table select {
@@ -112,6 +141,80 @@ table tr {
 
 .wp-core-ui .hubgo-shipping-management-wc-wrapper .button-primary {
     background: #0085ba
+}
+
+.hubgo-shipping-management-wc-tab-wrapper {
+    border-bottom: 0;
+    overflow-x: auto;
+    display: flex;
+}
+
+::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #f1f1f1; 
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #ADB5BD;
+    border-radius: 50px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #495057;
+}
+
+.hubgo-settings-nav-tabs .nav-tab {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1;
+    border: none;
+    border-left: 1px solid #dbdee1;
+    color: #495057;
+    background-color: #e3eaf1;
+    min-width: 8rem;
+    margin: 0;
+    padding: 1.5rem 1.125rem;
+    position: relative;
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.hubgo-settings-nav-tabs .nav-tab:hover {
+    color: #495057;
+    background-color: #d0dce9;
+}
+
+.hubgo-settings-nav-tabs .nav-tab:first-child {
+    border-radius: 0.5rem 0 0 0.5rem;
+    border: none;
+}
+
+.hubgo-settings-nav-tabs .nav-tab:last-child {
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.hubgo-settings-nav-tabs .nav-tab.nav-tab-active {
+    color: #fff;
+    background-color: var(--meumouse-primary);
+}
+
+.hubgo-tab-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: #495057;
+    margin-right: 0.25rem;
+}
+
+.nav-tab.nav-tab-active .hubgo-tab-icon {
+    fill: #fff;
 }
 
 .nav-content {
@@ -751,10 +854,6 @@ a.btn-primary, a.btn-primary:hover, a.btn-primary:focus {
     width: 100%; } 
 }
 
-#wci_section_title {
-    margin-bottom: 2rem;
-}
-
 .input-control-wd-5 {
     min-width: 5rem !important;
     max-width: 5rem !important;
@@ -863,10 +962,6 @@ a.btn-primary, a.btn-primary:hover, a.btn-primary:focus {
     margin-right: auto !important;
 }
 
-#wci-save-settings {
-    margin: 3rem;
-}
-
 .spinner-border {
     display: inline-block;
     width: 1.5rem;
@@ -888,4 +983,15 @@ a.btn-primary, a.btn-primary:hover, a.btn-primary:focus {
     width: 1rem;
     height: 1rem;
     border-width: 0.1em;
+}
+
+.hubgo-settings-actions {
+    position: sticky;
+    bottom: 0;
+    inset-inline-start: 0;
+    padding: 2rem 3rem;
+    border-top: 1px solid rgba(0, 0, 0, .1);
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1059;
 }

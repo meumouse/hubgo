@@ -1,7 +1,7 @@
 /**
  * HubGo Admin Module
  *
- * Handles admin settings page functionality including auto-save and notifications
+ * Handles admin settings page functionality including tabs, manual save and notifications
  *
  * @since 2.0.0
  * @package HubGo
@@ -33,6 +33,9 @@
          */
         elements: {
             $form: null,
+            $saveButton: null,
+            $tabs: null,
+            $tabPanels: null,
             $toastContainer: null,
         },
 
@@ -53,6 +56,11 @@
          */
         config: {
             formSelector: 'form[name="hubgo-shipping-management-wc"]',
+            saveButtonSelector: 'button[name="save_settings"]',
+            tabSelector: '.hubgo-shipping-management-wc-tab-wrapper .nav-tab',
+            tabPanelSelector: '.hubgo-settings-tab',
+            defaultTab: '#general',
+            tabStorageKey: 'hubgo_admin_settings_tab',
             toastSelector: '.update-notice-spm-wp',
             toastContainerClass: 'hubgo-toast-container',
             notificationDuration: 3000,
@@ -69,8 +77,10 @@
          */
         init: function() {
             this.cacheDom();
+            this.initTabs();
             this.bindEvents();
             this.storeOriginalValues();
+            this.updateSaveButtonState();
         },
 
 
@@ -83,10 +93,36 @@
         cacheDom: function() {
             this.elements = {
                 $form: $(this.config.formSelector),
+                $saveButton: $(),
+                $tabs: $(this.config.tabSelector),
+                $tabPanels: $(this.config.tabPanelSelector),
                 $toastContainer: null,
             };
 
+            if ( this.elements.$form.length ) {
+                this.elements.$saveButton = this.elements.$form.find( this.config.saveButtonSelector );
+            }
+
             this.createToast();
+        },
+
+
+        /**
+         * Initialize settings tabs
+         *
+         * @since 2.0.0
+         * @return {void}
+         */
+        initTabs: function() {
+            if ( ! this.elements.$tabs.length || ! this.elements.$tabPanels.length ) {
+                return;
+            }
+
+            const hash = window.location.hash;
+            const storedTab = window.localStorage ? localStorage.getItem( this.config.tabStorageKey ) : '';
+            const initialTab = hash || storedTab || this.config.defaultTab;
+
+            this.activateTab( initialTab );
         },
 
 
@@ -101,10 +137,10 @@
                 return;
             }
 
-            this.elements.$form.on(
-                'change keyup',
-                this.handleFormChange.bind(this)
-            );
+            this.elements.$form.on( 'change input', 'input, select, textarea', this.handleFormChange.bind(this) );
+            this.elements.$form.on( 'submit', this.handleFormSubmit.bind(this) );
+
+            this.elements.$tabs.on( 'click', this.handleTabClick.bind(this) );
             
             $(document).on( 'click', this.config.toastSelector + ' .hide-toast', this.hideNotification.bind(this) );
         },
@@ -129,15 +165,73 @@
          * @return {void}
          */
         handleFormChange: function( event ) {
-            // Prevent multiple simultaneous saves
-            if ( this.state.isSaving ) {
+            this.updateSaveButtonState();
+        },
+
+
+        /**
+         * Handle settings form submit
+         *
+         * @since 2.0.0
+         * @param {Event} event
+         * @return {void}
+         */
+        handleFormSubmit: function( event ) {
+            event.preventDefault();
+
+            if ( this.state.isSaving || ! this.hasUnsavedChanges() ) {
                 return;
             }
 
-            const currentValues = this.elements.$form.serialize();
-            
-            if ( currentValues !== this.state.originalValues ) {
-                this.saveOptions();
+            this.saveOptions();
+        },
+
+
+        /**
+         * Handle tab click event
+         *
+         * @since 2.0.0
+         * @param {Event} event
+         * @return {void}
+         */
+        handleTabClick: function( event ) {
+            event.preventDefault();
+
+            const tabId = $( event.currentTarget ).attr( 'href' );
+            this.activateTab( tabId );
+        },
+
+
+        /**
+         * Activate settings tab by ID/hash
+         *
+         * @since 2.0.0
+         * @param {string} tabId
+         * @return {void}
+         */
+        activateTab: function( tabId ) {
+            if ( ! tabId || '#' === tabId ) {
+                tabId = this.config.defaultTab;
+            }
+
+            const $selectedTab = this.elements.$tabs.filter( '[href="' + tabId + '"]' );
+
+            if ( ! $selectedTab.length ) {
+                return;
+            }
+
+            this.elements.$tabs.removeClass( 'nav-tab-active' );
+            $selectedTab.addClass( 'nav-tab-active' );
+
+            this.elements.$tabPanels.hide();
+            $( tabId ).show();
+
+            if ( window.localStorage ) {
+                localStorage.setItem( this.config.tabStorageKey, tabId );
+            }
+
+            if ( window.history && history.replaceState ) {
+                history.replaceState( null, '', tabId );
             }
         },
 
@@ -162,6 +256,11 @@
                     nonce: hubgo_admin_params.nonce,
                     form_data: this.elements.$form.serialize(),
                 },
+                beforeSend: function() {
+                    if ( self.elements.$saveButton.length ) {
+                        self.elements.$saveButton.prop( 'disabled', true );
+                    }
+                },
                 success: function( response ) {
                     self.handleSuccess( response );
                 },
@@ -170,6 +269,7 @@
                 },
                 complete: function() {
                     self.setState( 'isSaving', false );
+                    self.updateSaveButtonState();
                 },
             });
         },
@@ -185,6 +285,7 @@
         handleSuccess: function( response ) {
             if ( response.success ) {
                 this.state.originalValues = this.elements.$form.serialize();
+                this.updateSaveButtonState();
                 this.showNotification();
                 
                 /**
@@ -262,6 +363,22 @@
          */
         setState: function( key, value ) {
             this.state[ key ] = value;
+        },
+
+
+        /**
+         * Enable/disable save button based on form state
+         *
+         * @since 2.0.0
+         * @return {void}
+         */
+        updateSaveButtonState: function() {
+            if ( ! this.elements.$saveButton.length ) {
+                return;
+            }
+
+            const isDisabled = this.state.isSaving || ! this.hasUnsavedChanges();
+            this.elements.$saveButton.prop( 'disabled', isDisabled );
         },
 
 
@@ -391,7 +508,7 @@
             this.elements.$form.before( $container );
             this.elements.$toastContainer = $container;
         },
-        
+
 
         /**
          * Manually trigger save
@@ -402,7 +519,9 @@
          * @return {void}
          */
         triggerSave: function() {
-            this.handleFormChange();
+            if ( this.hasUnsavedChanges() ) {
+                this.saveOptions();
+            }
         },
 
 

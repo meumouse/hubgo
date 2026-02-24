@@ -30,7 +30,7 @@ class Toggle {
      * @return void
      */
     public static function render( $id, $name, $label, $description = '', $args = array() ) {
-        $value = Settings::get_setting( $name );
+        $value = Settings::get_setting( $name, Settings::get_default_value( $name ) );
         $checked = checked( $value === 'yes', true, false );
         
         $args = wp_parse_args( $args, array(

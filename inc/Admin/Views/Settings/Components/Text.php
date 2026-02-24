@@ -30,7 +30,7 @@ class Text {
      * @return void
      */
     public static function render( $id, $name, $label, $description = '', $args = array() ) {
-        $value = Settings::get_setting( $name, '' );
+        $value = Settings::get_setting( $name, Settings::get_default_value( $name, '' ) );
         
         $args = wp_parse_args( $args, array(
             'class' => 'form-control input-control-wd-20',
