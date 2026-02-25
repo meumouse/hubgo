@@ -352,6 +352,48 @@ final class Plugin {
 
 
     /**
+     * Plugin activation hook
+     *
+     * @since 2.0.0
+     */
+    public static function activate() {
+        self::get_instance()->maybe_remove_legacy_shipping_plugin();
+    }
+
+
+    /**
+     * Deactivate and delete legacy Hubgo Shipping Management plugin
+     *
+     * @since 2.0.0
+     * @return void
+     */
+    private function maybe_remove_legacy_shipping_plugin() {
+        $plugin_file = 'hubgo-shipping-management-wc/hubgo-shipping-management-wc.php';
+
+        // Ensure required functions are available
+        if ( ! function_exists( 'is_plugin_active' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        // Check if plugin exists
+        if ( file_exists( WP_PLUGIN_DIR . '/' . $plugin_file ) ) {
+
+            // Deactivate if active
+            if ( is_plugin_active( $plugin_file ) ) {
+                deactivate_plugins( $plugin_file );
+            }
+
+            // Delete plugin
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/misc.php';
+            require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+
+            delete_plugins( array( $plugin_file ) );
+        }
+    }
+
+
+    /**
      * Add custom plugin action links.
      *
      * @since 2.0.0
@@ -363,8 +405,8 @@ final class Plugin {
             '<a href="' . esc_url( admin_url( 'admin.php?page=hubgo-settings' ) ) . '">' . 
                 esc_html__( 'Configurar', 'hubgo' ) . 
             '</a>',
-            '<a href="https://meumouse.com/docs-category/hubgo-gerenciamento-de-frete-para-woocommerce/" target="_blank" rel="noopener noreferrer">' . 
-                esc_html__( 'Ajuda', 'hubgo' ) . 
+            '<a href="https://ajuda.meumouse.com/docs/hubgo/overview" target="_blank" rel="noopener noreferrer">' . 
+                esc_html__( 'Central de ajuda', 'hubgo' ) . 
             '</a>',
         );
 

@@ -29,3 +29,6 @@ if ( file_exists( $autoload ) ) {
 $plugin_version = '2.0.0';
 
 Plugin::get_instance()->init( $plugin_version );
+
+// Activation hook must use the main plugin file path.
+register_activation_hook( __FILE__, array( Plugin::class, 'activate' ) );

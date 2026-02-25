@@ -32,7 +32,7 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
-Versão 2.0.0 (24/02/2026)
+Versão 2.0.0 (25/02/2026)
 * Correção de compatibilidade com Melhor Envio
 * Otimizações
 * Mudança de arquitetura para MACI (Modular Autoload Class Initialization)

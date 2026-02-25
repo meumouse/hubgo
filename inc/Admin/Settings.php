@@ -311,7 +311,7 @@ class Settings {
             <div class="hubgo-shipping-management-wc-admin-title-description">
                 <p>
                     <?php echo esc_html__( 'Extensão que permite gerenciar opções de frete para lojas WooCommerce. Se precisar de ajuda para configurar, acesse nossa ', 'hubgo' ); ?>
-                    <a class="fancy-link" href="https://meumouse.com/docs-category/hubgo-gerenciamento-de-frete-para-woocommerce/" target="_blank" rel="noopener noreferrer">
+                    <a class="fancy-link" href="https://ajuda.meumouse.com/docs/hubgo/overview" target="_blank" rel="noopener noreferrer">
                         <?php echo esc_html__( 'Central de ajuda', 'hubgo' ); ?>
                     </a>
                 </p>
