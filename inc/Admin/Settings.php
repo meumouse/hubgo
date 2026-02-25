@@ -391,17 +391,20 @@ class Settings {
                 'id' => 'general',
                 'label' => esc_html__( 'Geral', 'hubgo' ),
                 'icon' => '<svg class="hubgo-tab-icon"><path d="M7.5 14.5c-1.58 0-2.903 1.06-3.337 2.5H2v2h2.163c.434 1.44 1.757 2.5 3.337 2.5s2.903-1.06 3.337-2.5H22v-2H10.837c-.434-1.44-1.757-2.5-3.337-2.5zm0 5c-.827 0-1.5-.673-1.5-1.5s.673-1.5 1.5-1.5S9 17.173 9 18s-.673 1.5-1.5 1.5zm9-11c-1.58 0-2.903 1.06-3.337 2.5H2v2h11.163c.434 1.44 1.757 2.5 3.337 2.5s2.903-1.06 3.337-2.5H22v-2h-2.163c-.434-1.44-1.757-2.5-3.337-2.5zm0 5c-.827 0-1.5-.673-1.5-1.5s.673-1.5 1.5-1.5 1.5.673 1.5 1.5-.673 1.5-1.5 1.5z"></path><path d="M12.837 5C12.403 3.56 11.08 2.5 9.5 2.5S6.597 3.56 6.163 5H2v2h4.163C6.597 8.44 7.92 9.5 9.5 9.5s2.903-1.06 3.337-2.5h9.288V5h-9.288zM9.5 7.5C8.673 7.5 8 6.827 8 6s.673-1.5 1.5-1.5S11 5.173 11 6s-.673 1.5-1.5 1.5z"></path></svg>',
+                'content' => HUBGO_INC_PATH . 'Admin/Views/Settings/Tabs/General.php',
             ),
             'appearance' => array(
                 'id' => 'appearance',
                 'label' => esc_html__( 'Aparência', 'hubgo' ),
                 'icon' => '<svg class="hubgo-tab-icon"><path d="M13.4 2.096a10.08 10.08 0 0 0-8.937 3.331A10.054 10.054 0 0 0 2.096 13.4c.53 3.894 3.458 7.207 7.285 8.246a9.982 9.982 0 0 0 2.618.354l.142-.001a3.001 3.001 0 0 0 2.516-1.426 2.989 2.989 0 0 0 .153-2.879l-.199-.416a1.919 1.919 0 0 1 .094-1.912 2.004 2.004 0 0 1 2.576-.755l.412.197c.412.198.85.299 1.301.299A3.022 3.022 0 0 0 22 12.14a9.935 9.935 0 0 0-.353-2.76c-1.04-3.826-4.353-6.754-8.247-7.284zm5.158 10.909-.412-.197c-1.828-.878-4.07-.198-5.135 1.494-.738 1.176-.813 2.576-.204 3.842l.199.416a.983.983 0 0 1-.051.961.992.992 0 0 1-.844.479h-.112a8.061 8.061 0 0 1-2.095-.283c-3.063-.831-5.403-3.479-5.826-6.586-.321-2.355.352-4.623 1.893-6.389a8.002 8.002 0 0 1 7.16-2.664c3.107.423 5.755 2.764 6.586 5.826.198.73.293 1.474.282 2.207-.012.807-.845 1.183-1.441.894z"></path><circle cx="7.5" cy="14.5" r="1.5"></circle><circle cx="7.5" cy="10.5" r="1.5"></circle><circle cx="10.5" cy="7.5" r="1.5"></circle><circle cx="14.5" cy="7.5" r="1.5"></circle></svg>',
+                'content' => HUBGO_INC_PATH . 'Admin/Views/Settings/Tabs/Appearance.php',
             ),
-            'advanced' => array(
+        /*    'advanced' => array(
                 'id' => 'advanced',
                 'label' => esc_html__( 'Avançado', 'hubgo' ),
                 'icon' => '<svg class="hubgo-tab-icon"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M11 11h2v6h-2zm0-4h2v2h-2z"></path></svg>',
-            ),
+                'content' => HUBGO_INC_PATH . 'Admin/Views/Settings/Tabs/Advanced.php',
+            ),*/
         ));
     }
 
@@ -413,21 +416,16 @@ class Settings {
      * @return void
      */
     private function include_tabs_content() {
-        $tabs_path = HUBGO_INC_PATH . 'admin/views/settings/tabs/';
-        
-        // Include general tab
-        if ( file_exists( $tabs_path . 'General.php' ) ) {
-            include $tabs_path . 'General.php';
-        }
-        
-        // Include appearance tab
-        if ( file_exists( $tabs_path . 'Appearance.php' ) ) {
-            include $tabs_path . 'Appearance.php';
-        }
-        
-        // Include advanced tab
-        if ( file_exists( $tabs_path . 'Advanced.php' ) ) {
-            include $tabs_path . 'Advanced.php';
+        $tabs = $this->register_settings_tabs();
+
+        foreach ( $tabs as $tab ) {
+            if ( empty( $tab['content'] ) ) {
+                continue;
+            }
+
+            if ( file_exists( $tab['content'] ) ) {
+                include $tab['content'];
+            }
         }
     }
 
