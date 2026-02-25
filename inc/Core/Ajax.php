@@ -155,7 +155,11 @@ class Ajax {
             return array();
         }
 
-        $form_data_string = sanitize_text_field( $_POST['form_data'] );
+        $form_data_string = wp_unslash( $_POST['form_data'] );
+
+        if ( ! is_string( $form_data_string ) ) {
+            return array();
+        }
         
         if ( empty( $form_data_string ) ) {
             return array();
