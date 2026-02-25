@@ -34,6 +34,7 @@ class ComposerStaticInit70fafb160f8425af8683a6a043652ea4
         'MeuMouse\\Hubgo\\Core\\Ajax' => __DIR__ . '/../..' . '/inc/Core/Ajax.php',
         'MeuMouse\\Hubgo\\Core\\Assets' => __DIR__ . '/../..' . '/inc/Core/Assets.php',
         'MeuMouse\\Hubgo\\Core\\Plugin' => __DIR__ . '/../..' . '/inc/Core/Plugin.php',
+        'MeuMouse\\Hubgo\\Views\\Custom_Colors' => __DIR__ . '/../..' . '/inc/Views/Custom_Colors.php',
         'MeuMouse\\Hubgo\\Views\\Shipping_Calculator' => __DIR__ . '/../..' . '/inc/Views/Shipping_Calculator.php',
     );
 

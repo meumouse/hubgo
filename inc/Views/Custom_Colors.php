@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Hubgo\Core;
+namespace MeuMouse\Hubgo\Views;
 
 use MeuMouse\Hubgo\Admin\Settings;
 

@@ -19,5 +19,6 @@ return array(
     'MeuMouse\\Hubgo\\Core\\Ajax' => $baseDir . '/inc/Core/Ajax.php',
     'MeuMouse\\Hubgo\\Core\\Assets' => $baseDir . '/inc/Core/Assets.php',
     'MeuMouse\\Hubgo\\Core\\Plugin' => $baseDir . '/inc/Core/Plugin.php',
+    'MeuMouse\\Hubgo\\Views\\Custom_Colors' => $baseDir . '/inc/Views/Custom_Colors.php',
     'MeuMouse\\Hubgo\\Views\\Shipping_Calculator' => $baseDir . '/inc/Views/Shipping_Calculator.php',
 );
