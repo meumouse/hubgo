@@ -10,6 +10,7 @@
 
 use MeuMouse\Hubgo\Admin\Views\Settings\Components\Color;
 use MeuMouse\Hubgo\Admin\Views\Settings\Components\Text;
+use MeuMouse\Hubgo\Admin\Views\Settings\Components\Textarea;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit; ?>
@@ -44,13 +45,15 @@ defined('ABSPATH') || exit; ?>
             )
         );
 
-        Text::render(
+        Textarea::render(
             'note_text_bottom_shipping_calc',
             'note_text_bottom_shipping_calc',
             __( 'Texto de observação inferior das opções de frete', 'hubgo' ),
             __( 'Deixe em branco para não exibir.', 'hubgo' ),
             array(
                 'placeholder' => __( '*Este resultado é apenas uma estimativa...', 'hubgo' ),
+                'class' => 'form-control',
+                'rows' => 4,
             )
         );
         ?>

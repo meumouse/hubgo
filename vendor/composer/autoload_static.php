@@ -29,6 +29,7 @@ class ComposerStaticInit70fafb160f8425af8683a6a043652ea4
         'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Fields' => __DIR__ . '/../..' . '/inc/Admin/Views/Settings/Components/Fields.php',
         'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Select' => __DIR__ . '/../..' . '/inc/Admin/Views/Settings/Components/Select.php',
         'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Text' => __DIR__ . '/../..' . '/inc/Admin/Views/Settings/Components/Text.php',
+        'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Textarea' => __DIR__ . '/../..' . '/inc/Admin/Views/Settings/Components/Textarea.php',
         'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Toggle' => __DIR__ . '/../..' . '/inc/Admin/Views/Settings/Components/Toggle.php',
         'MeuMouse\\Hubgo\\Core\\Ajax' => __DIR__ . '/../..' . '/inc/Core/Ajax.php',
         'MeuMouse\\Hubgo\\Core\\Assets' => __DIR__ . '/../..' . '/inc/Core/Assets.php',

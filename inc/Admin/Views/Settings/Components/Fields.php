@@ -36,7 +36,8 @@ class Fields {
                     <span class="hubgo-field-description"><?php echo esc_html( $description ); ?></span>
                 <?php endif; ?>
             </th>
-            <td>
+
+            <td class="w-50">
                 <?php echo $content; ?>
             </td>
         </tr>

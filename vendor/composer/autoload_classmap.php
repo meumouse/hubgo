@@ -14,6 +14,7 @@ return array(
     'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Fields' => $baseDir . '/inc/Admin/Views/Settings/Components/Fields.php',
     'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Select' => $baseDir . '/inc/Admin/Views/Settings/Components/Select.php',
     'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Text' => $baseDir . '/inc/Admin/Views/Settings/Components/Text.php',
+    'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Textarea' => $baseDir . '/inc/Admin/Views/Settings/Components/Textarea.php',
     'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Toggle' => $baseDir . '/inc/Admin/Views/Settings/Components/Toggle.php',
     'MeuMouse\\Hubgo\\Core\\Ajax' => $baseDir . '/inc/Core/Ajax.php',
     'MeuMouse\\Hubgo\\Core\\Assets' => $baseDir . '/inc/Core/Assets.php',

@@ -239,12 +239,21 @@ class Settings {
             'text_header_ship',
             'text_header_value',
             'text_placeholder_input_shipping_calc',
-            'note_text_bottom_shipping_calc',
         );
 
         foreach ( $text_fields as $field ) {
             if ( isset( $data[ $field ] ) ) {
                 $sanitized[ $field ] = sanitize_text_field( $data[ $field ] );
+            }
+        }
+
+        $textarea_fields = array(
+            'note_text_bottom_shipping_calc',
+        );
+
+        foreach ( $textarea_fields as $field ) {
+            if ( isset( $data[ $field ] ) ) {
+                $sanitized[ $field ] = sanitize_textarea_field( $data[ $field ] );
             }
         }
 
