@@ -26,7 +26,6 @@
 			cookieDays: 30,
 			debounceDelay: 500,
 			loadingHtml: '<span class="hubgo-button-loader"></span>',
-			buttonTitleSelector: '.hubgo-shipping-calc-button-title',
 		},
 
 		/**

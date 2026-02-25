@@ -184,9 +184,7 @@ class Shipping_Calculator {
                     class="hubgo-shipping-calc-button"
                     aria-label="<?php echo esc_attr( $button_text ); ?>"
                 >
-                    <span class="hubgo-shipping-calc-button-title">
-                        <?php echo esc_html( $button_text ); ?>
-                    </span>
+                    <?php echo esc_html( $button_text ); ?>
                 </button>
             </div>
             

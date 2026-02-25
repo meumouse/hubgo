@@ -157,12 +157,14 @@ class Custom_Colors {
         $rules = array(
             '#hubgo-shipping-calc-button' => array(
                 'background-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
+                'border-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
             ),
             '.hubgo-shipping-header th' => array(
                 'color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
             ),
-            '.hubgo-shipping-calc-button:hover' => array(
+            '#hubgo-shipping-calc-button:hover' => array(
                 'background-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
+                'border-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
                 'opacity' => '0.9',
             ),
             '.hubgo-postcode-search' => array(
@@ -171,6 +173,12 @@ class Custom_Colors {
             '.hubgo-postcode-search:hover' => array(
                 'color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
                 'text-decoration' => 'underline',
+            ),
+            '#hubgo-postcode:focus' => array(
+                'border-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
+            ),
+            '#hubgo-response table .hubgo-shipping-header th' => array(
+                'background-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
             ),
         );
 
