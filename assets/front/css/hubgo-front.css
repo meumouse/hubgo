@@ -1,0 +1,187 @@
+#hubgo-shipping-calc {
+    margin: 2rem 0;
+}
+
+.hubgo-info-shipping-calc {
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    display: block;
+    padding-left: 0.875rem;
+}
+
+#hubgo-postcode {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    padding: 0 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #041e42;
+    background-color: #fff;
+    border: 1px solid #e5e8ec;
+    background-clip: padding-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.5rem 0 0 0.5rem;
+    outline: none;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+#hubgo-postcode:focus {
+    border-color: #008aff;
+}
+
+#hubgo-postcode::placeholder {
+    opacity: 0.75;
+}
+
+.hubgo-form-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 100%;
+}
+
+.hubgo-form-group > #hubgo-postcode {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+}
+
+.hubgo-form-group > #hubgo-shipping-calc-button {
+    margin-left: -1px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    position: relative;
+    z-index: 2;
+}
+
+#hubgo-shipping-calc-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    background-color: #008aff;
+    border: 1px solid #008aff;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    outline: none;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out,border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+#hubgo-shipping-calc-button:disabled {
+    pointer-events: none;
+    opacity: .65;
+}
+
+#hubgo-shipping-calc-button:hover {
+    background-color: #0069e2;
+    border: 1px solid #0069e2;
+}
+
+@media screen and (max-width: 992px) {
+    #hubgo-postcode, #hubgo-shipping-calc-button {
+        height: 3.5rem;
+    }
+}
+
+.hubgo-form-group {
+    margin-bottom: 0.5rem;
+}
+
+.hubgo-postcode-search {
+    margin-top: 0.25rem;
+    font-size: 1rem;
+    color: #6c757d;
+    outline: none;
+    transition: color .15s ease-in-out;
+}
+
+.hubgo-postcode-search:hover {
+    color: #008aff;
+}
+
+#hubgo-response {
+    margin-top: 1rem;
+}
+
+#hubgo-response table {
+    width: 100%;
+    border: 1px solid #e5e8ec;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border-collapse: separate;
+}
+
+#hubgo-response table .hubgo-shipping-header th {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #008aff;
+}
+
+#hubgo-response table th, .hubgo-shipping-method td {
+    padding: 1rem;
+}
+
+#hubgo-response table .hubgo-shipping-method:hover {
+    background-color: #f7f7f7;
+}
+
+#hubgo-response table .hubgo-shipping-method td, #hubgo-response table .hubgo-shipping-method td.amount {
+    border-bottom: 1px solid #e5e8ec;
+    color: #6c757d;
+}
+
+#hubgo-response table .hubgo-shipping-method td:first-of-type {
+    border-right: 1px solid #e5e8ec;
+}
+
+#hubgo-response table th,
+#hubgo-response table td,
+#hubgo-response table tr {
+    border: none;
+    color: #6c757d;
+    text-align: start;
+    font-size: 1rem;
+}
+
+.hubgo-shipping-bottom td {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #6c757d;
+    padding: 1rem;
+}
+
+.hubgo-button-loader {
+    display: inline-block;
+    width: 1.225rem;
+    height: 1.225rem;
+    vertical-align: -0.125em;
+    border: 1px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 100%;
+    animation: 0.75s linear infinite spinner-border;
+}
+
+@keyframes spinner-border {
+    100% {
+        transform: rotate(360deg);
+    }
+}

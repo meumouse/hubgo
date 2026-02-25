@@ -1,0 +1,289 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HubGo - Gerenciamento de Frete para WooCommerce\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-25 15:33+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.1; wp-6.9.1; php-8.2.23\n"
+"X-Domain: hubgo"
+
+#: inc/Core/Ajax.php:576
+#, php-format
+msgid "(Entrega em %s dias úteis)"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Appearance.php:54
+msgid "*Este resultado é apenas uma estimativa..."
+msgstr ""
+
+#: inc/Core/Plugin.php:367
+msgid "Ajuda"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:41
+msgid "Antes do carrinho"
+msgstr ""
+
+#: inc/Admin/Settings.php:398
+msgid "Aparência"
+msgstr ""
+
+#: inc/Core/Assets.php:337
+msgid "As configurações foram atualizadas!"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Advanced.php:23
+msgid "Ativar atualizações automáticas"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:24
+msgid "Ativar calculadora de frete"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:31
+msgid "Ativar cálculo automático de frete"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:25
+msgid ""
+"Ative esta opção para adicionar uma calculadora de frete na página de "
+"produto individual."
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:32
+msgid "Ative esta opção para que o frete seja calculado de forma automática."
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Advanced.php:24
+msgid "Ative esta opção para receber atualizações automáticas do plugin."
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:64
+msgid "Calcular"
+msgstr ""
+
+#: inc/Admin/Settings.php:315
+msgid "Central de ajuda"
+msgstr ""
+
+#: inc/Core/Plugin.php:364
+msgid "Configurar"
+msgstr ""
+
+#: inc/Admin/Settings.php:206 inc/Core/Ajax.php:112
+msgid "Configurações salvas com sucesso!"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:54
+msgid "Consultar prazo e valor da entrega"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Appearance.php:24
+msgid "Cor principal"
+msgstr ""
+
+#: inc/Core/Ajax.php:97
+msgid "Dados inválidos."
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Appearance.php:32
+#: inc/Admin/Views/Settings/Tabs/Appearance.php:42
+#: inc/Admin/Views/Settings/Tabs/Appearance.php:52
+#: inc/Admin/Views/Settings/Tabs/General.php:52
+#: inc/Admin/Views/Settings/Tabs/General.php:62
+#: inc/Admin/Views/Settings/Tabs/General.php:72
+msgid "Deixe em branco para não exibir."
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:40
+msgid "Depois do carrinho (Padrão)"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Advanced.php:34
+msgid "Dropdown"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Appearance.php:34
+msgid "Entrega"
+msgstr ""
+
+#: inc/Core/Ajax.php:735
+msgid "Erro ao calcular o frete. Tente novamente."
+msgstr ""
+
+#: inc/Core/Ajax.php:120
+msgid "Erro ao processar a requisição."
+msgstr ""
+
+#: inc/Core/Ajax.php:107
+msgid "Erro ao salvar as configurações."
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Advanced.php:36
+msgid "Escolha como os métodos de frete serão exibidos."
+msgstr ""
+
+#: inc/Core/Plugin.php:227
+msgid "esteja instalado e ativado."
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Advanced.php:30
+msgid "Exibição dos métodos de frete"
+msgstr ""
+
+#: inc/Core/Assets.php:335
+msgid "Existem alterações não salvas. Deseja realmente sair?"
+msgstr ""
+
+#. Description of the plugin
+msgid "Extensão que permite gerenciar opções de frete para lojas WooCommerce."
+msgstr ""
+
+#: inc/Admin/Settings.php:313
+msgid ""
+"Extensão que permite gerenciar opções de frete para lojas WooCommerce. Se "
+"precisar de ajuda para configurar, acesse nossa "
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:42
+msgid "Final das informações adicionais"
+msgstr ""
+
+#: inc/Core/Ajax.php:560
+msgid "Frete grátis"
+msgstr ""
+
+#: inc/Admin/Settings.php:392
+msgid "Geral"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://meumouse.com/"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://meumouse.com/plugins/hubgo/"
+msgstr ""
+
+#: inc/Core/Plugin.php:208 inc/Core/Plugin.php:224 inc/Core/Plugin.php:242
+msgid "HubGo"
+msgstr ""
+
+#. Name of the plugin
+msgid "HubGo - Gerenciamento de Frete para WooCommerce"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:74
+msgid "Informe seu CEP"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Advanced.php:33
+msgid "Lista"
+msgstr ""
+
+#. Author of the plugin
+msgid "MeuMouse.com"
+msgstr ""
+
+#: inc/Core/Ajax.php:722
+msgid "Nenhuma forma de entrega disponível."
+msgstr ""
+
+#: inc/Views/Shipping_Calculator.php:197
+msgid "Não sei meu CEP"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:38
+msgid "Posição da calculadora de frete"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Components/Color.php:53
+msgid "Redefinir para cor padrão"
+msgstr ""
+
+#: inc/Core/Plugin.php:209
+msgid "requer PHP 7.4 ou superior."
+msgstr ""
+
+#: inc/Core/Plugin.php:225
+msgid "requer que o"
+msgstr ""
+
+#: inc/Core/Plugin.php:243
+msgid "requer WooCommerce 6.0 ou superior."
+msgstr ""
+
+#: inc/Admin/Settings.php:290
+msgid "Salvar configurações"
+msgstr ""
+
+#: inc/Core/Assets.php:336
+msgid "Salvo com sucesso"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Appearance.php:25
+msgid "Selecione a cor principal para botões e outros estilos."
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:45
+msgid ""
+"Selecione onde será exibido o cálculo de frete na página de produto "
+"individual. Shortcode disponível: [hubgo_shipping_calculator]"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:43
+msgid "Shortcode"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Advanced.php:32
+msgid "Tabela"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Appearance.php:51
+msgid "Texto de observação inferior das opções de frete"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:61
+msgid "Texto do botão da calculadora de frete"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Appearance.php:31
+msgid "Texto do cabeçalho das formas de entrega"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Appearance.php:41
+msgid "Texto do cabeçalho do valor das formas de entrega"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:71
+msgid "Texto do espaço reservado do campo de CEP"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/General.php:51
+msgid "Texto informativo antes do campo de CEP"
+msgstr ""
+
+#: inc/Core/Plugin.php:382 inc/Core/Plugin.php:393
+msgid "Trapaceando?"
+msgstr ""
+
+#: inc/Admin/Views/Settings/Tabs/Appearance.php:44
+msgid "Valor"
+msgstr ""
+
+#: inc/Admin/Settings.php:165
+msgid "Você não tem permissão para acessar esta página."
+msgstr ""
+
+#: inc/Core/Plugin.php:226
+msgid "WooCommerce"
+msgstr ""

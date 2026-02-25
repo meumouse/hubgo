@@ -1,3 +1,8 @@
+Versão 2.0.0 (25/02/2026)
+* Correção de compatibilidade com Melhor Envio
+* Otimizações
+* Mudança de arquitetura para MACI (Modular Autoload Class Initialization)
+
 Versão 1.4.0 (11/08/2025)
 * Correção de bug
     - Carregamento de opções de frete
