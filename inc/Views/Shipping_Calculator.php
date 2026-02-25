@@ -65,7 +65,7 @@ class Shipping_Calculator {
      */
     private function init_hooks() {
         $hook_position = $this->get_hook_position();
-        
+
         if ( $this->is_shortcode_only( $hook_position ) ) {
             add_shortcode( self::SHORTCODE_TAG, array( $this, 'shortcode_render_form' ) );
         } else {
@@ -81,9 +81,21 @@ class Shipping_Calculator {
      * @return string
      */
     private function get_hook_position() {
-        $hook = Settings::get_setting( 'hook_display_shipping_calculator' );
+        $selected = Settings::get_setting('hook_display_shipping_calculator');
+
+        $positions = apply_filters( 'Hubgo/Shipping_Calculator/Positions', array(
+            'after_cart'    => 'woocommerce_after_add_to_cart_form',
+            'before_cart'   => 'woocommerce_before_add_to_cart_form',
+            'meta_end'      => 'woocommerce_product_meta_end',
+        ));
         
-        return ! empty( $hook ) ? $hook : 'shortcode';
+        // Return mapped hook if exists
+        if ( ! empty( $selected ) && isset( $positions[ $selected ] ) ) {
+            return $positions[ $selected ];
+        }
+
+        // Fallback to shortcode if nothing matches
+        return 'shortcode';
     }
 
 
@@ -96,9 +108,9 @@ class Shipping_Calculator {
      */
     private function is_shortcode_only( $hook_position ) {
         $valid_hooks = array(
-            'after_cart',
-            'before_cart',
-            'meta_end',
+            'woocommerce_after_add_to_cart_form',
+            'woocommerce_before_add_to_cart_form',
+            'woocommerce_product_meta_end',
         );
 
         return ! in_array( $hook_position, $valid_hooks, true );
@@ -127,24 +139,13 @@ class Shipping_Calculator {
      * @return void
      */
     public function render_form() {
-        if ( ! $this->can_render_form() ) {
+        $is_enabled = Settings::get_setting('enable_shipping_calculator');
+
+        if ( 'yes' !== $is_enabled ) {
             return;
         }
 
         $this->render_form_html();
-    }
-
-
-    /**
-     * Check if form can be rendered
-     *
-     * @since 2.0.0
-     * @return bool
-     */
-    private function can_render_form() {
-        $is_enabled = Settings::get_setting( 'enable_shipping_calculator' );
-        
-        return 'yes' === $is_enabled;
     }
 
 
@@ -155,11 +156,11 @@ class Shipping_Calculator {
      * @return void
      */
     private function render_form_html() {
-        $info_text = $this->get_setting_text( 'text_info_before_input_shipping_calc' );
-        $placeholder = $this->get_setting_text( 'text_placeholder_input_shipping_calc' );
-        $button_text = $this->get_setting_text( 'text_button_shipping_calc' );
-        $postcode_helper_url = $this->get_postcode_helper_url();
-        ?>
+        $info_text = $this->get_setting_text('text_info_before_input_shipping_calc');
+        $placeholder = $this->get_setting_text('text_placeholder_input_shipping_calc');
+        $button_text = $this->get_setting_text('text_button_shipping_calc');
+        $postcode_helper_url = $this->get_postcode_helper_url(); ?>
+
         <div id="hubgo-shipping-calc">
             <?php if ( ! empty( $info_text ) ) : ?>
                 <span class="hubgo-info-shipping-calc">
@@ -225,10 +226,7 @@ class Shipping_Calculator {
      * @return string
      */
     private function get_postcode_helper_url() {
-        $url = apply_filters(
-            'Hubgo/Shipping_Calculator/Postcode_Helper',
-            self::DEFAULT_POSTCODE_HELPER
-        );
+        $url = apply_filters( 'Hubgo/Shipping_Calculator/Postcode_Helper', self::DEFAULT_POSTCODE_HELPER );
 
         return $url;
     }
@@ -247,6 +245,7 @@ class Shipping_Calculator {
         }
 
         ob_start();
+
         $this->render_form();
         
         return ob_get_clean();
@@ -319,13 +318,7 @@ class Shipping_Calculator {
         $package = $this->prepare_shipping_package( $product, $postcode, $quantity );
         
         // Apply filters for external integrations
-        $package = apply_filters(
-            'Hubgo/Shipping_Calculator/Package',
-            $package,
-            $product_id,
-            $postcode,
-            $quantity
-        );
+        $package = apply_filters( 'Hubgo/Shipping_Calculator/Package', $package, $product_id, $postcode, $quantity );
 
         // Calculate shipping for package
         $package_rates = WC_Shipping::instance()->calculate_shipping_for_package( $package );
@@ -452,10 +445,7 @@ class Shipping_Calculator {
     private function generate_cart_id( $product ) {
         $variation_id = $this->get_variation_id( $product );
         
-        return WC()->cart->generate_cart_id(
-            $product->get_id(),
-            $variation_id
-        );
+        return WC()->cart->generate_cart_id( $product->get_id(), $variation_id );
     }
 
 

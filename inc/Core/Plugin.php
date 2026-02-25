@@ -184,8 +184,6 @@ final class Plugin {
             'wp_loaded' => array(
                 'MeuMouse\\Hubgo\\Views\\Shipping_Calculator',
                 'MeuMouse\\Hubgo\\Views\\Custom_Colors',
-            ),
-            'plugins_loaded' => array(
                 'MeuMouse\\Hubgo\\API\\Updater',
             ),
         );

@@ -8,388 +8,401 @@
  * @author MeuMouse.com
  */
 
-( function($) {
-    'use strict';
+( function( $ ) {
+	'use strict';
+
+	const HubgoFront = {
+
+		elements: {
+			$calcContainer: null,
+			$calcButton: null,
+			$postcodeInput: null,
+			$responseContainer: null,
+			$formCart: null,
+		},
+
+		config: {
+			cookieName: 'savedCep',
+			cookieDays: 30,
+			debounceDelay: 500,
+			loadingHtml: '<span class="hubgo-button-loader"></span>',
+			buttonTitleSelector: '.hubgo-shipping-calc-button-title',
+		},
+
+		/**
+		 * Initialize module.
+		 *
+		 * Caches DOM elements, binds events and initializes postcode helpers
+		 * (mask, cookie, and auto calculation on page load).
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		init: function() {
+			this.cacheDom();
+			this.bindEvents();
+			this.initPostcodeMaskAndCookie();
+			this.initAutoCalculationOnLoad();
+		},
+
+		/**
+		 * Cache DOM elements used by the module.
+		 *
+		 * Stores jQuery references to avoid repeated DOM queries.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		cacheDom: function() {
+			this.elements.$calcContainer = $( '#hubgo-shipping-calc' );
+			this.elements.$calcButton = $( '#hubgo-shipping-calc-button' );
+			this.elements.$postcodeInput = $( '#hubgo-postcode' );
+			this.elements.$responseContainer = $( '#hubgo-response' );
+			this.elements.$formCart = $( 'form.cart' );
+		},
+
+		/**
+		 * Bind frontend events for the shipping calculator.
+		 *
+		 * - Click on calculate button.
+		 * - Press Enter on cart form or postcode input triggers calculation.
+		 * - If auto shipping is enabled, triggers calculation on keyup with debounce.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		bindEvents: function() {
+			// Button click
+			this.elements.$calcButton.on( 'click', this.handleCalculateClick.bind( this ) );
+
+			// Trigger calc on Enter inside form cart or postcode input (same as original)
+			this.elements.$formCart.add( this.elements.$postcodeInput ).on( 'keypress', function( e ) {
+				const keyCode = e.keyCode || e.which;
+
+				if ( keyCode === 13 ) {
+					$( '#hubgo-shipping-calc-button' ).trigger( 'click' );
+					e.preventDefault();
+					return false;
+				}
+			} );
+
+			// Auto calculator (keyup debounce) when enabled
+			if ( this.isAutoShippingEnabled() ) {
+				this.elements.$postcodeInput.on(
+					'keyup',
+					this.debounce( this.handleCalculateClick.bind( this ), this.config.debounceDelay )
+				);
+			}
+		},
+
+		/**
+		 * Handle calculation request.
+		 *
+		 * Validates postcode, detects current product/variation, sets loading state,
+		 * performs AJAX request and renders the response or an error message.
+		 *
+		 * @since 2.0.0
+		 * @param {Event} [event] jQuery event object.
+		 * @return {void}
+		 */
+		handleCalculateClick: function( event ) {
+			if ( event ) {
+				event.preventDefault();
+			}
+
+			const $button = this.elements.$calcButton;
+			const originalHtml = $button.html();
+
+			// Keep original button size (same behavior)
+			const btnWidth = $button.width();
+			const btnHeight = $button.height();
+			$button.width( btnWidth );
+			$button.height( btnHeight );
+
+			// Basic postcode validation (same spirit as original)
+			const postcodeFormatted = this.elements.$postcodeInput.val() || '';
+			const postcodeRaw = postcodeFormatted.replace( /\D/g, '' );
+
+			if ( postcodeRaw.length < 3 ) {
+				this.elements.$postcodeInput.trigger( 'focus' );
+				return;
+			}
+
+			// Clear response (same as original)
+			this.elements.$responseContainer.html( '' );
+
+			// Detect product / variation like original
+			const detectedProduct = this.detectProductVariation();
+
+			if ( ! detectedProduct ) {
+				this.elements.$responseContainer.fadeOut( 'fast', function() {
+					$( this )
+						.html(
+							'<div class="woocommerce-message woocommerce-error">' +
+							( hubgo_params && hubgo_params.without_selected_variation_message ? hubgo_params.without_selected_variation_message : '' ) +
+							'</div>'
+						)
+						.fadeIn( 'fast' );
+				} );
+
+				return;
+			}
+
+			// Loading state like original
+			$button.html( this.config.loadingHtml );
+
+			$.ajax( {
+				type: 'post',
+				url: ( hubgo_params && hubgo_params.ajax_url ) ? hubgo_params.ajax_url : ( hubgo_front_params ? hubgo_front_params.ajax_url : '' ),
+				data: {
+					action: 'hubgo_ajax_postcode',
+					product: detectedProduct,
+					qty: this.getQuantity(),
+					postcode: postcodeFormatted, // original sent formatted value
+					nonce: hubgo_params ? hubgo_params.nonce : '',
+				},
+				success: ( response ) => {
+					$button.html( originalHtml );
+
+					this.elements.$responseContainer.fadeOut( 'fast', function() {
+						$( this ).html( response ).fadeIn( 'fast' );
+					} );
+
+					/**
+					 * Triggered after successful shipping calculation.
+					 *
+					 * @since 2.0.0
+					 * @event hubgo:shipping_calculated
+					 */
+					$( document ).trigger( 'hubgo:shipping_calculated', [ response ] );
+				},
+				error: ( jqXHR, textStatus, errorThrown ) => {
+					$button.html( originalHtml );
+
+					this.elements.$responseContainer.html(
+						'<div class="woocommerce-message woocommerce-error">' +
+						( hubgo_front_params && hubgo_front_params.error_message ? hubgo_front_params.error_message : 'Erro ao calcular frete.' ) +
+						'</div>'
+					);
+
+					/**
+					 * Triggered when shipping calculation fails.
+					 *
+					 * @since 2.0.0
+					 * @event hubgo:shipping_error
+					 */
+					$( document ).trigger( 'hubgo:shipping_error', [ textStatus, errorThrown ] );
+				},
+			} );
+		},
+
+		/**
+		 * Get product quantity from WooCommerce quantity field.
+		 *
+		 * Falls back to 1 when quantity input is not present or invalid.
+		 *
+		 * @since 2.0.0
+		 * @return {number}
+		 */
+		getQuantity: function() {
+			const $qty = $('.quantity input.qty');
+
+			return $qty.length ? ( parseInt( $qty.val(), 10 ) || 1 ) : 1;
+		},
+
+		/**
+		 * Detect selected product or variation ID in WooCommerce.
+		 *
+		 * Uses `variation_id` first (variable products). If not found, falls back to
+		 * the `add-to-cart` field value (simple products).
+		 *
+		 * @since 2.0.0
+		 * @return {string|boolean} Variation/Product ID when found, otherwise false.
+		 */
+		detectProductVariation: function() {
+			const variationId = $( 'input[name="variation_id"]' ).val();
+			const addToCartValue = $( '*[name="add-to-cart"]' ).val();
+
+			if ( variationId && parseInt( variationId, 10 ) > 0 ) {
+				return variationId;
+			}
+
+			if ( addToCartValue && parseInt( addToCartValue, 10 ) > 0 ) {
+				return addToCartValue;
+			}
+
+			return false;
+		},
+
+		/**
+		 * Initialize postcode input mask and persist value in cookie.
+		 *
+		 * - Loads saved postcode (cookie) and populates the input.
+		 * - Applies CEP formatting (#####-###) while typing.
+		 * - Saves raw digits-only CEP in a cookie for a defined period.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		initPostcodeMaskAndCookie: function() {
+			const savedCep = this.getCookie( this.config.cookieName );
+
+			if ( savedCep ) {
+				this.setFormattedCep( savedCep );
+			}
+
+			this.elements.$postcodeInput.on( 'input', ( e ) => {
+				let value = $( e.currentTarget ).val().replace( /\D/g, '' );
+				let formattedValue = '';
+
+				if ( value.length > 5 ) {
+					formattedValue = value.substring( 0, 5 ) + '-' + value.substring( 5, 8 );
+				} else {
+					formattedValue = value;
+				}
+
+				$( e.currentTarget ).val( formattedValue );
+
+				// Save raw value
+				this.setCookie( this.config.cookieName, value, this.config.cookieDays );
+			} );
+		},
+
+		/**
+		 * Auto calculate shipping on window load when enabled.
+		 *
+		 * If auto shipping is enabled and postcode input is not empty, triggers
+		 * the calculate button click automatically after page is fully loaded.
+		 *
+		 * @since 2.0.0
+		 * @return {void}
+		 */
+		initAutoCalculationOnLoad: function() {
+			$( window ).on( 'load', () => {
+				if ( this.isAutoShippingEnabled() && this.elements.$postcodeInput.val() !== '' ) {
+					this.elements.$calcButton.trigger( 'click' );
+				}
+			} );
+		},
+
+		/**
+		 * Check whether auto shipping calculation is enabled.
+		 *
+		 * Reads `hubgo_params.auto_shipping` expected to be localized by WordPress.
+		 *
+		 * @since 2.0.0
+		 * @return {boolean}
+		 */
+		isAutoShippingEnabled: function() {
+			return typeof hubgo_params !== 'undefined' && hubgo_params.auto_shipping === 'yes';
+		},
+
+		/**
+		 * Set a cookie with optional expiration.
+		 *
+		 * @since 2.0.0
+		 * @param {string} name Cookie name.
+		 * @param {string} value Cookie value.
+		 * @param {number} [days] Expiration in days.
+		 * @return {void}
+		 */
+		setCookie: function( name, value, days ) {
+			let expires = '';
+
+			if ( days ) {
+				const date = new Date();
+				date.setTime( date.getTime() + ( days * 24 * 60 * 60 * 1000 ) );
+				expires = '; expires=' + date.toUTCString();
+			}
+
+			document.cookie = name + '=' + ( value || '' ) + expires + '; path=/';
+		},
+
+		/**
+		 * Get a cookie value by name.
+		 *
+		 * @since 2.0.0
+		 * @param {string} name Cookie name.
+		 * @return {string|null} Cookie value when found, otherwise null.
+		 */
+		getCookie: function( name ) {
+			const nameEQ = name + '=';
+			const ca = document.cookie.split( ';' );
+
+			for ( let i = 0; i < ca.length; i++ ) {
+				let c = ca[ i ];
+
+				while ( c.charAt( 0 ) === ' ' ) {
+					c = c.substring( 1, c.length );
+				}
+
+				if ( c.indexOf( nameEQ ) === 0 ) {
+					return c.substring( nameEQ.length, c.length );
+				}
+			}
+
+			return null;
+		},
+
+		/**
+		 * Set the CEP input value using the formatted pattern (#####-###).
+		 *
+		 * Expects raw digits-only postcode and formats it before assigning.
+		 *
+		 * @since 2.0.0
+		 * @param {string} postcode Raw postcode (digits only).
+		 * @return {void}
+		 */
+		setFormattedCep: function( postcode ) {
+			const formattedCep = ( postcode || '' ).replace( /^(\d{5})(\d{3})$/, '$1-$2' );
+			this.elements.$postcodeInput.val( formattedCep );
+		},
+
+		/**
+		 * Debounce helper to limit rapid-fire function calls.
+		 *
+		 * Useful for keyup handlers to avoid excessive AJAX requests.
+		 *
+		 * @since 2.0.0
+		 * @param {Function} func Function to debounce.
+		 * @param {number} wait Delay in milliseconds.
+		 * @return {Function} Debounced function.
+		 */
+		debounce: function( func, wait ) {
+			let timeout;
+
+			return function() {
+				const context = this;
+				const args = arguments;
+
+				clearTimeout( timeout );
+
+				timeout = setTimeout( function() {
+					func.apply( context, args );
+				}, wait );
+			};
+		},
+	};
 
     /**
-     * HubGo Frontend Object
+     * Initialize HubgoFront when document is ready and the shipping calculator container exists.
+     * Ensures that the module only initializes on pages where the shipping calculator is present.
+     * 
+     * @since 2.0.0
+     */
+	$( document ).ready( function() {
+		if ( $('#hubgo-shipping-calc').length ) {
+			HubgoFront.init();
+		}
+	} );
+
+    /**
+     * Export HubgoFront to global scope for potential external usage.
+     *
+     * This allows other scripts to access HubgoFront methods or properties if needed.
      *
      * @since 2.0.0
      */
-    const HubgoFront = {
+	window.HubgoFront = HubgoFront;
 
-        /**
-         * DOM elements cache
-         * 
-         * @since 2.0.0
-         */
-        elements: {
-            $calcContainer: null,
-            $calcButton: null,
-            $postcodeInput: null,
-            $responseContainer: null,
-        },
-
-        /**
-         * Configuration
-         * 
-         * @since 2.0.0
-         */
-        config: {
-            minPostcodeLength: 8,
-            debounceDelay: 500,
-            loadingClass: 'loading',
-            spinnerClass: 'spinner',
-            buttonTitleClass: '.hubgo-shipping-calc-button-title',
-            productInputSelector: 'input[name="product_id"]',
-            quantitySelector: 'input[name="quantity"]',
-        },
-
-        /**
-         * Initialize the module
-         *
-         * @since 2.0.0
-         * @return {void}
-         */
-        init: function() {
-            this.cacheDom();
-            this.bindEvents();
-        },
-
-        /**
-         * Cache DOM elements for better performance
-         *
-         * @since 2.0.0
-         * @return {void}
-         */
-        cacheDom: function() {
-            this.elements = {
-                $calcContainer: $('#hubgo-shipping-calc'),
-                $calcButton: $('#hubgo-shipping-calc-button'),
-                $postcodeInput: $('#hubgo-postcode'),
-                $responseContainer: $('#hubgo-response'),
-            };
-        },
-
-        /**
-         * Bind event listeners
-         *
-         * @since 2.0.0
-         * @return {void}
-         */
-        bindEvents: function() {
-            // Click event for calculate button
-            this.elements.$calcButton.on(
-                'click',
-                this.handleCalculateClick.bind(this)
-            );
-            
-            // Auto calculation if enabled
-            this.initAutoCalculation();
-        },
-
-        /**
-         * Initialize auto calculation feature
-         *
-         * @since 2.0.0
-         * @return {void}
-         */
-        initAutoCalculation: function() {
-            if ( ! this.isAutoShippingEnabled() ) {
-                return;
-            }
-
-            this.elements.$postcodeInput.on(
-                'keyup',
-                this.debounce(
-                    this.handleCalculateClick.bind(this),
-                    this.config.debounceDelay
-                )
-            );
-        },
-
-        /**
-         * Check if auto shipping is enabled
-         *
-         * @since 2.0.0
-         * @return {boolean}
-         */
-        isAutoShippingEnabled: function() {
-            return typeof hubgo_params !== 'undefined' 
-                && hubgo_params.auto_shipping === 'yes';
-        },
-
-        /**
-         * Handle calculate button click
-         *
-         * @since 2.0.0
-         * @param {Event} event Click event
-         * @return {void}
-         */
-        handleCalculateClick: function(event) {
-            if ( event ) {
-                event.preventDefault();
-            }
-
-            const postcode = this.getPostcodeValue();
-            const productId = this.getProductId();
-            const quantity = this.getQuantity();
-
-            if ( ! this.validateInputs( postcode, productId ) ) {
-                return;
-            }
-
-            this.calculateShipping( postcode, productId, quantity );
-        },
-
-        /**
-         * Get postcode input value
-         *
-         * @since 2.0.0
-         * @return {string}
-         */
-        getPostcodeValue: function() {
-            return this.elements.$postcodeInput.val() || '';
-        },
-
-        /**
-         * Get product ID from various sources
-         *
-         * @since 2.0.0
-         * @return {string}
-         */
-        getProductId: function() {
-            const $productInput = $(this.config.productInputSelector);
-            
-            return $productInput.val() || this.getQueryParam('product_id') || '';
-        },
-
-        /**
-         * Get quantity value
-         *
-         * @since 2.0.0
-         * @return {number}
-         */
-        getQuantity: function() {
-            const $qtyInput = $(this.config.quantitySelector);
-            
-            return parseInt( $qtyInput.val() ) || 1;
-        },
-
-        /**
-         * Validate inputs before shipping calculation
-         *
-         * @since 2.0.0
-         * @param {string} postcode
-         * @param {string} productId
-         * @return {boolean}
-         */
-        validateInputs: function( postcode, productId ) {
-            // Check if postcode exists and has minimum length
-            if ( ! postcode || postcode.length < this.config.minPostcodeLength ) {
-                return false;
-            }
-
-            // Check if product ID exists
-            if ( ! productId ) {
-                return false;
-            }
-
-            return true;
-        },
-
-        /**
-         * Calculate shipping via AJAX
-         *
-         * @since 2.0.0
-         * @param {string} postcode
-         * @param {string} productId
-         * @param {number} quantity
-         * @return {void}
-         */
-        calculateShipping: function( postcode, productId, quantity ) {
-            const self = this;
-
-            this.setLoading( true );
-
-            $.ajax({
-                url: hubgo_front_params.ajax_url,
-                type: 'POST',
-                dataType: 'html',
-                data: {
-                    action: 'hubgo_ajax_postcode',
-                    nonce: hubgo_params.nonce,
-                    product: productId,
-                    postcode: postcode,
-                    qty: quantity,
-                },
-                success: function( response ) {
-                    self.handleSuccess( response );
-                },
-                error: function( jqXHR, textStatus, errorThrown ) {
-                    self.handleError( textStatus, errorThrown );
-                },
-                complete: function() {
-                    self.setLoading( false );
-                },
-            });
-        },
-
-        /**
-         * Handle successful AJAX response
-         *
-         * @since 2.0.0
-         * @param {string} response
-         * @return {void}
-         */
-        handleSuccess: function( response ) {
-            this.elements.$responseContainer.html( response );
-            
-            /**
-             * Trigger event after shipping calculation
-             *
-             * @since 2.0.0
-             */
-            $(document).trigger( 'hubgo:shipping_calculated', [ response ] );
-        },
-
-        /**
-         * Handle AJAX error
-         *
-         * @since 2.0.0
-         * @param {string} textStatus
-         * @param {string} errorThrown
-         * @return {void}
-         */
-        handleError: function( textStatus, errorThrown ) {
-            // Log error for debugging
-            if ( window.console && console.error ) {
-                console.error( 'HubGo Shipping Error:', textStatus, errorThrown );
-            }
-
-            // Show user-friendly error message
-            this.elements.$responseContainer.html(
-                '<div class="woocommerce-message woocommerce-error">' +
-                hubgo_front_params.error_message +
-                '</div>'
-            );
-
-            /**
-             * Trigger event on shipping calculation error
-             *
-             * @since 2.0.0
-             */
-            $(document).trigger( 'hubgo:shipping_error', [ textStatus, errorThrown ] );
-        },
-
-        /**
-         * Set loading state
-         *
-         * @since 2.0.0
-         * @param {boolean} isLoading
-         * @return {void}
-         */
-        setLoading: function( isLoading ) {
-            const $button = this.elements.$calcButton;
-            const $title = $button.find( this.config.buttonTitleClass );
-
-            if ( isLoading ) {
-                $button
-                    .addClass( this.config.loadingClass )
-                    .prop( 'disabled', true );
-                
-                $title.hide();
-                
-                this.addSpinner( $button );
-            } else {
-                $button
-                    .removeClass( this.config.loadingClass )
-                    .prop( 'disabled', false );
-                
-                $title.show();
-                
-                this.removeSpinner( $button );
-            }
-        },
-
-        /**
-         * Add loading spinner to button
-         *
-         * @since 2.0.0
-         * @param {jQuery} $button
-         * @return {void}
-         */
-        addSpinner: function( $button ) {
-            if ( $button.find( '.' + this.config.spinnerClass ).length === 0 ) {
-                $button.append( '<span class="' + this.config.spinnerClass + '"></span>' );
-            }
-        },
-
-        /**
-         * Remove loading spinner from button
-         *
-         * @since 2.0.0
-         * @param {jQuery} $button
-         * @return {void}
-         */
-        removeSpinner: function( $button ) {
-            $button.find( '.' + this.config.spinnerClass ).remove();
-        },
-
-        /**
-         * Get query parameter from URL
-         *
-         * @since 2.0.0
-         * @param {string} name Parameter name
-         * @return {string|null}
-         */
-        getQueryParam: function( name ) {
-            const results = new RegExp( '[\?&]' + name + '=([^&#]*)' )
-                .exec( window.location.href );
-            
-            return results ? results[1] : null;
-        },
-
-        /**
-         * Debounce function to limit execution rate
-         *
-         * @since 2.0.0
-         * @param {Function} func Function to debounce
-         * @param {number} wait Milliseconds to wait
-         * @return {Function}
-         */
-        debounce: function( func, wait ) {
-            let timeout;
-
-            return function() {
-                const context = this;
-                const args = arguments;
-
-                clearTimeout( timeout );
-
-                timeout = setTimeout( function() {
-                    func.apply( context, args );
-                }, wait );
-            };
-        },
-    };
-
-    /**
-     * Initialize on document ready
-     *
-     * @since 2.0.0
-     */
-    $(document).ready(function() {
-        if ( $('#hubgo-shipping-calc').length > 0 ) {
-            HubgoFront.init();
-        }
-    });
-
-    /**
-     * Make HubgoFront available globally
-     *
-     * @since 2.0.0
-     */
-    window.HubgoFront = HubgoFront;
-
-})(jQuery);
+} )( jQuery );

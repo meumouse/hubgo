@@ -40,7 +40,6 @@ h1, h2, h3, h4, h5, h6 {
 .hubgo-shipping-management-wc-wrapper {
     background: #fff;
     border-radius: 0.5rem;
-    overflow: hidden;
     width: 100%;
 }
 
@@ -451,15 +450,12 @@ table tr {
     background-color: #fff !important;
     background-clip: padding-box;
     border: 1px solid #d7dde2 !important;
+    border-radius: 0.375rem;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     border-radius: 0.5rem;
     transition: border-color .15s ease-in-out;
-}
-
-input.form-control {
-    border-radius: 0.5rem;
 }
 
 ::placeholder {
@@ -474,13 +470,13 @@ input.form-control {
     color: #d7dde2;
 }
 
-input.form-control:focus {
-    border-color: var(--meumouse-primary) !important;
-    box-shadow: none !important;
+.form-control:focus {
+    border-color: rgba(var(--meumouse-primary-rgb), .35) !important;
+    box-shadow: 0 0 0 .25rem rgba(var(--meumouse-primary-rgb), .25) !important;
     outline: none !important;
 }
 
-input.form-control:disabled {
+.form-control:disabled {
     color: #d7dde2;
     cursor: not-allowed;
 }
@@ -668,13 +664,9 @@ h5, .h5 {
     appearance: none !important;
 }
 
-.form-select:hover {
-    color: #008aff;
-}
-
 .form-select:focus {
-    border-color: #008aff !important;
-    box-shadow: none !important;
+    border-color: rgba(var(--meumouse-primary-rgb), .35) !important;
+    box-shadow: 0 0 0 .25rem rgba(var(--meumouse-primary-rgb), .25) !important;
     outline: none !important;
 }
 
