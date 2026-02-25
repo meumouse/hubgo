@@ -178,7 +178,7 @@ class Custom_Colors {
                 'border-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
             ),
             '#hubgo-response table .hubgo-shipping-header th' => array(
-                'background-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
+                'background-color' => 'var(' . self::PRIMARY_COLOR_VAR . ') !important',
             ),
         );
 

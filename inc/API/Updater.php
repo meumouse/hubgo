@@ -4,6 +4,8 @@ namespace MeuMouse\Hubgo\API;
 
 use MeuMouse\Hubgo\Admin\Settings;
 
+use stdClass;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -118,16 +120,10 @@ class Updater {
      * @return void
      */
     private function setup_constants() {
-        $this->plugin_slug = defined( 'HUBGO_SHIPPING_MANAGEMENT_SLUG' ) 
-            ? HUBGO_SHIPPING_MANAGEMENT_SLUG 
-            : 'hubgo-shipping-management-wc';
-            
-        $this->version = defined( 'HUBGO_SHIPPING_MANAGEMENT_VERSION' ) 
-            ? HUBGO_SHIPPING_MANAGEMENT_VERSION 
-            : '1.0.0';
-            
-        $this->cache_key = 'hubgo_shipping_management_check_updates';
-        $this->cache_data_base_key = 'hubgo_shipping_management_remote_data';
+        $this->plugin_slug = defined('HUBGO_SLUG') ? HUBGO_SLUG : 'hubgo';
+        $this->version = defined('HUBGO_VERSION') ? HUBGO_VERSION : '2.0.0';
+        $this->cache_key = 'hubgo_check_updates';
+        $this->cache_data_base_key = 'hubgo_remote_data';
     }
 
 
@@ -138,7 +134,7 @@ class Updater {
      * @return void
      */
     private function setup_debug_mode() {
-        if ( defined( 'HUBGO_SHIPPING_MANAGEMENT_DEV_MODE' ) && HUBGO_SHIPPING_MANAGEMENT_DEV_MODE ) {
+        if ( defined('HUBGO_DEV_MODE') && HUBGO_DEV_MODE ) {
             add_filter( 'https_ssl_verify', '__return_false' );
             add_filter( 'https_local_ssl_verify', '__return_false' );
             add_filter( 'http_request_host_is_external', '__return_true' );
@@ -313,7 +309,7 @@ class Updater {
         if ( $cached_data && isset( $cached_data->version ) && version_compare( $this->version, $cached_data->version, '<' ) ) {
             $this->update_available = $cached_data;
 
-            $response = new \stdClass();
+            $response = new stdClass();
             $response->slug = $this->plugin_slug;
             $response->plugin = "{$this->plugin_slug}/{$this->plugin_slug}.php";
             $response->new_version = $cached_data->version;
@@ -355,7 +351,7 @@ class Updater {
     public function add_check_updates_link( $plugin_meta, $plugin_file ) {
         if ( $plugin_file === $this->plugin_slug . '/' . $this->plugin_slug . '.php' ) {
             $check_updates_link = '<a href="' . esc_url( add_query_arg( 'hubgo_check_updates', '1' ) ) . '">' . 
-                esc_html__( 'Verificar atualizações', 'hubgo-shipping-management-wc' ) . 
+                esc_html__( 'Verificar atualizações', 'hubgo' ) . 
             '</a>';
             
             $plugin_meta['hubgo_check_updates'] = $check_updates_link;
@@ -391,7 +387,7 @@ class Updater {
             if ( version_compare( $current_version, $latest_version, '<' ) ) {
                 $message = sprintf(
                     /* translators: %s: latest version number */
-                    __( 'Uma nova versão do plugin <strong>HubGo</strong> (%s) está disponível.', 'hubgo-shipping-management-wc' ),
+                    __( 'Uma nova versão do plugin <strong>HubGo</strong> (%s) está disponível.', 'hubgo' ),
                     esc_html( $latest_version )
                 );
                 $class = 'notice-success';
@@ -399,11 +395,11 @@ class Updater {
                 // Trigger page reload to show update
                 $this->trigger_page_reload();
             } elseif ( version_compare( $current_version, $latest_version, '==' ) ) {
-                $message = __( 'A versão do plugin <strong>HubGo</strong> é a mais recente.', 'hubgo-shipping-management-wc' );
+                $message = __( 'A versão do plugin <strong>HubGo</strong> é a mais recente.', 'hubgo' );
                 $class = 'notice-success';
             }
         } else {
-            $message = __( 'Não foi possível verificar atualizações para o plugin <strong>HubGo</strong>.', 'hubgo-shipping-management-wc' );
+            $message = __( 'Não foi possível verificar atualizações para o plugin <strong>HubGo</strong>.', 'hubgo' );
             $class = 'notice-error';
         }
 

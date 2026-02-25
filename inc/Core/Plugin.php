@@ -115,7 +115,7 @@ final class Plugin {
             'HUBGO_SLUG'       => 'hubgo',
             'HUBGO_VERSION'    => $this->plugin_version,
             'HUBGO_DEBUG_MODE' => defined( 'WP_DEBUG' ) && WP_DEBUG,
-            'HUBGO_DEV_MODE'   => true,
+            'HUBGO_DEV_MODE'   => false,
         );
 
         foreach ( $constants as $key => $value ) {

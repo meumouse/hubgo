@@ -1,20 +1,20 @@
 {
 	"name" : "HubGo - Gerenciamento de Frete para WooCommerce",
-	"slug" : "hubgo-shipping-management-wc",
+	"slug" : "hubgo",
 	"author" : "<a href='https://meumouse.com'>MeuMouse.com</a>",
 	"author_profile" : "https://profiles.wordpress.org/meumouse",
 	"version" : "2.0.0",
-	"download_url" : "https://github.com/meumouse/hubgo/raw/main/dist/hubgo-shipping-management-wc.zip",
-	"requires" : "5.6",
-	"tested" : "6.8.2",
-	"requires_php" : "7.2",
+	"download_url" : "https://packages.meumouse.com/v1/downloads/hubgo?path=dist&file=hubgo.zip",
+	"requires" : "6.0",
+	"tested" : "6.9.1",
+	"requires_php" : "7.4",
 	"added" : "2023-09-18 12:00:00",
-	"last_updated" : "2024-02-16 10:58:00",
+	"last_updated" : "2026-02-25 12:50:00",
 	"homepage" : "https://meumouse.com/plugins/hubgo/",
 	"sections" : {
 		"description" : "Extensão que permite gerenciar opções de frete para lojas WooCommerce.",
 		"installation" : "",
-		"changelog" : ""
+		"changelog": "<strong>Versão 2.0.0 (25/02/2026)</strong><ul><li>Correção de compatibilidade com Melhor Envio</li><li>Otimizações</li><li>Mudança de arquitetura para MACI (Modular Autoload Class Initialization)</li></ul>"
 	},
 	"banners" : {
 		"low" : "",
