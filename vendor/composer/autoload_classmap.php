@@ -22,6 +22,7 @@ return array(
     'MeuMouse\\Hubgo\\Core\\Assets' => $baseDir . '/inc/Core/Assets.php',
     'MeuMouse\\Hubgo\\Core\\Order_Status' => $baseDir . '/inc/Core/Order_Status.php',
     'MeuMouse\\Hubgo\\Core\\Plugin' => $baseDir . '/inc/Core/Plugin.php',
+    'MeuMouse\\Hubgo\\Core\\Providers_Registry' => $baseDir . '/inc/Core/Providers_Registry.php',
     'MeuMouse\\Hubgo\\Core\\Tracking_Manager' => $baseDir . '/inc/Core/Tracking_Manager.php',
     'MeuMouse\\Hubgo\\Emails\\Email_Shipped_Order' => $baseDir . '/inc/Emails/Email_Shipped_Order.php',
     'MeuMouse\\Hubgo\\Views\\Custom_Colors' => $baseDir . '/inc/Views/Custom_Colors.php',

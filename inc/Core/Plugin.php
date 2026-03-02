@@ -189,6 +189,7 @@ final class Plugin {
                 'MeuMouse\\Hubgo\\Core\\Assets',
                 'MeuMouse\\Hubgo\\Core\\Ajax',
                 'MeuMouse\\Hubgo\\Admin\\Settings',
+                'MeuMouse\\Hubgo\\Core\\Order_Status',
             ),
             'wp_loaded' => array(
                 'MeuMouse\\Hubgo\\Views\\Shipping_Calculator',

@@ -1,3 +1,6 @@
+Versão 2.1.0 (??/03/2026)
+* Recurso adicionado: Novo status de pedido -> Pedido enviado
+
 Versão 2.0.0 (25/02/2026)
 * Correção de compatibilidade com Melhor Envio
 * Otimizações
