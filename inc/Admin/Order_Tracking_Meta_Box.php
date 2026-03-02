@@ -67,7 +67,7 @@ class Order_Tracking_Meta_Box {
      * @return void
      */
     public function render_meta_box( $post ) {
-        $items = $this->tracking->get_tracking_items( $post->ID );
+        $items = $this->tracking->get_items( $post->ID );
 
         wp_nonce_field( 'hubgo_save_tracking', 'hubgo_tracking_nonce' ); ?>
 
@@ -109,7 +109,7 @@ class Order_Tracking_Meta_Box {
         }
 
         if ( ! empty( $_POST['hubgo_tracking_number'] ) ) {
-            $this->tracking->add_tracking_item( $post_id, array(
+            $this->tracking->add_item( $post_id, array(
                 'tracking_number' => $_POST['hubgo_tracking_number'],
                 'carrier'         => $_POST['hubgo_tracking_carrier'] ?? '',
                 'custom_url'      => $_POST['hubgo_tracking_url'] ?? '',

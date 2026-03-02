@@ -58,7 +58,7 @@ class Tracking_REST_Controller extends WP_REST_Controller {
 
         $tracking = new Tracking_Manager();
 
-        $tracking->add_tracking_item( $order_id, array(
+        $tracking->add_item( $order_id, array(
             'tracking_number' => $request['tracking_number'],
             'carrier'         => $request['carrier'],
             'custom_url'      => $request['custom_url'],

@@ -751,7 +751,7 @@ class Ajax {
 
         $tracking = new Tracking_Manager();
 
-        $tracking->add_tracking_item(
+        $tracking->add_item(
             absint( $_POST['order_id'] ),
             array(
                 'tracking_number' => $_POST['tracking_number'],

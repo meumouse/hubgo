@@ -57,7 +57,7 @@ class Order_Tracking_View {
             return;
         }
 
-        $items = $this->tracking->get_tracking_items( $order->get_id() );
+        $items = $this->tracking->get_items( $order->get_id() );
 
         if ( empty( $items ) ) {
             return;
