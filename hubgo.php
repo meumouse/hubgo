@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Plugin Name:             HubGo - Gerenciamento de Frete para WooCommerce
  * Description:             Extensão que permite gerenciar opções de frete para lojas WooCommerce.
- * Plugin URI:              https://meumouse.com/plugins/hubgo/
+ * Plugin URI:              https://meumouse.com/plugins/hubgo/?utm_source=wordpress&utm_medium=hubgo&utm_campaign=plugins_list
  * Author:                  MeuMouse.com
- * Author URI:              https://meumouse.com/
- * Version:                 2.0.0
+ * Author URI:              https://meumouse.com/?utm_source=wordpress&utm_medium=hubgo&utm_campaign=plugins_list
+ * Version:                 2.1.0
  * WC requires at least:    6.0.0
  * WC tested up to:         10.5.2
  * Requires PHP:            7.4
@@ -26,7 +27,7 @@ if ( file_exists( $autoload ) ) {
     require_once $autoload;
 }
 
-$plugin_version = '2.0.0';
+$plugin_version = '2.1.0';
 
 Plugin::get_instance()->init( $plugin_version );
 

@@ -2,6 +2,11 @@
 
 namespace MeuMouse\Hubgo\Core;
 
+use MeuMouse\Hubgo\Core\Tracking_Manager;
+use MeuMouse\Hubgo\Admin\Order_Tracking_Meta_Box;
+use MeuMouse\Hubgo\Views\Order_Tracking_View;
+use MeuMouse\Hubgo\Emails\Email_Shipped_Order;
+
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use ReflectionClass;
 use Exception;
@@ -13,6 +18,7 @@ defined('ABSPATH') || exit;
  * Plugin core class.
  *
  * @since 2.0.0
+ * @version 2.1.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -87,6 +93,9 @@ final class Plugin {
 
         // Register all class hooks for lazy instantiation.
         $this->register_class_hooks();
+
+        // Initialize tracking management components.
+        $this->init_tracking();
 
         // Hook after plugin init.
         do_action('Hubgo/After_Init');
@@ -187,6 +196,26 @@ final class Plugin {
                 'MeuMouse\\Hubgo\\API\\Updater',
             ),
         );
+    }
+
+
+    /**
+     * Initialize tracking management components.
+     * 
+     * @since 2.1.0
+     * @return void
+     */
+    protected function init_tracking() {
+        $tracking = new Tracking_Manager();
+
+        new Order_Tracking_Meta_Box( $tracking );
+        new Order_Tracking_View( $tracking );
+
+        add_filter( 'woocommerce_email_classes', function( $emails ) {
+            $emails['Hubgo_Shipped_Order'] = new Email_Shipped_Order();
+
+            return $emails;
+        });
     }
 
 

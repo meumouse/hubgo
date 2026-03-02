@@ -18,6 +18,7 @@ defined('ABSPATH') || exit;
  * Manages AJAX endpoints for settings and shipping calculations
  *
  * @since 2.0.0
+ * @version 2.1.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -68,6 +69,7 @@ class Ajax {
         $ajax_actions = array(
             'hubgo_save_settings' => 'save_settings',
             'hubgo_ajax_postcode' => 'ajax_calculate_shipping',
+            'hubgo_add_tracking'  => 'ajax_add_tracking',
         );
 
         foreach ( $ajax_actions as $action => $method ) {
@@ -734,5 +736,30 @@ class Ajax {
         echo '<div class="woocommerce-message woocommerce-error">'
             . esc_html__( 'Erro ao calcular o frete. Tente novamente.', 'hubgo' )
             . '</div>';
+    }
+
+
+    /**
+     * AJAX add tracking
+     *
+     * @since 2.1.0
+     *
+     * @return void
+     */
+    public function ajax_add_tracking() {
+        check_ajax_referer( 'hubgo_tracking_nonce', 'nonce' );
+
+        $tracking = new Tracking_Manager();
+
+        $tracking->add_tracking_item(
+            absint( $_POST['order_id'] ),
+            array(
+                'tracking_number' => $_POST['tracking_number'],
+                'carrier'         => $_POST['carrier'],
+                'ship_date'       => $_POST['ship_date'],
+            )
+        );
+
+        wp_send_json_success();
     }
 }

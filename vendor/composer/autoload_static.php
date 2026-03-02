@@ -22,8 +22,10 @@ class ComposerStaticInit70fafb160f8425af8683a6a043652ea4
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'MeuMouse\\Hubgo\\API\\Tracking_REST_Controller' => __DIR__ . '/../..' . '/inc/API/Tracking_REST_Controller.php',
         'MeuMouse\\Hubgo\\API\\Updater' => __DIR__ . '/../..' . '/inc/API/Updater.php',
         'MeuMouse\\Hubgo\\Admin\\Default_Options' => __DIR__ . '/../..' . '/inc/Admin/Default_Options.php',
+        'MeuMouse\\Hubgo\\Admin\\Order_Tracking_Meta_Box' => __DIR__ . '/../..' . '/inc/Admin/Order_Tracking_Meta_Box.php',
         'MeuMouse\\Hubgo\\Admin\\Settings' => __DIR__ . '/../..' . '/inc/Admin/Settings.php',
         'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Color' => __DIR__ . '/../..' . '/inc/Admin/Views/Settings/Components/Color.php',
         'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Fields' => __DIR__ . '/../..' . '/inc/Admin/Views/Settings/Components/Fields.php',
@@ -33,8 +35,12 @@ class ComposerStaticInit70fafb160f8425af8683a6a043652ea4
         'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Toggle' => __DIR__ . '/../..' . '/inc/Admin/Views/Settings/Components/Toggle.php',
         'MeuMouse\\Hubgo\\Core\\Ajax' => __DIR__ . '/../..' . '/inc/Core/Ajax.php',
         'MeuMouse\\Hubgo\\Core\\Assets' => __DIR__ . '/../..' . '/inc/Core/Assets.php',
+        'MeuMouse\\Hubgo\\Core\\Order_Status' => __DIR__ . '/../..' . '/inc/Core/Order_Status.php',
         'MeuMouse\\Hubgo\\Core\\Plugin' => __DIR__ . '/../..' . '/inc/Core/Plugin.php',
+        'MeuMouse\\Hubgo\\Core\\Tracking_Manager' => __DIR__ . '/../..' . '/inc/Core/Tracking_Manager.php',
+        'MeuMouse\\Hubgo\\Emails\\Email_Shipped_Order' => __DIR__ . '/../..' . '/inc/Emails/Email_Shipped_Order.php',
         'MeuMouse\\Hubgo\\Views\\Custom_Colors' => __DIR__ . '/../..' . '/inc/Views/Custom_Colors.php',
+        'MeuMouse\\Hubgo\\Views\\Order_Tracking_View' => __DIR__ . '/../..' . '/inc/Views/Order_Tracking_View.php',
         'MeuMouse\\Hubgo\\Views\\Shipping_Calculator' => __DIR__ . '/../..' . '/inc/Views/Shipping_Calculator.php',
     );
 
