@@ -284,7 +284,7 @@ class Order_Tracking_Meta_Box {
             wp_send_json_error( array( 'message' => __( 'Invalid nonce.', 'hubgo' ) ), 403 );
         }
 
-        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+        if ( ! current_user_can('manage_woocommerce') ) {
             wp_die();
         }
 

@@ -40,6 +40,7 @@ class ComposerStaticInit70fafb160f8425af8683a6a043652ea4
         'MeuMouse\\Hubgo\\Core\\Providers_Registry' => __DIR__ . '/../..' . '/inc/Core/Providers_Registry.php',
         'MeuMouse\\Hubgo\\Core\\Tracking_Manager' => __DIR__ . '/../..' . '/inc/Core/Tracking_Manager.php',
         'MeuMouse\\Hubgo\\Emails\\Email_Shipped_Order' => __DIR__ . '/../..' . '/inc/Emails/Email_Shipped_Order.php',
+        'MeuMouse\\Hubgo\\Integrations\\Joinotify' => __DIR__ . '/../..' . '/inc/Integrations/Joinotify.php',
         'MeuMouse\\Hubgo\\Views\\Custom_Colors' => __DIR__ . '/../..' . '/inc/Views/Custom_Colors.php',
         'MeuMouse\\Hubgo\\Views\\Order_Tracking_View' => __DIR__ . '/../..' . '/inc/Views/Order_Tracking_View.php',
         'MeuMouse\\Hubgo\\Views\\Shipping_Calculator' => __DIR__ . '/../..' . '/inc/Views/Shipping_Calculator.php',

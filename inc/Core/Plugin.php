@@ -3,11 +3,9 @@
 namespace MeuMouse\Hubgo\Core;
 
 use MeuMouse\Hubgo\Core\Tracking_Manager;
-use MeuMouse\Hubgo\API\Tracking_REST_Controller;
 use MeuMouse\Hubgo\Admin\Order_Tracking_Meta_Box;
 use MeuMouse\Hubgo\Views\Order_Tracking_View;
 use MeuMouse\Hubgo\Emails\Email_Shipped_Order;
-use MeuMouse\Hubgo\Integrations\Joinotify as Joinotify_Integration;
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use ReflectionClass;
@@ -91,7 +89,7 @@ final class Plugin {
         add_action( 'before_woocommerce_init', array( $this, 'setup_hpos_compatibility' ) );
 
         // Add plugin action links.
-        add_filter( 'plugin_action_links_' . $this->get_constant( 'HUBGO_BASENAME' ), array( $this, 'plugin_action_links' ) );
+        add_filter( 'plugin_action_links_' . $this->get_constant('HUBGO_BASENAME'), array( $this, 'plugin_action_links' ) );
 
         // Register all class hooks for lazy instantiation.
         $this->register_class_hooks();
@@ -192,6 +190,8 @@ final class Plugin {
                 'MeuMouse\\Hubgo\\Core\\Ajax',
                 'MeuMouse\\Hubgo\\Admin\\Settings',
                 'MeuMouse\\Hubgo\\Core\\Order_Status',
+                'MeuMouse\\Hubgo\\API\\Tracking_REST_Controller',
+                'MeuMouse\\Hubgo\\Integrations\\Joinotify',
             ),
             'wp_loaded' => array(
                 'MeuMouse\\Hubgo\\Views\\Shipping_Calculator',
@@ -210,14 +210,9 @@ final class Plugin {
      */
     protected function init_tracking() {
         $tracking = new Tracking_Manager();
-        new Tracking_REST_Controller();
 
         new Order_Tracking_Meta_Box( $tracking );
         new Order_Tracking_View( $tracking );
-
-        if ( class_exists( 'MeuMouse\\Joinotify\\Integrations\\Integrations_Base' ) ) {
-            new Joinotify_Integration( $tracking );
-        }
 
         add_filter( 'woocommerce_email_classes', function( $emails ) {
             $emails['Hubgo_Shipped_Order'] = new Email_Shipped_Order();
@@ -297,17 +292,13 @@ final class Plugin {
      * @return void
      */
     public function load_textdomain() {
-        $basename = $this->get_constant( 'HUBGO_BASENAME' );
+        $basename = $this->get_constant('HUBGO_BASENAME');
         
         if ( empty( $basename ) ) {
             return;
         }
 
-        load_plugin_textdomain(
-            'hubgo',
-            false,
-            dirname( $basename ) . '/languages/'
-        );
+        load_plugin_textdomain( 'hubgo', false, dirname( $basename ) . '/languages/' );
     }
 
 
@@ -379,11 +370,7 @@ final class Plugin {
      */
     public function setup_hpos_compatibility() {
         if ( class_exists( FeaturesUtil::class ) ) {
-            FeaturesUtil::declare_compatibility(
-                'custom_order_tables',
-                $this->get_constant( 'HUBGO_FILE' ),
-                true
-            );
+            FeaturesUtil::declare_compatibility( 'custom_order_tables', $this->get_constant('HUBGO_FILE'), true );
         }
     }
 
@@ -408,7 +395,7 @@ final class Plugin {
         $plugin_file = 'hubgo-shipping-management-wc/hubgo-shipping-management-wc.php';
 
         // Ensure required functions are available
-        if ( ! function_exists( 'is_plugin_active' ) ) {
+        if ( ! function_exists('is_plugin_active') ) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
 

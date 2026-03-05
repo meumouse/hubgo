@@ -25,6 +25,7 @@ return array(
     'MeuMouse\\Hubgo\\Core\\Providers_Registry' => $baseDir . '/inc/Core/Providers_Registry.php',
     'MeuMouse\\Hubgo\\Core\\Tracking_Manager' => $baseDir . '/inc/Core/Tracking_Manager.php',
     'MeuMouse\\Hubgo\\Emails\\Email_Shipped_Order' => $baseDir . '/inc/Emails/Email_Shipped_Order.php',
+    'MeuMouse\\Hubgo\\Integrations\\Joinotify' => $baseDir . '/inc/Integrations/Joinotify.php',
     'MeuMouse\\Hubgo\\Views\\Custom_Colors' => $baseDir . '/inc/Views/Custom_Colors.php',
     'MeuMouse\\Hubgo\\Views\\Order_Tracking_View' => $baseDir . '/inc/Views/Order_Tracking_View.php',
     'MeuMouse\\Hubgo\\Views\\Shipping_Calculator' => $baseDir . '/inc/Views/Shipping_Calculator.php',

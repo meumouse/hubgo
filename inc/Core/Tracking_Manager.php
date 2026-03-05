@@ -92,7 +92,7 @@ class Tracking_Manager {
         /**
          * Fired when a tracking item is saved for an order.
          *
-         * @since 2.1.1
+         * @since 2.1.0
          * @param int $order_id Order ID.
          * @param array $item Saved item.
          * @param array $items Full tracking list for order.
