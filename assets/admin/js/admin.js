@@ -121,7 +121,11 @@
             }
 
             var trackingId = $( this ).attr( 'rel' );
-            var $item = $( '#tracking-item-' + trackingId );
+            var $item = $( this ).closest( '.tracking-item' );
+
+            if ( ! $item.length ) {
+                $item = $( '[id="tracking-item-' + trackingId + '"]' );
+            }
             var nonce = hubgoTrackingItems.getNonce( 'delete' )
                 || $( '#hubgo_tracking_delete_nonce' ).val()
                 || ( typeof hubgo_tracking_params !== 'undefined' ? hubgo_tracking_params.nonce : '' )
@@ -195,3 +199,4 @@
     window.hubgo_tracking_refresh = hubgoTrackingItems.refreshItems;
 
 })(jQuery);
+

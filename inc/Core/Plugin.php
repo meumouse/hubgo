@@ -7,6 +7,7 @@ use MeuMouse\Hubgo\API\Tracking_REST_Controller;
 use MeuMouse\Hubgo\Admin\Order_Tracking_Meta_Box;
 use MeuMouse\Hubgo\Views\Order_Tracking_View;
 use MeuMouse\Hubgo\Emails\Email_Shipped_Order;
+use MeuMouse\Hubgo\Integrations\Joinotify as Joinotify_Integration;
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use ReflectionClass;
@@ -213,6 +214,10 @@ final class Plugin {
 
         new Order_Tracking_Meta_Box( $tracking );
         new Order_Tracking_View( $tracking );
+
+        if ( class_exists( 'MeuMouse\\Joinotify\\Integrations\\Integrations_Base' ) ) {
+            new Joinotify_Integration( $tracking );
+        }
 
         add_filter( 'woocommerce_email_classes', function( $emails ) {
             $emails['Hubgo_Shipped_Order'] = new Email_Shipped_Order();
@@ -467,4 +472,5 @@ final class Plugin {
         _doing_it_wrong( __FUNCTION__, esc_html__( 'Trapaceando?', 'hubgo' ), '2.0.0' );
     }
 }
+
 

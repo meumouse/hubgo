@@ -89,6 +89,16 @@ class Tracking_Manager {
 
         update_post_meta( $order_id, self::META_KEY, $items );
 
+        /**
+         * Fired when a tracking item is saved for an order.
+         *
+         * @since 2.1.1
+         * @param int $order_id Order ID.
+         * @param array $item Saved item.
+         * @param array $items Full tracking list for order.
+         */
+        do_action( 'Hubgo/Tracking/Item_Saved', $order_id, $item, $items );
+
         return $item;
     }
 
@@ -99,7 +109,7 @@ class Tracking_Manager {
      * @since 2.1.0
      * @param int    $order_id
      * @param string $tracking_id
-     * @return int|bool Meta ID if the key didn’t exist, true on successful update, false on failure or if the value passed to the function is the same as the one that is already in the database.
+     * @return int|bool Meta ID if the key did not exist, true on successful update, false on failure or if the value passed to the function is the same as the one that is already in the database.
      */
     public function delete_item( $order_id, $tracking_id ) {
         $items = $this->get_items( $order_id );
@@ -135,3 +145,4 @@ class Tracking_Manager {
         do_action( 'Hubgo/Tracking/Order_Shipped', $order_id, $items );
     }
 }
+
