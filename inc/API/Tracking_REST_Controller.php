@@ -1,4 +1,5 @@
 <?php
+
 namespace MeuMouse\Hubgo\API;
 
 use WP_REST_Controller;
@@ -62,7 +63,10 @@ class Tracking_REST_Controller extends WP_REST_Controller {
             'tracking_number' => $request['tracking_number'],
             'carrier'         => $request['carrier'],
             'custom_url'      => $request['custom_url'],
-        ) );
+        ));
+
+        // fire shipped order trigger
+        $tracking->trigger_shipped_event( $order_id );
 
         return rest_ensure_response( array(
             'success' => true,
