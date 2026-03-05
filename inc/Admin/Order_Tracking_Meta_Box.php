@@ -48,6 +48,10 @@ class Order_Tracking_Meta_Box {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
         add_action( 'save_post_shop_order', array( $this, 'save_tracking_data' ) );
         add_action( 'woocommerce_process_shop_order_meta', array( $this, 'save_tracking_data' ) );
+        add_filter( 'manage_edit-shop_order_columns', array( $this, 'add_orders_list_column' ), 20 );
+        add_action( 'manage_shop_order_posts_custom_column', array( $this, 'render_shop_order_list_column' ), 20, 2 );
+        add_filter( 'manage_woocommerce_page_wc-orders_columns', array( $this, 'add_orders_list_column' ), 20 );
+        add_action( 'manage_woocommerce_page_wc-orders_custom_column', array( $this, 'render_wc_orders_list_column' ), 20, 2 );
 
         add_action( 'wp_ajax_hubgo_tracking_save_item', array( $this, 'ajax_save_tracking_item' ) );
         add_action( 'wp_ajax_hubgo_tracking_delete_item', array( $this, 'ajax_delete_tracking_item' ) );
@@ -379,6 +383,7 @@ class Order_Tracking_Meta_Box {
                 <br>
                 <em><?php echo esc_html( $tracking_number ); ?></em>
             </p>
+
             <p class="meta">
                 <?php echo esc_html( $ship_date ); ?>
                 <a href="#" class="delete-tracking" rel="<?php echo esc_attr( $tracking_id ); ?>"><?php esc_html_e( 'Delete', 'hubgo' ); ?></a>
@@ -429,9 +434,104 @@ class Order_Tracking_Meta_Box {
             return $item['carrier'];
         }
 
-        return __( 'Provider not defined', 'hubgo' );
+        return __( 'Transportadora não definida', 'hubgo' );
     }
 
+
+    /**
+     * Add tracking column to admin orders list.
+     *
+     * @since 2.1.0
+     * @param array $columns Existing columns.
+     * @return array
+     */
+    public function add_orders_list_column( $columns ) {
+        $columns['hubgo_tracking'] = __( 'Rastreio', 'hubgo' );
+
+        return $columns;
+    }
+
+
+    /**
+     * Render tracking column in classic orders table.
+     *
+     * @since 2.1.0
+     * @param string $column_name Column key.
+     * @param int    $post_id Order ID.
+     * @return void
+     */
+    public function render_shop_order_list_column( $column_name, $post_id ) {
+        if ( 'hubgo_tracking' !== $column_name ) {
+            return;
+        }
+
+        echo wp_kses_post( $this->get_orders_list_tracking_column_content( absint( $post_id ) ) );
+    }
+
+
+    /**
+     * Render tracking column in HPOS orders table.
+     *
+     * @since 2.1.0
+     * @param string       $column_name Column key.
+     * @param int|WC_Order $order Order object or ID.
+     * @return void
+     */
+    public function render_wc_orders_list_column( $column_name, $order ) {
+        if ( 'hubgo_tracking' !== $column_name ) {
+            return;
+        }
+
+        $order_id = is_object( $order ) && method_exists( $order, 'get_id' ) ? absint( $order->get_id() ) : absint( $order );
+
+        echo wp_kses_post( $this->get_orders_list_tracking_column_content( $order_id ) );
+    }
+
+
+    /**
+     * Build tracking column content for order list.
+     *
+     * @since 2.1.0
+     * @param int $order_id Order ID.
+     * @return string
+     */
+    protected function get_orders_list_tracking_column_content( $order_id ) {
+        if ( $order_id <= 0 ) {
+            return '&ndash;';
+        }
+
+        $items = array_reverse( $this->tracking->get_items( $order_id ) );
+
+        if ( empty( $items ) ) {
+            return '&ndash;';
+        }
+
+        $output = '';
+
+        foreach ( $items as $item ) {
+            $provider = $this->get_tracking_provider_name( $item );
+            $tracking_number = isset( $item['tracking_number'] ) ? (string) $item['tracking_number'] : '';
+            $tracking_link = $this->get_tracking_link( $order_id, $item );
+
+            if ( '' === $tracking_number ) {
+                continue;
+            }
+
+            $line = esc_html( sprintf( '%1$s: %2$s', $provider, $tracking_number ) );
+
+            if ( ! empty( $tracking_link ) ) {
+                $line = sprintf(
+                    '<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+                    esc_url( $tracking_link ),
+                    $line
+                );
+            }
+
+            $output .= '<div class="hubgo-tracking-item-summary">' . $line . '</div>';
+        }
+
+        return '' !== $output ? $output : '&ndash;';
+    }
 
     /**
      * Get tracking link from item.
@@ -473,16 +573,16 @@ class Order_Tracking_Meta_Box {
      */
     protected function get_date_label( $item ) {
         if ( empty( $item['ship_date'] ) ) {
-            return __( 'No shipping date', 'hubgo' );
+            return __( 'Sem data de envio', 'hubgo' );
         }
 
         $timestamp = strtotime( $item['ship_date'] );
 
         if ( ! $timestamp ) {
-            return sprintf( __( 'Shipped on %s', 'hubgo' ), $item['ship_date'] );
+            return sprintf( __( 'Enviado em %s', 'hubgo' ), $item['ship_date'] );
         }
 
-        return sprintf( __( 'Shipped on %s', 'hubgo' ), wp_date( get_option( 'date_format' ), $timestamp ) );
+        return sprintf( __( 'Enviado em %s', 'hubgo' ), wp_date( get_option( 'date_format' ), $timestamp ) );
     }
 
 
@@ -589,6 +689,8 @@ class Order_Tracking_Meta_Box {
 
         return $this->get_order_id_from_request();
     }
+
+    
     /**
      * Verify AJAX nonce for multiple payload keys.
      *
