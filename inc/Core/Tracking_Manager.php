@@ -34,7 +34,7 @@ class Tracking_Manager {
         add_action( 'woocommerce_order_status_shipped-order', array( $this, 'trigger_shipped_event' ) );
     }
 
-    
+
     /**
      * Get tracking items from order
      *
@@ -49,6 +49,16 @@ class Tracking_Manager {
             $items = array();
         }
 
+        foreach ( $items as &$item ) {
+            if ( empty( $item['provider'] ) && ! empty( $item['carrier'] ) ) {
+                $item['provider'] = sanitize_text_field( $item['carrier'] );
+            }
+
+            if ( empty( $item['tracking_id'] ) ) {
+                $item['tracking_id'] = uniqid( 'hubgo_', true );
+            }
+        }
+
         return apply_filters( 'Hubgo/Tracking/Get_Items', $items, $order_id );
     }
 
@@ -59,15 +69,17 @@ class Tracking_Manager {
      * @since 2.1.0
      * @param int   $order_id Order ID.
      * @param array $data Tracking data.
-     * @return void
+     * @return array
      */
     public function add_item( $order_id, $data ) {
         $items = $this->get_items( $order_id );
+        $provider = isset( $data['provider'] ) ? $data['provider'] : ( $data['carrier'] ?? '' );
 
         $item = array(
             'tracking_id'     => uniqid( 'hubgo_', true ),
             'tracking_number' => sanitize_text_field( $data['tracking_number'] ),
-            'provider'        => sanitize_text_field( $data['provider'] ),
+            'provider'        => sanitize_text_field( $provider ),
+            'custom_provider' => sanitize_text_field( $data['custom_provider'] ?? '' ),
             'custom_url'      => esc_url_raw( $data['custom_url'] ?? '' ),
             'ship_date'       => sanitize_text_field( $data['ship_date'] ?? '' ),
         );
@@ -92,7 +104,7 @@ class Tracking_Manager {
         $items = $this->get_items( $order_id );
 
         foreach ( $items as $key => $item ) {
-            if ( $item['tracking_id'] === $tracking_id ) {
+            if ( isset( $item['tracking_id'] ) && $item['tracking_id'] === $tracking_id ) {
                 unset( $items[ $key ] );
             }
         }
@@ -114,7 +126,7 @@ class Tracking_Manager {
 
         /**
          * Fired hook when order status is updated to 'shipped-order'
-         * 
+         *
          * @since 2.1.0
          * @param int $order_id | Order ID
          * @param array $items | Post meta data of shipping details

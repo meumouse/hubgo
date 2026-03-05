@@ -1,0 +1,70 @@
+#hubgo-order-tracking .inside {
+    padding: 12px;
+    margin: 0;
+}
+
+#hubgo-order-tracking .button-show-form {
+    margin: 0;
+}
+
+#hubgo-order-tracking #hubgo-shipment-tracking-form {
+    display: none;
+}
+
+#hubgo-order-tracking #hubgo-shipment-tracking-form p.form-field {
+    margin-top: 0;
+}
+
+#hubgo-order-tracking input,
+#hubgo-order-tracking select {
+    width: 100%;
+}
+
+#hubgo-order-tracking .preview_tracking_link {
+    display: none;
+    margin-bottom: 0;
+}
+
+#hubgo-order-tracking .meta {
+    font-size: 11px;
+    color: #999;
+    padding: 10px;
+    margin: 0;
+}
+
+#hubgo-order-tracking .meta a.delete-tracking {
+    color: #a00;
+    margin-left: 6px;
+}
+
+#hubgo-order-tracking #hubgo-tracking-items {
+    margin: 0;
+}
+
+#hubgo-order-tracking .tracking-content {
+    background: #efefef;
+    padding: 10px;
+    position: relative;
+    margin: 0;
+}
+
+#hubgo-order-tracking .tracking-content:after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: -10px;
+    left: 20px;
+    width: 0;
+    height: 0;
+    border-width: 10px 10px 0 0;
+    border-style: solid;
+    border-color: #efefef transparent;
+}
+
+#hubgo-order-tracking .tracking-item {
+    margin-bottom: 10px;
+}
+
+#hubgo-order-tracking .tracking-item:last-child {
+    margin-bottom: 12px;
+}

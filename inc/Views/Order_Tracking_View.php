@@ -2,6 +2,7 @@
 
 namespace MeuMouse\Hubgo\Views;
 
+use MeuMouse\Hubgo\Core\Providers_Registry;
 use MeuMouse\Hubgo\Core\Tracking_Manager;
 
 // Exit if accessed directly.
@@ -67,23 +68,30 @@ class Order_Tracking_View {
         echo '<h2>' . esc_html__( 'Tracking Information', 'hubgo' ) . '</h2>';
 
         foreach ( $items as $item ) {
+            $provider = ! empty( $item['custom_provider'] )
+                ? $item['custom_provider']
+                : ( $item['provider'] ?? ( $item['carrier'] ?? '' ) );
+
+            $tracking_number = $item['tracking_number'] ?? '';
 
             $url = ! empty( $item['custom_url'] )
                 ? $item['custom_url']
-                : apply_filters(
-                    'Hubgo/Tracking/default_tracking_url',
+                : Providers_Registry::get_tracking_url(
+                    $item['provider'] ?? ( $item['carrier'] ?? '' ),
+                    $tracking_number,
                     '',
-                    $item
+                    $order->get_shipping_country() ? $order->get_shipping_country() : 'Brazil',
+                    $order->get_id()
                 );
 
             echo '<p>';
-            echo '<strong>' . esc_html( $item['carrier'] ) . '</strong><br>';
-            echo esc_html( $item['tracking_number'] );
+            echo '<strong>' . esc_html( $provider ) . '</strong><br>';
+            echo esc_html( $tracking_number );
 
             if ( $url ) {
-                echo '<br><a href="' . esc_url( $url ) . '" target="_blank">' .
-                     esc_html__( 'Track shipment', 'hubgo' ) .
-                     '</a>';
+                echo '<br><a href="' . esc_url( $url ) . '" target="_blank" rel="noopener noreferrer">'
+                    . esc_html__( 'Track shipment', 'hubgo' )
+                    . '</a>';
             }
 
             echo '</p>';

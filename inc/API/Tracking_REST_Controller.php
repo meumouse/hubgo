@@ -28,7 +28,7 @@ class Tracking_REST_Controller extends WP_REST_Controller {
         add_action( 'rest_api_init', array( $this, 'register_routes' ) );
     }
 
-    
+
     /**
      * Register routes
      *
@@ -38,8 +38,8 @@ class Tracking_REST_Controller extends WP_REST_Controller {
     public function register_routes() {
         register_rest_route( $this->namespace, '/' . $this->rest_base, array(
             array(
-                'methods'  => 'POST',
-                'callback' => array( $this, 'create_tracking' ),
+                'methods'             => 'POST',
+                'callback'            => array( $this, 'create_tracking' ),
                 'permission_callback' => '__return_true',
             ),
         ));
@@ -56,16 +56,19 @@ class Tracking_REST_Controller extends WP_REST_Controller {
      */
     public function create_tracking( $request ) {
         $order_id = absint( $request['order_id'] );
-
         $tracking = new Tracking_Manager();
+
+        $provider = ! empty( $request['provider'] ) ? $request['provider'] : $request['carrier'];
 
         $tracking->add_item( $order_id, array(
             'tracking_number' => $request['tracking_number'],
-            'carrier'         => $request['carrier'],
+            'provider'        => $provider,
+            'custom_provider' => $request['custom_provider'],
             'custom_url'      => $request['custom_url'],
+            'ship_date'       => $request['ship_date'],
         ));
 
-        // fire shipped order trigger
+        // Fire shipped order trigger.
         $tracking->trigger_shipped_event( $order_id );
 
         return rest_ensure_response( array(

@@ -755,7 +755,8 @@ class Ajax {
             absint( $_POST['order_id'] ),
             array(
                 'tracking_number' => $_POST['tracking_number'],
-                'carrier'         => $_POST['carrier'],
+                'provider'        => isset( $_POST['provider'] ) ? $_POST['provider'] : ( $_POST['carrier'] ?? '' ),
+                'custom_url'      => $_POST['custom_url'] ?? '',
                 'ship_date'       => $_POST['ship_date'],
             )
         );
@@ -763,3 +764,6 @@ class Ajax {
         wp_send_json_success();
     }
 }
+
+
+

@@ -2,6 +2,7 @@
 
 namespace MeuMouse\Hubgo\Admin;
 
+use MeuMouse\Hubgo\Core\Providers_Registry;
 use MeuMouse\Hubgo\Core\Tracking_Manager;
 
 // Exit if accessed directly.
@@ -36,7 +37,13 @@ class Order_Tracking_Meta_Box {
         $this->tracking = $tracking;
 
         add_action( 'add_meta_boxes', array( $this, 'register_meta_box' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
         add_action( 'save_post_shop_order', array( $this, 'save_tracking_data' ) );
+        add_action( 'woocommerce_process_shop_order_meta', array( $this, 'save_tracking_data' ) );
+
+        add_action( 'wp_ajax_hubgo_tracking_save_item', array( $this, 'ajax_save_tracking_item' ) );
+        add_action( 'wp_ajax_hubgo_tracking_delete_item', array( $this, 'ajax_delete_tracking_item' ) );
+        add_action( 'wp_ajax_hubgo_tracking_get_items', array( $this, 'ajax_get_tracking_items' ) );
     }
 
 
@@ -48,47 +55,318 @@ class Order_Tracking_Meta_Box {
      * @return void
      */
     public function register_meta_box() {
-        add_meta_box(
-            'hubgo_order_tracking',
-            __( 'HubGo Tracking', 'hubgo' ),
-            array( $this, 'render_meta_box' ),
-            'shop_order',
-            'side',
-            'default'
+        foreach ( $this->get_order_screen_ids() as $screen_id ) {
+            add_meta_box(
+                'hubgo-order-tracking',
+                __( 'HubGo Tracking', 'hubgo' ),
+                array( $this, 'render_meta_box' ),
+                $screen_id,
+                'side',
+                'high'
+            );
+        }
+    }
+
+
+    /**
+     * Enqueue metabox assets.
+     *
+     * @since 2.1.0
+     * @return void
+     */
+    public function enqueue_assets() {
+        if ( ! $this->is_order_screen() ) {
+            return;
+        }
+
+        $version = defined( 'HUBGO_VERSION' ) ? HUBGO_VERSION : '2.1.0';
+
+        wp_enqueue_style(
+            'hubgo-order-tracking-admin',
+            HUBGO_ASSETS . 'admin/css/admin.css',
+            array(),
+            $version
+        );
+
+        wp_enqueue_script(
+            'hubgo-order-tracking-provider',
+            HUBGO_ASSETS . 'admin/js/metabox-tracking-provider.js',
+            array( 'jquery' ),
+            $version,
+            true
+        );
+
+        wp_localize_script(
+            'hubgo-order-tracking-provider',
+            'hubgoTrackingProviderParams',
+            array(
+                'providers' => $this->get_providers_for_script(),
+            )
+        );
+
+        wp_enqueue_script(
+            'hubgo-order-tracking-admin',
+            HUBGO_ASSETS . 'admin/js/admin.js',
+            array( 'jquery' ),
+            $version,
+            true
+        );
+
+        wp_localize_script(
+            'hubgo-order-tracking-admin',
+            'hubgoOrderTrackingParams',
+            array(
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'order_id' => $this->get_order_id_from_request(),
+            )
         );
     }
 
+
     /**
-     * Render meta box
+     * Render meta box.
      *
      * @since 2.1.0
      *
-     * @param \WP_Post $post Order post.
+     * @param mixed $post_or_order Post or order object.
      * @return void
      */
-    public function render_meta_box( $post ) {
-        $items = $this->tracking->get_items( $post->ID );
+    public function render_meta_box( $post_or_order ) {
+        $order_id = $this->get_order_id_from_post_or_order( $post_or_order );
 
-        wp_nonce_field( 'hubgo_save_tracking', 'hubgo_tracking_nonce' ); ?>
+        if ( $order_id <= 0 ) {
+            echo '<p>' . esc_html__( 'Order not found.', 'hubgo' ) . '</p>';
+            return;
+        }
 
-        <div id="hubgo-tracking-wrapper">
-            <?php foreach ( $items as $index => $item ) : ?>
-                <p>
-                    <strong><?php echo esc_html( $item['tracking_number'] ); ?></strong><br>
-                    <?php echo esc_html( $item['carrier'] ); ?>
-                </p>
-            <?php endforeach; ?>
+        echo '<div id="hubgo-order-tracking-inner">';
+        echo '<div id="hubgo-tracking-items">';
 
-            <hr>
+        foreach ( $this->tracking->get_items( $order_id ) as $item ) {
+            $this->render_tracking_item( $order_id, $item );
+        }
 
-            <p>
-                <input type="text" name="hubgo_tracking_number" placeholder="Tracking number" style="width:100%;" />
+        echo '</div>';
+
+        echo '<button type="button" class="button button-show-form">' . esc_html__( 'Add Tracking Number', 'hubgo' ) . '</button>';
+        echo '<div id="hubgo-shipment-tracking-form">';
+
+        echo '<p class="form-field tracking_provider_field">';
+        echo '<label for="hubgo_tracking_provider">' . esc_html__( 'Provider:', 'hubgo' ) . '</label>';
+        echo '<select id="hubgo_tracking_provider" name="hubgo_tracking_provider" style="width:100%;">';
+        echo '<option value="">' . esc_html__( 'Custom Provider', 'hubgo' ) . '</option>';
+
+        foreach ( Providers_Registry::get_providers() as $provider_group => $providers ) {
+            echo '<optgroup label="' . esc_attr( $provider_group ) . '">';
+
+            foreach ( $providers as $provider => $format ) {
+                if ( empty( $format ) ) {
+                    continue;
+                }
+
+                echo '<option value="' . esc_attr( $provider ) . '">' . esc_html( $provider ) . '</option>';
+            }
+
+            echo '</optgroup>';
+        }
+
+        echo '</select>';
+        echo '</p>';
+
+        echo '<input type="hidden" id="hubgo_tracking_get_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-get-item' ) ) . '" />';
+        echo '<input type="hidden" id="hubgo_tracking_delete_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-delete-item' ) ) . '" />';
+        echo '<input type="hidden" id="hubgo_tracking_create_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-create-item' ) ) . '" />';
+
+        echo '<p class="form-field custom_tracking_provider_field">';
+        echo '<label for="hubgo_custom_tracking_provider">' . esc_html__( 'Provider Name:', 'hubgo' ) . '</label>';
+        echo '<input type="text" id="hubgo_custom_tracking_provider" name="hubgo_custom_tracking_provider" />';
+        echo '</p>';
+
+        echo '<p class="form-field">';
+        echo '<label for="hubgo_tracking_number">' . esc_html__( 'Tracking number:', 'hubgo' ) . '</label>';
+        echo '<input type="text" id="hubgo_tracking_number" name="hubgo_tracking_number" />';
+        echo '</p>';
+
+        echo '<p class="form-field custom_tracking_link_field">';
+        echo '<label for="hubgo_custom_tracking_link">' . esc_html__( 'Tracking link:', 'hubgo' ) . '</label>';
+        echo '<input type="url" id="hubgo_custom_tracking_link" name="hubgo_custom_tracking_link" placeholder="https://" />';
+        echo '</p>';
+
+        echo '<p class="form-field">';
+        echo '<label for="hubgo_date_shipped">' . esc_html__( 'Date shipped:', 'hubgo' ) . '</label>';
+        echo '<input type="date" id="hubgo_date_shipped" name="hubgo_date_shipped" value="' . esc_attr( gmdate( 'Y-m-d' ) ) . '" />';
+        echo '</p>';
+
+        echo '<button type="button" class="button button-primary button-save-form">' . esc_html__( 'Save Tracking', 'hubgo' ) . '</button>';
+        echo '<p class="preview_tracking_link">' . esc_html__( 'Preview:', 'hubgo' ) . ' <a href="" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Click here to track your shipment', 'hubgo' ) . '</a></p>';
+
+        echo '</div>';
+
+        wp_nonce_field( 'hubgo_save_tracking', 'hubgo_tracking_nonce' );
+
+        echo '</div>';
+    }
+
+
+    /**
+     * Save fallback tracking data on post save.
+     *
+     * @since 2.1.0
+     * @param int $post_id Order ID.
+     * @return void
+     */
+    public function save_tracking_data( $post_id ) {
+        if ( ! isset( $_POST['hubgo_tracking_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['hubgo_tracking_nonce'] ) ), 'hubgo_save_tracking' ) ) {
+            return;
+        }
+
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            return;
+        }
+
+        if ( empty( $_POST['hubgo_tracking_number'] ) ) {
+            return;
+        }
+
+        $provider = isset( $_POST['hubgo_tracking_provider'] ) ? sanitize_text_field( wp_unslash( $_POST['hubgo_tracking_provider'] ) ) : '';
+        $custom_provider = isset( $_POST['hubgo_custom_tracking_provider'] ) ? sanitize_text_field( wp_unslash( $_POST['hubgo_custom_tracking_provider'] ) ) : '';
+
+        $this->tracking->add_item(
+            $post_id,
+            array(
+                'tracking_number' => sanitize_text_field( wp_unslash( $_POST['hubgo_tracking_number'] ) ),
+                'provider'        => $provider,
+                'custom_provider' => $custom_provider,
+                'custom_url'      => isset( $_POST['hubgo_custom_tracking_link'] ) ? esc_url_raw( wp_unslash( $_POST['hubgo_custom_tracking_link'] ) ) : '',
+                'ship_date'       => isset( $_POST['hubgo_date_shipped'] ) ? sanitize_text_field( wp_unslash( $_POST['hubgo_date_shipped'] ) ) : '',
+            )
+        );
+    }
+
+
+    /**
+     * Save tracking item via AJAX.
+     *
+     * @since 2.1.0
+     * @return void
+     */
+    public function ajax_save_tracking_item() {
+        check_ajax_referer( 'hubgo-tracking-create-item', 'security', true );
+
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_die();
+        }
+
+        $order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
+
+        if ( $order_id <= 0 || empty( $_POST['tracking_number'] ) ) {
+            wp_die();
+        }
+
+        $provider = isset( $_POST['tracking_provider'] ) ? sanitize_text_field( wp_unslash( $_POST['tracking_provider'] ) ) : '';
+        $custom_provider = isset( $_POST['custom_tracking_provider'] ) ? sanitize_text_field( wp_unslash( $_POST['custom_tracking_provider'] ) ) : '';
+
+        $item = $this->tracking->add_item(
+            $order_id,
+            array(
+                'tracking_number' => sanitize_text_field( wp_unslash( $_POST['tracking_number'] ) ),
+                'provider'        => $provider,
+                'custom_provider' => $custom_provider,
+                'custom_url'      => isset( $_POST['custom_tracking_link'] ) ? esc_url_raw( wp_unslash( $_POST['custom_tracking_link'] ) ) : '',
+                'ship_date'       => isset( $_POST['date_shipped'] ) ? sanitize_text_field( wp_unslash( $_POST['date_shipped'] ) ) : '',
+            )
+        );
+
+        $this->render_tracking_item( $order_id, $item );
+
+        wp_die();
+    }
+
+
+    /**
+     * Delete tracking item via AJAX.
+     *
+     * @since 2.1.0
+     * @return void
+     */
+    public function ajax_delete_tracking_item() {
+        check_ajax_referer( 'hubgo-tracking-delete-item', 'security', true );
+
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_die();
+        }
+
+        $order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
+        $tracking_id = isset( $_POST['tracking_id'] ) ? sanitize_text_field( wp_unslash( $_POST['tracking_id'] ) ) : '';
+
+        if ( $order_id <= 0 || empty( $tracking_id ) ) {
+            wp_die();
+        }
+
+        $this->tracking->delete_item( $order_id, $tracking_id );
+
+        wp_die( '1' );
+    }
+
+
+    /**
+     * Get tracking items list via AJAX.
+     *
+     * @since 2.1.0
+     * @return void
+     */
+    public function ajax_get_tracking_items() {
+        check_ajax_referer( 'hubgo-tracking-get-item', 'security', true );
+
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_die();
+        }
+
+        $order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
+
+        if ( $order_id <= 0 ) {
+            wp_die();
+        }
+
+        foreach ( $this->tracking->get_items( $order_id ) as $item ) {
+            $this->render_tracking_item( $order_id, $item );
+        }
+
+        wp_die();
+    }
+
+
+    /**
+     * Render a single tracking item for metabox.
+     *
+     * @since 2.1.0
+     * @param int   $order_id Order ID.
+     * @param array $item Tracking item.
+     * @return void
+     */
+    protected function render_tracking_item( $order_id, $item ) {
+        $tracking_id = isset( $item['tracking_id'] ) ? $item['tracking_id'] : '';
+        $provider = $this->get_tracking_provider_name( $item );
+        $tracking_number = isset( $item['tracking_number'] ) ? $item['tracking_number'] : '';
+        $tracking_link = $this->get_tracking_link( $order_id, $item );
+        $ship_date = $this->get_date_label( $item );
+
+        if ( empty( $tracking_id ) ) {
+            return;
+        }
+        ?>
+        <div class="tracking-item" id="tracking-item-<?php echo esc_attr( $tracking_id ); ?>">
+            <p class="tracking-content">
+                <strong><?php echo esc_html( $provider ); ?></strong>
+                <?php if ( ! empty( $tracking_link ) ) : ?>
+                    - <a href="<?php echo esc_url( $tracking_link ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Track', 'hubgo' ); ?></a>
+                <?php endif; ?>
+                <br>
+                <em><?php echo esc_html( $tracking_number ); ?></em>
             </p>
-            <p>
-                <input type="text" name="hubgo_tracking_carrier" placeholder="Carrier (ex: Correios)" style="width:100%;" />
-            </p>
-            <p>
-                <input type="url" name="hubgo_tracking_url" placeholder="Tracking URL (optional)" style="width:100%;" />
+            <p class="meta">
+                <?php echo esc_html( $ship_date ); ?>
+                <a href="#" class="delete-tracking" rel="<?php echo esc_attr( $tracking_id ); ?>"><?php esc_html_e( 'Delete', 'hubgo' ); ?></a>
             </p>
         </div>
         <?php
@@ -96,24 +374,207 @@ class Order_Tracking_Meta_Box {
 
 
     /**
-     * Save tracking data
+     * Get shipping providers for script preview.
      *
      * @since 2.1.0
-     *
-     * @param int $post_id Order ID.
-     * @return void
+     * @return array
      */
-    public function save_tracking_data( $post_id ) {
-        if ( ! isset( $_POST['hubgo_tracking_nonce'] ) || ! wp_verify_nonce( $_POST['hubgo_tracking_nonce'], 'hubgo_save_tracking' ) ) {
-            return;
+    protected function get_providers_for_script() {
+        $provider_array = array();
+
+        foreach ( Providers_Registry::get_providers() as $providers ) {
+            foreach ( $providers as $provider => $format ) {
+                if ( ! empty( $format ) ) {
+                    $provider_array[ $provider ] = rawurlencode( $format );
+                }
+            }
         }
 
-        if ( ! empty( $_POST['hubgo_tracking_number'] ) ) {
-            $this->tracking->add_item( $post_id, array(
-                'tracking_number' => $_POST['hubgo_tracking_number'],
-                'carrier'         => $_POST['hubgo_tracking_carrier'] ?? '',
-                'custom_url'      => $_POST['hubgo_tracking_url'] ?? '',
-            ) );
+        return $provider_array;
+    }
+
+
+    /**
+     * Get tracking provider name.
+     *
+     * @since 2.1.0
+     * @param array $item Tracking item.
+     * @return string
+     */
+    protected function get_tracking_provider_name( $item ) {
+        if ( ! empty( $item['custom_provider'] ) ) {
+            return $item['custom_provider'];
         }
+
+        if ( ! empty( $item['provider'] ) ) {
+            return $item['provider'];
+        }
+
+        if ( ! empty( $item['carrier'] ) ) {
+            return $item['carrier'];
+        }
+
+        return __( 'Provider not defined', 'hubgo' );
+    }
+
+
+    /**
+     * Get tracking link from item.
+     *
+     * @since 2.1.0
+     * @param int   $order_id Order ID.
+     * @param array $item Tracking item.
+     * @return string
+     */
+    protected function get_tracking_link( $order_id, $item ) {
+        if ( ! empty( $item['custom_url'] ) ) {
+            return esc_url( $item['custom_url'] );
+        }
+
+        $provider = ! empty( $item['provider'] ) ? $item['provider'] : ( $item['carrier'] ?? '' );
+
+        if ( empty( $provider ) || empty( $item['tracking_number'] ) ) {
+            return '';
+        }
+
+        $country = $this->get_order_country( $order_id );
+
+        return Providers_Registry::get_tracking_url(
+            $provider,
+            $item['tracking_number'],
+            '',
+            $country,
+            $order_id
+        );
+    }
+
+
+    /**
+     * Get date label for tracking item.
+     *
+     * @since 2.1.0
+     * @param array $item Tracking item.
+     * @return string
+     */
+    protected function get_date_label( $item ) {
+        if ( empty( $item['ship_date'] ) ) {
+            return __( 'No shipping date', 'hubgo' );
+        }
+
+        $timestamp = strtotime( $item['ship_date'] );
+
+        if ( ! $timestamp ) {
+            return sprintf( __( 'Shipped on %s', 'hubgo' ), $item['ship_date'] );
+        }
+
+        return sprintf( __( 'Shipped on %s', 'hubgo' ), wp_date( get_option( 'date_format' ), $timestamp ) );
+    }
+
+
+    /**
+     * Get order country for provider URLs.
+     *
+     * @since 2.1.0
+     * @param int $order_id Order ID.
+     * @return string
+     */
+    protected function get_order_country( $order_id ) {
+        $order = wc_get_order( $order_id );
+
+        if ( ! $order ) {
+            return 'Brazil';
+        }
+
+        $country = $order->get_shipping_country();
+
+        if ( empty( $country ) ) {
+            $country = $order->get_billing_country();
+        }
+
+        if ( empty( $country ) ) {
+            $country = 'Brazil';
+        }
+
+        return $country;
+    }
+
+
+    /**
+     * Get order screens where metabox should be available.
+     *
+     * @since 2.1.0
+     * @return array
+     */
+    protected function get_order_screen_ids() {
+        $screens = array( 'shop_order' );
+
+        if ( function_exists( 'wc_get_page_screen_id' ) ) {
+            $screens[] = wc_get_page_screen_id( 'shop-order' );
+        }
+
+        return array_filter( array_unique( $screens ) );
+    }
+
+
+    /**
+     * Check if current screen is an order screen.
+     *
+     * @since 2.1.0
+     * @return bool
+     */
+    protected function is_order_screen() {
+        if ( ! function_exists( 'get_current_screen' ) ) {
+            return false;
+        }
+
+        $screen = get_current_screen();
+
+        if ( ! $screen || empty( $screen->id ) ) {
+            return false;
+        }
+
+        return in_array( $screen->id, $this->get_order_screen_ids(), true );
+    }
+
+
+    /**
+     * Get order ID from request.
+     *
+     * @since 2.1.0
+     * @return int
+     */
+    protected function get_order_id_from_request() {
+        if ( isset( $_GET['id'] ) ) {
+            return absint( $_GET['id'] );
+        }
+
+        if ( isset( $_GET['post'] ) ) {
+            return absint( $_GET['post'] );
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * Get order ID from post or order object.
+     *
+     * @since 2.1.0
+     * @param mixed $post_or_order_object WP_Post|WC_Order.
+     * @return int
+     */
+    protected function get_order_id_from_post_or_order( $post_or_order_object ) {
+        if ( is_object( $post_or_order_object ) && method_exists( $post_or_order_object, 'get_id' ) ) {
+            return absint( $post_or_order_object->get_id() );
+        }
+
+        if ( isset( $post_or_order_object->ID ) ) {
+            return absint( $post_or_order_object->ID );
+        }
+
+        return $this->get_order_id_from_request();
     }
 }
+
+
+
