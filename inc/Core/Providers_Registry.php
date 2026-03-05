@@ -2,7 +2,7 @@
 
 namespace MeuMouse\Hubgo\Core;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class Providers_Registry

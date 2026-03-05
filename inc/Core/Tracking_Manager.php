@@ -110,6 +110,15 @@ class Tracking_Manager {
      * @return void
      */
     public function trigger_shipped_event( $order_id ) {
-        do_action( 'Hubgo/Tracking/Order_Shipped', $order_id );
+        $items = $this->get_items( $order_id );
+
+        /**
+         * Fired hook when order status is updated to 'shipped-order'
+         * 
+         * @since 2.1.0
+         * @param int $order_id | Order ID
+         * @param array $items | Post meta data of shipping details
+         */
+        do_action( 'Hubgo/Tracking/Order_Shipped', $order_id, $items );
     }
 }

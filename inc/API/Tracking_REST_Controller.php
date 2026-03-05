@@ -4,7 +4,7 @@ namespace MeuMouse\Hubgo\API;
 use WP_REST_Controller;
 use MeuMouse\Hubgo\Core\Tracking_Manager;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class Tracking_REST_Controller
