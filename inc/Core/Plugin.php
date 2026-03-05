@@ -171,7 +171,7 @@ final class Plugin {
 
                 add_action( $hook, function() use ( $class ) {
                     $this->safe_instance_class( $class );
-                }, 1 );
+                }, 10 );
             }
         }
     }
@@ -191,12 +191,12 @@ final class Plugin {
                 'MeuMouse\\Hubgo\\Admin\\Settings',
                 'MeuMouse\\Hubgo\\Core\\Order_Status',
                 'MeuMouse\\Hubgo\\API\\Tracking_REST_Controller',
-                'MeuMouse\\Hubgo\\Integrations\\Joinotify',
             ),
             'wp_loaded' => array(
                 'MeuMouse\\Hubgo\\Views\\Shipping_Calculator',
                 'MeuMouse\\Hubgo\\Views\\Custom_Colors',
                 'MeuMouse\\Hubgo\\API\\Updater',
+                'MeuMouse\\Hubgo\\Integrations\\Joinotify',
             ),
         );
     }
