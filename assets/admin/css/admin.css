@@ -68,3 +68,31 @@
 #hubgo-order-tracking .tracking-item:last-child {
     margin-bottom: 12px;
 }
+
+#hubgo-order-tracking .hubgo-is-loading {
+    position: relative;
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+#hubgo-order-tracking .hubgo-is-loading:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    margin-top: -9px;
+    margin-left: -9px;
+    border: 2px solid #2271b1;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: hubgo-spin .6s linear infinite;
+    z-index: 2;
+}
+
+@keyframes hubgo-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

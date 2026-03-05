@@ -27,11 +27,19 @@ class Order_Tracking_Meta_Box {
     protected $tracking;
 
     /**
+     * Plugin version
+     * 
+     * @since 2.1.0
+     * @return string
+     */
+    protected $version = HUBGO_VERSION;
+
+    /**
      * Constructor
      *
      * @since 2.1.0
-     *
      * @param Tracking_Manager $tracking Tracking manager instance.
+     * @return void
      */
     public function __construct( Tracking_Manager $tracking ) {
         $this->tracking = $tracking;
@@ -51,14 +59,13 @@ class Order_Tracking_Meta_Box {
      * Register meta box
      *
      * @since 2.1.0
-     *
      * @return void
      */
     public function register_meta_box() {
         foreach ( $this->get_order_screen_ids() as $screen_id ) {
             add_meta_box(
                 'hubgo-order-tracking',
-                __( 'HubGo Tracking', 'hubgo' ),
+                __( 'Rastreio - HubGo', 'hubgo' ),
                 array( $this, 'render_meta_box' ),
                 $screen_id,
                 'side',
@@ -79,20 +86,18 @@ class Order_Tracking_Meta_Box {
             return;
         }
 
-        $version = defined( 'HUBGO_VERSION' ) ? HUBGO_VERSION : '2.1.0';
-
         wp_enqueue_style(
             'hubgo-order-tracking-admin',
             HUBGO_ASSETS . 'admin/css/admin.css',
             array(),
-            $version
+            $this->version
         );
 
         wp_enqueue_script(
             'hubgo-order-tracking-provider',
             HUBGO_ASSETS . 'admin/js/metabox-tracking-provider.js',
             array( 'jquery' ),
-            $version,
+            $this->version,
             true
         );
 
@@ -108,7 +113,7 @@ class Order_Tracking_Meta_Box {
             'hubgo-order-tracking-admin',
             HUBGO_ASSETS . 'admin/js/admin.js',
             array( 'jquery' ),
-            $version,
+            $this->version,
             true
         );
 
@@ -116,8 +121,13 @@ class Order_Tracking_Meta_Box {
             'hubgo-order-tracking-admin',
             'hubgoOrderTrackingParams',
             array(
-                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'ajax_url' => admin_url('admin-ajax.php'),
                 'order_id' => $this->get_order_id_from_request(),
+                'nonces'   => array(
+                    'create' => wp_create_nonce( 'hubgo-tracking-create-item' ),
+                    'delete' => wp_create_nonce( 'hubgo-tracking-delete-item' ),
+                    'get'    => wp_create_nonce( 'hubgo-tracking-get-item' ),
+                ),
             )
         );
     }
@@ -127,19 +137,18 @@ class Order_Tracking_Meta_Box {
      * Render meta box.
      *
      * @since 2.1.0
-     *
-     * @param mixed $post_or_order Post or order object.
+     * @param mixed $post_or_order | Post or order object.
      * @return void
      */
     public function render_meta_box( $post_or_order ) {
         $order_id = $this->get_order_id_from_post_or_order( $post_or_order );
 
         if ( $order_id <= 0 ) {
-            echo '<p>' . esc_html__( 'Order not found.', 'hubgo' ) . '</p>';
+            echo '<p>' . esc_html__( 'Pedido não encontrado.', 'hubgo' ) . '</p>';
             return;
         }
 
-        echo '<div id="hubgo-order-tracking-inner">';
+        echo '<div id="hubgo-order-tracking-inner" data-order-id="' . esc_attr( $order_id ) . '">';
         echo '<div id="hubgo-tracking-items">';
 
         foreach ( $this->tracking->get_items( $order_id ) as $item ) {
@@ -148,28 +157,28 @@ class Order_Tracking_Meta_Box {
 
         echo '</div>';
 
-        echo '<button type="button" class="button button-show-form">' . esc_html__( 'Add Tracking Number', 'hubgo' ) . '</button>';
+        echo '<button type="button" class="button button-show-form">' . esc_html__( 'Adicionar código de rastreio', 'hubgo' ) . '</button>';
+        
         echo '<div id="hubgo-shipment-tracking-form">';
 
         echo '<p class="form-field tracking_provider_field">';
-        echo '<label for="hubgo_tracking_provider">' . esc_html__( 'Provider:', 'hubgo' ) . '</label>';
+        echo '<label for="hubgo_tracking_provider">' . esc_html__( 'Transportadora:', 'hubgo' ) . '</label>';
         echo '<select id="hubgo_tracking_provider" name="hubgo_tracking_provider" style="width:100%;">';
-        echo '<option value="">' . esc_html__( 'Custom Provider', 'hubgo' ) . '</option>';
+            echo '<option value="">' . esc_html__( 'Transportadora personalizada', 'hubgo' ) . '</option>';
 
-        foreach ( Providers_Registry::get_providers() as $provider_group => $providers ) {
-            echo '<optgroup label="' . esc_attr( $provider_group ) . '">';
+            foreach ( Providers_Registry::get_providers() as $provider_group => $providers ) {
+                echo '<optgroup label="' . esc_attr( $provider_group ) . '">';
 
-            foreach ( $providers as $provider => $format ) {
-                if ( empty( $format ) ) {
-                    continue;
+                foreach ( $providers as $provider => $format ) {
+                    if ( empty( $format ) ) {
+                        continue;
+                    }
+
+                    echo '<option value="' . esc_attr( $provider ) . '">' . esc_html( $provider ) . '</option>';
                 }
 
-                echo '<option value="' . esc_attr( $provider ) . '">' . esc_html( $provider ) . '</option>';
+                echo '</optgroup>';
             }
-
-            echo '</optgroup>';
-        }
-
         echo '</select>';
         echo '</p>';
 
@@ -178,27 +187,27 @@ class Order_Tracking_Meta_Box {
         echo '<input type="hidden" id="hubgo_tracking_create_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-create-item' ) ) . '" />';
 
         echo '<p class="form-field custom_tracking_provider_field">';
-        echo '<label for="hubgo_custom_tracking_provider">' . esc_html__( 'Provider Name:', 'hubgo' ) . '</label>';
+        echo '<label for="hubgo_custom_tracking_provider">' . esc_html__( 'Transportadora:', 'hubgo' ) . '</label>';
         echo '<input type="text" id="hubgo_custom_tracking_provider" name="hubgo_custom_tracking_provider" />';
         echo '</p>';
 
         echo '<p class="form-field">';
-        echo '<label for="hubgo_tracking_number">' . esc_html__( 'Tracking number:', 'hubgo' ) . '</label>';
+        echo '<label for="hubgo_tracking_number">' . esc_html__( 'Código de rastreio:', 'hubgo' ) . '</label>';
         echo '<input type="text" id="hubgo_tracking_number" name="hubgo_tracking_number" />';
         echo '</p>';
 
         echo '<p class="form-field custom_tracking_link_field">';
-        echo '<label for="hubgo_custom_tracking_link">' . esc_html__( 'Tracking link:', 'hubgo' ) . '</label>';
+        echo '<label for="hubgo_custom_tracking_link">' . esc_html__( 'Link de rastreio:', 'hubgo' ) . '</label>';
         echo '<input type="url" id="hubgo_custom_tracking_link" name="hubgo_custom_tracking_link" placeholder="https://" />';
         echo '</p>';
 
         echo '<p class="form-field">';
-        echo '<label for="hubgo_date_shipped">' . esc_html__( 'Date shipped:', 'hubgo' ) . '</label>';
+        echo '<label for="hubgo_date_shipped">' . esc_html__( 'Data do envio:', 'hubgo' ) . '</label>';
         echo '<input type="date" id="hubgo_date_shipped" name="hubgo_date_shipped" value="' . esc_attr( gmdate( 'Y-m-d' ) ) . '" />';
         echo '</p>';
 
-        echo '<button type="button" class="button button-primary button-save-form">' . esc_html__( 'Save Tracking', 'hubgo' ) . '</button>';
-        echo '<p class="preview_tracking_link">' . esc_html__( 'Preview:', 'hubgo' ) . ' <a href="" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Click here to track your shipment', 'hubgo' ) . '</a></p>';
+        echo '<button type="button" class="button button-primary button-save-form">' . esc_html__( 'Salvar rastreio', 'hubgo' ) . '</button>';
+        echo '<p class="preview_tracking_link">' . esc_html__( 'Pré-visualizar:', 'hubgo' ) . ' <a href="" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Click here to track your shipment', 'hubgo' ) . '</a></p>';
 
         echo '</div>';
 
@@ -251,7 +260,9 @@ class Order_Tracking_Meta_Box {
      * @return void
      */
     public function ajax_save_tracking_item() {
-        check_ajax_referer( 'hubgo-tracking-create-item', 'security', true );
+        if ( ! $this->verify_ajax_nonce( 'hubgo-tracking-create-item' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Invalid nonce.', 'hubgo' ) ), 403 );
+        }
 
         if ( ! current_user_can( 'manage_woocommerce' ) ) {
             wp_die();
@@ -290,7 +301,9 @@ class Order_Tracking_Meta_Box {
      * @return void
      */
     public function ajax_delete_tracking_item() {
-        check_ajax_referer( 'hubgo-tracking-delete-item', 'security', true );
+        if ( ! $this->verify_ajax_nonce( 'hubgo-tracking-delete-item' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Invalid nonce.', 'hubgo' ) ), 403 );
+        }
 
         if ( ! current_user_can( 'manage_woocommerce' ) ) {
             wp_die();
@@ -316,7 +329,9 @@ class Order_Tracking_Meta_Box {
      * @return void
      */
     public function ajax_get_tracking_items() {
-        check_ajax_referer( 'hubgo-tracking-get-item', 'security', true );
+        if ( ! $this->verify_ajax_nonce( 'hubgo-tracking-get-item' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Invalid nonce.', 'hubgo' ) ), 403 );
+        }
 
         if ( ! current_user_can( 'manage_woocommerce' ) ) {
             wp_die();
@@ -574,7 +589,22 @@ class Order_Tracking_Meta_Box {
 
         return $this->get_order_id_from_request();
     }
+    /**
+     * Verify AJAX nonce for multiple payload keys.
+     *
+     * @since 2.1.0
+     * @param string $action Nonce action.
+     * @return bool
+     */
+    protected function verify_ajax_nonce( $action ) {
+        if ( check_ajax_referer( $action, 'security', false ) ) {
+            return true;
+        }
+
+        if ( check_ajax_referer( $action, 'nonce', false ) ) {
+            return true;
+        }
+
+        return check_ajax_referer( $action, '_ajax_nonce', false );
+    }
 }
-
-
-
