@@ -150,14 +150,18 @@
 
             $.post( ajaxUrl, data )
                 .done( function( response ) {
-                    if ( response && response !== '-1' ) {
+                    if ( response && response.success ) {
                         $item.stop( true, true ).slideUp( 220, function() {
                             $( this ).remove();
                         } );
                         return;
                     }
 
-                    window.alert( hubgoTrackingItems.getI18n( 'delete_error', 'Could not remove tracking item. Please try again.' ) );
+                    window.alert(
+                        ( response && response.data && response.data.message )
+                            ? response.data.message
+                            : hubgoTrackingItems.getI18n( 'delete_error', 'Could not remove tracking item. Please try again.' )
+                    );
                 })
                 .fail( function() {
                     window.alert( hubgoTrackingItems.getI18n( 'delete_error', 'Could not remove tracking item. Please try again.' ) );

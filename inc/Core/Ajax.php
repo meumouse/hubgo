@@ -64,13 +64,17 @@ class Ajax {
      * Initialize WordPress hooks
      *
      * @since 2.0.0
+     * @version 2.1.0
      * @return void
      */
     private function init_hooks() {
         $ajax_actions = array(
             'hubgo_save_settings' => 'save_settings',
             'hubgo_ajax_postcode' => 'ajax_calculate_shipping',
-            'hubgo_add_tracking'  => 'ajax_add_tracking',
+            'hubgo_add_tracking' => 'ajax_add_tracking',
+            'hubgo_tracking_save_item' => 'ajax_metabox_save_tracking_item',
+            'hubgo_tracking_delete_item' => 'ajax_metabox_delete_tracking_item',
+            'hubgo_tracking_get_items' => 'ajax_metabox_get_tracking_items'
         );
 
         foreach ( $ajax_actions as $action => $method ) {
@@ -80,10 +84,6 @@ class Ajax {
                 add_action( 'wp_ajax_nopriv_' . $action, array( $this, $method ) );
             }
         }
-
-        add_action( 'wp_ajax_hubgo_tracking_save_item', array( $this, 'ajax_metabox_save_tracking_item' ) );
-        add_action( 'wp_ajax_hubgo_tracking_delete_item', array( $this, 'ajax_metabox_delete_tracking_item' ) );
-        add_action( 'wp_ajax_hubgo_tracking_get_items', array( $this, 'ajax_metabox_get_tracking_items' ) );
     }
 
 
@@ -813,6 +813,3 @@ class Ajax {
         wp_send_json_success();
     }
 }
-
-
-

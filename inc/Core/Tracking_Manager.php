@@ -14,6 +14,7 @@ defined('ABSPATH') || exit;
  *
  * @since 2.1.0
  * @package MeuMouse\Hubgo\Core
+ * @author MeuMouse.com
  */
 class Tracking_Manager {
 
@@ -98,7 +99,7 @@ class Tracking_Manager {
      * @since 2.1.0
      * @param int    $order_id
      * @param string $tracking_id
-     * @return void
+     * @return int|bool Meta ID if the key didn’t exist, true on successful update, false on failure or if the value passed to the function is the same as the one that is already in the database.
      */
     public function delete_item( $order_id, $tracking_id ) {
         $items = $this->get_items( $order_id );
@@ -109,7 +110,7 @@ class Tracking_Manager {
             }
         }
 
-        update_post_meta( $order_id, self::META_KEY, array_values( $items ) );
+        return update_post_meta( $order_id, self::META_KEY, array_values( $items ) );
     }
 
 

@@ -157,7 +157,7 @@ class Assets {
         wp_enqueue_script(
             self::FRONT_SCRIPT_HANDLE,
             $script_url,
-            array( 'jquery' ),
+            array('jquery'),
             $version,
             true
         );
@@ -196,7 +196,7 @@ class Assets {
      */
     private function get_frontend_params() {
         return array(
-            'ajax_url' => esc_url( admin_url( 'admin-ajax.php' ) ),
+            'ajax_url' => esc_url( admin_url('admin-ajax.php') ),
         );
     }
 
@@ -300,7 +300,7 @@ class Assets {
         wp_enqueue_script(
             self::ADMIN_SCRIPT_HANDLE,
             $script_url,
-            array( 'jquery' ),
+            array('jquery'),
             $version,
             true
         );
@@ -332,7 +332,7 @@ class Assets {
      */
     private function get_admin_params() {
         return array(
-            'ajax_url' => esc_url( admin_url( 'admin-ajax.php' ) ),
+            'ajax_url' => esc_url( admin_url('admin-ajax.php') ),
             'nonce'    => wp_create_nonce( 'hubgo_admin_nonce' ),
             'unsaved_changes_warning' => __( 'Existem alterações não salvas. Deseja realmente sair?', 'hubgo' ),
             'toast_title' => __( 'Salvo com sucesso', 'hubgo' ),
@@ -360,7 +360,7 @@ class Assets {
         wp_enqueue_script(
             'hubgo-order-tracking-provider',
             $this->get_asset_url( 'admin/js/metabox-tracking-provider.js' ),
-            array( 'jquery' ),
+            array('jquery'),
             $version,
             true
         );
@@ -376,7 +376,7 @@ class Assets {
         wp_enqueue_script(
             'hubgo-order-tracking-admin',
             $this->get_asset_url( 'admin/js/admin.js' ),
-            array( 'jquery' ),
+            array('jquery'),
             $version,
             true
         );
@@ -397,7 +397,7 @@ class Assets {
      */
     private function get_order_tracking_params() {
         return array(
-            'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'ajax_url' => admin_url('admin-ajax.php'),
             'order_id' => $this->get_order_id_from_request(),
             'nonces'   => array(
                 'create' => wp_create_nonce( 'hubgo-tracking-create-item' ),

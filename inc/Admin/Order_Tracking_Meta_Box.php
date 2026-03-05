@@ -89,69 +89,69 @@ class Order_Tracking_Meta_Box {
 
         if ( $order_id <= 0 ) {
             echo '<p>' . esc_html__( 'Pedido não encontrado.', 'hubgo' ) . '</p>';
+
             return;
         }
 
         echo '<div id="hubgo-order-tracking-inner" data-order-id="' . esc_attr( $order_id ) . '">';
         echo '<div id="hubgo-tracking-items">';
 
-        foreach ( $this->tracking->get_items( $order_id ) as $item ) {
-            $this->render_tracking_item( $order_id, $item );
-        }
-
-        echo '</div>';
-
-        echo '<button type="button" class="button button-show-form">' . esc_html__( 'Adicionar código de rastreio', 'hubgo' ) . '</button>';
-        
-        echo '<div id="hubgo-shipment-tracking-form">';
-
-        echo '<p class="form-field tracking_provider_field">';
-        echo '<label for="hubgo_tracking_provider">' . esc_html__( 'Transportadora:', 'hubgo' ) . '</label>';
-        echo '<select id="hubgo_tracking_provider" name="hubgo_tracking_provider" style="width:100%;">';
-            echo '<option value="">' . esc_html__( 'Transportadora personalizada', 'hubgo' ) . '</option>';
-
-            foreach ( Providers_Registry::get_providers() as $provider_group => $providers ) {
-                echo '<optgroup label="' . esc_attr( $provider_group ) . '">';
-
-                foreach ( $providers as $provider => $format ) {
-                    if ( empty( $format ) ) {
-                        continue;
-                    }
-
-                    echo '<option value="' . esc_attr( $provider ) . '">' . esc_html( $provider ) . '</option>';
-                }
-
-                echo '</optgroup>';
+            foreach ( $this->tracking->get_items( $order_id ) as $item ) {
+                $this->render_tracking_item( $order_id, $item );
             }
-        echo '</select>';
-        echo '</p>';
 
-        echo '<input type="hidden" id="hubgo_tracking_get_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-get-item' ) ) . '" />';
-        echo '<input type="hidden" id="hubgo_tracking_delete_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-delete-item' ) ) . '" />';
-        echo '<input type="hidden" id="hubgo_tracking_create_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-create-item' ) ) . '" />';
+            echo '</div>';
 
-        echo '<p class="form-field custom_tracking_provider_field">';
-        echo '<label for="hubgo_custom_tracking_provider">' . esc_html__( 'Transportadora:', 'hubgo' ) . '</label>';
-        echo '<input type="text" id="hubgo_custom_tracking_provider" name="hubgo_custom_tracking_provider" />';
-        echo '</p>';
+            echo '<button type="button" class="button button-show-form">' . esc_html__( 'Adicionar código de rastreio', 'hubgo' ) . '</button>';
+            
+            echo '<div id="hubgo-shipment-tracking-form">';
 
-        echo '<p class="form-field">';
-        echo '<label for="hubgo_tracking_number">' . esc_html__( 'Código de rastreio:', 'hubgo' ) . '</label>';
-        echo '<input type="text" id="hubgo_tracking_number" name="hubgo_tracking_number" />';
-        echo '</p>';
+            echo '<p class="form-field tracking_provider_field">';
+                echo '<label for="hubgo_tracking_provider">' . esc_html__( 'Transportadora:', 'hubgo' ) . '</label>';
+                    echo '<select id="hubgo_tracking_provider" name="hubgo_tracking_provider" style="width:100%;">';
+                        echo '<option value="">' . esc_html__( 'Transportadora personalizada', 'hubgo' ) . '</option>';
 
-        echo '<p class="form-field custom_tracking_link_field">';
-        echo '<label for="hubgo_custom_tracking_link">' . esc_html__( 'Link de rastreio:', 'hubgo' ) . '</label>';
-        echo '<input type="url" id="hubgo_custom_tracking_link" name="hubgo_custom_tracking_link" placeholder="https://" />';
-        echo '</p>';
+                        foreach ( Providers_Registry::get_providers() as $provider_group => $providers ) {
+                            echo '<optgroup label="' . esc_attr( $provider_group ) . '">';
+                                foreach ( $providers as $provider => $format ) {
+                                    if ( empty( $format ) ) {
+                                        continue;
+                                    }
 
-        echo '<p class="form-field">';
-        echo '<label for="hubgo_date_shipped">' . esc_html__( 'Data do envio:', 'hubgo' ) . '</label>';
-        echo '<input type="date" id="hubgo_date_shipped" name="hubgo_date_shipped" value="' . esc_attr( gmdate( 'Y-m-d' ) ) . '" />';
-        echo '</p>';
+                                    echo '<option value="' . esc_attr( $provider ) . '">' . esc_html( $provider ) . '</option>';
+                                }
+                            echo '</optgroup>';
+                        }
+                    echo '</select>';
+                echo '</p>';
 
-        echo '<button type="button" class="button button-primary button-save-form">' . esc_html__( 'Salvar rastreio', 'hubgo' ) . '</button>';
-        echo '<p class="preview_tracking_link">' . esc_html__( 'Pré-visualizar:', 'hubgo' ) . ' <a href="" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Click here to track your shipment', 'hubgo' ) . '</a></p>';
+                echo '<input type="hidden" id="hubgo_tracking_get_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-get-item' ) ) . '" />';
+                echo '<input type="hidden" id="hubgo_tracking_delete_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-delete-item' ) ) . '" />';
+                echo '<input type="hidden" id="hubgo_tracking_create_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-create-item' ) ) . '" />';
+
+                echo '<p class="form-field custom_tracking_provider_field">';
+                echo '<label for="hubgo_custom_tracking_provider">' . esc_html__( 'Transportadora:', 'hubgo' ) . '</label>';
+                
+                echo '<input type="text" id="hubgo_custom_tracking_provider" name="hubgo_custom_tracking_provider" />';
+            echo '</p>';
+
+            echo '<p class="form-field">';
+                echo '<label for="hubgo_tracking_number">' . esc_html__( 'Código de rastreio:', 'hubgo' ) . '</label>';
+                echo '<input type="text" id="hubgo_tracking_number" name="hubgo_tracking_number" />';
+            echo '</p>';
+
+            echo '<p class="form-field custom_tracking_link_field">';
+                echo '<label for="hubgo_custom_tracking_link">' . esc_html__( 'Link de rastreio:', 'hubgo' ) . '</label>';
+                echo '<input type="url" id="hubgo_custom_tracking_link" name="hubgo_custom_tracking_link" placeholder="https://" />';
+            echo '</p>';
+
+            echo '<p class="form-field">';
+                echo '<label for="hubgo_date_shipped">' . esc_html__( 'Data do envio:', 'hubgo' ) . '</label>';
+                echo '<input type="date" id="hubgo_date_shipped" name="hubgo_date_shipped" value="' . esc_attr( gmdate( 'Y-m-d' ) ) . '" />';
+            echo '</p>';
+
+            echo '<button type="button" class="button button-primary button-save-form">' . esc_html__( 'Salvar rastreio', 'hubgo' ) . '</button>';
+            echo '<p class="preview_tracking_link">' . esc_html__( 'Pré-visualizar:', 'hubgo' ) . ' <a href="" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Clique aqui para rastrear sua encomenda', 'hubgo' ) . '</a></p>';
 
         echo '</div>';
 
@@ -250,19 +250,26 @@ class Order_Tracking_Meta_Box {
         }
 
         if ( ! current_user_can( 'manage_woocommerce' ) ) {
-            wp_die();
+            wp_send_json_error( array( 'message' => __( 'You do not have permission to delete this tracking item.', 'hubgo' ) ), 403 );
         }
 
         $order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
         $tracking_id = isset( $_POST['tracking_id'] ) ? sanitize_text_field( wp_unslash( $_POST['tracking_id'] ) ) : '';
 
         if ( $order_id <= 0 || empty( $tracking_id ) ) {
-            wp_die();
+            wp_send_json_error( array( 'message' => __( 'Invalid tracking item data.', 'hubgo' ) ), 400 );
         }
 
-        $this->tracking->delete_item( $order_id, $tracking_id );
+        $deleted_item = $this->tracking->delete_item( $order_id, $tracking_id );
 
-        wp_die( '1' );
+        if ( $deleted_item ) {
+            wp_send_json_success( array(
+                'tracking_id' => $tracking_id,
+                'message'     => __( 'Tracking item removed successfully.', 'hubgo' ),
+            ) );
+        }
+
+        wp_send_json_error( array( 'message' => __( 'Could not remove tracking item.', 'hubgo' ) ), 500 );
     }
 
 
