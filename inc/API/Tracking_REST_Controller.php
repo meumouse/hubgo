@@ -2,8 +2,10 @@
 
 namespace MeuMouse\Hubgo\API;
 
-use WP_REST_Controller;
 use MeuMouse\Hubgo\Core\Tracking_Manager;
+use MeuMouse\Hubgo\Core\Providers_Registry;
+
+use WP_REST_Controller;
 
 defined('ABSPATH') || exit;
 
@@ -13,6 +15,8 @@ defined('ABSPATH') || exit;
  * REST API for tracking insertion.
  *
  * @since 2.1.0
+ * @package MeuMouse\Hubgo\API
+ * @author MeuMouse.com
  */
 class Tracking_REST_Controller extends WP_REST_Controller {
 
@@ -20,6 +24,7 @@ class Tracking_REST_Controller extends WP_REST_Controller {
      * Constructor
      *
      * @since 2.1.0
+     * @return void
      */
     public function __construct() {
         $this->namespace = 'hubgo/v1';
@@ -43,6 +48,22 @@ class Tracking_REST_Controller extends WP_REST_Controller {
                 'permission_callback' => '__return_true',
             ),
         ));
+
+        register_rest_route( $this->namespace, '/providers', array(
+            array(
+                'methods'             => 'GET',
+                'callback'            => array( $this, 'get_providers' ),
+                'permission_callback' => '__return_true',
+                'args'                => array(
+                    'country' => array(
+                        'description'       => __( 'Country/region name to filter providers (e.g. Brazil).', 'hubgo' ),
+                        'type'              => 'string',
+                        'required'          => false,
+                        'sanitize_callback' => 'sanitize_text_field',
+                    ),
+                ),
+            ),
+        ));
     }
 
 
@@ -50,7 +71,6 @@ class Tracking_REST_Controller extends WP_REST_Controller {
      * Create tracking entry
      *
      * @since 2.1.0
-     *
      * @param \WP_REST_Request $request Request.
      * @return \WP_REST_Response
      */
@@ -73,6 +93,46 @@ class Tracking_REST_Controller extends WP_REST_Controller {
 
         return rest_ensure_response( array(
             'success' => true,
+        ));
+    }
+
+
+    /**
+     * Get registered shipping providers.
+     *
+     * Optional query params:
+     * - country: Filter by country/region key.
+     *
+     * @since 2.1.0
+     *
+     * @param \WP_REST_Request $request Request.
+     * @return \WP_REST_Response
+     */
+    public function get_providers( $request ) {
+        $providers = Providers_Registry::get_providers();
+        $country = trim( (string) $request->get_param( 'country' ) );
+
+        if ( empty( $country ) ) {
+            return rest_ensure_response( array(
+                'success'   => true,
+                'providers' => $providers,
+            ));
+        }
+
+        foreach ( $providers as $group => $items ) {
+            if ( 0 === strcasecmp( (string) $group, $country ) ) {
+                return rest_ensure_response( array(
+                    'success'   => true,
+                    'country'   => $group,
+                    'providers' => array( $group => $items ),
+                ));
+            }
+        }
+
+        return rest_ensure_response( array(
+            'success'   => true,
+            'country'   => $country,
+            'providers' => array(),
         ));
     }
 }

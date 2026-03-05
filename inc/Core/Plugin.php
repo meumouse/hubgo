@@ -3,6 +3,7 @@
 namespace MeuMouse\Hubgo\Core;
 
 use MeuMouse\Hubgo\Core\Tracking_Manager;
+use MeuMouse\Hubgo\API\Tracking_REST_Controller;
 use MeuMouse\Hubgo\Admin\Order_Tracking_Meta_Box;
 use MeuMouse\Hubgo\Views\Order_Tracking_View;
 use MeuMouse\Hubgo\Emails\Email_Shipped_Order;
@@ -208,6 +209,7 @@ final class Plugin {
      */
     protected function init_tracking() {
         $tracking = new Tracking_Manager();
+        new Tracking_REST_Controller();
 
         new Order_Tracking_Meta_Box( $tracking );
         new Order_Tracking_View( $tracking );
@@ -465,3 +467,4 @@ final class Plugin {
         _doing_it_wrong( __FUNCTION__, esc_html__( 'Trapaceando?', 'hubgo' ), '2.0.0' );
     }
 }
+

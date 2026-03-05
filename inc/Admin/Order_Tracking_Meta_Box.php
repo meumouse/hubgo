@@ -355,8 +355,8 @@ class Order_Tracking_Meta_Box {
      * Render a single tracking item for metabox.
      *
      * @since 2.1.0
-     * @param int   $order_id Order ID.
-     * @param array $item Tracking item.
+     * @param int   $order_id | Order ID.
+     * @param array $item | Tracking item.
      * @return void
      */
     protected function render_tracking_item( $order_id, $item ) {
@@ -366,23 +366,25 @@ class Order_Tracking_Meta_Box {
         $tracking_link = $this->get_tracking_link( $order_id, $item );
         $ship_date = $this->get_date_label( $item );
 
-        if ( empty( $tracking_id ) ) {
+        if ( empty( $tracking_id ) ) :
             return;
-        }
-        ?>
+        endif; ?>
+        
         <div class="tracking-item" id="tracking-item-<?php echo esc_attr( $tracking_id ); ?>">
             <p class="tracking-content">
                 <strong><?php echo esc_html( $provider ); ?></strong>
+
                 <?php if ( ! empty( $tracking_link ) ) : ?>
-                    - <a href="<?php echo esc_url( $tracking_link ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Track', 'hubgo' ); ?></a>
+                    - <a href="<?php echo esc_url( $tracking_link ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Rastrear', 'hubgo' ); ?></a>
                 <?php endif; ?>
+
                 <br>
                 <em><?php echo esc_html( $tracking_number ); ?></em>
             </p>
 
             <p class="meta">
                 <?php echo esc_html( $ship_date ); ?>
-                <a href="#" class="delete-tracking" rel="<?php echo esc_attr( $tracking_id ); ?>"><?php esc_html_e( 'Delete', 'hubgo' ); ?></a>
+                <a href="#" class="delete-tracking" rel="<?php echo esc_attr( $tracking_id ); ?>"><?php esc_html_e( 'Remover', 'hubgo' ); ?></a>
             </p>
         </div>
         <?php
@@ -529,6 +531,7 @@ class Order_Tracking_Meta_Box {
         return '' !== $output ? $output : '&ndash;';
     }
 
+
     /**
      * Get tracking link from item.
      *
@@ -617,9 +620,9 @@ class Order_Tracking_Meta_Box {
      * @return array
      */
     protected function get_order_screen_ids() {
-        $screens = array( 'shop_order' );
+        $screens = array('shop_order');
 
-        if ( function_exists( 'wc_get_page_screen_id' ) ) {
+        if ( function_exists('wc_get_page_screen_id') ) {
             $screens[] = wc_get_page_screen_id( 'shop-order' );
         }
 
@@ -634,7 +637,7 @@ class Order_Tracking_Meta_Box {
      * @return bool
      */
     protected function is_order_screen() {
-        if ( ! function_exists( 'get_current_screen' ) ) {
+        if ( ! function_exists('get_current_screen') ) {
             return false;
         }
 
