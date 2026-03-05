@@ -2,6 +2,7 @@
 
 namespace MeuMouse\Hubgo\Core;
 
+use MeuMouse\Hubgo\Admin\Order_Tracking_Meta_Box;
 use MeuMouse\Hubgo\Admin\Settings;
 
 use Exception;
@@ -79,6 +80,54 @@ class Ajax {
                 add_action( 'wp_ajax_nopriv_' . $action, array( $this, $method ) );
             }
         }
+
+        add_action( 'wp_ajax_hubgo_tracking_save_item', array( $this, 'ajax_metabox_save_tracking_item' ) );
+        add_action( 'wp_ajax_hubgo_tracking_delete_item', array( $this, 'ajax_metabox_delete_tracking_item' ) );
+        add_action( 'wp_ajax_hubgo_tracking_get_items', array( $this, 'ajax_metabox_get_tracking_items' ) );
+    }
+
+
+    /**
+     * Proxy AJAX request to order tracking metabox save handler.
+     *
+     * @since 2.1.0
+     * @return void
+     */
+    public function ajax_metabox_save_tracking_item() {
+        $this->get_order_tracking_metabox()->ajax_save_tracking_item();
+    }
+
+
+    /**
+     * Proxy AJAX request to order tracking metabox delete handler.
+     *
+     * @since 2.1.0
+     * @return void
+     */
+    public function ajax_metabox_delete_tracking_item() {
+        $this->get_order_tracking_metabox()->ajax_delete_tracking_item();
+    }
+
+
+    /**
+     * Proxy AJAX request to order tracking metabox list handler.
+     *
+     * @since 2.1.0
+     * @return void
+     */
+    public function ajax_metabox_get_tracking_items() {
+        $this->get_order_tracking_metabox()->ajax_get_tracking_items();
+    }
+
+
+    /**
+     * Create order tracking metabox instance for delegated AJAX handlers.
+     *
+     * @since 2.1.0
+     * @return Order_Tracking_Meta_Box
+     */
+    private function get_order_tracking_metabox() {
+        return new Order_Tracking_Meta_Box( new Tracking_Manager() );
     }
 
 

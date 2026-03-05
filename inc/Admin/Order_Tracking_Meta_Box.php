@@ -52,10 +52,6 @@ class Order_Tracking_Meta_Box {
         add_action( 'manage_shop_order_posts_custom_column', array( $this, 'render_shop_order_list_column' ), 20, 2 );
         add_filter( 'manage_woocommerce_page_wc-orders_columns', array( $this, 'add_orders_list_column' ), 20 );
         add_action( 'manage_woocommerce_page_wc-orders_custom_column', array( $this, 'render_wc_orders_list_column' ), 20, 2 );
-
-        add_action( 'wp_ajax_hubgo_tracking_save_item', array( $this, 'ajax_save_tracking_item' ) );
-        add_action( 'wp_ajax_hubgo_tracking_delete_item', array( $this, 'ajax_delete_tracking_item' ) );
-        add_action( 'wp_ajax_hubgo_tracking_get_items', array( $this, 'ajax_get_tracking_items' ) );
     }
 
 
