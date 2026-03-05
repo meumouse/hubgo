@@ -37,6 +37,16 @@
             return $( '#hubgo_tracking_get_nonce' ).val() || '';
         },
 
+        getI18n: function( key, fallback ) {
+            if ( hubgoOrderTrackingParams
+                && hubgoOrderTrackingParams.i18n
+                && hubgoOrderTrackingParams.i18n[ key ] ) {
+                return hubgoOrderTrackingParams.i18n[ key ];
+            }
+
+            return fallback || '';
+        },
+
         setLoading: function( $el, status ) {
             if ( status ) {
                 $el.addClass( 'hubgo-is-loading' );
@@ -96,10 +106,35 @@
             $( '#hubgo-order-tracking button.button-show-form' ).hide();
         },
 
-        deleteTracking: function() {
+        deleteTracking: function( event ) {
+            if ( event ) {
+                event.preventDefault();
+            }
+
+            var confirmMessage = hubgoTrackingItems.getI18n(
+                'confirm_delete',
+                'Are you sure you want to remove this tracking item?'
+            );
+
+            if ( ! window.confirm( confirmMessage ) ) {
+                return false;
+            }
+
             var trackingId = $( this ).attr( 'rel' );
             var $item = $( '#tracking-item-' + trackingId );
-            var nonce = hubgoTrackingItems.getNonce( 'delete' );
+            var nonce = hubgoTrackingItems.getNonce( 'delete' )
+                || $( '#hubgo_tracking_delete_nonce' ).val()
+                || ( typeof hubgo_tracking_params !== 'undefined' ? hubgo_tracking_params.nonce : '' )
+                || '';
+            var legacyNonce = $( '#hubgo_tracking_nonce' ).val() || '';
+            var ajaxUrl = ( hubgoOrderTrackingParams && hubgoOrderTrackingParams.ajax_url )
+                ? hubgoOrderTrackingParams.ajax_url
+                : ( typeof ajaxurl !== 'undefined' ? ajaxurl : '' );
+
+            if ( ! nonce && ! legacyNonce ) {
+                window.alert( hubgoTrackingItems.getI18n( 'missing_nonce', 'Could not validate the request. Please reload the page.' ) );
+                return false;
+            }
 
             hubgoTrackingItems.setLoading( $item, true );
 
@@ -109,14 +144,23 @@
                 tracking_id: trackingId,
                 security: nonce,
                 _ajax_nonce: nonce,
-                nonce: nonce
+                nonce: nonce,
+                hubgo_tracking_nonce: legacyNonce
             };
 
-            $.post( hubgoOrderTrackingParams.ajax_url, data )
+            $.post( ajaxUrl, data )
                 .done( function( response ) {
                     if ( response && response !== '-1' ) {
-                        $item.remove();
+                        $item.stop( true, true ).slideUp( 220, function() {
+                            $( this ).remove();
+                        } );
+                        return;
                     }
+
+                    window.alert( hubgoTrackingItems.getI18n( 'delete_error', 'Could not remove tracking item. Please try again.' ) );
+                })
+                .fail( function() {
+                    window.alert( hubgoTrackingItems.getI18n( 'delete_error', 'Could not remove tracking item. Please try again.' ) );
                 })
                 .always( function() {
                     hubgoTrackingItems.setLoading( $item, false );

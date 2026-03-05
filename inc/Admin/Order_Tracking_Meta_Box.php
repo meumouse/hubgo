@@ -45,7 +45,6 @@ class Order_Tracking_Meta_Box {
         $this->tracking = $tracking;
 
         add_action( 'add_meta_boxes', array( $this, 'register_meta_box' ) );
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
         add_action( 'save_post_shop_order', array( $this, 'save_tracking_data' ) );
         add_action( 'woocommerce_process_shop_order_meta', array( $this, 'save_tracking_data' ) );
         add_filter( 'manage_edit-shop_order_columns', array( $this, 'add_orders_list_column' ), 20 );
@@ -75,62 +74,6 @@ class Order_Tracking_Meta_Box {
     }
 
 
-    /**
-     * Enqueue metabox assets.
-     *
-     * @since 2.1.0
-     * @return void
-     */
-    public function enqueue_assets() {
-        if ( ! $this->is_order_screen() ) {
-            return;
-        }
-
-        wp_enqueue_style(
-            'hubgo-order-tracking-admin',
-            HUBGO_ASSETS . 'admin/css/admin.css',
-            array(),
-            $this->version
-        );
-
-        wp_enqueue_script(
-            'hubgo-order-tracking-provider',
-            HUBGO_ASSETS . 'admin/js/metabox-tracking-provider.js',
-            array( 'jquery' ),
-            $this->version,
-            true
-        );
-
-        wp_localize_script(
-            'hubgo-order-tracking-provider',
-            'hubgoTrackingProviderParams',
-            array(
-                'providers' => $this->get_providers_for_script(),
-            )
-        );
-
-        wp_enqueue_script(
-            'hubgo-order-tracking-admin',
-            HUBGO_ASSETS . 'admin/js/admin.js',
-            array( 'jquery' ),
-            $this->version,
-            true
-        );
-
-        wp_localize_script(
-            'hubgo-order-tracking-admin',
-            'hubgoOrderTrackingParams',
-            array(
-                'ajax_url' => admin_url('admin-ajax.php'),
-                'order_id' => $this->get_order_id_from_request(),
-                'nonces'   => array(
-                    'create' => wp_create_nonce( 'hubgo-tracking-create-item' ),
-                    'delete' => wp_create_nonce( 'hubgo-tracking-delete-item' ),
-                    'get'    => wp_create_nonce( 'hubgo-tracking-get-item' ),
-                ),
-            )
-        );
-    }
 
 
     /**
@@ -391,25 +334,6 @@ class Order_Tracking_Meta_Box {
     }
 
 
-    /**
-     * Get shipping providers for script preview.
-     *
-     * @since 2.1.0
-     * @return array
-     */
-    protected function get_providers_for_script() {
-        $provider_array = array();
-
-        foreach ( Providers_Registry::get_providers() as $providers ) {
-            foreach ( $providers as $provider => $format ) {
-                if ( ! empty( $format ) ) {
-                    $provider_array[ $provider ] = rawurlencode( $format );
-                }
-            }
-        }
-
-        return $provider_array;
-    }
 
 
     /**
@@ -630,25 +554,6 @@ class Order_Tracking_Meta_Box {
     }
 
 
-    /**
-     * Check if current screen is an order screen.
-     *
-     * @since 2.1.0
-     * @return bool
-     */
-    protected function is_order_screen() {
-        if ( ! function_exists('get_current_screen') ) {
-            return false;
-        }
-
-        $screen = get_current_screen();
-
-        if ( ! $screen || empty( $screen->id ) ) {
-            return false;
-        }
-
-        return in_array( $screen->id, $this->get_order_screen_ids(), true );
-    }
 
 
     /**
