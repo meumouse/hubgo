@@ -1,7 +1,89 @@
+/**
+ * HubGo tracking metabox scripts.
+ *
+ * @version 2.1.0
+ * @since 2.1.0
+ * @param {jQueryStatic} $ jQuery instance.
+ * @return {void}
+ */
 (function($){
     'use strict';
 
+    var hubgoTrackingProvider = {
+        /**
+         * Initialize tracking provider listeners.
+         *
+         * @version 2.1.0
+         * @since 2.1.0
+         * @param {void} _ Unused.
+         * @return {void}
+         */
+        init: function() {
+            $( '.custom_tracking_link_field, .custom_tracking_provider_field' ).hide();
+
+            $( '#hubgo_custom_tracking_link, #hubgo_tracking_number, #hubgo_tracking_provider' )
+                .on( 'change keyup', this.updateTrackingLink )
+                .trigger( 'change' );
+        },
+
+        /**
+         * Build and render tracking preview URL.
+         *
+         * @version 2.1.0
+         * @since 2.1.0
+         * @param {Event} event Trigger event.
+         * @return {void}
+         */
+        updateTrackingLink: function( event ) {
+            var tracking = $( '#hubgo_tracking_number' ).val();
+            var provider = $( '#hubgo_tracking_provider' ).val();
+            var providers = ( typeof hubgoTrackingProviderParams !== 'undefined' && hubgoTrackingProviderParams.providers )
+                ? hubgoTrackingProviderParams.providers
+                : {};
+            var postcode = $( '#_shipping_postcode' ).val();
+            var country = $( '#_shipping_country' ).val();
+            var link = '';
+
+            if ( ! postcode || ! postcode.length ) {
+                postcode = $( '#_billing_postcode' ).val();
+            }
+
+            postcode = encodeURIComponent( postcode || '' );
+            country = encodeURIComponent( country || '' );
+
+            if ( provider && providers[ provider ] ) {
+                link = providers[ provider ];
+                link = link.replace( '%251%24s', tracking || '' );
+                link = link.replace( '%252%24s', postcode );
+                link = link.replace( '%253%24s', country );
+                link = decodeURIComponent( link );
+
+                $( '.custom_tracking_link_field, .custom_tracking_provider_field' ).hide();
+            } else {
+                $( '.custom_tracking_link_field, .custom_tracking_provider_field' ).show();
+                link = $( '#hubgo_custom_tracking_link' ).val();
+            }
+
+            if ( link ) {
+                $( '.preview_tracking_link a' ).attr( 'href', link );
+                $( '.preview_tracking_link' ).show();
+            } else {
+                $( '.preview_tracking_link' ).hide();
+            }
+
+            void event;
+        }
+    };
+
     var hubgoTrackingItems = {
+        /**
+         * Initialize metabox action listeners.
+         *
+         * @version 2.1.0
+         * @since 2.1.0
+         * @param {void} _ Unused.
+         * @return {void}
+         */
         init: function() {
             $( '#hubgo-order-tracking' )
                 .on( 'click', 'a.delete-tracking', this.deleteTracking )
@@ -9,6 +91,14 @@
                 .on( 'click', 'button.button-save-form', this.saveForm );
         },
 
+        /**
+         * Resolve current order ID from admin contexts.
+         *
+         * @version 2.1.0
+         * @since 2.1.0
+         * @param {void} _ Unused.
+         * @return {number} Current order id.
+         */
         getOrderId: function() {
             return $( '#hubgo-order-tracking-inner' ).data( 'order-id' )
                 || hubgoOrderTrackingParams.order_id
@@ -17,6 +107,14 @@
                 || 0;
         },
 
+        /**
+         * Resolve nonce by operation type.
+         *
+         * @version 2.1.0
+         * @since 2.1.0
+         * @param {string} type Nonce type: create|delete|get.
+         * @return {string} Nonce value.
+         */
         getNonce: function( type ) {
             var localized = hubgoOrderTrackingParams.nonces && hubgoOrderTrackingParams.nonces[ type ]
                 ? hubgoOrderTrackingParams.nonces[ type ]
@@ -37,6 +135,15 @@
             return $( '#hubgo_tracking_get_nonce' ).val() || '';
         },
 
+        /**
+         * Get translated text with fallback.
+         *
+         * @version 2.1.0
+         * @since 2.1.0
+         * @param {string} key I18n key.
+         * @param {string} fallback Fallback text.
+         * @return {string} Translation string.
+         */
         getI18n: function( key, fallback ) {
             if ( hubgoOrderTrackingParams
                 && hubgoOrderTrackingParams.i18n
@@ -47,6 +154,15 @@
             return fallback || '';
         },
 
+        /**
+         * Toggle loading state for a container.
+         *
+         * @version 2.1.0
+         * @since 2.1.0
+         * @param {jQuery} $el Target container.
+         * @param {boolean} status Loading status.
+         * @return {void}
+         */
         setLoading: function( $el, status ) {
             if ( status ) {
                 $el.addClass( 'hubgo-is-loading' );
@@ -57,7 +173,15 @@
             }
         },
 
-        saveForm: function() {
+        /**
+         * Save tracking item through AJAX.
+         *
+         * @version 2.1.0
+         * @since 2.1.0
+         * @param {Event} event Click event.
+         * @return {boolean} Always false to prevent default behavior.
+         */
+        saveForm: function( event ) {
             var trackingNumber = $( '#hubgo_tracking_number' ).val();
             var $form = $( '#hubgo-shipment-tracking-form' );
 
@@ -98,14 +222,32 @@
                     hubgoTrackingItems.setLoading( $form, false );
                 } );
 
+            void event;
             return false;
         },
 
-        showForm: function() {
+        /**
+         * Show tracking form in metabox.
+         *
+         * @version 2.1.0
+         * @since 2.1.0
+         * @param {Event} event Click event.
+         * @return {void}
+         */
+        showForm: function( event ) {
             $( '#hubgo-shipment-tracking-form' ).show();
             $( '#hubgo-order-tracking button.button-show-form' ).hide();
+            void event;
         },
 
+        /**
+         * Delete tracking item through AJAX.
+         *
+         * @version 2.1.0
+         * @since 2.1.0
+         * @param {Event} event Click event.
+         * @return {boolean} False when action is interrupted or completed.
+         */
         deleteTracking: function( event ) {
             if ( event ) {
                 event.preventDefault();
@@ -177,6 +319,14 @@
             return false;
         },
 
+        /**
+         * Refresh tracking item list from backend.
+         *
+         * @version 2.1.0
+         * @since 2.1.0
+         * @param {void} _ Unused.
+         * @return {void}
+         */
         refreshItems: function() {
             var nonce = hubgoTrackingItems.getNonce( 'get' );
             var data = {
@@ -195,8 +345,16 @@
         }
     };
 
+    /**
+     * Initialize metabox modules and expose refresh callback.
+     *
+     * @version 2.1.0
+     * @since 2.1.0
+     * @param {void} _ Unused.
+     * @return {void}
+     */
+    hubgoTrackingProvider.init();
     hubgoTrackingItems.init();
     window.hubgo_tracking_refresh = hubgoTrackingItems.refreshItems;
 
 })(jQuery);
-

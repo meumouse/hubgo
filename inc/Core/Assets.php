@@ -267,7 +267,7 @@ class Assets {
      * @return void
      */
     private function register_admin_styles() {
-        $style_url = $this->get_asset_url( 'admin/css/hubgo-admin.css' );
+        $style_url = $this->get_asset_url( 'admin/css/settings.css' );
         $version = $this->get_asset_version();
 
         if ( empty( $style_url ) ) {
@@ -290,7 +290,7 @@ class Assets {
      * @return void
      */
     private function register_admin_scripts() {
-        $script_url = $this->get_asset_url( 'admin/js/hubgo-admin.js' );
+        $script_url = $this->get_asset_url( 'admin/js/settings.js' );
         $version = $this->get_asset_version();
 
         if ( empty( $script_url ) ) {
@@ -318,7 +318,7 @@ class Assets {
 
         wp_localize_script(
             self::ADMIN_SCRIPT_HANDLE,
-            'hubgo_admin_params',
+            'hubgo_settings_params',
             apply_filters( 'Hubgo/Core/Assets/AdminParams', $admin_params )
         );
     }
@@ -337,6 +337,8 @@ class Assets {
             'unsaved_changes_warning' => __( 'Existem alterações não salvas. Deseja realmente sair?', 'hubgo' ),
             'toast_title' => __( 'Salvo com sucesso', 'hubgo' ),
             'toast_message' => __( 'As configurações foram atualizadas!', 'hubgo' ),
+            'toast_error_title' => __( 'Erro ao salvar', 'hubgo' ),
+            'toast_error_message' => __( 'Não foi possível salvar as configurações. Tente novamente.', 'hubgo' ),
         );
     }
 
@@ -352,14 +354,14 @@ class Assets {
 
         wp_enqueue_style(
             'hubgo-order-tracking-admin',
-            $this->get_asset_url( 'admin/css/admin.css' ),
+            $this->get_asset_url( 'admin/css/tracking-metabox.css' ),
             array(),
             $version
         );
 
         wp_enqueue_script(
             'hubgo-order-tracking-provider',
-            $this->get_asset_url( 'admin/js/metabox-tracking-provider.js' ),
+            $this->get_asset_url( 'admin/js/tracking-metabox.js' ),
             array('jquery'),
             $version,
             true
@@ -373,16 +375,8 @@ class Assets {
             )
         );
 
-        wp_enqueue_script(
-            'hubgo-order-tracking-admin',
-            $this->get_asset_url( 'admin/js/admin.js' ),
-            array('jquery'),
-            $version,
-            true
-        );
-
         wp_localize_script(
-            'hubgo-order-tracking-admin',
+            'hubgo-order-tracking-provider',
             'hubgoOrderTrackingParams',
             $this->get_order_tracking_params()
         );
@@ -518,3 +512,5 @@ class Assets {
         return defined( 'HUBGO_VERSION' ) ? HUBGO_VERSION : '1.0.0';
     }
 }
+
+
