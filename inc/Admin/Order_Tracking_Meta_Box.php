@@ -112,7 +112,7 @@ class Order_Tracking_Meta_Box {
                         echo '<option value="">' . esc_html__( 'Transportadora personalizada', 'hubgo' ) . '</option>';
 
                         foreach ( Providers_Registry::get_providers() as $provider_group => $providers ) {
-                            echo '<optgroup label="' . esc_attr( $provider_group ) . '">';
+                            echo '<optgroup label="' . esc_attr( Providers_Registry::get_country_label( $provider_group ) ) . '">';
                                 foreach ( $providers as $provider => $format ) {
                                     if ( empty( $format ) ) {
                                         continue;
@@ -622,3 +622,4 @@ class Order_Tracking_Meta_Box {
         return check_ajax_referer( $action, '_ajax_nonce', false );
     }
 }
+

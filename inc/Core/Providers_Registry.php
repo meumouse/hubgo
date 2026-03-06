@@ -172,6 +172,45 @@ class Providers_Registry {
 		return apply_filters( 'Hubgo/Tracking/Get_Providers', $providers );
 	}
 
+
+	/**
+	 * Get translated label for country/region key.
+	 *
+	 * Keeps internal keys stable while allowing translated labels in UI.
+	 *
+	 * @since 2.1.0
+	 * @param string $country Country/region key.
+	 * @return string
+	 */
+	public static function get_country_label( $country ) {
+		$labels = array(
+			'Brazil'         => __( 'Brazil', 'hubgo' ),
+			'Global'         => __( 'Global', 'hubgo' ),
+			'Australia'      => __( 'Australia', 'hubgo' ),
+			'Austria'        => __( 'Austria', 'hubgo' ),
+			'Belgium'        => __( 'Belgium', 'hubgo' ),
+			'Canada'         => __( 'Canada', 'hubgo' ),
+			'Czech Republic' => __( 'Czech Republic', 'hubgo' ),
+			'Finland'        => __( 'Finland', 'hubgo' ),
+			'France'         => __( 'France', 'hubgo' ),
+			'Germany'        => __( 'Germany', 'hubgo' ),
+			'Ireland'        => __( 'Ireland', 'hubgo' ),
+			'Italy'          => __( 'Italy', 'hubgo' ),
+			'India'          => __( 'India', 'hubgo' ),
+			'Netherlands'    => __( 'Netherlands', 'hubgo' ),
+			'New Zealand'    => __( 'New Zealand', 'hubgo' ),
+			'Poland'         => __( 'Poland', 'hubgo' ),
+			'Romania'        => __( 'Romania', 'hubgo' ),
+			'South African'  => __( 'South African', 'hubgo' ),
+			'Sweden'         => __( 'Sweden', 'hubgo' ),
+			'United Kingdom' => __( 'United Kingdom', 'hubgo' ),
+			'United States'  => __( 'United States', 'hubgo' ),
+		);
+
+		return $labels[ $country ] ?? $country;
+	}
+
+
 	/**
 	 * Get provider URL format by country and provider name.
 	 *
@@ -198,6 +237,7 @@ class Providers_Registry {
 
 		return '';
 	}
+
 
 	/**
 	 * Build provider tracking URL.
