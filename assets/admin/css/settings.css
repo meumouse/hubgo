@@ -84,6 +84,23 @@ table tr {
     font-size: 16px;
 }
 
+.hubgo-admin-title-container {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 0.5rem;
+}
+
+.hubgo-admin-title-container #hubgo_logo {
+    height: 2.525rem;
+    width: auto;
+    margin-right: 0.725rem;
+}
+
+.hubgo-shipping-management-wc-admin-title-description p {
+    font-size: 1rem;
+}
+
 .hubgo-shipping-management-wc-top-text {
     margin-top: 0;
     margin-bottom: 58px;

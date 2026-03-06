@@ -2,6 +2,7 @@
 
 namespace MeuMouse\Hubgo\Core;
 
+use MeuMouse\Hubgo\Admin\Order_Tracking_Meta_Box;
 use MeuMouse\Hubgo\Admin\Settings;
 
 use Exception;
@@ -18,6 +19,7 @@ defined('ABSPATH') || exit;
  * Manages AJAX endpoints for settings and shipping calculations
  *
  * @since 2.0.0
+ * @version 2.1.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -62,12 +64,17 @@ class Ajax {
      * Initialize WordPress hooks
      *
      * @since 2.0.0
+     * @version 2.1.0
      * @return void
      */
     private function init_hooks() {
         $ajax_actions = array(
             'hubgo_save_settings' => 'save_settings',
             'hubgo_ajax_postcode' => 'ajax_calculate_shipping',
+            'hubgo_add_tracking' => 'ajax_add_tracking',
+            'hubgo_tracking_save_item' => 'ajax_metabox_save_tracking_item',
+            'hubgo_tracking_delete_item' => 'ajax_metabox_delete_tracking_item',
+            'hubgo_tracking_get_items' => 'ajax_metabox_get_tracking_items'
         );
 
         foreach ( $ajax_actions as $action => $method ) {
@@ -81,9 +88,54 @@ class Ajax {
 
 
     /**
+     * Proxy AJAX request to order tracking metabox save handler.
+     *
+     * @since 2.1.0
+     * @return void
+     */
+    public function ajax_metabox_save_tracking_item() {
+        $this->get_order_tracking_metabox()->ajax_save_tracking_item();
+    }
+
+
+    /**
+     * Proxy AJAX request to order tracking metabox delete handler.
+     *
+     * @since 2.1.0
+     * @return void
+     */
+    public function ajax_metabox_delete_tracking_item() {
+        $this->get_order_tracking_metabox()->ajax_delete_tracking_item();
+    }
+
+
+    /**
+     * Proxy AJAX request to order tracking metabox list handler.
+     *
+     * @since 2.1.0
+     * @return void
+     */
+    public function ajax_metabox_get_tracking_items() {
+        $this->get_order_tracking_metabox()->ajax_get_tracking_items();
+    }
+
+
+    /**
+     * Create order tracking metabox instance for delegated AJAX handlers.
+     *
+     * @since 2.1.0
+     * @return Order_Tracking_Meta_Box
+     */
+    private function get_order_tracking_metabox() {
+        return new Order_Tracking_Meta_Box( new Tracking_Manager() );
+    }
+
+
+    /**
      * Save plugin settings via AJAX
      *
      * @since 2.0.0
+     * @version 2.1.0
      * @return void
      */
     public function save_settings() {
@@ -99,26 +151,27 @@ class Ajax {
             }
 
             $updated_options = $this->process_settings_data( $form_data );
-
+            $existing_options = get_option( self::SETTINGS_OPTION_NAME, array() );
             $update_result = update_option( self::SETTINGS_OPTION_NAME, $updated_options );
+            $options_unchanged = (array) $existing_options === (array) $updated_options;
 
-            if ( ! $update_result ) {
+            if ( ! $update_result && ! $options_unchanged ) {
                 wp_send_json_error( array(
                     'message' => esc_html__( 'Erro ao salvar as configurações.', 'hubgo' ),
-                ) );
+                ));
             }
 
             wp_send_json_success( array(
                 'message' => esc_html__( 'Configurações salvas com sucesso!', 'hubgo' ),
                 'options' => $updated_options,
-            ) );
+            ));
 
         } catch ( Exception $e ) {
             error_log( 'HubGo Ajax Error: ' . $e->getMessage() );
 
             wp_send_json_error( array(
                 'message' => esc_html__( 'Erro ao processar a requisição.', 'hubgo' ),
-            ) );
+            ));
         }
     }
 
@@ -200,6 +253,8 @@ class Ajax {
         $checkbox_fields = array(
             'enable_shipping_calculator',
             'enable_auto_shipping_calculator',
+            'enable_order_shipped_status',
+            'enable_order_tracking_admin_ui',
         );
 
         foreach ( $checkbox_fields as $field ) {
@@ -734,5 +789,31 @@ class Ajax {
         echo '<div class="woocommerce-message woocommerce-error">'
             . esc_html__( 'Erro ao calcular o frete. Tente novamente.', 'hubgo' )
             . '</div>';
+    }
+
+
+    /**
+     * AJAX add tracking
+     *
+     * @since 2.1.0
+     *
+     * @return void
+     */
+    public function ajax_add_tracking() {
+        check_ajax_referer( 'hubgo_tracking_nonce', 'nonce' );
+
+        $tracking = new Tracking_Manager();
+
+        $tracking->add_item(
+            absint( $_POST['order_id'] ),
+            array(
+                'tracking_number' => $_POST['tracking_number'],
+                'provider'        => isset( $_POST['provider'] ) ? $_POST['provider'] : ( $_POST['carrier'] ?? '' ),
+                'custom_url'      => $_POST['custom_url'] ?? '',
+                'ship_date'       => $_POST['ship_date'],
+            )
+        );
+
+        wp_send_json_success();
     }
 }

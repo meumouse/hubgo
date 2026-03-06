@@ -1,0 +1,482 @@
+<?php
+
+namespace MeuMouse\Hubgo\Integrations;
+
+use MeuMouse\Hubgo\Core\Providers_Registry;
+
+use MeuMouse\Joinotify\Integrations\Integrations_Base;
+use MeuMouse\Joinotify\Integrations\Woocommerce;
+use MeuMouse\Joinotify\Core\Workflow_Processor;
+use MeuMouse\Joinotify\Admin\Admin as Joinotify_Settings;
+
+// Exit if accessed directly.
+defined('ABSPATH') || exit;
+
+if ( class_exists( Integrations_Base::class ) ) {
+
+    /**
+     * Joinotify integration for HubGo triggers and placeholders.
+     *
+     * @since 2.1.0
+     * @package MeuMouse\Hubgo\Integrations
+     * @author MeuMouse.com
+     */
+    class Joinotify extends Integrations_Base {
+
+        /**
+         * Constructor.
+         *
+         * @since 2.1.0
+         * @return void
+         */
+        public function __construct() {
+            add_filter( 'Joinotify/Admin/Set_Default_Options', array( $this, 'add_options' ), 10, 1 );
+            add_filter( 'Joinotify/Admin/Ajax/Save_Options', array( $this, 'register_options' ), 10, 1 );
+            add_filter( 'Joinotify/Settings/Tabs/Integrations', array( $this, 'add_integration_item' ), 35, 1 );
+
+            if ( Joinotify_Settings::get_setting('enable_hubgo_integration') === 'yes' ) {
+                add_filter( 'Joinotify/Builder/Get_All_Triggers', array( $this, 'add_triggers' ), 40, 1 );
+                add_action( 'Joinotify/Builder/Triggers', array( $this, 'add_triggers_tab' ), 60 );
+                add_action( 'Joinotify/Builder/Triggers_Content', array( $this, 'add_triggers_content' ) );
+                add_filter( 'Joinotify/Builder/Placeholders_List', array( $this, 'add_placeholders' ), 20, 2 );
+
+                add_action( 'Hubgo/Tracking/Order_Shipped', array( $this, 'handle_order_shipped' ), 10, 2 );
+                add_action( 'Hubgo/Tracking/Item_Saved', array( $this, 'handle_tracking_saved' ), 10, 3 );
+            }
+        }
+
+
+        /**
+         * Add default options on Joinotify settings
+         * 
+         * @since 2.1.0
+         * @param array $settings | Current settings
+         * @return array
+         */
+        public function add_options( $settings ) {
+            $settings['enable_hubgo_integration'] = 'yes';
+
+            return $settings;
+        }
+
+
+        /**
+         * Register new options on Joinotify settings
+         * 
+         * @since 2.1.0
+         * @param array $settings | Current settings keys
+         * @return array
+         */
+        public function register_options( $settings ) {
+            $settings[] = 'enable_hubgo_integration';
+            
+            return $settings;
+        }
+
+
+        /**
+         * Provide integration information for Joinotify settings.
+         *
+         * @since 2.1.0
+         * @param array $integrations | Current integrations array.
+         * @return array Modified integrations array including Bling.
+         */
+        public function add_integration_item( $integrations ) {
+            $integrations['hubgo'] = array(
+                'title'         => esc_html__( 'HubGo', 'hubgo' ),
+                'description'   => esc_html__( 'Dispare mensagens automáticas no WhatsApp com eventos de logística, como pedido enviado e código de rastreio, integrando o HubGo ao Joinotify.', 'hubgo' ),
+                'icon'          => '<svg id="hubgo_logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 272.84 152.99"><defs><style>.hubgo-1{fill:#008aff;}.hubgo-2{fill:#232323;}</style></defs><g id="Icon"><g id="Icon-2" data-name="Icon"><g id="Airplane"><path class="hubgo-1" d="M601.94,295.67c1.75,4.52,6.86,0,6.56-3.29l1.78-39.26-16.7,9.05Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-1" d="M630.77,217.59c-8.62,1.84-17.75,2.72-24.54,9.12-13.16,10.11-36.44,30.92-54.15,39.8-55,25.09-115.12,40.9-172.42,38.09-20.59-1.47-21.89,30.28-1.11,30.42,44.74-3.17,90.28-13.37,130.27-30.66,27.77-11.46,51.52-28.55,77.3-42.73,11.29-6.59,35.93-16.07,43.66-27.39C633.38,229.34,642.18,220,630.77,217.59Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-1" d="M552.62,221.23l27.84,21,14.94-11.94-37.19-13.79C555.26,214.92,549.15,217.87,552.62,221.23Z" transform="translate(-363.58 -216.05)"/></g><g id="H"><path class="hubgo-2" d="M445.26,242.32c.23-16.14-25.11-16.14-24.88,0v54.27c7.51-.78,15.8-1.94,24.88-3.6Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-2" d="M420.38,356.84c-.22,16.13,25.11,16.14,24.88,0V332.36q-12.22,2.77-24.88,4.86Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-2" d="M533.72,267.22v-24.9c-.07-16.27-24.83-16.27-24.9,0v33.95C516.73,273.58,525.33,270.54,533.72,267.22Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-2" d="M508.82,356.84c.07,16.27,24.83,16.26,24.9,0V300.43q-12.12,6.29-24.9,11.7Z" transform="translate(-363.58 -216.05)"/></g></g></g></svg>',
+                'setting_key'   => 'enable_hubgo_integration',
+                'action_hook'   => 'Joinotify/Settings/Tabs/Integrations/Hubgo',
+                'is_plugin'     => true,
+                'plugin_active' => array('hubgo/hubgo.php'),
+            );
+
+            return $integrations;
+        }
+
+
+        /**
+         * Register HubGo triggers in Joinotify.
+         *
+         * @since 2.1.0
+         * @param array $triggers Existing triggers.
+         * @return array
+         */
+        public function add_triggers( $triggers ) {
+            $triggers['hubgo'] = array(
+                array(
+                    'data_trigger'     => 'Hubgo/Tracking/Order_Shipped',
+                    'title'            => esc_html__( 'Pedido enviado', 'hubgo' ),
+                    'description'      => esc_html__( 'Disparado quando o status do pedido é alterado para Pedido enviado.', 'hubgo' ),
+                    'require_settings' => false,
+                ),
+                array(
+                    'data_trigger'     => 'Hubgo/Tracking/Item_Saved',
+                    'title'            => esc_html__( 'Ao salvar um rastreio no pedido', 'hubgo' ),
+                    'description'      => esc_html__( 'Disparado ao salvar um codigo de rastreio no pedido.', 'hubgo' ),
+                    'require_settings' => false,
+                ),
+            );
+
+            return $triggers;
+        }
+
+
+        /**
+         * Add HubGo tab in Joinotify trigger builder.
+         *
+         * @since 2.1.0
+         * @return void
+         */
+        public function add_triggers_tab() {
+            $integration_slug = 'hubgo';
+            $integration_name = esc_html__( 'HubGo', 'hubgo' );
+            $icon_svg = '<svg class="joinotify-tab-icon hubgo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 272.84 152.99"><defs></defs><g id="Icon"><g id="Icon-2" data-name="Icon"><g id="Airplane"><path class="hubgo-1" d="M601.94,295.67c1.75,4.52,6.86,0,6.56-3.29l1.78-39.26-16.7,9.05Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-1" d="M630.77,217.59c-8.62,1.84-17.75,2.72-24.54,9.12-13.16,10.11-36.44,30.92-54.15,39.8-55,25.09-115.12,40.9-172.42,38.09-20.59-1.47-21.89,30.28-1.11,30.42,44.74-3.17,90.28-13.37,130.27-30.66,27.77-11.46,51.52-28.55,77.3-42.73,11.29-6.59,35.93-16.07,43.66-27.39C633.38,229.34,642.18,220,630.77,217.59Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-1" d="M552.62,221.23l27.84,21,14.94-11.94-37.19-13.79C555.26,214.92,549.15,217.87,552.62,221.23Z" transform="translate(-363.58 -216.05)"/></g><g id="H"><path class="hubgo-2" d="M445.26,242.32c.23-16.14-25.11-16.14-24.88,0v54.27c7.51-.78,15.8-1.94,24.88-3.6Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-2" d="M420.38,356.84c-.22,16.13,25.11,16.14,24.88,0V332.36q-12.22,2.77-24.88,4.86Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-2" d="M533.72,267.22v-24.9c-.07-16.27-24.83-16.27-24.9,0v33.95C516.73,273.58,525.33,270.54,533.72,267.22Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-2" d="M508.82,356.84c.07,16.27,24.83,16.26,24.9,0V300.43q-12.12,6.29-24.9,11.7Z" transform="translate(-363.58 -216.05)"/></g></g></g></svg>';
+
+            $this->render_integration_trigger_tab( $integration_slug, $integration_name, $icon_svg );
+        }
+
+
+        /**
+         * Render HubGo trigger content in Joinotify builder.
+         *
+         * @since 2.1.0
+         * @return void
+         */
+        public function add_triggers_content() {
+            $this->render_integration_trigger_content( 'hubgo' );
+        }
+
+
+        /**
+         * Register HubGo placeholders.
+         *
+         * @since 2.1.0
+         * @param array $placeholders | Existing placeholders.
+         * @param array $payload | Trigger payload.
+         * @return array
+         */
+        public function add_placeholders( $placeholders, $payload ) {
+            $order = isset( $payload['order_id'] ) ? wc_get_order( $payload['order_id'] ) : null;
+            $current_user = wp_get_current_user();
+            $tracking_data = isset( $payload['tracking_data'] ) && is_array( $payload['tracking_data'] ) ? $payload['tracking_data'] : array();
+            $carrier_name = isset( $tracking_data['carrier_name'] ) ? $tracking_data['carrier_name'] : '';
+            $tracking_link = isset( $tracking_data['tracking_link'] ) ? $tracking_data['tracking_link'] : '';
+            $tracking_code = isset( $tracking_data['tracking_code'] ) ? $tracking_data['tracking_code'] : '';
+            $shipping_date = isset( $tracking_data['shipping_date'] ) ? $tracking_data['shipping_date'] : '';
+
+            $trigger_names = array(
+                'Hubgo/Tracking/Order_Shipped',
+                'Hubgo/Tracking/Item_Saved',
+            );
+            
+            $placeholders['hubgo'] = array(
+                '{{ hubgo_carrier_name }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Nome da transportadora', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $carrier_name,
+                        'sandbox'    => esc_html__( 'Correios', 'hubgo' ),
+                    ),
+                ),
+                '{{ hubgo_tracking_link }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Link de rastreio', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $tracking_link,
+                        'sandbox'    => esc_html__( 'https://transportadora.exemplo/rastreio/BR1234567890', 'hubgo' ),
+                    ),
+                ),
+                '{{ hubgo_tracking_code }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Codigo de rastreio', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $tracking_code,
+                        'sandbox'    => 'BR1234567890',
+                    ),
+                ),
+                '{{ hubgo_shipping_date }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Data do envio', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => wp_date( get_option('date_format'), strtotime( $shipping_date ) ),
+                        'sandbox'    => wp_date( get_option('date_format') ),
+                    ),
+                ),
+                '{{ wc_billing_first_name }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o primeiro nome de faturamento do cliente no pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? $order->get_billing_first_name() : '',
+                        'sandbox' => $current_user->exists() ? $current_user->first_name : esc_html__( 'João', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_billing_last_name }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o sobrenome de faturamento do cliente no pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? $order->get_billing_last_name() : '',
+                        'sandbox' => $current_user->exists() ? $current_user->last_name : esc_html__( 'da Silva', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_billing_email }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o e-mail de faturamento do cliente no pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ?  $order->get_billing_email() : '',
+                        'sandbox' => $current_user->exists() ? $current_user->user_email : esc_html__( 'usuario@exemplo.com', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_billing_phone }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o telefone de faturamento do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? $order->get_billing_phone() : '',
+                        'sandbox' => esc_html__( '+55 11 91234-5678', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_shipping_phone }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o telefone de entrega do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? $order->get_shipping_phone() : '',
+                        'sandbox' => esc_html__( '+55 41 91234-5678', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_order_number }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o número do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? $order->get_order_number() : '',
+                        'sandbox' => esc_html__( '12345', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_order_status }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o status do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order && function_exists('wc_get_order_status_name') ? wc_get_order_status_name( $order->get_status() ) : '',
+                        'sandbox' => esc_html__( 'Concluído', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_order_date }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar a data do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? date_i18n( get_option('date_format'), strtotime( $order->get_date_created() ) ) : '',
+                        'sandbox' => date( get_option('date_format') ),
+                    ),
+                ),
+                '{{ wc_billing_full_address }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o endereço completo de faturamento do usuário (formato configurável nas opções do WooCommerce).', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? Woocommerce::get_full_address( $order, 'billing' ) : '',
+                        'sandbox' => esc_html__( 'Rua das Flores, 123 - Curitiba/PR - Brasil (CEP: 80000-000)', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_shipping_full_address }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o endereço completo de entrega do usuário (formato configurável nas opções do WooCommerce).', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? Woocommerce::get_full_address( $order, 'shipping' ) : '',
+                        'sandbox' => esc_html__( 'Rua das Margaridas, 450 - Curitiba/PR - Brasil (CEP: 80000-100)', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_purchased_items }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar cada produto e quantidade adquiridos no pedido, separados por linha', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? Woocommerce::get_purchased_items( $order ) : '',
+                        'sandbox' => sprintf( '%s %s %s', esc_html__( '1x - Camiseta de algodão masculina (Produto exemplo)', 'hubgo' ), "\n",  esc_html__( '1x - Óculos de sol com proteção UV (Produto exemplo)', 'hubgo' ) ),
+                    ),
+                ),
+                '{{ wc_currency_symbol }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o símbolo de moeda do pedido', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order && function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol( $order->get_currency() ) : '',
+                        'sandbox' => function_exists('get_woocommerce_currency_symbol') ?? get_woocommerce_currency_symbol(),
+                    ),
+                ),
+                '{{ wc_order_total }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o valor total do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order && function_exists('joinotify_format_plain_text') ? joinotify_format_plain_text( $order->get_total() ) : '',
+                        'sandbox' => function_exists('joinotify_format_plain_text') ?? joinotify_format_plain_text( wc_price( 150 ) ),
+                    ),
+                ),
+                '{{ wc_total_discount }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o valor total de desconto do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order && function_exists('joinotify_format_plain_text') ? joinotify_format_plain_text( $order->get_total_discount() ) : '',
+                        'sandbox' => function_exists('joinotify_format_plain_text') ?? joinotify_format_plain_text( wc_price( 20 ) ),
+                    ),
+                ),
+                '{{ wc_total_tax }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o valor total de impostos do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order && function_exists('joinotify_format_plain_text') ? joinotify_format_plain_text( $order->get_total_tax() ) : '',
+                        'sandbox' => function_exists('joinotify_format_plain_text') ?? joinotify_format_plain_text( wc_price( 15 ) ),
+                    ),
+                ),
+                '{{ wc_coupon_codes }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar os códigos de cupom utilizados no pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? implode(', ', $order->get_coupon_codes()) : '',
+                        'sandbox' => esc_html__( 'CUPOM10, FRETEGRATIS', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_payment_method_title }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o título do método de pagamento do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? (function ( $order ) {
+                            $id = $order->get_payment_method();
+                            $gateways = WC()->payment_gateways()->payment_gateways();
+                            
+                            return isset( $gateways[ $id ] ) && function_exists('joinotify_format_plain_text') ? joinotify_format_plain_text( $gateways[ $id ]->get_title() ) : '';
+                        })( $order ) : '',
+                        'sandbox' => esc_html__( 'Cartão de crédito', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_shipping_address }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o endereço de entrega do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? $order->get_shipping_to_display() : '',
+                        'sandbox' => esc_html__( 'Rua das Margaridas, 450 - Curitiba/PR - Brasil (CEP: 80000-100)', 'hubgo' ),
+                    ),
+                ),
+            );
+
+            return $placeholders;
+        }
+
+
+        /**
+         * Handle order shipped action.
+         *
+         * @since 2.1.0
+         * @param int $order_id Order ID.
+         * @param array $items Tracking items.
+         * @return void
+         */
+        public function handle_order_shipped( $order_id, $items ) {
+            $tracking_item = is_array( $items ) && ! empty( $items ) ? end( $items ) : array();
+
+            $this->process_trigger( 'Hubgo/Tracking/Order_Shipped', absint( $order_id ), $tracking_item, __( 'Pedido enviado', 'hubgo' ) );
+        }
+
+
+        /**
+         * Handle tracking saved action.
+         *
+         * @since 2.1.0
+         * @param int $order_id Order ID.
+         * @param array $item Saved tracking item.
+         * @param array $all_items All tracking items.
+         * @return void
+         */
+        public function handle_tracking_saved( $order_id, $item, $all_items ) {
+            $this->process_trigger( 'Hubgo/Tracking/Item_Saved', absint( $order_id ), $item, __( 'Rastreio salvo no pedido', 'hubgo' ) );
+        }
+
+
+        /**
+         * Process Joinotify workflows for HubGo triggers.
+         *
+         * @since 2.1.0
+         * @param string $hook Trigger hook.
+         * @param int $order_id Order ID.
+         * @param array $tracking_item Tracking item.
+         * @param string $description Event description.
+         * @return void
+         */
+        protected function process_trigger( $hook, $order_id, $tracking_item, $description ) {
+            if ( ! class_exists( Workflow_Processor::class ) ) {
+                return;
+            }
+
+            $tracking_data = $this->build_tracking_data( $order_id, is_array( $tracking_item ) ? $tracking_item : array() );
+
+            $payload = array(
+                'type'          => 'trigger',
+                'hook'          => $hook,
+                'integration'   => 'hubgo',
+                'order_id'      => $order_id,
+                'tracking_data' => $tracking_data,
+                'description'   => $description,
+                'timestamp'     => current_time('mysql'),
+            );
+
+            Workflow_Processor::process_workflows(
+                apply_filters( 'Joinotify/Process_Workflows/HubGo', $payload )
+            );
+
+            do_action( 'joinotify_' . $hook, $payload );
+        }
+
+
+        /**
+         * Build normalized tracking data for payload/placeholders.
+         *
+         * @since 2.1.0
+         * @param int $order_id | WooCommerce order ID
+         * @param array $item Tracking item.
+         * @return array
+         */
+        protected function build_tracking_data( $order_id, $item ) {
+            $order = wc_get_order( $order_id );
+
+            if ( ! $order ) {
+                return;
+            }
+
+            $provider = '';
+
+            if ( ! empty( $item['custom_provider'] ) ) {
+                $provider = (string) $item['custom_provider'];
+            } elseif ( ! empty( $item['provider'] ) ) {
+                $provider = (string) $item['provider'];
+            } elseif ( ! empty( $item['carrier'] ) ) {
+                $provider = (string) $item['carrier'];
+            }
+
+            $tracking_code = isset( $item['tracking_number'] ) ? (string) $item['tracking_number'] : '';
+            $tracking_link = isset( $item['custom_url'] ) ? (string) $item['custom_url'] : '';
+
+            if ( empty( $tracking_link ) && ! empty( $provider ) && ! empty( $tracking_code ) ) {
+                $country = $order->get_shipping_country();
+                
+                if ( empty( $country ) ) {
+                    $country = $order->get_billing_country();
+                }
+
+                if ( empty( $country ) ) {
+                    $country = 'Brazil';
+                }
+
+                $tracking_link = Providers_Registry::get_tracking_url(
+                    $provider,
+                    $tracking_code,
+                    '',
+                    $country,
+                    $order_id
+                );
+            }
+
+            return array(
+                'carrier_name'  => sanitize_text_field( $provider ),
+                'tracking_link' => esc_url_raw( $tracking_link ),
+                'tracking_code' => sanitize_text_field( $tracking_code ),
+                'shipping_date' => isset( $item['ship_date'] ) ? sanitize_text_field( (string) $item['ship_date'] ) : '',
+            );
+        }
+    }
+}

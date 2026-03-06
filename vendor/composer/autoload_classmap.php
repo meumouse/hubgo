@@ -7,8 +7,10 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'MeuMouse\\Hubgo\\API\\Tracking_REST_Controller' => $baseDir . '/inc/API/Tracking_REST_Controller.php',
     'MeuMouse\\Hubgo\\API\\Updater' => $baseDir . '/inc/API/Updater.php',
     'MeuMouse\\Hubgo\\Admin\\Default_Options' => $baseDir . '/inc/Admin/Default_Options.php',
+    'MeuMouse\\Hubgo\\Admin\\Order_Tracking_Meta_Box' => $baseDir . '/inc/Admin/Order_Tracking_Meta_Box.php',
     'MeuMouse\\Hubgo\\Admin\\Settings' => $baseDir . '/inc/Admin/Settings.php',
     'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Color' => $baseDir . '/inc/Admin/Views/Settings/Components/Color.php',
     'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Fields' => $baseDir . '/inc/Admin/Views/Settings/Components/Fields.php',
@@ -18,7 +20,13 @@ return array(
     'MeuMouse\\Hubgo\\Admin\\Views\\Settings\\Components\\Toggle' => $baseDir . '/inc/Admin/Views/Settings/Components/Toggle.php',
     'MeuMouse\\Hubgo\\Core\\Ajax' => $baseDir . '/inc/Core/Ajax.php',
     'MeuMouse\\Hubgo\\Core\\Assets' => $baseDir . '/inc/Core/Assets.php',
+    'MeuMouse\\Hubgo\\Core\\Order_Status' => $baseDir . '/inc/Core/Order_Status.php',
     'MeuMouse\\Hubgo\\Core\\Plugin' => $baseDir . '/inc/Core/Plugin.php',
+    'MeuMouse\\Hubgo\\Core\\Providers_Registry' => $baseDir . '/inc/Core/Providers_Registry.php',
+    'MeuMouse\\Hubgo\\Core\\Tracking_Manager' => $baseDir . '/inc/Core/Tracking_Manager.php',
+    'MeuMouse\\Hubgo\\Emails\\Email_Shipped_Order' => $baseDir . '/inc/Emails/Email_Shipped_Order.php',
+    'MeuMouse\\Hubgo\\Integrations\\Joinotify' => $baseDir . '/inc/Integrations/Joinotify.php',
     'MeuMouse\\Hubgo\\Views\\Custom_Colors' => $baseDir . '/inc/Views/Custom_Colors.php',
+    'MeuMouse\\Hubgo\\Views\\Order_Tracking_View' => $baseDir . '/inc/Views/Order_Tracking_View.php',
     'MeuMouse\\Hubgo\\Views\\Shipping_Calculator' => $baseDir . '/inc/Views/Shipping_Calculator.php',
 );

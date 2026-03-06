@@ -157,7 +157,7 @@ class Assets {
         wp_enqueue_script(
             self::FRONT_SCRIPT_HANDLE,
             $script_url,
-            array( 'jquery' ),
+            array('jquery'),
             $version,
             true
         );
@@ -196,7 +196,7 @@ class Assets {
      */
     private function get_frontend_params() {
         return array(
-            'ajax_url' => esc_url( admin_url( 'admin-ajax.php' ) ),
+            'ajax_url' => esc_url( admin_url('admin-ajax.php') ),
         );
     }
 
@@ -236,13 +236,15 @@ class Assets {
      * @return void
      */
     public function enqueue_admin_assets( $hook ) {
-        if ( ! $this->is_settings_page( $hook ) ) {
-            return;
+        if ( $this->is_settings_page( $hook ) ) {
+            $this->register_admin_styles();
+            $this->register_admin_scripts();
+            $this->localize_admin_scripts();
         }
 
-        $this->register_admin_styles();
-        $this->register_admin_scripts();
-        $this->localize_admin_scripts();
+        if ( $this->is_order_screen() ) {
+            $this->enqueue_order_tracking_assets();
+        }
     }
 
 
@@ -265,7 +267,7 @@ class Assets {
      * @return void
      */
     private function register_admin_styles() {
-        $style_url = $this->get_asset_url( 'admin/css/hubgo-admin.css' );
+        $style_url = $this->get_asset_url( 'admin/css/settings.css' );
         $version = $this->get_asset_version();
 
         if ( empty( $style_url ) ) {
@@ -288,7 +290,7 @@ class Assets {
      * @return void
      */
     private function register_admin_scripts() {
-        $script_url = $this->get_asset_url( 'admin/js/hubgo-admin.js' );
+        $script_url = $this->get_asset_url( 'admin/js/settings.js' );
         $version = $this->get_asset_version();
 
         if ( empty( $script_url ) ) {
@@ -298,7 +300,7 @@ class Assets {
         wp_enqueue_script(
             self::ADMIN_SCRIPT_HANDLE,
             $script_url,
-            array( 'jquery' ),
+            array('jquery'),
             $version,
             true
         );
@@ -316,7 +318,7 @@ class Assets {
 
         wp_localize_script(
             self::ADMIN_SCRIPT_HANDLE,
-            'hubgo_admin_params',
+            'hubgo_settings_params',
             apply_filters( 'Hubgo/Core/Assets/AdminParams', $admin_params )
         );
     }
@@ -330,14 +332,157 @@ class Assets {
      */
     private function get_admin_params() {
         return array(
-            'ajax_url' => esc_url( admin_url( 'admin-ajax.php' ) ),
+            'ajax_url' => esc_url( admin_url('admin-ajax.php') ),
             'nonce'    => wp_create_nonce( 'hubgo_admin_nonce' ),
             'unsaved_changes_warning' => __( 'Existem alterações não salvas. Deseja realmente sair?', 'hubgo' ),
             'toast_title' => __( 'Salvo com sucesso', 'hubgo' ),
             'toast_message' => __( 'As configurações foram atualizadas!', 'hubgo' ),
+            'toast_error_title' => __( 'Erro ao salvar', 'hubgo' ),
+            'toast_error_message' => __( 'Não foi possível salvar as configurações. Tente novamente.', 'hubgo' ),
         );
     }
 
+
+    /**
+     * Enqueue order tracking metabox assets.
+     *
+     * @since 2.1.0
+     * @return void
+     */
+    private function enqueue_order_tracking_assets() {
+        $version = $this->get_asset_version();
+
+        wp_enqueue_style(
+            'hubgo-order-tracking-admin',
+            $this->get_asset_url( 'admin/css/tracking-metabox.css' ),
+            array(),
+            $version
+        );
+
+        wp_enqueue_script(
+            'hubgo-order-tracking-provider',
+            $this->get_asset_url( 'admin/js/tracking-metabox.js' ),
+            array('jquery'),
+            $version,
+            true
+        );
+
+        wp_localize_script(
+            'hubgo-order-tracking-provider',
+            'hubgoTrackingProviderParams',
+            array(
+                'providers' => $this->get_tracking_providers_for_script(),
+            )
+        );
+
+        wp_localize_script(
+            'hubgo-order-tracking-provider',
+            'hubgoOrderTrackingParams',
+            $this->get_order_tracking_params()
+        );
+    }
+
+
+    /**
+     * Get localized metabox params.
+     *
+     * @since 2.1.0
+     * @return array
+     */
+    private function get_order_tracking_params() {
+        return array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'order_id' => $this->get_order_id_from_request(),
+            'nonces'   => array(
+                'create' => wp_create_nonce( 'hubgo-tracking-create-item' ),
+                'delete' => wp_create_nonce( 'hubgo-tracking-delete-item' ),
+                'get'    => wp_create_nonce( 'hubgo-tracking-get-item' ),
+            ),
+            'i18n' => array(
+                'confirm_delete' => __( 'Tem certeza que deseja remover este rastreio?', 'hubgo' ),
+                'missing_nonce'  => __( 'Não foi possível validar a requisição. Recarregue a página.', 'hubgo' ),
+                'delete_error'   => __( 'Não foi possível remover o rastreio. Tente novamente.', 'hubgo' ),
+            ),
+        );
+    }
+
+
+    /**
+     * Get providers map for tracking preview script.
+     *
+     * @since 2.1.0
+     * @return array
+     */
+    private function get_tracking_providers_for_script() {
+        $provider_array = array();
+
+        foreach ( Providers_Registry::get_providers() as $providers ) {
+            foreach ( $providers as $provider => $format ) {
+                if ( ! empty( $format ) ) {
+                    $provider_array[ $provider ] = rawurlencode( $format );
+                }
+            }
+        }
+
+        return $provider_array;
+    }
+
+
+    /**
+     * Get order ID from request (HPOS + classic).
+     *
+     * @since 2.1.0
+     * @return int
+     */
+    private function get_order_id_from_request() {
+        if ( isset( $_GET['id'] ) ) {
+            return absint( $_GET['id'] );
+        }
+
+        if ( isset( $_GET['post'] ) ) {
+            return absint( $_GET['post'] );
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * Check if current screen is an order screen.
+     *
+     * @since 2.1.0
+     * @return bool
+     */
+    private function is_order_screen() {
+        if ( ! function_exists( 'get_current_screen' ) ) {
+            return false;
+        }
+
+        $screen = get_current_screen();
+
+        if ( ! $screen || empty( $screen->id ) ) {
+            return false;
+        }
+
+        return in_array( $screen->id, $this->get_order_screen_ids(), true );
+    }
+
+
+    /**
+     * Get order screen IDs.
+     *
+     * @since 2.1.0
+     * @return array
+     */
+    private function get_order_screen_ids() {
+        $screens = array( 'shop_order' );
+
+        if ( function_exists( 'wc_get_page_screen_id' ) ) {
+            $screens[] = wc_get_page_screen_id( 'shop-order' );
+        }
+
+        return array_filter( array_unique( $screens ) );
+    }
 
     /**
      * Get asset URL with fallback
@@ -367,3 +512,5 @@ class Assets {
         return defined( 'HUBGO_VERSION' ) ? HUBGO_VERSION : '1.0.0';
     }
 }
+
+

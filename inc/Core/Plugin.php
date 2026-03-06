@@ -2,6 +2,11 @@
 
 namespace MeuMouse\Hubgo\Core;
 
+use MeuMouse\Hubgo\Core\Tracking_Manager;
+use MeuMouse\Hubgo\Admin\Order_Tracking_Meta_Box;
+use MeuMouse\Hubgo\Views\Order_Tracking_View;
+use MeuMouse\Hubgo\Emails\Email_Shipped_Order;
+
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use ReflectionClass;
 use Exception;
@@ -13,6 +18,7 @@ defined('ABSPATH') || exit;
  * Plugin core class.
  *
  * @since 2.0.0
+ * @version 2.1.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -83,10 +89,13 @@ final class Plugin {
         add_action( 'before_woocommerce_init', array( $this, 'setup_hpos_compatibility' ) );
 
         // Add plugin action links.
-        add_filter( 'plugin_action_links_' . $this->get_constant( 'HUBGO_BASENAME' ), array( $this, 'plugin_action_links' ) );
+        add_filter( 'plugin_action_links_' . $this->get_constant('HUBGO_BASENAME'), array( $this, 'plugin_action_links' ) );
 
         // Register all class hooks for lazy instantiation.
         $this->register_class_hooks();
+
+        // Initialize tracking management components.
+        $this->init_tracking();
 
         // Hook after plugin init.
         do_action('Hubgo/After_Init');
@@ -162,7 +171,7 @@ final class Plugin {
 
                 add_action( $hook, function() use ( $class ) {
                     $this->safe_instance_class( $class );
-                }, 1 );
+                }, 10 );
             }
         }
     }
@@ -172,6 +181,7 @@ final class Plugin {
      * Get hook => classes map used to lazy-load plugin components.
      *
      * @since 2.0.0
+     * @version 2.1.0
      * @return array
      */
     private function get_hook_class_map() {
@@ -180,13 +190,36 @@ final class Plugin {
                 'MeuMouse\\Hubgo\\Core\\Assets',
                 'MeuMouse\\Hubgo\\Core\\Ajax',
                 'MeuMouse\\Hubgo\\Admin\\Settings',
+                'MeuMouse\\Hubgo\\Core\\Order_Status',
+                'MeuMouse\\Hubgo\\API\\Tracking_REST_Controller',
             ),
             'wp_loaded' => array(
                 'MeuMouse\\Hubgo\\Views\\Shipping_Calculator',
                 'MeuMouse\\Hubgo\\Views\\Custom_Colors',
                 'MeuMouse\\Hubgo\\API\\Updater',
+                'MeuMouse\\Hubgo\\Integrations\\Joinotify',
             ),
         );
+    }
+
+
+    /**
+     * Initialize tracking management components.
+     * 
+     * @since 2.1.0
+     * @return void
+     */
+    protected function init_tracking() {
+        $tracking = new Tracking_Manager();
+
+        new Order_Tracking_Meta_Box( $tracking );
+        new Order_Tracking_View( $tracking );
+
+        add_filter( 'woocommerce_email_classes', function( $emails ) {
+            $emails['Hubgo_Shipped_Order'] = new Email_Shipped_Order();
+
+            return $emails;
+        });
     }
 
 
@@ -210,7 +243,7 @@ final class Plugin {
                     </p>
                 </div>
                 <?php
-            } );
+            });
 
             $dependencies_met = false;
         }
@@ -260,17 +293,13 @@ final class Plugin {
      * @return void
      */
     public function load_textdomain() {
-        $basename = $this->get_constant( 'HUBGO_BASENAME' );
+        $basename = $this->get_constant('HUBGO_BASENAME');
         
         if ( empty( $basename ) ) {
             return;
         }
 
-        load_plugin_textdomain(
-            'hubgo',
-            false,
-            dirname( $basename ) . '/languages/'
-        );
+        load_plugin_textdomain( 'hubgo', false, dirname( $basename ) . '/languages/' );
     }
 
 
@@ -342,11 +371,7 @@ final class Plugin {
      */
     public function setup_hpos_compatibility() {
         if ( class_exists( FeaturesUtil::class ) ) {
-            FeaturesUtil::declare_compatibility(
-                'custom_order_tables',
-                $this->get_constant( 'HUBGO_FILE' ),
-                true
-            );
+            FeaturesUtil::declare_compatibility( 'custom_order_tables', $this->get_constant('HUBGO_FILE'), true );
         }
     }
 
@@ -371,7 +396,7 @@ final class Plugin {
         $plugin_file = 'hubgo-shipping-management-wc/hubgo-shipping-management-wc.php';
 
         // Ensure required functions are available
-        if ( ! function_exists( 'is_plugin_active' ) ) {
+        if ( ! function_exists('is_plugin_active') ) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
 
@@ -435,3 +460,5 @@ final class Plugin {
         _doing_it_wrong( __FUNCTION__, esc_html__( 'Trapaceando?', 'hubgo' ), '2.0.0' );
     }
 }
+
+
