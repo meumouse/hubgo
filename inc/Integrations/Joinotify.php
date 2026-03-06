@@ -177,8 +177,8 @@ class Joinotify extends Integrations_Base {
                 'triggers' => $trigger_names,
                 'description' => esc_html__( 'Data do envio', 'hubgo' ),
                 'replacement' => array(
-                    'production' => $shipping_date,
-                    'sandbox'    => '2026-03-05',
+                    'production' => wp_date( get_option('date_format'), strtotime( $shipping_date ) ),
+                    'sandbox'    => wp_date( get_option('date_format') ),
                 ),
             ),
         );
