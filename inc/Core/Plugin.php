@@ -181,6 +181,7 @@ final class Plugin {
      * Get hook => classes map used to lazy-load plugin components.
      *
      * @since 2.0.0
+     * @version 2.1.0
      * @return array
      */
     private function get_hook_class_map() {
@@ -242,7 +243,7 @@ final class Plugin {
                     </p>
                 </div>
                 <?php
-            } );
+            });
 
             $dependencies_met = false;
         }

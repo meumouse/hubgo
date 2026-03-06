@@ -32,6 +32,20 @@ defined('ABSPATH') || exit; ?>
             __( 'Ative esta opção para que o frete seja calculado de forma automática.', 'hubgo' )
         );
 
+
+        Toggle::render(
+            'enable_order_shipped_status',
+            'enable_order_shipped_status',
+            __( 'Ativar status de pedido enviado', 'hubgo' ),
+            __( 'Ative esta opcao para registrar e exibir o status customizado "Pedido enviado" no WooCommerce.', 'hubgo' )
+        );
+
+        Toggle::render(
+            'enable_order_tracking_admin_ui',
+            'enable_order_tracking_admin_ui',
+            __( 'Ativar metabox e coluna de rastreio nos pedidos', 'hubgo' ),
+            __( 'Ative esta opcao para exibir o metabox e a coluna de rastreio na lista de pedidos do WooCommerce.', 'hubgo' )
+        );
         Select::render(
             'hook_display_shipping_calculator',
             'hook_display_shipping_calculator',

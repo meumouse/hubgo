@@ -183,8 +183,8 @@ class Providers_Registry {
 	 * @return string
 	 */
 	public static function get_country_label( $country ) {
-		$labels = array(
-			'Brazil'         => __( 'Brazil', 'hubgo' ),
+		$labels = apply_filters( 'Hubgo/Tracking/Providers_Country_Label', array(
+			'Brazil'         => __( 'Brasil', 'hubgo' ),
 			'Global'         => __( 'Global', 'hubgo' ),
 			'Australia'      => __( 'Australia', 'hubgo' ),
 			'Austria'        => __( 'Austria', 'hubgo' ),
@@ -205,7 +205,7 @@ class Providers_Registry {
 			'Sweden'         => __( 'Sweden', 'hubgo' ),
 			'United Kingdom' => __( 'United Kingdom', 'hubgo' ),
 			'United States'  => __( 'United States', 'hubgo' ),
-		);
+		));
 
 		return $labels[ $country ] ?? $country;
 	}

@@ -223,6 +223,8 @@ class Settings {
         $checkbox_fields = array(
             'enable_shipping_calculator',
             'enable_auto_shipping_calculator',
+            'enable_order_shipped_status',
+            'enable_order_tracking_admin_ui',
         );
 
         // Process checkboxes

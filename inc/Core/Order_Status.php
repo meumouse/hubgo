@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Hubgo\Core;
 
+use MeuMouse\Hubgo\Admin\Settings;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -27,6 +29,9 @@ class Order_Status {
      * @since 2.1.0
      */
     public function __construct() {
+        if ( 'yes' !== Settings::get_setting( 'enable_order_shipped_status', Settings::get_default_value( 'enable_order_shipped_status', 'yes' ) ) ) {
+            return;
+        }
         add_action( 'init', array( $this, 'register_status' ) );
         add_filter( 'wc_order_statuses', array( $this, 'add_status_to_list' ) );
     }

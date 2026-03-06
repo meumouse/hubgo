@@ -5,11 +5,11 @@
  * @package Hubgo
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 echo "\n";
 echo "=================================\n";
-echo wp_strip_all_tags( __( 'Informacoes de rastreio', 'hubgo' ) ) . "\n";
+echo wp_strip_all_tags( __( 'Informações de rastreio', 'hubgo' ) ) . "\n";
 echo "=================================\n\n";
 
 foreach ( $items as $item ) {

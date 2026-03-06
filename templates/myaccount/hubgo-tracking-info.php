@@ -5,10 +5,10 @@
  * @package Hubgo
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 ?>
 <section class="hubgo-tracking-section">
-    <h2><?php esc_html_e( 'Informacoes de rastreio', 'hubgo' ); ?></h2>
+    <h2><?php esc_html_e( 'Informações de rastreio', 'hubgo' ); ?></h2>
 
     <?php foreach ( $items as $item ) : ?>
         <p>

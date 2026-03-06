@@ -11,6 +11,7 @@ defined('ABSPATH') || exit;
  * Centralizes all default option values used throughout the plugin
  *
  * @since 2.0.0
+ * @version 2.1.0
  * @package MeuMouse\Hubgo\Admin
  * @author MeuMouse.com
  */
@@ -23,12 +24,15 @@ class Default_Options {
      * Can be filtered via 'Hubgo/Admin/Default_Options' filter.
      *
      * @since 2.0.0
+     * @version 2.1.0
      * @return array Default options
      */
     public static function get_defaults() {
         return apply_filters( 'Hubgo/Admin/Default_Options', array(
             'enable_shipping_calculator'           => 'yes',
             'enable_auto_shipping_calculator'      => 'no',
+            'enable_order_shipped_status'          => 'yes',
+            'enable_order_tracking_admin_ui'       => 'yes',
             'primary_main_color'                   => '#008aff',
             'hook_display_shipping_calculator'     => 'after_cart',
             'shipping_methods_display'             => 'table',

@@ -5,9 +5,9 @@
  * @package Hubgo
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 ?>
-<h2><?php esc_html_e( 'Informacoes de rastreio', 'hubgo' ); ?></h2>
+<h2><?php esc_html_e( 'Informações de rastreio', 'hubgo' ); ?></h2>
 
 <table cellspacing="0" cellpadding="6" border="1" style="width:100%; border-collapse: collapse; margin-bottom: 20px;" bordercolor="#e5e5e5">
     <thead>

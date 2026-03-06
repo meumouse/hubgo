@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Hubgo\Admin;
 
+use MeuMouse\Hubgo\Admin\Settings;
+
 use MeuMouse\Hubgo\Core\Providers_Registry;
 use MeuMouse\Hubgo\Core\Tracking_Manager;
 
@@ -45,6 +47,10 @@ class Order_Tracking_Meta_Box {
     public function __construct( Tracking_Manager $tracking ) {
         $this->tracking = $tracking;
 
+
+        if ( 'yes' !== Settings::get_setting( 'enable_order_tracking_admin_ui', Settings::get_default_value( 'enable_order_tracking_admin_ui', 'yes' ) ) ) {
+            return;
+        }
         add_action( 'add_meta_boxes', array( $this, 'register_meta_box' ) );
         add_action( 'save_post_shop_order', array( $this, 'save_tracking_data' ) );
         add_action( 'woocommerce_process_shop_order_meta', array( $this, 'save_tracking_data' ) );

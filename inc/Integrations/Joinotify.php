@@ -5,10 +5,11 @@ namespace MeuMouse\Hubgo\Integrations;
 use MeuMouse\Hubgo\Core\Providers_Registry;
 
 use MeuMouse\Joinotify\Integrations\Integrations_Base;
+use MeuMouse\Joinotify\Integrations\Woocommerce;
 use MeuMouse\Joinotify\Core\Workflow_Processor;
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 if ( class_exists( Integrations_Base::class ) ) {
 
@@ -139,16 +140,22 @@ if ( class_exists( Integrations_Base::class ) ) {
          * @return array
          */
         public function add_placeholders( $placeholders, $payload ) {
+            $current_user = wp_get_current_user();
             $trigger_names = array(
                 'hubgo_order_sent',
                 'hubgo_tracking_saved',
             );
 
+            $order = isset( $payload['order_id'] ) ? wc_get_order( $payload['order_id'] ) : null;
             $tracking_data = isset( $payload['tracking_data'] ) && is_array( $payload['tracking_data'] ) ? $payload['tracking_data'] : array();
             $carrier_name = isset( $tracking_data['carrier_name'] ) ? $tracking_data['carrier_name'] : '';
             $tracking_link = isset( $tracking_data['tracking_link'] ) ? $tracking_data['tracking_link'] : '';
             $tracking_code = isset( $tracking_data['tracking_code'] ) ? $tracking_data['tracking_code'] : '';
             $shipping_date = isset( $tracking_data['shipping_date'] ) ? $tracking_data['shipping_date'] : '';
+
+            if ( ! $order ) {
+                return $placeholders;
+            }
 
             $placeholders['hubgo'] = array(
                 '{{ hubgo_carrier_name }}' => array(
@@ -181,6 +188,155 @@ if ( class_exists( Integrations_Base::class ) ) {
                     'replacement' => array(
                         'production' => wp_date( get_option('date_format'), strtotime( $shipping_date ) ),
                         'sandbox'    => wp_date( get_option('date_format') ),
+                    ),
+                ),
+                '{{ wc_billing_first_name }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o primeiro nome de faturamento do cliente no pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? $order->get_billing_first_name() : '',
+                        'sandbox' => $current_user->exists() ? $current_user->first_name : esc_html__( 'João', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_billing_last_name }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o sobrenome de faturamento do cliente no pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? $order->get_billing_last_name() : '',
+                        'sandbox' => $current_user->exists() ? $current_user->last_name : esc_html__( 'da Silva', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_billing_email }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o e-mail de faturamento do cliente no pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ?  $order->get_billing_email() : '',
+                        'sandbox' => $current_user->exists() ? $current_user->user_email : esc_html__( 'usuario@exemplo.com', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_billing_phone }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o telefone de faturamento do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? $order->get_billing_phone() : '',
+                        'sandbox' => esc_html__( '+55 11 91234-5678', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_shipping_phone }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o telefone de entrega do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? $order->get_shipping_phone() : '',
+                        'sandbox' => esc_html__( '+55 41 91234-5678', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_order_number }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o número do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? $order->get_order_number() : '',
+                        'sandbox' => esc_html__( '12345', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_order_status }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o status do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ?  wc_get_order_status_name( $order->get_status() ) : '',
+                        'sandbox' => esc_html__( 'Concluído', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_order_date }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar a data do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? date_i18n( get_option('date_format'), strtotime( $order->get_date_created() ) ) : '',
+                        'sandbox' => date( get_option('date_format') ),
+                    ),
+                ),
+                '{{ wc_billing_full_address }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o endereço completo de faturamento do usuário (formato configurável nas opções do WooCommerce).', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? Woocommerce::get_full_address( $order, 'billing' ) : '',
+                        'sandbox' => esc_html__( 'Rua das Flores, 123 - Curitiba/PR - Brasil (CEP: 80000-000)', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_shipping_full_address }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o endereço completo de entrega do usuário (formato configurável nas opções do WooCommerce).', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? Woocommerce::get_full_address( $order, 'shipping' ) : '',
+                        'sandbox' => esc_html__( 'Rua das Margaridas, 450 - Curitiba/PR - Brasil (CEP: 80000-100)', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_purchased_items }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar cada produto e quantidade adquiridos no pedido, separados por linha', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? self::get_purchased_items( $order ) : '',
+                        'sandbox' => sprintf( '%s %s %s', esc_html__( '1x - Camiseta de algodão masculina (Produto exemplo)', 'hubgo' ), "\n",  esc_html__( '1x - Óculos de sol com proteção UV (Produto exemplo)', 'hubgo' ) ),
+                    ),
+                ),
+                '{{ wc_currency_symbol }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o símbolo de moeda do pedido', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? get_woocommerce_currency_symbol( $order->get_currency() ) : '',
+                        'sandbox' => get_woocommerce_currency_symbol(),
+                    ),
+                ),
+                '{{ wc_order_total }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o valor total do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? joinotify_format_plain_text( $order->get_total() ) : '',
+                        'sandbox' => joinotify_format_plain_text( wc_price( 150 ) ),
+                    ),
+                ),
+                '{{ wc_total_discount }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o valor total de desconto do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? joinotify_format_plain_text( $order->get_total_discount() ) : '',
+                        'sandbox' => joinotify_format_plain_text( wc_price( 20 ) ),
+                    ),
+                ),
+                '{{ wc_total_tax }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o valor total de impostos do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? joinotify_format_plain_text( $order->get_total_tax() ) : '',
+                        'sandbox' => joinotify_format_plain_text( wc_price( 15 ) ),
+                    ),
+                ),
+                '{{ wc_coupon_codes }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar os códigos de cupom utilizados no pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? implode(', ', $order->get_coupon_codes()) : '',
+                        'sandbox' => esc_html__( 'CUPOM10, FRETEGRATIS', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_payment_method_title }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o título do método de pagamento do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? (function ( $order ) {
+                            $id = $order->get_payment_method();
+                            $gateways = WC()->payment_gateways()->payment_gateways();
+                            
+                            return isset( $gateways[ $id ] ) ? joinotify_format_plain_text( $gateways[ $id ]->get_title() ) : '';
+                        })( $order ) : '',
+                        'sandbox' => esc_html__( 'Cartão de crédito', 'hubgo' ),
+                    ),
+                ),
+                '{{ wc_shipping_address }}' => array(
+                    'triggers' => $trigger_names,
+                    'description' => esc_html__( 'Para recuperar o endereço de entrega do pedido do WooCommerce', 'hubgo' ),
+                    'replacement' => array(
+                        'production' => $order ? $order->get_shipping_to_display() : '',
+                        'sandbox' => esc_html__( 'Rua das Margaridas, 450 - Curitiba/PR - Brasil (CEP: 80000-100)', 'hubgo' ),
                     ),
                 ),
             );
@@ -229,7 +385,7 @@ if ( class_exists( Integrations_Base::class ) ) {
          * @return void
          */
         protected function process_trigger( $hook, $order_id, $tracking_item, $description ) {
-            if ( ! class_exists( 'MeuMouse\\Joinotify\\Core\\Workflow_Processor' ) ) {
+            if ( ! class_exists( Workflow_Processor::class ) ) {
                 return;
             }
 
