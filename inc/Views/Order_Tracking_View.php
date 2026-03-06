@@ -15,6 +15,7 @@ defined('ABSPATH') || exit;
  *
  * @since 2.1.0
  * @package MeuMouse\Hubgo\Views
+ * @author MeuMouse.com
  */
 class Order_Tracking_View {
 

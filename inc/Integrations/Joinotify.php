@@ -159,25 +159,18 @@ if ( class_exists( Integrations_Base::class ) ) {
          */
         public function add_placeholders( $placeholders, $payload ) {
             $order = isset( $payload['order_id'] ) ? wc_get_order( $payload['order_id'] ) : null;
-
-            if ( ! $order ) {
-                return $placeholders;
-            }
-
             $current_user = wp_get_current_user();
-        
-            $trigger_names = array(
-                'Hubgo/Tracking/Order_Shipped',
-                'Hubgo/Tracking/Item_Saved',
-                'woocommerce_order_status_changed',
-            );
-
             $tracking_data = isset( $payload['tracking_data'] ) && is_array( $payload['tracking_data'] ) ? $payload['tracking_data'] : array();
             $carrier_name = isset( $tracking_data['carrier_name'] ) ? $tracking_data['carrier_name'] : '';
             $tracking_link = isset( $tracking_data['tracking_link'] ) ? $tracking_data['tracking_link'] : '';
             $tracking_code = isset( $tracking_data['tracking_code'] ) ? $tracking_data['tracking_code'] : '';
             $shipping_date = isset( $tracking_data['shipping_date'] ) ? $tracking_data['shipping_date'] : '';
 
+            $trigger_names = array(
+                'Hubgo/Tracking/Order_Shipped',
+                'Hubgo/Tracking/Item_Saved',
+            );
+            
             $placeholders['hubgo'] = array(
                 '{{ hubgo_carrier_name }}' => array(
                     'triggers' => $trigger_names,

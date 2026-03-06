@@ -1,4 +1,4 @@
-Versão 2.1.0 (05/03/2026)
+Versão 2.1.0 (06/03/2026)
 * Recurso adicionado: Novo status de pedido -> Pedido enviado
 * Recurso adicionado: Meta box para cadastro de código de rastreio no pedido
 * Recurso adicionado: Integração com Joinotify
