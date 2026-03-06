@@ -402,6 +402,7 @@
 
             const $toast = this.elements.$toastContainer.find( this.config.toastSelector );
             const $header = $toast.find( '.toast-header' );
+            const $icon = $toast.find( '.hubgo-toast-icon' );
             const $title = $toast.find( '.hubgo-toast-title' );
             const $body = $toast.find( '.toast-body' );
 
@@ -411,8 +412,10 @@
             if ( 'error' === toastType ) {
                 $toast.addClass( 'toast-danger' );
                 $header.addClass( 'bg-danger' );
+                $icon.html( this.getToastIcon( 'error' ) );
             } else {
                 $header.addClass( 'bg-success' );
+                $icon.html( this.getToastIcon( 'success' ) );
             }
 
             $title.text( toastTitle );
@@ -480,8 +483,23 @@
             if ( typeof hubgo_settings_params === 'undefined' || typeof hubgo_settings_params[ key ] === 'undefined' ) {
                 return fallback;
             }
-
             return hubgo_settings_params[ key ];
+        },
+
+        /**
+         * Return toast icon markup by type.
+         *
+         * @version 2.1.0
+         * @since 2.1.0
+         * @param {string} type success|error.
+         * @return {string} SVG markup.
+         */
+        getToastIcon: function( type ) {
+            if ( 'error' === type ) {
+                return '<svg class="icon icon-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M11 11h2v6h-2zm0-4h2v2h-2z"></path></svg>';
+            }
+
+            return '<svg class="icon icon-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M9.999 13.587 7.7 11.292l-1.412 1.416 3.713 3.705 6.706-6.706-1.414-1.414z"></path></svg>';
         },
 
         /**
@@ -500,6 +518,7 @@
             const toastHtml = [
                 '<div class="toast update-notice-spm-wp" style="display:none;">',
                     '<div class="toast-header bg-success text-white">',
+                        '<span class="hubgo-toast-icon me-2">' + this.getToastIcon( 'success' ) + '</span>',
                         '<span class="me-auto hubgo-toast-title">' + this.getParam( 'toast_title', 'Salvo com sucesso' ) + '</span>',
                         '<button class="btn-close btn-close-white ms-2 hide-toast" type="button" aria-label="Close"></button>',
                     '</div>',
@@ -647,3 +666,4 @@
 
     window.Hubgo_Settings = Hubgo_Settings;
 })(jQuery);
+
