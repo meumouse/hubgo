@@ -308,7 +308,11 @@ class Settings {
     private function render_header() {
         ?>
         <div class="hubgo-settings-header">
-            <h1 class="hubgo-shipping-management-wc-admin-section-tile"><?php echo esc_html( get_admin_page_title() ); ?></h1>
+            <div class="hubgo-admin-title-container">
+                <svg id="hubgo_logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 272.84 152.99"><defs><style>.hubgo-1{fill:#008aff;}.hubgo-2{fill:#232323;}</style></defs><g id="Icon"><g id="Icon-2" data-name="Icon"><g id="Airplane"><path class="hubgo-1" d="M601.94,295.67c1.75,4.52,6.86,0,6.56-3.29l1.78-39.26-16.7,9.05Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-1" d="M630.77,217.59c-8.62,1.84-17.75,2.72-24.54,9.12-13.16,10.11-36.44,30.92-54.15,39.8-55,25.09-115.12,40.9-172.42,38.09-20.59-1.47-21.89,30.28-1.11,30.42,44.74-3.17,90.28-13.37,130.27-30.66,27.77-11.46,51.52-28.55,77.3-42.73,11.29-6.59,35.93-16.07,43.66-27.39C633.38,229.34,642.18,220,630.77,217.59Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-1" d="M552.62,221.23l27.84,21,14.94-11.94-37.19-13.79C555.26,214.92,549.15,217.87,552.62,221.23Z" transform="translate(-363.58 -216.05)"/></g><g id="H"><path class="hubgo-2" d="M445.26,242.32c.23-16.14-25.11-16.14-24.88,0v54.27c7.51-.78,15.8-1.94,24.88-3.6Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-2" d="M420.38,356.84c-.22,16.13,25.11,16.14,24.88,0V332.36q-12.22,2.77-24.88,4.86Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-2" d="M533.72,267.22v-24.9c-.07-16.27-24.83-16.27-24.9,0v33.95C516.73,273.58,525.33,270.54,533.72,267.22Z" transform="translate(-363.58 -216.05)"/><path class="hubgo-2" d="M508.82,356.84c.07,16.27,24.83,16.26,24.9,0V300.43q-12.12,6.29-24.9,11.7Z" transform="translate(-363.58 -216.05)"/></g></g></g></svg>
+
+                <h1 class="hubgo-shipping-management-wc-admin-section-tile"><?php echo esc_html( get_admin_page_title() ); ?></h1>
+            </div>
             
             <div class="hubgo-shipping-management-wc-admin-title-description">
                 <p>
