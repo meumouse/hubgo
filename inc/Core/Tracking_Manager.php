@@ -40,7 +40,7 @@ class Tracking_Manager {
      * Get tracking items from order
      *
      * @since 2.1.0
-     * @param int $order_id Order ID.
+     * @param int $order_id | Order ID.
      * @return array
      */
     public function get_items( $order_id ) {
@@ -68,8 +68,8 @@ class Tracking_Manager {
      * Add tracking item to order
      *
      * @since 2.1.0
-     * @param int   $order_id Order ID.
-     * @param array $data Tracking data.
+     * @param int $order_id | Order ID.
+     * @param array $data | Tracking data.
      * @return array
      */
     public function add_item( $order_id, $data ) {
@@ -107,8 +107,8 @@ class Tracking_Manager {
      * Delete item.
      *
      * @since 2.1.0
-     * @param int    $order_id
-     * @param string $tracking_id
+     * @param int $order_id | Order ID
+     * @param string $tracking_id | Tracking ID
      * @return int|bool Meta ID if the key did not exist, true on successful update, false on failure or if the value passed to the function is the same as the one that is already in the database.
      */
     public function delete_item( $order_id, $tracking_id ) {
@@ -120,7 +120,20 @@ class Tracking_Manager {
             }
         }
 
-        return update_post_meta( $order_id, self::META_KEY, array_values( $items ) );
+        $updated = update_post_meta( $order_id, self::META_KEY, array_values( $items ) );
+
+        if ( $updated ) {
+            /**
+             * Fired hook when delete tracking item from order
+             *
+             * @since 2.1.0
+             * @param int $order_id | Order ID
+             * @param array $items | Post meta data of shipping details
+             */
+            do_action( 'Hubgo/Tracking/Deleted_Item', $order_id, $items );
+        }
+
+        return $updated;
     }
 
 
@@ -128,7 +141,6 @@ class Tracking_Manager {
      * Trigger shipped event
      *
      * @since 2.1.0
-     *
      * @param int $order_id Order ID.
      * @return void
      */
