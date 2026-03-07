@@ -1,3 +1,6 @@
+Versão 2.1.1 (07/03/2026)
+* Recurso adicionado: Status de Pedido enviado nas ações em massa da página de pedidos
+
 Versão 2.1.0 (06/03/2026)
 * Recurso adicionado: Novo status de pedido -> Pedido enviado
 * Recurso adicionado: Meta box para cadastro de código de rastreio no pedido
