@@ -211,9 +211,30 @@ class Assets {
         return array(
             'nonce' => wp_create_nonce( 'hubgo-shipping-calc-nonce' ),
             'auto_shipping' => $this->get_auto_shipping_setting(),
+            'current_product_id' => $this->get_current_product_id(),
         );
     }
 
+
+    /**
+     * Get current product ID on single product pages.
+     *
+     * @since 2.1.1
+     * @return int
+     */
+    private function get_current_product_id() {
+        $product_id = 0;
+
+        if ( function_exists( 'is_product' ) && is_product() ) {
+            $product_id = absint( get_queried_object_id() );
+        }
+
+        if ( ! $product_id && isset( $GLOBALS['product'] ) && $GLOBALS['product'] instanceof \WC_Product ) {
+            $product_id = absint( $GLOBALS['product']->get_id() );
+        }
+
+        return $product_id;
+    }
 
     /**
      * Get auto shipping calculator setting
