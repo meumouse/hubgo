@@ -187,23 +187,22 @@ final class Plugin {
     private function get_hook_class_map() {
         return array(
             'init' => array(
-                'MeuMouse\\Hubgo\\Core\\Assets',
-                'MeuMouse\\Hubgo\\Core\\Ajax',
-                'MeuMouse\\Hubgo\\Admin\\Settings',
-                'MeuMouse\\Hubgo\\Core\\Order_Status',
-                'MeuMouse\\Hubgo\\API\\Tracking_REST_Controller',
+                'MeuMouse\Hubgo\Core\Assets',
+                'MeuMouse\Hubgo\Core\Ajax',
+                'MeuMouse\Hubgo\Admin\Settings',
+                'MeuMouse\Hubgo\Core\Order_Status',
+                'MeuMouse\Hubgo\API\Tracking_REST_Controller',
             ),
             'wp_loaded' => array(
-                'MeuMouse\\Hubgo\\Views\\Shipping_Calculator',
-                'MeuMouse\\Hubgo\\Views\\Custom_Colors',
-                'MeuMouse\\Hubgo\\API\\Updater',
-                'MeuMouse\\Hubgo\\Integrations\\Joinotify',
+                'MeuMouse\Hubgo\Views\Shipping_Calculator',
+                'MeuMouse\Hubgo\Views\Custom_Colors',
+                'MeuMouse\Hubgo\API\Updater',
+                'MeuMouse\Hubgo\Integrations\Joinotify',
             ),
         );
     }
 
-
-    /**
+/**
      * Initialize tracking management components.
      * 
      * @since 2.1.0
@@ -460,5 +459,6 @@ final class Plugin {
         _doing_it_wrong( __FUNCTION__, esc_html__( 'Trapaceando?', 'hubgo' ), '2.0.0' );
     }
 }
+
 
 
