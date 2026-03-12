@@ -18,7 +18,7 @@ defined('ABSPATH') || exit;
  * Plugin core class.
  *
  * @since 2.0.0
- * @version 2.1.0
+ * @version 2.2.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -459,6 +459,3 @@ final class Plugin {
         _doing_it_wrong( __FUNCTION__, esc_html__( 'Trapaceando?', 'hubgo' ), '2.0.0' );
     }
 }
-
-
-
