@@ -221,6 +221,12 @@
 		detectProductVariation: function() {
 			const variationId = $( 'input[name="variation_id"]' ).val();
 			const addToCartValue = $( '*[name="add-to-cart"]' ).val();
+			const productIdValue = $( 'input[name="product_id"]' ).val();
+			const localizedProductId = ( typeof hubgo_params !== 'undefined' && hubgo_params.current_product_id )
+				? hubgo_params.current_product_id
+				: '';
+			const bodyPostIdMatch = ( document.body.className || '' ).match( /\bpostid-(\d+)\b/ );
+			const bodyPostId = bodyPostIdMatch ? bodyPostIdMatch[1] : '';
 
 			if ( variationId && parseInt( variationId, 10 ) > 0 ) {
 				return variationId;
@@ -228,6 +234,18 @@
 
 			if ( addToCartValue && parseInt( addToCartValue, 10 ) > 0 ) {
 				return addToCartValue;
+			}
+
+			if ( productIdValue && parseInt( productIdValue, 10 ) > 0 ) {
+				return productIdValue;
+			}
+
+			if ( localizedProductId && parseInt( localizedProductId, 10 ) > 0 ) {
+				return localizedProductId;
+			}
+
+			if ( bodyPostId && parseInt( bodyPostId, 10 ) > 0 ) {
+				return bodyPostId;
 			}
 
 			return false;

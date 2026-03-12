@@ -1,3 +1,8 @@
+Versão 2.2.0 (12/03/2026)
+* Correção de bugs:
+    -Pedidos com status 'Pedido enviado' não são exibidos na página de pedidos.
+* Recurso adicionado: Status de 'Pedido enviado' nas ações em massa da página de pedidos
+
 Versão 2.1.0 (06/03/2026)
 * Recurso adicionado: Novo status de pedido -> Pedido enviado
 * Recurso adicionado: Meta box para cadastro de código de rastreio no pedido

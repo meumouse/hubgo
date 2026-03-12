@@ -292,6 +292,10 @@ class Ajax {
             $postcode     = $this->get_sanitized_postcode();
             $quantity     = $this->get_sanitized_quantity();
 
+            if ( ! $product_id && $variation_id ) {
+                $product_id = $this->get_parent_product_id( $variation_id );
+            }
+
             if ( ! $product_id || empty( $postcode ) ) {
                 $this->render_no_shipping_message();
                 wp_die();
@@ -349,6 +353,27 @@ class Ajax {
      */
     private function get_sanitized_variation_id() {
         return isset( $_POST['variation_id'] ) ? absint( $_POST['variation_id'] ) : 0;
+    }
+
+    /**
+     * Resolve parent product ID from variation ID.
+     *
+     * @since 2.1.1
+     * @param int $variation_id
+     * @return int
+     */
+    private function get_parent_product_id( $variation_id ) {
+        if ( ! $variation_id ) {
+            return 0;
+        }
+
+        $variation = wc_get_product( $variation_id );
+
+        if ( $variation instanceof \WC_Product_Variation ) {
+            return absint( $variation->get_parent_id() );
+        }
+
+        return absint( wp_get_post_parent_id( $variation_id ) );
     }
 
 
