@@ -4,7 +4,7 @@
  * HubGo build orchestrator.
  *
  * Installs the Vue app dependencies (when needed) and produces the Vite build
- * consumed by inc/Core/Scripts.php (app/dist/.vite/manifest.json).
+ * consumed by admin/src/Core/Scripts.php (app/dist/.vite/manifest.json).
  *
  * Usage:
  *   node scripts/build.mjs             # install (if needed) + build app

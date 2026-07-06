@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'MeuMouse\\Hubgo\\' => array($baseDir . '/inc'),
+    'MeuMouse\\Hubgo\\' => array($baseDir . '/src'),
 );

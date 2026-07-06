@@ -16,7 +16,7 @@ class ComposerStaticInit70fafb160f8425af8683a6a043652ea4
     public static $prefixDirsPsr4 = array (
         'MeuMouse\\Hubgo\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/inc',
+            0 => __DIR__ . '/../..' . '/src',
         ),
     );
 

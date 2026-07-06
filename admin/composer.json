@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MeuMouse\\Hubgo\\": "inc/"
+            "MeuMouse\\Hubgo\\": "src/"
         }
     }
 }

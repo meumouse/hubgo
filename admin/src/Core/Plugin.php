@@ -33,6 +33,14 @@ final class Plugin {
     private $plugin_version;
 
     /**
+     * Absolute path to the main plugin file (hubgo.php).
+     *
+     * @since 3.0.0
+     * @var string
+     */
+    private $base_file = '';
+
+    /**
      * Plugin instance.
      *
      * @since 2.0.0
@@ -76,11 +84,14 @@ final class Plugin {
      * Initialize the plugin.
      *
      * @since 2.0.0
+     * @version 3.0.0
      * @param string $plugin_version Plugin version.
+     * @param string $base_file Absolute path to the main plugin file (hubgo.php).
      * @return void
      */
-    public function init( $plugin_version ) {
+    public function init( $plugin_version, $base_file = '' ) {
         $this->plugin_version = $plugin_version;
+        $this->base_file = $base_file;
 
         // Hook before plugin init.
         do_action('Hubgo/Before_Init');
@@ -120,7 +131,9 @@ final class Plugin {
      * @return void
      */
     private function define_constants() {
-        $base_file = dirname( __DIR__, 2 ) . '/hubgo.php';
+        // Prefer the file passed from the bootstrap; fall back to the path
+        // relative to this class (admin/src/Core/Plugin.php -> plugin root).
+        $base_file = $this->base_file ?: ( dirname( __DIR__, 3 ) . '/hubgo.php' );
         $base_dir = plugin_dir_path( $base_file );
         $base_url = plugin_dir_url( $base_file );
 
@@ -128,7 +141,7 @@ final class Plugin {
             'HUBGO_BASENAME'   => plugin_basename( $base_file ),
             'HUBGO_FILE'       => $base_file,
             'HUBGO_PATH'       => $base_dir,
-            'HUBGO_INC_PATH'   => $base_dir . 'inc/',
+            'HUBGO_INC_PATH'   => $base_dir . 'admin/src/',
             'HUBGO_URL'        => $base_url,
             'HUBGO_ASSETS'     => $base_url . 'assets/',
             'HUBGO_ABSPATH'    => dirname( $base_file ) . '/',
