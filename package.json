@@ -6,6 +6,11 @@
     "scripts": {
         "dev": "npm run dev --prefix app",
         "build": "node scripts/build.mjs",
-        "build:app": "npm run build --prefix app"
+        "build:app": "npm run build --prefix app",
+        "build:translate": "node scripts/build.mjs --translate",
+        "pot": "npm run pot --prefix languages",
+        "translate": "npm run translate --prefix languages",
+        "translate:ai": "npm run translate:ai --prefix languages",
+        "compile:translations": "npm run compile:mo --prefix languages && npm run compile:php --prefix languages"
     }
 }

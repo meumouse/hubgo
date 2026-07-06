@@ -1,153 +1,110 @@
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: HubGo - Gerenciamento de Frete para WooCommerce\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-06 21:48+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: \n"
-"Language: \n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: hubgo\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.8.1; wp-6.9.1; php-8.2.23\n"
-"X-Domain: hubgo"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"x-domain: hubgo\n"
 
-#: inc/Core/Ajax.php:631
-#, php-format
+#: admin/src/Core/Shipping_Calculator_Service.php:311
 msgid "(Entrega em %s dias úteis)"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Appearance.php:54
-msgid "*Este resultado é apenas uma estimativa..."
-msgstr ""
+#: admin/src/Core/Order_Status.php:357
+msgid "%s pedido alterado para \"Pedido enviado\"."
+msgid_plural "%s pedidos alterados para \"Pedido enviado\"."
+msgstr[0] ""
+msgstr[1] ""
 
-#: inc/Integrations/Joinotify.php:236
-msgid "+55 11 91234-5678"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:244
-msgid "+55 41 91234-5678"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:252
-msgid "12345"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:292
-msgid "1x - Camiseta de algodão masculina (Produto exemplo)"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:292
-msgid "1x - Óculos de sol com proteção UV (Produto exemplo)"
-msgstr ""
-
-#: inc/API/Updater.php:398
+#: admin/src/API/Updater.php:398
 msgid "A versão do plugin <strong>HubGo</strong> é a mais recente."
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:111
+#: admin/src/Admin/Settings/Registry.php:40
+msgid "Adiciona o status de pedido enviado ao WooCommerce."
+msgstr ""
+
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:111
 msgid "Adicionar código de rastreio"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:55
-msgid "Antes do carrinho"
+#: admin/src/Admin/Settings/Registry.php:51
+msgid "Antes do botão de compra"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:116
+#: admin/src/Integrations/Joinotify.php:108
 msgid "Ao salvar um rastreio no pedido"
 msgstr ""
 
-#: inc/Admin/Settings.php:404
+#: admin/src/Admin/Settings/Registry.php:64
 msgid "Aparência"
 msgstr ""
 
-#: inc/Core/Assets.php:339
-msgid "As configurações foram atualizadas!"
+#: admin/src/Admin/Settings/Registry.php:50
+msgid "Após o botão de compra"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Advanced.php:23
-msgid "Ativar atualizações automáticas"
+#: admin/src/Admin/Settings/Registry.php:52
+msgid "Após os metadados do produto"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:24
-msgid "Ativar calculadora de frete"
+#: admin/src/Core/Plugin.php:323
+msgid "Ativar WooCommerce"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:31
-msgid "Ativar cálculo automático de frete"
+#: admin/src/Admin/Settings/Registry.php:36
+msgid "Ative ou desative os módulos do HubGo."
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:46
-msgid "Ativar metabox e coluna de rastreio nos pedidos"
-msgstr ""
-
-#: inc/Admin/Views/Settings/Tabs/General.php:39
-msgid "Ativar status de pedido enviado"
-msgstr ""
-
-#: inc/Admin/Views/Settings/Tabs/General.php:47
-msgid ""
-"Ative esta opcao para exibir o metabox e a coluna de rastreio na lista de "
-"pedidos do WooCommerce."
-msgstr ""
-
-#: inc/Admin/Views/Settings/Tabs/General.php:40
-msgid ""
-"Ative esta opcao para registrar e exibir o status customizado \"Pedido "
-"enviado\" no WooCommerce."
-msgstr ""
-
-#: inc/Admin/Views/Settings/Tabs/General.php:25
-msgid ""
-"Ative esta opção para adicionar uma calculadora de frete na página de "
-"produto individual."
-msgstr ""
-
-#: inc/Admin/Views/Settings/Tabs/General.php:32
-msgid "Ative esta opção para que o frete seja calculado de forma automática."
-msgstr ""
-
-#: inc/Admin/Views/Settings/Tabs/Advanced.php:24
-msgid "Ative esta opção para receber atualizações automáticas do plugin."
-msgstr ""
-
-#: inc/Core/Providers_Registry.php:189
+#: admin/src/Core/Providers_Registry.php:189
 msgid "Australia"
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:190
+#: admin/src/Core/Providers_Registry.php:190
 msgid "Austria"
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:191
+#: admin/src/Core/Providers_Registry.php:191
 msgid "Belgium"
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:187
+#: admin/src/Core/Providers_Registry.php:187
 msgid "Brasil"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:78
-msgid "Calcular"
+#: admin/src/Admin/Settings/Registry.php:73
+msgid "Cabeçalho \"Entrega\""
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:192
+#: admin/src/Admin/Settings/Registry.php:74
+msgid "Cabeçalho \"Valor\""
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:39
+msgid "Calcula o frete automaticamente com o CEP salvo do cliente."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:46
+msgid "Calculadora"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:38
+msgid "Calculadora de frete"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:39
+msgid "Cálculo automático"
+msgstr ""
+
+#: admin/src/Core/Providers_Registry.php:192
 msgid "Canada"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:345
-msgid "Cartão de crédito"
-msgstr ""
-
-#: inc/Admin/Settings.php:321 inc/Core/Plugin.php:434
+#: admin/src/Core/Plugin.php:493
 msgid "Central de ajuda"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:160
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:156
 msgid "Clique aqui para rastrear sua encomenda"
 msgstr ""
 
@@ -155,260 +112,208 @@ msgstr ""
 msgid "Codigo"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:193
-msgid "Codigo de rastreio"
+#: admin/src/Integrations/Joinotify.php:166
+msgid "Código de rastreio"
 msgstr ""
 
 #: templates/myaccount/hubgo-tracking-info.php:16
 msgid "Codigo de rastreio:"
 msgstr ""
 
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:141
+msgid "Código de rastreio:"
+msgstr ""
+
 #: templates/email/plain/hubgo-tracking-info.php:17
 msgid "Codigo:"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:260
+#: admin/src/Integrations/Joinotify.php:263
 msgid "Concluído"
 msgstr ""
 
-#: inc/Core/Plugin.php:431
-msgid "Configurar"
-msgstr ""
-
-#: inc/Admin/Settings.php:206 inc/Core/Ajax.php:165
+#: admin/src/API/Routes/Settings_Save.php:34
+#: app/src/pages/settings/SettingsPage.vue:76
 msgid "Configurações salvas com sucesso!"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:68
-msgid "Consultar prazo e valor da entrega"
+#: admin/src/Core/Plugin.php:490
+msgid "Configurar"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Appearance.php:24
+#: admin/src/Admin/Settings/Registry.php:72
+msgid "Cor de destaque usada na interface do frete."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:72
 msgid "Cor principal"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:180
+#: admin/src/Admin/Settings/Registry.php:69
+msgid "Cores e textos"
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:148
 msgid "Correios"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:278
-msgid "Could not remove tracking item."
-msgstr ""
-
-#: inc/API/Tracking_REST_Controller.php:59
-msgid "Country/region name to filter providers (e.g. Brazil)."
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:332
-msgid "CUPOM10, FRETEGRATIS"
-msgstr ""
-
-#: inc/Core/Providers_Registry.php:193
+#: admin/src/Core/Providers_Registry.php:193
 msgid "Czech Republic"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:145
-msgid "Código de rastreio:"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:220
+#: admin/src/Integrations/Joinotify.php:203
 msgid "da Silva"
-msgstr ""
-
-#: inc/Core/Ajax.php:149
-msgid "Dados inválidos."
 msgstr ""
 
 #: templates/email/hubgo-tracking-info.php:17
 msgid "Data de envio"
 msgstr ""
 
-#: templates/myaccount/hubgo-tracking-info.php:20
 #: templates/email/plain/hubgo-tracking-info.php:20
+#: templates/myaccount/hubgo-tracking-info.php:20
 msgid "Data de envio:"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:201
+#: admin/src/Integrations/Joinotify.php:176
 msgid "Data do envio"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:155
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:151
 msgid "Data do envio:"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Appearance.php:32
-#: inc/Admin/Views/Settings/Tabs/Appearance.php:42
-#: inc/Admin/Views/Settings/Tabs/Appearance.php:52
-#: inc/Admin/Views/Settings/Tabs/General.php:66
-#: inc/Admin/Views/Settings/Tabs/General.php:76
-#: inc/Admin/Views/Settings/Tabs/General.php:86
-msgid "Deixe em branco para não exibir."
+#: admin/src/Integrations/Joinotify.php:109
+msgid "Disparado ao salvar um código de rastreio no pedido."
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:54
-msgid "Depois do carrinho (Padrão)"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:117
-msgid "Disparado ao salvar um codigo de rastreio no pedido."
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:111
+#: admin/src/Integrations/Joinotify.php:102
 msgid "Disparado quando o status do pedido é alterado para Pedido enviado."
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:87
+#: admin/src/Integrations/Joinotify.php:90
 msgid ""
 "Dispare mensagens automáticas no WhatsApp com eventos de logística, como "
 "pedido enviado e código de rastreio, integrando o HubGo ao Joinotify."
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Advanced.php:34
-msgid "Dropdown"
+#: admin/src/Integrations/Joinotify.php:213
+msgid "E-mail de faturamento do cliente (WooCommerce)"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Appearance.php:34
-msgid "Entrega"
+#: admin/src/Integrations/Joinotify.php:301
+msgid "Endereço completo de entrega do cliente (WooCommerce)"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:519
-#: inc/Admin/Order_Tracking_Meta_Box.php:522
-#, php-format
+#: admin/src/Integrations/Joinotify.php:289
+msgid "Endereço completo de faturamento do cliente (WooCommerce)"
+msgstr ""
+
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:410
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:413
+#: admin/src/Core/Tracking_Manager.php:233
+#: admin/src/Core/Tracking_Manager.php:236
 msgid "Enviado em %s"
 msgstr ""
 
-#: inc/Emails/Email_Shipped_Order.php:26
+#: admin/src/Emails/Email_Shipped_Order.php:26
 msgid "Enviado quando o pedido e marcado como enviado."
 msgstr ""
 
-#: inc/Core/Ajax.php:790
+#: admin/src/Core/Assets.php:88
 msgid "Erro ao calcular o frete. Tente novamente."
 msgstr ""
 
-#: inc/Core/Ajax.php:173
-msgid "Erro ao processar a requisição."
-msgstr ""
-
-#: inc/Core/Assets.php:340
-msgid "Erro ao salvar"
-msgstr ""
-
-#: inc/Core/Ajax.php:160
+#: app/src/pages/settings/SettingsPage.vue:78
 msgid "Erro ao salvar as configurações."
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Advanced.php:36
-msgid "Escolha como os métodos de frete serão exibidos."
+#: admin/src/Admin/Settings/Registry.php:38
+msgid "Exibe a calculadora de frete na página do produto."
 msgstr ""
 
-#: inc/Core/Plugin.php:260
-msgid "esteja instalado e ativado."
+#: admin/src/Admin/Settings/Registry.php:41
+msgid "Exibe o metabox de código de rastreio na tela do pedido."
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Advanced.php:30
-msgid "Exibição dos métodos de frete"
+#: app/src/pages/settings/components/SettingsActionBar.vue:15
+msgid "Existem alterações não salvas."
 msgstr ""
 
-#: inc/Core/Assets.php:337
-msgid "Existem alterações não salvas. Deseja realmente sair?"
-msgstr ""
-
-#. Description of the plugin
-msgid "Extensão que permite gerenciar opções de frete para lojas WooCommerce."
-msgstr ""
-
-#: inc/Admin/Settings.php:319
-msgid ""
-"Extensão que permite gerenciar opções de frete para lojas WooCommerce. Se "
-"precisar de ajuda para configurar, acesse nossa "
-msgstr ""
-
-#: inc/Admin/Views/Settings/Tabs/General.php:56
-msgid "Final das informações adicionais"
-msgstr ""
-
-#: inc/Core/Providers_Registry.php:194
+#: admin/src/Core/Providers_Registry.php:194
 msgid "Finland"
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:195
+#: admin/src/Core/Providers_Registry.php:195
 msgid "France"
 msgstr ""
 
-#: inc/Core/Ajax.php:615
+#: admin/src/Core/Shipping_Calculator_Service.php:300
 msgid "Frete grátis"
 msgstr ""
 
-#: inc/Admin/Settings.php:398
+#: admin/src/Admin/Settings/Registry.php:35
+msgid "Funcionalidades"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:30
 msgid "Geral"
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:196
+#: app/src/pages/settings/SettingsPage.vue:92
+msgid "Gerenciamento de Frete"
+msgstr ""
+
+#: admin/src/Core/Providers_Registry.php:196
 msgid "Germany"
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:188
+#: admin/src/Core/Providers_Registry.php:188
 msgid "Global"
 msgstr ""
 
-#. Author URI of the plugin
-msgid ""
-"https://meumouse.com/?"
-"utm_source=wordpress&utm_medium=hubgo&utm_campaign=plugins_list"
-msgstr ""
-
-#. URI of the plugin
-msgid ""
-"https://meumouse.com/plugins/hubgo/?"
-"utm_source=wordpress&utm_medium=hubgo&utm_campaign=plugins_list"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:188
-msgid "https://transportadora.exemplo/rastreio/BR1234567890"
-msgstr ""
-
-#: inc/Core/Plugin.php:241 inc/Core/Plugin.php:257 inc/Core/Plugin.php:275
-#: inc/Integrations/Joinotify.php:86 inc/Integrations/Joinotify.php:134
+#: admin/src/Admin/Menu.php:54
+#: admin/src/Core/Plugin.php:296
+#: admin/src/Integrations/Joinotify.php:89
 msgid "HubGo"
 msgstr ""
 
-#. Name of the plugin
-msgid "HubGo - Gerenciamento de Frete para WooCommerce"
+#: admin/src/Admin/Menu.php:53
+msgid "HubGo - Gerenciamento de Frete"
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:199
+#: admin/src/Core/Assets.php:131
+msgid ""
+"HubGo: build de interface não encontrado. Execute \"npm run build\" no "
+"plugin."
+msgstr ""
+
+#: admin/src/Core/Providers_Registry.php:199
 msgid "India"
 msgstr ""
 
 #: templates/email/hubgo-tracking-info.php:10
-#: templates/myaccount/hubgo-tracking-info.php:11
 #: templates/email/plain/hubgo-tracking-info.php:12
+#: templates/myaccount/hubgo-tracking-info.php:11
 msgid "Informações de rastreio"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:88
-msgid "Informe seu CEP"
+#: admin/src/API/Routes/Tracking_Create.php:38
+msgid "Informe o código de rastreio."
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:214
-#: inc/Admin/Order_Tracking_Meta_Box.php:255
-#: inc/Admin/Order_Tracking_Meta_Box.php:290
-msgid "Invalid nonce."
+#: admin/src/Core/Plugin.php:333
+msgid "Instalar WooCommerce"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:266
-msgid "Invalid tracking item data."
-msgstr ""
-
-#: inc/Core/Providers_Registry.php:197
+#: admin/src/Core/Providers_Registry.php:197
 msgid "Ireland"
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:198
+#: admin/src/Core/Providers_Registry.php:198
 msgid "Italy"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:212
+#: admin/src/Integrations/Joinotify.php:191
 msgid "João"
 msgstr ""
 
@@ -416,172 +321,127 @@ msgstr ""
 msgid "Link"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:185
+#: admin/src/Integrations/Joinotify.php:156
 msgid "Link de rastreio"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:150
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:146
 #: templates/email/plain/hubgo-tracking-info.php:24
 msgid "Link de rastreio:"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Advanced.php:33
-msgid "Lista"
+#: admin/src/Core/Order_Status.php:292
+#: admin/src/Core/Order_Status.php:297
+msgid "Mudar status para Pedido enviado"
 msgstr ""
 
-#. Author of the plugin
-msgid "MeuMouse.com"
+#: app/src/pages/settings/SettingsPage.vue:60
+msgid "Não foi possível carregar as configurações."
 msgstr ""
 
-#: inc/Core/Ajax.php:777
-msgid "Nenhuma forma de entrega disponível."
-msgstr ""
-
-#: inc/Core/Providers_Registry.php:200
-msgid "Netherlands"
-msgstr ""
-
-#: inc/Core/Providers_Registry.php:201
-msgid "New Zealand"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:177
-msgid "Nome da transportadora"
-msgstr ""
-
-#: inc/Core/Assets.php:404
+#: admin/src/Core/Assets.php:213
 msgid "Não foi possível remover o rastreio. Tente novamente."
 msgstr ""
 
-#: inc/Core/Assets.php:341
-msgid "Não foi possível salvar as configurações. Tente novamente."
+#: admin/src/Core/Assets.php:214
+msgid "Não foi possível salvar o rastreio. Tente novamente."
 msgstr ""
 
-#: inc/Core/Assets.php:403
-msgid "Não foi possível validar a requisição. Recarregue a página."
-msgstr ""
-
-#: inc/API/Updater.php:402
+#: admin/src/API/Updater.php:402
 msgid ""
-"Não foi possível verificar atualizações para o plugin <strong>HubGo</strong>."
+"Não foi possível verificar atualizações para o plugin "
+"<strong>HubGo</strong>."
 msgstr ""
 
-#: inc/Views/Shipping_Calculator.php:197
+#: admin/src/Views/Shipping_Calculator.php:197
 msgid "Não sei meu CEP"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:265
-msgid "Para recuperar a data do pedido do WooCommerce"
+#: admin/src/Core/Assets.php:87
+msgid "Nenhuma forma de entrega disponível."
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:289
-msgid ""
-"Para recuperar cada produto e quantidade adquiridos no pedido, separados por "
-"linha"
+#: admin/src/Core/Providers_Registry.php:200
+msgid "Netherlands"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:225
-msgid ""
-"Para recuperar o e-mail de faturamento do cliente no pedido do WooCommerce"
+#: admin/src/Core/Providers_Registry.php:201
+msgid "New Zealand"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:281
-msgid ""
-"Para recuperar o endereço completo de entrega do usuário (formato "
-"configurável nas opções do WooCommerce)."
+#: admin/src/Integrations/Joinotify.php:146
+msgid "Nome da transportadora"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:273
-msgid ""
-"Para recuperar o endereço completo de faturamento do usuário (formato "
-"configurável nas opções do WooCommerce)."
+#: admin/src/Admin/Settings/Registry.php:75
+msgid "Nota de rodapé"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:350
-msgid "Para recuperar o endereço de entrega do pedido do WooCommerce"
+#: admin/src/Integrations/Joinotify.php:249
+msgid "Número do pedido (WooCommerce)"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:249
-msgid "Para recuperar o número do pedido do WooCommerce"
+#: admin/src/Admin/Settings/Registry.php:75
+msgid "Observação exibida abaixo da tabela de fretes."
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:209
-msgid ""
-"Para recuperar o primeiro nome de faturamento do cliente no pedido do "
-"WooCommerce"
+#: admin/src/Admin/Settings/Registry.php:49
+msgid "Onde exibir a calculadora na página do produto."
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:217
-msgid ""
-"Para recuperar o sobrenome de faturamento do cliente no pedido do WooCommerce"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:257
-msgid "Para recuperar o status do pedido do WooCommerce"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:297
-msgid "Para recuperar o símbolo de moeda do pedido"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:241
-msgid "Para recuperar o telefone de entrega do pedido do WooCommerce"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:233
-msgid "Para recuperar o telefone de faturamento do pedido do WooCommerce"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:337
-msgid "Para recuperar o título do método de pagamento do pedido do WooCommerce"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:313
-msgid "Para recuperar o valor total de desconto do pedido do WooCommerce"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:321
-msgid "Para recuperar o valor total de impostos do pedido do WooCommerce"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:305
-msgid "Para recuperar o valor total do pedido do WooCommerce"
-msgstr ""
-
-#: inc/Integrations/Joinotify.php:329
-msgid "Para recuperar os códigos de cupom utilizados no pedido do WooCommerce"
-msgstr ""
-
-#: inc/Core/Order_Status.php:48 inc/Core/Order_Status.php:76
-#: inc/Emails/Email_Shipped_Order.php:25 inc/Emails/Email_Shipped_Order.php:60
-#: inc/Integrations/Joinotify.php:110 inc/Integrations/Joinotify.php:373
+#: admin/src/Core/Order_Status.php:83
+#: admin/src/Core/Order_Status.php:107
+#: admin/src/Core/Order_Status.php:139
+#: admin/src/Core/Order_Status.php:145
+#: admin/src/Emails/Email_Shipped_Order.php:25
+#: admin/src/Emails/Email_Shipped_Order.php:60
+#: admin/src/Integrations/Joinotify.php:101
+#: admin/src/Integrations/Joinotify.php:338
 msgid "Pedido enviado"
 msgstr ""
 
-#: inc/Core/Order_Status.php:52
-#, php-format
-msgid "Pedido enviado (%s)"
-msgid_plural "Pedidos enviados (%s)"
-msgstr[0] ""
-msgstr[1] ""
+#: admin/src/API/Routes/Tracking_Create.php:34
+#: admin/src/API/Routes/Tracking_Get.php:35
+msgid "Pedido inválido."
+msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:97
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:97
 msgid "Pedido não encontrado."
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:202
+#: admin/src/Admin/Settings/Registry.php:70
+msgid "Personalize a aparência da tabela de fretes."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:57
+msgid "Placeholder do campo"
+msgstr ""
+
+#: admin/src/Core/Providers_Registry.php:202
 msgid "Poland"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:52
-msgid "Posição da calculadora de frete"
+#: admin/src/Admin/Settings/Registry.php:49
+msgid "Posição de exibição"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:160
+#: admin/src/Admin/Settings/Registry.php:47
+msgid "Posição e textos da calculadora de frete."
+msgstr ""
+
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:156
 msgid "Pré-visualizar:"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:335
+#: admin/src/Integrations/Joinotify.php:189
+msgid "Primeiro nome de faturamento do cliente (WooCommerce)"
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:313
+msgid "Produtos e quantidades adquiridos no pedido, separados por linha"
+msgstr ""
+
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:226
 msgid "Rastrear"
 msgstr ""
 
@@ -590,77 +450,76 @@ msgstr ""
 msgid "Rastrear envio"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:385
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:276
 msgid "Rastreio"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:74
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:74
 msgid "Rastreio - HubGo"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:387
+#: admin/src/Admin/Settings/Registry.php:41
+msgid "Rastreio no pedido (admin)"
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:352
 msgid "Rastreio salvo no pedido"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Components/Color.php:53
-msgid "Redefinir para cor padrão"
-msgstr ""
-
-#: inc/Admin/Order_Tracking_Meta_Box.php:344
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:235
 msgid "Remover"
 msgstr ""
 
-#: inc/Core/Plugin.php:242
+#: admin/src/Core/Plugin.php:264
 msgid "requer PHP 7.4 ou superior."
 msgstr ""
 
-#: inc/Core/Plugin.php:258
-msgid "requer que o"
+#: admin/src/Core/Plugin.php:269
+msgid "requer que o WooCommerce esteja instalado e ativado."
 msgstr ""
 
-#: inc/Core/Plugin.php:276
+#: admin/src/Core/Plugin.php:272
 msgid "requer WooCommerce 6.0 ou superior."
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:203
+#: admin/src/API/Routes/Tracking_Delete.php:36
+msgid "Requisição inválida."
+msgstr ""
+
+#: admin/src/Core/Providers_Registry.php:203
 msgid "Romania"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:276
+#: admin/src/Admin/Settings/Registry.php:56
+msgid "Rótulo do botão de calcular."
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:291
 msgid "Rua das Flores, 123 - Curitiba/PR - Brasil (CEP: 80000-000)"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:284 inc/Integrations/Joinotify.php:353
+#: admin/src/Integrations/Joinotify.php:303
 msgid "Rua das Margaridas, 450 - Curitiba/PR - Brasil (CEP: 80000-100)"
 msgstr ""
 
-#: inc/Admin/Settings.php:292
+#: app/src/pages/settings/components/SettingsActionBar.vue:30
+msgid "Salvando..."
+msgstr ""
+
+#: app/src/pages/settings/components/SettingsActionBar.vue:30
 msgid "Salvar configurações"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:159
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:155
 msgid "Salvar rastreio"
 msgstr ""
 
-#: inc/Core/Assets.php:338
-msgid "Salvo com sucesso"
-msgstr ""
-
-#: inc/Admin/Views/Settings/Tabs/Appearance.php:25
-msgid "Selecione a cor principal para botões e outros estilos."
-msgstr ""
-
-#: inc/Admin/Views/Settings/Tabs/General.php:59
-msgid ""
-"Selecione onde será exibido o cálculo de frete na página de produto "
-"individual. Shortcode disponível: [hubgo_shipping_calculator]"
-msgstr ""
-
-#: inc/Admin/Order_Tracking_Meta_Box.php:513
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:404
+#: admin/src/Core/Tracking_Manager.php:227
 msgid "Sem data de envio"
 msgstr ""
 
-#: inc/Emails/Email_Shipped_Order.php:49
+#: admin/src/Emails/Email_Shipped_Order.php:49
 msgid "Seu pedido foi enviado"
 msgstr ""
 
@@ -669,110 +528,114 @@ msgstr ""
 msgid "Seu pedido foi enviado e ja esta a caminho."
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:57
-msgid "Shortcode"
+#: admin/src/Integrations/Joinotify.php:201
+msgid "Sobrenome de faturamento do cliente (WooCommerce)"
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:204
+#: admin/src/Admin/Settings/Registry.php:53
+msgid "Somente via shortcode"
+msgstr ""
+
+#: admin/src/Core/Providers_Registry.php:204
 msgid "South African"
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:205
+#: admin/src/Admin/Settings/Registry.php:40
+msgid "Status \"Pedido enviado\""
+msgstr ""
+
+#: admin/src/Core/Order_Status.php:327
+msgid "Status alterado em massa para Pedido enviado."
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:261
+msgid "Status do pedido (WooCommerce)"
+msgstr ""
+
+#: admin/src/Core/Providers_Registry.php:205
 msgid "Sweden"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Advanced.php:32
-msgid "Tabela"
+#: admin/src/Integrations/Joinotify.php:237
+msgid "Telefone de entrega do pedido (WooCommerce)"
 msgstr ""
 
-#: inc/Core/Assets.php:402
+#: admin/src/Integrations/Joinotify.php:225
+msgid "Telefone de faturamento do pedido (WooCommerce)"
+msgstr ""
+
+#: admin/src/Core/Assets.php:212
 msgid "Tem certeza que deseja remover este rastreio?"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Appearance.php:51
-msgid "Texto de observação inferior das opções de frete"
+#: admin/src/Admin/Settings/Registry.php:57
+msgid "Texto de exemplo dentro do campo de CEP."
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:75
-msgid "Texto do botão da calculadora de frete"
+#: admin/src/Admin/Settings/Registry.php:55
+msgid "Texto de informação"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Appearance.php:31
-msgid "Texto do cabeçalho das formas de entrega"
+#: admin/src/Admin/Settings/Registry.php:56
+msgid "Texto do botão"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Appearance.php:41
-msgid "Texto do cabeçalho do valor das formas de entrega"
+#: admin/src/Admin/Settings/Registry.php:55
+msgid "Texto exibido acima do campo de CEP."
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:85
-msgid "Texto do espaço reservado do campo de CEP"
+#: admin/src/Admin/Settings/Registry.php:73
+msgid "Título da coluna de método de entrega."
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/General.php:65
-msgid "Texto informativo antes do campo de CEP"
-msgstr ""
-
-#: inc/Admin/Order_Tracking_Meta_Box.php:274
-msgid "Tracking item removed successfully."
+#: admin/src/Admin/Settings/Registry.php:74
+msgid "Título da coluna de valor."
 msgstr ""
 
 #: templates/email/hubgo-tracking-info.php:15
 msgid "Transportadora"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:373
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:264
+#: admin/src/Core/Tracking_Manager.php:187
 msgid "Transportadora não definida"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:118
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:118
 msgid "Transportadora personalizada"
 msgstr ""
 
-#: inc/Admin/Order_Tracking_Meta_Box.php:116
-#: inc/Admin/Order_Tracking_Meta_Box.php:139
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:116
+#: admin/src/Admin/Order_Tracking_Meta_Box.php:135
 #: templates/email/plain/hubgo-tracking-info.php:16
 msgid "Transportadora:"
 msgstr ""
 
-#: inc/Core/Plugin.php:449 inc/Core/Plugin.php:460
+#: admin/src/Core/Plugin.php:508
+#: admin/src/Core/Plugin.php:519
 msgid "Trapaceando?"
 msgstr ""
 
-#. %s: latest version number
-#: inc/API/Updater.php:390
-#, php-format
+#: admin/src/API/Updater.php:390
 msgid "Uma nova versão do plugin <strong>HubGo</strong> (%s) está disponível."
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:206
+#: admin/src/Core/Providers_Registry.php:206
 msgid "United Kingdom"
 msgstr ""
 
-#: inc/Core/Providers_Registry.php:207
+#: admin/src/Core/Providers_Registry.php:207
 msgid "United States"
 msgstr ""
 
-#: inc/Integrations/Joinotify.php:228
-msgid "usuario@exemplo.com"
+#: admin/src/Integrations/Joinotify.php:273
+msgid "Valor total do pedido (WooCommerce)"
 msgstr ""
 
-#: inc/Admin/Views/Settings/Tabs/Appearance.php:44
-msgid "Valor"
-msgstr ""
-
-#: inc/API/Updater.php:354
+#: admin/src/API/Updater.php:354
 msgid "Verificar atualizações"
 msgstr ""
 
-#: inc/Admin/Settings.php:165
+#: admin/src/Admin/Menu.php:81
 msgid "Você não tem permissão para acessar esta página."
-msgstr ""
-
-#: inc/Core/Plugin.php:259
-msgid "WooCommerce"
-msgstr ""
-
-#: inc/Admin/Order_Tracking_Meta_Box.php:259
-msgid "You do not have permission to delete this tracking item."
 msgstr ""
