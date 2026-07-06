@@ -248,17 +248,15 @@ final class Plugin {
 
         // Check PHP version.
         if ( version_compare( phpversion(), '7.4', '<' ) ) {
-            $errors[] = esc_html__( 'requer PHP 7.4 ou superior.', 'hubgo' );
+            $errors['php'] = esc_html__( 'requer PHP 7.4 ou superior.', 'hubgo' );
         }
 
         // Check if WooCommerce is active.
         if ( ! class_exists( 'WooCommerce' ) ) {
-            $errors[] = esc_html__( 'requer que o WooCommerce esteja instalado e ativado.', 'hubgo' );
-        }
-
-        // Check WC version.
-        if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '6.0', '<' ) ) {
-            $errors[] = esc_html__( 'requer WooCommerce 6.0 ou superior.', 'hubgo' );
+            $errors['woocommerce'] = esc_html__( 'requer que o WooCommerce esteja instalado e ativado.', 'hubgo' );
+        } elseif ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '6.0', '<' ) ) {
+            // Check WC version (only when WooCommerce is active).
+            $errors['wc_version'] = esc_html__( 'requer WooCommerce 6.0 ou superior.', 'hubgo' );
         }
 
         $this->dependency_errors = $errors;
@@ -277,13 +275,60 @@ final class Plugin {
         // Ensure errors are up to date at render time.
         $this->check_dependencies();
 
-        foreach ( array_unique( $this->dependency_errors ) as $message ) {
+        foreach ( $this->dependency_errors as $type => $message ) {
+            $action = ( 'woocommerce' === $type ) ? $this->get_woocommerce_action_button() : '';
+
             printf(
-                '<div class="notice notice-error"><p><strong>%1$s</strong> %2$s</p></div>',
+                '<div class="notice notice-error"><p><strong>%1$s</strong> %2$s%3$s</p></div>',
                 esc_html__( 'HubGo', 'hubgo' ),
-                esc_html( $message )
+                esc_html( $message ),
+                $action
             );
         }
+    }
+
+
+    /**
+     * Build the WooCommerce install/activate action button for the notice.
+     *
+     * Returns an install button when WooCommerce is not installed, an activate
+     * button when it is installed but inactive, or an empty string when the
+     * current user lacks the required capability.
+     *
+     * @since 3.0.0
+     * @return string Escaped anchor HTML, or empty string.
+     */
+    private function get_woocommerce_action_button() {
+        $plugin_file = 'woocommerce/woocommerce.php';
+        $is_installed = file_exists( WP_PLUGIN_DIR . '/' . $plugin_file );
+
+        if ( $is_installed ) {
+            if ( ! current_user_can( 'activate_plugins' ) ) {
+                return '';
+            }
+
+            $label = esc_html__( 'Ativar WooCommerce', 'hubgo' );
+            $url = wp_nonce_url(
+                self_admin_url( 'plugins.php?action=activate&plugin=' . $plugin_file ),
+                'activate-plugin_' . $plugin_file
+            );
+        } else {
+            if ( ! current_user_can( 'install_plugins' ) ) {
+                return '';
+            }
+
+            $label = esc_html__( 'Instalar WooCommerce', 'hubgo' );
+            $url = wp_nonce_url(
+                self_admin_url( 'update.php?action=install-plugin&plugin=woocommerce' ),
+                'install-plugin_woocommerce'
+            );
+        }
+
+        return sprintf(
+            ' <a href="%1$s" class="button button-primary" style="margin-left:8px;">%2$s</a>',
+            esc_url( $url ),
+            $label
+        );
     }
 
 
