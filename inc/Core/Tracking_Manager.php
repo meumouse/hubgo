@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Hubgo\Core;
 
+use MeuMouse\Hubgo\Core\Providers_Registry;
+
 use WC_Order;
 
 // Exit if accessed directly.
@@ -134,6 +136,104 @@ class Tracking_Manager {
         }
 
         return $updated;
+    }
+
+
+    /**
+     * Get tracking items enriched with display fields (for REST/JS rendering).
+     *
+     * Adds provider_label, tracking_link and date_label so the client can render
+     * items without any server-side HTML.
+     *
+     * @since 3.0.0
+     * @param int $order_id Order ID.
+     * @return array
+     */
+    public function get_items_for_display( $order_id ) {
+        $items = $this->get_items( $order_id );
+
+        foreach ( $items as &$item ) {
+            $item['provider_label'] = $this->get_provider_label( $item );
+            $item['tracking_link']  = $this->get_display_tracking_link( $order_id, $item );
+            $item['date_label']     = $this->get_date_label( $item );
+        }
+
+        unset( $item );
+
+        return $items;
+    }
+
+
+    /**
+     * Resolve a display provider label from an item.
+     *
+     * @since 3.0.0
+     * @param array $item Tracking item.
+     * @return string
+     */
+    private function get_provider_label( $item ) {
+        if ( ! empty( $item['custom_provider'] ) ) {
+            return $item['custom_provider'];
+        }
+
+        if ( ! empty( $item['provider'] ) ) {
+            return $item['provider'];
+        }
+
+        if ( ! empty( $item['carrier'] ) ) {
+            return $item['carrier'];
+        }
+
+        return __( 'Transportadora não definida', 'hubgo' );
+    }
+
+
+    /**
+     * Resolve a tracking link for display.
+     *
+     * @since 3.0.0
+     * @param int $order_id Order ID.
+     * @param array $item Tracking item.
+     * @return string
+     */
+    private function get_display_tracking_link( $order_id, $item ) {
+        if ( ! empty( $item['custom_url'] ) ) {
+            return esc_url_raw( $item['custom_url'] );
+        }
+
+        $provider = ! empty( $item['provider'] ) ? $item['provider'] : ( $item['carrier'] ?? '' );
+
+        if ( empty( $provider ) || empty( $item['tracking_number'] ) ) {
+            return '';
+        }
+
+        $order = wc_get_order( $order_id );
+        $country = $order ? ( $order->get_shipping_country() ?: $order->get_billing_country() ) : '';
+        $country = $country ?: 'Brazil';
+
+        return Providers_Registry::get_tracking_url( $provider, $item['tracking_number'], '', $country, $order_id );
+    }
+
+
+    /**
+     * Build a human-readable ship date label.
+     *
+     * @since 3.0.0
+     * @param array $item Tracking item.
+     * @return string
+     */
+    private function get_date_label( $item ) {
+        if ( empty( $item['ship_date'] ) ) {
+            return __( 'Sem data de envio', 'hubgo' );
+        }
+
+        $timestamp = strtotime( $item['ship_date'] );
+
+        if ( ! $timestamp ) {
+            return sprintf( __( 'Enviado em %s', 'hubgo' ), $item['ship_date'] );
+        }
+
+        return sprintf( __( 'Enviado em %s', 'hubgo' ), wp_date( get_option( 'date_format' ), $timestamp ) );
     }
 
 

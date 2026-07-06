@@ -1,3 +1,10 @@
+Versão 3.0.0 (06/07/2026)
+* Mudança de arquitetura: interface de configurações reescrita em Vue 3 + Vite (padrão Joinotify)
+* API First: todas as ações AJAX legadas substituídas pela REST API (namespace hubgo/v1)
+* Compatibilidade com o Joinotify v2 (nova API funcional: triggers, placeholders e disparo de workflows)
+* Base modular e extensível (registro de integrações e schema de configurações filtráveis)
+* Correção de segurança: endpoints REST passam a exigir capability + nonce
+
 Versão 2.2.0 (12/03/2026)
 * Correção de bugs:
     -Pedidos com status 'Pedido enviado' não são exibidos na página de pedidos.

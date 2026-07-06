@@ -48,6 +48,14 @@ final class Plugin {
      */
     private $instances = array();
 
+    /**
+     * Collected dependency error messages.
+     *
+     * @since 3.0.0
+     * @var array
+     */
+    private $dependency_errors = array();
+
 
     /**
      * Get plugin instance.
@@ -84,6 +92,9 @@ final class Plugin {
 
         // Check dependencies early.
         add_action( 'plugins_loaded', array( $this, 'check_dependencies' ), 5 );
+
+        // Render dependency notices once (deduplicated).
+        add_action( 'admin_notices', array( $this, 'render_dependency_notices' ) );
 
         // Set compatibility with WooCommerce HPOS.
         add_action( 'before_woocommerce_init', array( $this, 'setup_hpos_compatibility' ) );
@@ -188,16 +199,15 @@ final class Plugin {
         return array(
             'init' => array(
                 'MeuMouse\Hubgo\Core\Assets',
-                'MeuMouse\Hubgo\Core\Ajax',
-                'MeuMouse\Hubgo\Admin\Settings',
+                'MeuMouse\Hubgo\Admin\Menu',
                 'MeuMouse\Hubgo\Core\Order_Status',
-                'MeuMouse\Hubgo\API\Tracking_REST_Controller',
+                'MeuMouse\Hubgo\API\Rest_Controller',
             ),
             'wp_loaded' => array(
                 'MeuMouse\Hubgo\Views\Shipping_Calculator',
                 'MeuMouse\Hubgo\Views\Custom_Colors',
                 'MeuMouse\Hubgo\API\Updater',
-                'MeuMouse\Hubgo\Integrations\Joinotify',
+                'MeuMouse\Hubgo\Integrations\Integration_Registry',
             ),
         );
     }
@@ -225,63 +235,55 @@ final class Plugin {
     /**
      * Check plugin dependencies.
      *
+     * Collects any dependency error messages (without rendering) and returns
+     * whether all dependencies are met. Rendering happens once via
+     * {@see Plugin::render_dependency_notices()} to avoid duplicated notices.
+     *
      * @since 2.0.0
+     * @version 3.0.0
      * @return bool
      */
     public function check_dependencies() {
-        $dependencies_met = true;
+        $errors = array();
 
         // Check PHP version.
         if ( version_compare( phpversion(), '7.4', '<' ) ) {
-            add_action( 'admin_notices', function() {
-                ?>
-                <div class="notice notice-error">
-                    <p>
-                        <strong><?php echo esc_html__( 'HubGo', 'hubgo' ); ?></strong> 
-                        <?php echo esc_html__( 'requer PHP 7.4 ou superior.', 'hubgo' ); ?>
-                    </p>
-                </div>
-                <?php
-            });
-
-            $dependencies_met = false;
+            $errors[] = esc_html__( 'requer PHP 7.4 ou superior.', 'hubgo' );
         }
 
         // Check if WooCommerce is active.
         if ( ! class_exists( 'WooCommerce' ) ) {
-            add_action( 'admin_notices', function() {
-                ?>
-                <div class="notice notice-error">
-                    <p>
-                        <strong><?php echo esc_html__( 'HubGo', 'hubgo' ); ?></strong> 
-                        <?php echo esc_html__( 'requer que o', 'hubgo' ); ?> 
-                        <strong><?php echo esc_html__( 'WooCommerce', 'hubgo' ); ?></strong> 
-                        <?php echo esc_html__( 'esteja instalado e ativado.', 'hubgo' ); ?>
-                    </p>
-                </div>
-                <?php
-            } );
-
-            $dependencies_met = false;
+            $errors[] = esc_html__( 'requer que o WooCommerce esteja instalado e ativado.', 'hubgo' );
         }
 
         // Check WC version.
         if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '6.0', '<' ) ) {
-            add_action( 'admin_notices', function() {
-                ?>
-                <div class="notice notice-error">
-                    <p>
-                        <strong><?php echo esc_html__( 'HubGo', 'hubgo' ); ?></strong> 
-                        <?php echo esc_html__( 'requer WooCommerce 6.0 ou superior.', 'hubgo' ); ?>
-                    </p>
-                </div>
-                <?php
-            } );
-
-            $dependencies_met = false;
+            $errors[] = esc_html__( 'requer WooCommerce 6.0 ou superior.', 'hubgo' );
         }
 
-        return $dependencies_met;
+        $this->dependency_errors = $errors;
+
+        return empty( $errors );
+    }
+
+
+    /**
+     * Render dependency error notices once (deduplicated).
+     *
+     * @since 3.0.0
+     * @return void
+     */
+    public function render_dependency_notices() {
+        // Ensure errors are up to date at render time.
+        $this->check_dependencies();
+
+        foreach ( array_unique( $this->dependency_errors ) as $message ) {
+            printf(
+                '<div class="notice notice-error"><p><strong>%1$s</strong> %2$s</p></div>',
+                esc_html__( 'HubGo', 'hubgo' ),
+                esc_html( $message )
+            );
+        }
     }
 
 

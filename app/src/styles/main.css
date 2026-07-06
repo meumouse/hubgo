@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Scoped base styles for the HubGo settings SPA (preflight is disabled so we
+   restate only what we need inside our own mount point). */
+#hubgo-settings-app {
+    --hubgo-primary: #008aff;
+    color: #1e1e1e;
+    font-size: 14px;
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+#hubgo-settings-app *,
+#hubgo-settings-app *::before,
+#hubgo-settings-app *::after {
+    box-sizing: border-box;
+}
+
+#hubgo-settings-app .hubgo-skeleton {
+    animation: hubgo-pulse 1.4s ease-in-out infinite;
+    background: #e2e8f0;
+    border-radius: 8px;
+}
+
+@keyframes hubgo-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}

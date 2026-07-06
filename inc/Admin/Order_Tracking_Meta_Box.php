@@ -131,10 +131,6 @@ class Order_Tracking_Meta_Box {
                     echo '</select>';
                 echo '</p>';
 
-                echo '<input type="hidden" id="hubgo_tracking_get_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-get-item' ) ) . '" />';
-                echo '<input type="hidden" id="hubgo_tracking_delete_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-delete-item' ) ) . '" />';
-                echo '<input type="hidden" id="hubgo_tracking_create_nonce" value="' . esc_attr( wp_create_nonce( 'hubgo-tracking-create-item' ) ) . '" />';
-
                 echo '<p class="form-field custom_tracking_provider_field">';
                 echo '<label for="hubgo_custom_tracking_provider">' . esc_html__( 'Transportadora:', 'hubgo' ) . '</label>';
                 
@@ -200,111 +196,6 @@ class Order_Tracking_Meta_Box {
                 'ship_date'       => isset( $_POST['hubgo_date_shipped'] ) ? sanitize_text_field( wp_unslash( $_POST['hubgo_date_shipped'] ) ) : '',
             )
         );
-    }
-
-
-    /**
-     * Save tracking item via AJAX.
-     *
-     * @since 2.1.0
-     * @return void
-     */
-    public function ajax_save_tracking_item() {
-        if ( ! $this->verify_ajax_nonce( 'hubgo-tracking-create-item' ) ) {
-            wp_send_json_error( array( 'message' => __( 'Invalid nonce.', 'hubgo' ) ), 403 );
-        }
-
-        if ( ! current_user_can( 'manage_woocommerce' ) ) {
-            wp_die();
-        }
-
-        $order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
-
-        if ( $order_id <= 0 || empty( $_POST['tracking_number'] ) ) {
-            wp_die();
-        }
-
-        $provider = isset( $_POST['tracking_provider'] ) ? sanitize_text_field( wp_unslash( $_POST['tracking_provider'] ) ) : '';
-        $custom_provider = isset( $_POST['custom_tracking_provider'] ) ? sanitize_text_field( wp_unslash( $_POST['custom_tracking_provider'] ) ) : '';
-
-        $item = $this->tracking->add_item(
-            $order_id,
-            array(
-                'tracking_number' => sanitize_text_field( wp_unslash( $_POST['tracking_number'] ) ),
-                'provider'        => $provider,
-                'custom_provider' => $custom_provider,
-                'custom_url'      => isset( $_POST['custom_tracking_link'] ) ? esc_url_raw( wp_unslash( $_POST['custom_tracking_link'] ) ) : '',
-                'ship_date'       => isset( $_POST['date_shipped'] ) ? sanitize_text_field( wp_unslash( $_POST['date_shipped'] ) ) : '',
-            )
-        );
-
-        $this->render_tracking_item( $order_id, $item );
-
-        wp_die();
-    }
-
-
-    /**
-     * Delete tracking item via AJAX.
-     *
-     * @since 2.1.0
-     * @return void
-     */
-    public function ajax_delete_tracking_item() {
-        if ( ! $this->verify_ajax_nonce( 'hubgo-tracking-delete-item' ) ) {
-            wp_send_json_error( array( 'message' => __( 'Invalid nonce.', 'hubgo' ) ), 403 );
-        }
-
-        if ( ! current_user_can( 'manage_woocommerce' ) ) {
-            wp_send_json_error( array( 'message' => __( 'You do not have permission to delete this tracking item.', 'hubgo' ) ), 403 );
-        }
-
-        $order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
-        $tracking_id = isset( $_POST['tracking_id'] ) ? sanitize_text_field( wp_unslash( $_POST['tracking_id'] ) ) : '';
-
-        if ( $order_id <= 0 || empty( $tracking_id ) ) {
-            wp_send_json_error( array( 'message' => __( 'Invalid tracking item data.', 'hubgo' ) ), 400 );
-        }
-
-        $deleted_item = $this->tracking->delete_item( $order_id, $tracking_id );
-
-        if ( $deleted_item ) {
-            wp_send_json_success( array(
-                'tracking_id' => $tracking_id,
-                'message'     => __( 'Tracking item removed successfully.', 'hubgo' ),
-            ) );
-        }
-
-        wp_send_json_error( array( 'message' => __( 'Could not remove tracking item.', 'hubgo' ) ), 500 );
-    }
-
-
-    /**
-     * Get tracking items list via AJAX.
-     *
-     * @since 2.1.0
-     * @return void
-     */
-    public function ajax_get_tracking_items() {
-        if ( ! $this->verify_ajax_nonce( 'hubgo-tracking-get-item' ) ) {
-            wp_send_json_error( array( 'message' => __( 'Invalid nonce.', 'hubgo' ) ), 403 );
-        }
-
-        if ( ! current_user_can('manage_woocommerce') ) {
-            wp_die();
-        }
-
-        $order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
-
-        if ( $order_id <= 0 ) {
-            wp_die();
-        }
-
-        foreach ( $this->tracking->get_items( $order_id ) as $item ) {
-            $this->render_tracking_item( $order_id, $item );
-        }
-
-        wp_die();
     }
 
 
@@ -606,26 +497,6 @@ class Order_Tracking_Meta_Box {
         }
 
         return $this->get_order_id_from_request();
-    }
-
-    
-    /**
-     * Verify AJAX nonce for multiple payload keys.
-     *
-     * @since 2.1.0
-     * @param string $action Nonce action.
-     * @return bool
-     */
-    protected function verify_ajax_nonce( $action ) {
-        if ( check_ajax_referer( $action, 'security', false ) ) {
-            return true;
-        }
-
-        if ( check_ajax_referer( $action, 'nonce', false ) ) {
-            return true;
-        }
-
-        return check_ajax_referer( $action, '_ajax_nonce', false );
     }
 }
 

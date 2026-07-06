@@ -6,7 +6,7 @@
  * Plugin URI:              https://meumouse.com/plugins/hubgo/?utm_source=wordpress&utm_medium=hubgo&utm_campaign=plugins_list
  * Author:                  MeuMouse.com
  * Author URI:              https://meumouse.com/?utm_source=wordpress&utm_medium=hubgo&utm_campaign=plugins_list
- * Version:                 2.2.0
+ * Version:                 3.0.0
  * WC requires at least:    6.0.0
  * WC tested up to:         10.6.0
  * Requires PHP:            7.4
@@ -28,7 +28,7 @@ if ( file_exists( $autoload ) ) {
     require_once $autoload;
 }
 
-$plugin_version = '2.2.0';
+$plugin_version = '3.0.0';
 
 Plugin::get_instance()->init( $plugin_version );
 

@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+app/node_modules/
+
+# Build artifacts are committed (shipped in the plugin zip): app/dist and vendor are kept.
+# Local tooling
+.history/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
