@@ -2,6 +2,7 @@
 
 namespace MeuMouse\Hubgo\Core;
 
+use MeuMouse\Hubgo\Core\License;
 use MeuMouse\Hubgo\Core\Tracking_Manager;
 use MeuMouse\Hubgo\Admin\Order_Tracking_Meta_Box;
 use MeuMouse\Hubgo\Views\Order_Tracking_View;
@@ -98,6 +99,12 @@ final class Plugin {
 
         $this->define_constants();
 
+        // Register with the MDS SDK (licensing + signed updates). Must be wired
+        // before `plugins_loaded`, where the SDK loader fires `mds_sdk_loaded`,
+        // and stays outside the dependency gate so licensing keeps working even
+        // when WooCommerce is missing.
+        License::boot();
+
         // Load text domain.
         add_action( 'init', array( $this, 'load_textdomain' ) );
 
@@ -178,15 +185,19 @@ final class Plugin {
      * This will only instantiate the classes at the hooks defined in the map.
      *
      * @since 2.0.0
+     * @version 3.0.0
      * @return void
      */
     private function register_class_hooks() {
         $map = $this->get_hook_class_map();
+        $priorities = $this->get_hook_priorities();
 
         foreach ( $map as $hook => $classes ) {
             if ( empty( $hook ) || empty( $classes ) || ! is_array( $classes ) ) {
                 continue;
             }
+
+            $priority = isset( $priorities[ $hook ] ) ? (int) $priorities[ $hook ] : 10;
 
             foreach ( $classes as $class ) {
                 if ( empty( $class ) || ! is_string( $class ) ) {
@@ -195,7 +206,7 @@ final class Plugin {
 
                 add_action( $hook, function() use ( $class ) {
                     $this->safe_instance_class( $class );
-                }, 10 );
+                }, $priority );
             }
         }
     }
@@ -205,11 +216,20 @@ final class Plugin {
      * Get hook => classes map used to lazy-load plugin components.
      *
      * @since 2.0.0
-     * @version 2.1.0
+     * @version 3.0.0
      * @return array
      */
     private function get_hook_class_map() {
         return array(
+            // Integrations register themselves through the host plugin's filters
+            // (Joinotify builds its trigger/placeholder/integration catalogs from
+            // `Joinotify/...` filters), so they must boot before those catalogs
+            // are assembled. Joinotify's developer guide asks third parties to
+            // register on plugins_loaded/init; booting on wp_loaded left the
+            // registration racing the catalog that reads it.
+            'plugins_loaded' => array(
+                'MeuMouse\Hubgo\Integrations\Integration_Registry',
+            ),
             'init' => array(
                 'MeuMouse\Hubgo\Core\Assets',
                 'MeuMouse\Hubgo\Admin\Menu',
@@ -219,9 +239,25 @@ final class Plugin {
             'wp_loaded' => array(
                 'MeuMouse\Hubgo\Views\Shipping_Calculator',
                 'MeuMouse\Hubgo\Views\Custom_Colors',
-                'MeuMouse\Hubgo\API\Updater',
-                'MeuMouse\Hubgo\Integrations\Integration_Registry',
             ),
+        );
+    }
+
+
+    /**
+     * Get hook => priority map used when registering the lazy-loading callbacks.
+     *
+     * Hooks absent from this map are registered with the default priority (10).
+     *
+     * @since 3.0.0
+     * @return array<string,int>
+     */
+    private function get_hook_priorities() {
+        return array(
+            // Run after the dependency check registered at priority 5, while
+            // still leaving room for host plugins to assemble the catalogs the
+            // integrations register into.
+            'plugins_loaded' => 15,
         );
     }
 
