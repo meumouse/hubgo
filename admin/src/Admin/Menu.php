@@ -81,10 +81,11 @@ class Menu {
             wp_die( esc_html__( 'Você não tem permissão para acessar esta página.', 'hubgo' ) );
         }
         ?>
-        <div class="wrap hubgo-settings-page">
+        <div class="wrap hubgo-settings-page hubgo-app">
             <div id="hubgo-settings-app" class="hubgo-settings-app">
-                <div class="hubgo-skeleton" style="height:40px;width:100%;margin-bottom:16px;"></div>
-                <div class="hubgo-skeleton" style="height:180px;width:100%;"></div>
+                <div class="hubgo-skeleton-content" style="width: 950px; max-width: 100%; height: 100px;"></div>
+                <div class="hubgo-skeleton-content" style="width: 680px; max-width: 100%; height: 65px; margin-top: 2rem;"></div>
+                <div class="hubgo-skeleton-content" style="width: 100%; height: 550px; margin-top: 2rem;"></div>
             </div>
         </div>
         <?php

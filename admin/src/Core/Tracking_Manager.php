@@ -39,20 +39,42 @@ class Tracking_Manager {
 
 
     /**
-     * Get tracking items from order
+     * Get tracking items from order.
+     *
+     * Reads through the WooCommerce CRUD layer so the items resolve under both
+     * storage engines. With HPOS enabled (and post/table synchronisation off)
+     * order meta no longer lives in wp_postmeta, so the previous get_post_meta()
+     * read returned nothing — the tracking metabox rendered empty and the
+     * Joinotify "order shipped" notification went out with a blank tracking code
+     * and link. Legacy post meta is still read as a fallback for orders stored
+     * before a migration.
      *
      * @since 2.1.0
+     * @version 3.0.0
      * @param int $order_id | Order ID.
      * @return array
      */
     public function get_items( $order_id ) {
-        $items = get_post_meta( $order_id, self::META_KEY, true );
+        $order = $this->get_order( $order_id );
+        $items = $order ? $order->get_meta( self::META_KEY, true ) : array();
+
+        if ( ! is_array( $items ) || empty( $items ) ) {
+            $legacy = get_post_meta( $order_id, self::META_KEY, true );
+
+            if ( is_array( $legacy ) && ! empty( $legacy ) ) {
+                $items = $legacy;
+            }
+        }
 
         if ( ! is_array( $items ) ) {
             $items = array();
         }
 
         foreach ( $items as &$item ) {
+            if ( ! is_array( $item ) ) {
+                continue;
+            }
+
             if ( empty( $item['provider'] ) && ! empty( $item['carrier'] ) ) {
                 $item['provider'] = sanitize_text_field( $item['carrier'] );
             }
@@ -62,7 +84,50 @@ class Tracking_Manager {
             }
         }
 
-        return apply_filters( 'Hubgo/Tracking/Get_Items', $items, $order_id );
+        unset( $item );
+
+        return apply_filters( 'Hubgo/Tracking/Get_Items', array_values( array_filter( $items, 'is_array' ) ), $order_id );
+    }
+
+
+    /**
+     * Resolve the order object for an ID.
+     *
+     * @since 3.0.0
+     * @param int $order_id | Order ID.
+     * @return \WC_Order|\WC_Order_Refund|false
+     */
+    private function get_order( $order_id ) {
+        if ( ! function_exists( 'wc_get_order' ) ) {
+            return false;
+        }
+
+        return wc_get_order( absint( $order_id ) );
+    }
+
+
+    /**
+     * Persist the tracking item list on the order (HPOS-safe).
+     *
+     * @since 3.0.0
+     * @param int $order_id | Order ID.
+     * @param array $items | Tracking item list.
+     * @return bool Whether the list was persisted.
+     */
+    private function persist_items( $order_id, $items ) {
+        $items = array_values( $items );
+        $order = $this->get_order( $order_id );
+
+        if ( ! $order ) {
+            // No CRUD object available (order deleted mid-request): fall back to
+            // post meta rather than silently dropping the data.
+            return (bool) update_post_meta( $order_id, self::META_KEY, $items );
+        }
+
+        $order->update_meta_data( self::META_KEY, $items );
+        $order->save();
+
+        return true;
     }
 
 
@@ -89,7 +154,7 @@ class Tracking_Manager {
 
         $items[] = $item;
 
-        update_post_meta( $order_id, self::META_KEY, $items );
+        $this->persist_items( $order_id, $items );
 
         /**
          * Fired when a tracking item is saved for an order.
@@ -115,14 +180,23 @@ class Tracking_Manager {
      */
     public function delete_item( $order_id, $tracking_id ) {
         $items = $this->get_items( $order_id );
+        $removed = false;
 
         foreach ( $items as $key => $item ) {
             if ( isset( $item['tracking_id'] ) && $item['tracking_id'] === $tracking_id ) {
                 unset( $items[ $key ] );
+                $removed = true;
             }
         }
 
-        $updated = update_post_meta( $order_id, self::META_KEY, array_values( $items ) );
+        // Nothing matched: report failure instead of persisting an identical list
+        // (update_post_meta returns false for an unchanged value, which used to
+        // make a successful no-op look like a storage error).
+        if ( ! $removed ) {
+            return false;
+        }
+
+        $updated = $this->persist_items( $order_id, $items );
 
         if ( $updated ) {
             /**
@@ -153,9 +227,11 @@ class Tracking_Manager {
         $items = $this->get_items( $order_id );
 
         foreach ( $items as &$item ) {
-            $item['provider_label'] = $this->get_provider_label( $item );
-            $item['tracking_link']  = $this->get_display_tracking_link( $order_id, $item );
-            $item['date_label']     = $this->get_date_label( $item );
+            $item['carrier_name']      = $this->get_carrier_name( $item );
+            $item['provider_label']    = $this->get_provider_label( $item );
+            $item['tracking_link']     = $this->get_display_tracking_link( $order_id, $item );
+            $item['ship_date_label']   = $this->format_ship_date( $item['ship_date'] ?? '' );
+            $item['date_label']        = $this->get_date_label( $item );
         }
 
         unset( $item );
@@ -165,53 +241,129 @@ class Tracking_Manager {
 
 
     /**
-     * Resolve a display provider label from an item.
+     * Resolve the carrier name stored on an item, without any display fallback.
+     *
+     * Use this when the value is interpolated into text the customer reads (a
+     * WhatsApp message, an e-mail): an unset carrier must render as an empty
+     * string, never as the "not defined" placeholder copy.
      *
      * @since 3.0.0
      * @param array $item Tracking item.
      * @return string
      */
-    private function get_provider_label( $item ) {
-        if ( ! empty( $item['custom_provider'] ) ) {
-            return $item['custom_provider'];
+    public function get_carrier_name( $item ) {
+        if ( ! is_array( $item ) ) {
+            return '';
         }
 
-        if ( ! empty( $item['provider'] ) ) {
-            return $item['provider'];
+        foreach ( array( 'custom_provider', 'provider', 'carrier' ) as $key ) {
+            if ( ! empty( $item[ $key ] ) ) {
+                return (string) $item[ $key ];
+            }
         }
 
-        if ( ! empty( $item['carrier'] ) ) {
-            return $item['carrier'];
-        }
+        return '';
+    }
 
-        return __( 'Transportadora não definida', 'hubgo' );
+
+    /**
+     * Resolve a display provider label from an item.
+     *
+     * Same resolution as {@see Tracking_Manager::get_carrier_name()} plus the
+     * placeholder copy used by UI surfaces. Public so every consumer — metabox,
+     * orders list, account page, e-mails and integrations — shows one label.
+     *
+     * @since 3.0.0
+     * @param array $item Tracking item.
+     * @return string
+     */
+    public function get_provider_label( $item ) {
+        $carrier = $this->get_carrier_name( $item );
+
+        return '' !== $carrier ? $carrier : __( 'Transportadora não definida', 'hubgo' );
     }
 
 
     /**
      * Resolve a tracking link for display.
      *
+     * Public so integrations (e.g. the Joinotify placeholders) build the same
+     * link the admin and storefront show, instead of duplicating the rules.
+     *
      * @since 3.0.0
      * @param int $order_id Order ID.
      * @param array $item Tracking item.
      * @return string
      */
-    private function get_display_tracking_link( $order_id, $item ) {
+    public function get_display_tracking_link( $order_id, $item ) {
+        if ( ! is_array( $item ) ) {
+            return '';
+        }
+
+        // An explicit URL always wins, whatever carrier is selected.
         if ( ! empty( $item['custom_url'] ) ) {
             return esc_url_raw( $item['custom_url'] );
         }
 
-        $provider = ! empty( $item['provider'] ) ? $item['provider'] : ( $item['carrier'] ?? '' );
+        // The registry is keyed by the catalog carrier, so a free-typed
+        // custom_provider has no URL template and must not be looked up.
+        $provider = ! empty( $item['provider'] ) ? (string) $item['provider'] : (string) ( $item['carrier'] ?? '' );
 
-        if ( empty( $provider ) || empty( $item['tracking_number'] ) ) {
+        if ( '' === $provider || empty( $item['tracking_number'] ) ) {
             return '';
         }
 
-        $order = wc_get_order( $order_id );
-        $country = $order ? ( $order->get_shipping_country() ?: $order->get_billing_country() ) : '';
-        $country = $country ?: 'Brazil';
+        return (string) Providers_Registry::get_tracking_url(
+            $provider,
+            $item['tracking_number'],
+            '',
+            $this->get_order_country( $order_id ),
+            $order_id
+        );
+    }
 
-        return Providers_Registry::get_tracking_url( $provider, $item['tracking_number'], '', $country, $order_id );
+
+    /**
+     * Resolve the country used to pick a carrier's URL template.
+     *
+     * @since 3.0.0
+     * @param int $order_id Order ID.
+     * @return string
+     */
+    public function get_order_country( $order_id ) {
+        $order = $this->get_order( $order_id );
+
+        if ( ! $order ) {
+            return 'Brazil';
+        }
+
+        $country = $order->get_shipping_country();
+
+        if ( empty( $country ) ) {
+            $country = $order->get_billing_country();
+        }
+
+        return ! empty( $country ) ? $country : 'Brazil';
+    }
+
+
+    /**
+     * Format a raw ship date for presentation (no surrounding copy).
+     *
+     * @since 3.0.0
+     * @param string $ship_date Raw stored date.
+     * @return string Formatted date, or an empty string when unset.
+     */
+    public function format_ship_date( $ship_date ) {
+        $ship_date = (string) $ship_date;
+
+        if ( '' === $ship_date ) {
+            return '';
+        }
+
+        $timestamp = strtotime( $ship_date );
+
+        return $timestamp ? wp_date( get_option( 'date_format' ), $timestamp ) : $ship_date;
     }
 
 
@@ -222,18 +374,15 @@ class Tracking_Manager {
      * @param array $item Tracking item.
      * @return string
      */
-    private function get_date_label( $item ) {
-        if ( empty( $item['ship_date'] ) ) {
+    public function get_date_label( $item ) {
+        $formatted = $this->format_ship_date( is_array( $item ) && isset( $item['ship_date'] ) ? $item['ship_date'] : '' );
+
+        if ( '' === $formatted ) {
             return __( 'Sem data de envio', 'hubgo' );
         }
 
-        $timestamp = strtotime( $item['ship_date'] );
-
-        if ( ! $timestamp ) {
-            return sprintf( __( 'Enviado em %s', 'hubgo' ), $item['ship_date'] );
-        }
-
-        return sprintf( __( 'Enviado em %s', 'hubgo' ), wp_date( get_option( 'date_format' ), $timestamp ) );
+        /* translators: %s: formatted shipping date. */
+        return sprintf( __( 'Enviado em %s', 'hubgo' ), $formatted );
     }
 
 

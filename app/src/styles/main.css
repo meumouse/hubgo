@@ -1,30 +1,205 @@
+/*
+ * main.css — HubGo admin SPA stylesheet.
+ *
+ * Mirrors the Joinotify admin design system (tokens, control chrome, skeletons,
+ * toasts) with the HubGo branding. Tailwind's preflight stays disabled and every
+ * rule is scoped under .hubgo-app so nothing leaks into wp-admin.
+ *
+ * @since 3.0.0
+ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Scoped base styles for the HubGo settings SPA (preflight is disabled so we
-   restate only what we need inside our own mount point). */
-#hubgo-settings-app {
+/*
+ * Page chrome. wp-admin's `.wrap` adds its own spacing and inherits the admin
+ * font stack, so the shell restates both and paints the neutral backdrop the
+ * white content panel sits on.
+ */
+.hubgo-settings-page.wrap {
+    margin: 0 20px 0 0;
+    padding: 24px 0 0;
+    background-color: #f4f7fb;
+    min-height: calc(100vh - 32px);
+}
+
+.hubgo-settings-page.wrap > .hubgo-settings-app {
+    padding: 0 8px 40px;
+}
+
+/* Design tokens. Declared on the app root (not :root) so wp-admin is untouched. */
+.hubgo-app {
     --hubgo-primary: #008aff;
-    color: #1e1e1e;
+    --hubgo-primary-0: #ffffff;
+    --hubgo-primary-50: #e6f2ff;
+    --hubgo-primary-100: #cce5ff;
+    --hubgo-primary-200: #99ccff;
+    --hubgo-primary-300: #66b2ff;
+    --hubgo-primary-400: #33a0ff;
+    --hubgo-primary-500: #1a95ff;
+    --hubgo-primary-600: #0a8fff;
+    --hubgo-primary-700: #008aff;
+    --hubgo-primary-800: #0069c2;
+    --hubgo-primary-900: #00396a;
+    --hubgo-primary-950: #00223f;
+    --hubgo-shell-50: #f4f7fb;
+    --hubgo-shell-100: #e8eef8;
+    --hubgo-shell-200: #cddcf1;
+    --hubgo-shell-500: #4a78b4;
+    --hubgo-ink: #102033;
+    --hubgo-success: #22c55e;
+    --hubgo-danger: #ef4444;
+    --hubgo-warning: #ffba08;
+    --hubgo-info: #0ea5e9;
+    --hubgo-dark: #232323;
+    --hubgo-panel: #ffffff;
+    --hubgo-muted: #6b7280;
+
+    color: var(--hubgo-ink);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 14px;
     line-height: 1.5;
     box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
 }
 
-#hubgo-settings-app *,
-#hubgo-settings-app *::before,
-#hubgo-settings-app *::after {
+.hubgo-app *,
+.hubgo-app *::before,
+.hubgo-app *::after {
     box-sizing: border-box;
 }
 
-#hubgo-settings-app .hubgo-skeleton {
-    animation: hubgo-pulse 1.4s ease-in-out infinite;
-    background: #e2e8f0;
-    border-radius: 8px;
+/*
+ * wp-admin ships its own aggressive input chrome (forms.css) that overrides
+ * utility classes on borders, radius and focus rings. Restate the control look
+ * here — scoped to the app — so fields match the Joinotify design system.
+ */
+.hubgo-app input:not([type='checkbox']):not([type='radio']):not([type='color']):not(.hubgo-input-group__control),
+.hubgo-app textarea,
+.hubgo-app select {
+    border-color: #e2e8f0 !important;
+    border-width: 1px !important;
+    border-radius: 8px !important;
+    background-color: #ffffff !important;
+    color: #334155 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    min-height: 0;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
-@keyframes hubgo-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+.hubgo-app input::placeholder,
+.hubgo-app textarea::placeholder {
+    color: #94a3b8 !important;
+    opacity: 1 !important;
+}
+
+.hubgo-app input:not([type='checkbox']):not([type='radio']):not([type='color']):not(.hubgo-input-group__control):focus,
+.hubgo-app textarea:focus,
+.hubgo-app select:focus {
+    border-color: var(--hubgo-primary-700) !important;
+    box-shadow: 0 0 0 4px var(--hubgo-primary-50) !important;
+}
+
+/* Controls nested inside an input group render seamless (the group owns the chrome). */
+.hubgo-app .hubgo-input-group__control {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.hubgo-app .hubgo-input-group__control:focus {
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Section tab icons follow the active/inactive state of their button. */
+.hubgo-app nav .hubgo-tab-icon svg {
+    width: 100%;
+    height: 100%;
+    fill: #475569;
+}
+
+.hubgo-app nav button.active .hubgo-tab-icon svg {
+    fill: #ffffff;
+}
+
+.hubgo-app nav button.hubgo-tab {
+    border-left: 1px solid #dbdee1;
+    transition: all 0.2s ease-in-out;
+}
+
+.hubgo-app nav button.hubgo-tab:hover:not(.active) {
+    color: #495057;
+    background-color: #d0dce9;
+}
+
+.hubgo-app nav button.hubgo-tab:first-child {
+    border-left: none;
+}
+
+/*
+ * Select dropdown pop-in. Plain CSS rather than Tailwind utility classes bound
+ * through Vue's enter-/leave-class props: those sets shared the same tokens, and
+ * Vue's class bookkeeping then left both the "from" and "to" utilities on the
+ * node, so the leave transition never resolved and the dropdown was never
+ * removed from the DOM.
+ */
+.hubgo-select-pop-enter-active {
+    transition: opacity .15s ease-out, transform .15s ease-out;
+}
+
+.hubgo-select-pop-leave-active {
+    transition: opacity .1s ease-in, transform .1s ease-in;
+}
+
+.hubgo-select-pop-enter-from,
+.hubgo-select-pop-leave-to {
+    opacity: 0;
+    transform: translateY(4px) scale(.95);
+}
+
+.hubgo-select-pop-enter-to,
+.hubgo-select-pop-leave-from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+@keyframes hubgo-toast-progress {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+@keyframes hubgo-skeleton-wave {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.hubgo-skeleton {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #dce5ef 0%, #eef3f8 50%, #dce5ef 100%);
+    background-size: 200% 100%;
+    animation: hubgo-skeleton-wave 1.5s ease-in-out infinite;
+}
+
+/*
+ * Server-rendered skeleton shown before the SPA mounts. Declared outside the
+ * app scope because the markup lives in the PHP view.
+ */
+.hubgo-skeleton-content {
+    height: auto;
+    overflow: hidden;
+    border-radius: 8px;
+    position: relative;
+    background: linear-gradient(to right, #eee 2%, #ddd 18%, #eee 33%);
+    background-size: 1300px;
+    animation: hubgo-skeleton-animation 1.7s linear infinite forwards;
+}
+
+@keyframes hubgo-skeleton-animation {
+    0% { background-position: -650px 0; }
+    100% { background-position: 650px 0; }
 }

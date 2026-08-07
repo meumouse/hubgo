@@ -1,33 +1,37 @@
 <script setup>
+/**
+ * SettingsActionBar.vue — sticky footer holding the save action.
+ *
+ * @since 3.0.0
+ */
 import { __ } from '../../../utils/i18n';
+import BaseButton from '../../../components/buttons/BaseButton.vue';
 
 defineProps({
-    saving: { type: Boolean, default: false },
     hasUnsavedChanges: { type: Boolean, default: false },
+    saving: { type: Boolean, default: false },
 });
 
 defineEmits([ 'save' ]);
+
+const SAVE_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true"><path d="M5 21h14a2 2 0 0 0 2-2V8l-5-5H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zM7 5h6v4H7V5zm0 8h10v6H7v-6z"></path></svg>';
 </script>
 
 <template>
-    <div class="sticky bottom-0 z-[1059] mt-6 flex items-center justify-end gap-3 border-t border-slate-200 bg-white/80 px-1 py-4 backdrop-blur">
-        <span v-if="hasUnsavedChanges" class="text-xs text-amber-600">
+    <div class="sticky inset-x-0 bottom-0 z-[1059] flex flex-wrap items-center gap-4 border-t border-black/10 bg-white/80 px-10 py-6 backdrop-blur-[5px]">
+        <BaseButton
+            :title="__( 'Salvar alterações' )"
+            :icon="SAVE_ICON"
+            icon-class="text-white"
+            color="primary"
+            size="lg"
+            :loading="saving"
+            :disabled="! hasUnsavedChanges"
+            @click="$emit( 'save' )"
+        />
+
+        <span v-if="hasUnsavedChanges && ! saving" class="text-[13px] font-medium text-amber-600">
             {{ __( 'Existem alterações não salvas.' ) }}
         </span>
-        <button
-            type="button"
-            :disabled="! hasUnsavedChanges || saving"
-            @click="$emit( 'save' )"
-            :class="[
-                'inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white transition-colors',
-                ( ! hasUnsavedChanges || saving ) ? 'cursor-not-allowed bg-slate-300' : 'bg-primary hover:bg-primary-600',
-            ]"
-        >
-            <svg v-if="saving" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z" />
-            </svg>
-            {{ saving ? __( 'Salvando...' ) : __( 'Salvar configurações' ) }}
-        </button>
     </div>
 </template>

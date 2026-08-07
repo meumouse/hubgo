@@ -5,8 +5,17 @@
  * and issues fetch() calls against the hubgo/v1 namespace with the WP REST nonce.
  */
 
-function getConfig() {
+/**
+ * Read the localized bootstrap config injected by wp_localize_script().
+ *
+ * @return {object}
+ */
+export function getBootstrapConfig() {
     return window.hubgoBootstrapConfig || {};
+}
+
+function getConfig() {
+    return getBootstrapConfig();
 }
 
 function buildUrl( endpoint ) {

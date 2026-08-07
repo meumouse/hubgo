@@ -1,77 +1,206 @@
+/*
+ * Order tracking metabox.
+ *
+ * Uses the same tokens as the HubGo settings SPA (primary #008aff, 8px radii,
+ * slate neutrals) so both admin surfaces read as one product. Scoped to the
+ * metabox id — nothing here leaks into the rest of wp-admin.
+ *
+ * @since 2.1.0
+ * @version 3.0.0
+ */
+#hubgo-order-tracking {
+    --hubgo-primary: #008aff;
+    --hubgo-primary-50: #e6f2ff;
+    --hubgo-primary-200: #99ccff;
+    --hubgo-primary-800: #0069c2;
+    --hubgo-ink: #102033;
+    --hubgo-muted: #64748b;
+    --hubgo-border: #e2e8f0;
+    --hubgo-surface: #f8fafc;
+    --hubgo-danger: #e11d48;
+}
+
 #hubgo-order-tracking .inside {
     padding: 12px;
     margin: 0;
 }
 
+/* ---------------------------------------------------------------- controls */
+
 #hubgo-order-tracking .button-show-form {
     margin: 0;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--hubgo-primary-200);
+    background: #fff;
+    color: var(--hubgo-primary);
+    font-weight: 600;
+    min-height: 34px;
+    transition: background-color .15s ease, border-color .15s ease;
+}
+
+#hubgo-order-tracking .button-show-form:hover,
+#hubgo-order-tracking .button-show-form:focus {
+    background: var(--hubgo-primary-50);
+    border-color: var(--hubgo-primary);
+    color: var(--hubgo-primary-800);
+}
+
+#hubgo-order-tracking .button-save-form {
+    width: 100%;
+    border-radius: 8px;
+    border-color: var(--hubgo-primary);
+    background: var(--hubgo-primary);
+    color: #fff;
+    font-weight: 600;
+    min-height: 34px;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+#hubgo-order-tracking .button-save-form:hover,
+#hubgo-order-tracking .button-save-form:focus {
+    border-color: var(--hubgo-primary-800);
+    background: var(--hubgo-primary-800);
+    color: #fff;
+    box-shadow: none;
 }
 
 #hubgo-order-tracking #hubgo-shipment-tracking-form {
     display: none;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--hubgo-border);
 }
 
 #hubgo-order-tracking #hubgo-shipment-tracking-form p.form-field {
     margin-top: 0;
+    margin-bottom: 12px;
+}
+
+#hubgo-order-tracking label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--hubgo-ink);
 }
 
 #hubgo-order-tracking input,
 #hubgo-order-tracking select {
     width: 100%;
+    border: 1px solid var(--hubgo-border);
+    border-radius: 8px;
+    padding: 6px 10px;
+    min-height: 32px;
+    color: #334155;
+    box-shadow: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+#hubgo-order-tracking input:focus,
+#hubgo-order-tracking select:focus {
+    border-color: var(--hubgo-primary);
+    box-shadow: 0 0 0 3px var(--hubgo-primary-50);
+    outline: none;
 }
 
 #hubgo-order-tracking .preview_tracking_link {
     display: none;
     margin-bottom: 0;
+    font-size: 12px;
+    color: var(--hubgo-muted);
 }
 
-#hubgo-order-tracking .meta {
-    font-size: 11px;
-    color: #999;
-    padding: 10px;
-    margin: 0;
+#hubgo-order-tracking .preview_tracking_link a {
+    color: var(--hubgo-primary);
+    font-weight: 600;
 }
 
-#hubgo-order-tracking .meta a.delete-tracking {
-    color: #a00;
-    margin-left: 6px;
-}
+/* ------------------------------------------------------------ saved items */
 
 #hubgo-order-tracking #hubgo-tracking-items {
     margin: 0;
 }
 
-#hubgo-order-tracking .tracking-content {
-    background: #efefef;
-    padding: 10px;
-    position: relative;
-    margin: 0;
-}
-
-#hubgo-order-tracking .tracking-content:after {
-    content: "";
-    display: block;
-    position: absolute;
-    bottom: -10px;
-    left: 20px;
-    width: 0;
-    height: 0;
-    border-width: 10px 10px 0 0;
-    border-style: solid;
-    border-color: #efefef transparent;
-}
-
 #hubgo-order-tracking .tracking-item {
     margin-bottom: 10px;
+    border: 1px solid var(--hubgo-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
 }
 
 #hubgo-order-tracking .tracking-item:last-child {
     margin-bottom: 12px;
 }
 
+#hubgo-order-tracking .tracking-content {
+    background: var(--hubgo-surface);
+    padding: 10px 12px;
+    margin: 0;
+    line-height: 1.6;
+    color: var(--hubgo-ink);
+}
+
+#hubgo-order-tracking .tracking-content strong {
+    font-weight: 600;
+}
+
+#hubgo-order-tracking .tracking-content em {
+    font-style: normal;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: var(--hubgo-muted);
+}
+
+#hubgo-order-tracking .tracking-content a {
+    color: var(--hubgo-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+#hubgo-order-tracking .tracking-content a:hover {
+    text-decoration: underline;
+}
+
+#hubgo-order-tracking .meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--hubgo-muted);
+    padding: 8px 12px;
+    margin: 0;
+    border-top: 1px solid var(--hubgo-border);
+}
+
+#hubgo-order-tracking .meta a.delete-tracking {
+    color: var(--hubgo-danger);
+    margin-left: 0;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+#hubgo-order-tracking .meta a.delete-tracking:hover {
+    text-decoration: underline;
+}
+
+/* Compact summary rendered in the orders list column. */
+.hubgo-tracking-item-summary {
+    line-height: 1.6;
+}
+
+.hubgo-tracking-item-summary a {
+    text-decoration: none;
+}
+
+/* ---------------------------------------------------------------- loading */
+
 #hubgo-order-tracking .hubgo-is-loading {
     position: relative;
-    opacity: 0.65;
+    opacity: .65;
     pointer-events: none;
 }
 
@@ -84,7 +213,7 @@
     height: 18px;
     margin-top: -9px;
     margin-left: -9px;
-    border: 2px solid #2271b1;
+    border: 2px solid var(--hubgo-primary);
     border-right-color: transparent;
     border-radius: 50%;
     animation: hubgo-spin .6s linear infinite;

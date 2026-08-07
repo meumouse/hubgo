@@ -38,6 +38,17 @@ class Order_Tracking_Meta_Box {
     protected $version = HUBGO_VERSION;
 
     /**
+     * Order IDs already handled in this request, keyed by ID.
+     *
+     * Guards against the duplicate save hooks documented on
+     * {@see Order_Tracking_Meta_Box::save_tracking_data()}.
+     *
+     * @since 3.0.0
+     * @var array<int,bool>
+     */
+    protected $saved_orders = array();
+
+    /**
      * Constructor
      *
      * @since 2.1.0
@@ -166,11 +177,26 @@ class Order_Tracking_Meta_Box {
     /**
      * Save fallback tracking data on post save.
      *
+     * On the classic (post-based) order screen WordPress fires
+     * `save_post_shop_order` AND WooCommerce fires
+     * `woocommerce_process_shop_order_meta` for the same request. Both are wired
+     * so the handler also runs under HPOS, where only the WooCommerce hook
+     * exists — but without the guard below a classic save stored the tracking
+     * code twice and dispatched the Joinotify "tracking saved" trigger twice,
+     * sending the customer two identical notifications.
+     *
      * @since 2.1.0
+     * @version 3.0.0
      * @param int $post_id Order ID.
      * @return void
      */
     public function save_tracking_data( $post_id ) {
+        $post_id = absint( $post_id );
+
+        if ( ! $post_id || isset( $this->saved_orders[ $post_id ] ) ) {
+            return;
+        }
+
         if ( ! isset( $_POST['hubgo_tracking_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['hubgo_tracking_nonce'] ) ), 'hubgo_save_tracking' ) ) {
             return;
         }
@@ -185,6 +211,10 @@ class Order_Tracking_Meta_Box {
 
         $provider = isset( $_POST['hubgo_tracking_provider'] ) ? sanitize_text_field( wp_unslash( $_POST['hubgo_tracking_provider'] ) ) : '';
         $custom_provider = isset( $_POST['hubgo_custom_tracking_provider'] ) ? sanitize_text_field( wp_unslash( $_POST['hubgo_custom_tracking_provider'] ) ) : '';
+
+        // Mark before storing: add_item() fires Hubgo/Tracking/Item_Saved, and a
+        // listener could re-enter the order save.
+        $this->saved_orders[ $post_id ] = true;
 
         $this->tracking->add_item(
             $post_id,
@@ -209,10 +239,10 @@ class Order_Tracking_Meta_Box {
      */
     protected function render_tracking_item( $order_id, $item ) {
         $tracking_id = isset( $item['tracking_id'] ) ? $item['tracking_id'] : '';
-        $provider = $this->get_tracking_provider_name( $item );
+        $provider = $this->tracking->get_provider_label( $item );
         $tracking_number = isset( $item['tracking_number'] ) ? $item['tracking_number'] : '';
         $tracking_link = $this->get_tracking_link( $order_id, $item );
-        $ship_date = $this->get_date_label( $item );
+        $ship_date = $this->tracking->get_date_label( $item );
 
         if ( empty( $tracking_id ) ) :
             return;
@@ -239,30 +269,6 @@ class Order_Tracking_Meta_Box {
     }
 
 
-
-
-    /**
-     * Get tracking provider name.
-     *
-     * @since 2.1.0
-     * @param array $item Tracking item.
-     * @return string
-     */
-    protected function get_tracking_provider_name( $item ) {
-        if ( ! empty( $item['custom_provider'] ) ) {
-            return $item['custom_provider'];
-        }
-
-        if ( ! empty( $item['provider'] ) ) {
-            return $item['provider'];
-        }
-
-        if ( ! empty( $item['carrier'] ) ) {
-            return $item['carrier'];
-        }
-
-        return __( 'Transportadora não definida', 'hubgo' );
-    }
 
 
     /**
@@ -336,7 +342,7 @@ class Order_Tracking_Meta_Box {
         $output = '';
 
         foreach ( $items as $item ) {
-            $provider = $this->get_tracking_provider_name( $item );
+            $provider = $this->tracking->get_provider_label( $item );
             $tracking_number = isset( $item['tracking_number'] ) ? (string) $item['tracking_number'] : '';
             $tracking_link = $this->get_tracking_link( $order_id, $item );
 
@@ -364,81 +370,18 @@ class Order_Tracking_Meta_Box {
     /**
      * Get tracking link from item.
      *
+     * Thin proxy over {@see Tracking_Manager::get_display_tracking_link()} so the
+     * metabox, the orders list, the account page and the Joinotify notification
+     * all resolve the same URL.
+     *
      * @since 2.1.0
+     * @version 3.0.0
      * @param int   $order_id Order ID.
      * @param array $item Tracking item.
      * @return string
      */
     protected function get_tracking_link( $order_id, $item ) {
-        if ( ! empty( $item['custom_url'] ) ) {
-            return esc_url( $item['custom_url'] );
-        }
-
-        $provider = ! empty( $item['provider'] ) ? $item['provider'] : ( $item['carrier'] ?? '' );
-
-        if ( empty( $provider ) || empty( $item['tracking_number'] ) ) {
-            return '';
-        }
-
-        $country = $this->get_order_country( $order_id );
-
-        return Providers_Registry::get_tracking_url(
-            $provider,
-            $item['tracking_number'],
-            '',
-            $country,
-            $order_id
-        );
-    }
-
-
-    /**
-     * Get date label for tracking item.
-     *
-     * @since 2.1.0
-     * @param array $item Tracking item.
-     * @return string
-     */
-    protected function get_date_label( $item ) {
-        if ( empty( $item['ship_date'] ) ) {
-            return __( 'Sem data de envio', 'hubgo' );
-        }
-
-        $timestamp = strtotime( $item['ship_date'] );
-
-        if ( ! $timestamp ) {
-            return sprintf( __( 'Enviado em %s', 'hubgo' ), $item['ship_date'] );
-        }
-
-        return sprintf( __( 'Enviado em %s', 'hubgo' ), wp_date( get_option( 'date_format' ), $timestamp ) );
-    }
-
-
-    /**
-     * Get order country for provider URLs.
-     *
-     * @since 2.1.0
-     * @param int $order_id Order ID.
-     * @return string
-     */
-    protected function get_order_country( $order_id ) {
-        $order = wc_get_order( $order_id );
-
-        if ( ! $order ) {
-            return 'Brazil';
-        }
-
-        $country = $order->get_shipping_country();
-
-        if ( empty( $country ) ) {
-            $country = $order->get_billing_country();
-        }
-
-        if ( empty( $country ) ) {
-            $country = 'Brazil';
-        }
-
-        return $country;
+        return $this->tracking->get_display_tracking_link( $order_id, $item );
     }
 
 

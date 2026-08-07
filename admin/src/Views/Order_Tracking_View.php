@@ -2,7 +2,6 @@
 
 namespace MeuMouse\Hubgo\Views;
 
-use MeuMouse\Hubgo\Core\Providers_Registry;
 use MeuMouse\Hubgo\Core\Tracking_Manager;
 
 // Exit if accessed directly.
@@ -140,77 +139,29 @@ class Order_Tracking_View {
      * @return array
      */
     protected function get_template_items( \WC_Order $order ) {
-        $items = $this->tracking->get_items( $order->get_id() );
         $prepared = array();
 
-        foreach ( $items as $item ) {
-            $provider = ! empty( $item['custom_provider'] )
-                ? (string) $item['custom_provider']
-                : ( $item['provider'] ?? ( $item['carrier'] ?? '' ) );
+        // Carrier name, tracking URL and date all come from Tracking_Manager so
+        // the account page, the e-mails, the order screen and the Joinotify
+        // notification show exactly the same values. These used to be resolved
+        // here independently, and the copies had drifted: the label preferred
+        // `custom_provider` while the URL was always looked up from `provider`,
+        // so a custom carrier rendered one name with another carrier's link.
+        foreach ( $this->tracking->get_items_for_display( $order->get_id() ) as $item ) {
             $tracking_number = isset( $item['tracking_number'] ) ? (string) $item['tracking_number'] : '';
 
             if ( '' === $tracking_number ) {
                 continue;
             }
 
-            $url = ! empty( $item['custom_url'] )
-                ? (string) $item['custom_url']
-                : Providers_Registry::get_tracking_url(
-                    $item['provider'] ?? ( $item['carrier'] ?? '' ),
-                    $tracking_number,
-                    '',
-                    $this->get_order_country( $order ),
-                    $order->get_id()
-                );
-
             $prepared[] = array(
-                'provider' => $provider,
+                'provider'        => $item['carrier_name'],
                 'tracking_number' => $tracking_number,
-                'url' => $url,
-                'ship_date' => $this->format_ship_date( $item['ship_date'] ?? '' ),
+                'url'             => $item['tracking_link'],
+                'ship_date'       => $item['ship_date_label'],
             );
         }
 
         return $prepared;
-    }
-
-
-    /**
-     * Get order country code fallback.
-     *
-     * @since 2.1.0
-     * @param \WC_Order $order Order object.
-     * @return string
-     */
-    protected function get_order_country( \WC_Order $order ) {
-        $country = $order->get_shipping_country();
-
-        if ( empty( $country ) ) {
-            $country = $order->get_billing_country();
-        }
-
-        return $country ? $country : 'Brazil';
-    }
-
-
-    /**
-     * Format shipment date for presentation.
-     *
-     * @since 2.1.0
-     * @param string $ship_date Raw shipment date.
-     * @return string
-     */
-    protected function format_ship_date( $ship_date ) {
-        if ( empty( $ship_date ) ) {
-            return '';
-        }
-
-        $timestamp = strtotime( $ship_date );
-
-        if ( ! $timestamp ) {
-            return (string) $ship_date;
-        }
-
-        return wp_date( get_option( 'date_format' ), $timestamp );
     }
 }

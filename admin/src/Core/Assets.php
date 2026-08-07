@@ -147,11 +147,14 @@ class Assets {
         wp_set_script_translations( self::SETTINGS_HANDLE, 'hubgo', trailingslashit( HUBGO_PATH ) . 'languages' );
 
         wp_localize_script( self::SETTINGS_HANDLE, 'hubgoBootstrapConfig', array(
-            'restUrl'  => $this->rest_root(),
-            'nonce'    => wp_create_nonce( 'wp_rest' ),
-            'page'     => 'settings',
-            'endpoint' => 'settings',
-            'version'  => defined( 'HUBGO_VERSION' ) ? HUBGO_VERSION : '',
+            'restUrl'   => $this->rest_root(),
+            'nonce'     => wp_create_nonce( 'wp_rest' ),
+            'page'      => 'settings',
+            'endpoint'  => 'settings',
+            'version'   => defined( 'HUBGO_VERSION' ) ? HUBGO_VERSION : '',
+            // Brand assets are resolved at runtime so the logo also loads on
+            // sites installed in a subdirectory or served from a custom domain.
+            'assetsUrl' => defined( 'HUBGO_ASSETS' ) ? esc_url_raw( HUBGO_ASSETS ) : '',
         ) );
     }
 
