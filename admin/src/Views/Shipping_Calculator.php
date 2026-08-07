@@ -3,9 +3,7 @@
 namespace MeuMouse\Hubgo\Views;
 
 use MeuMouse\Hubgo\Admin\Settings;
-
-use WC_Shipping;
-use WC_Validation;
+use MeuMouse\Hubgo\Core\Shipping_Calculator_Service;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -13,9 +11,12 @@ defined('ABSPATH') || exit;
 /**
  * Class Shipping_Calculator
  *
- * Manages shipping calculator form rendering and rate calculation
+ * Renders the storefront shipping calculator form. Rate calculation itself
+ * lives in Core\Shipping_Calculator_Service and is reached over the
+ * `hubgo/v1/shipping/calculate` endpoint.
  *
  * @since 2.0.0
+ * @version 3.0.1
  * @package MeuMouse\Hubgo\Views
  * @author MeuMouse.com
  */
@@ -38,22 +39,13 @@ class Shipping_Calculator {
     const SHORTCODE_TAG = 'hubgo_shipping_calculator';
 
     /**
-     * Cache for shipping rates
-     *
-     * @since 2.0.0
-     * @var array
-     */
-    private static $rates_cache = array();
-
-
-    /**
      * Constructor
      *
      * @since 2.0.0
+     * @version 3.0.1
      */
     public function __construct() {
         $this->init_hooks();
-        $this->ensure_geolocation();
     }
 
 
@@ -114,21 +106,6 @@ class Shipping_Calculator {
         );
 
         return ! in_array( $hook_position, $valid_hooks, true );
-    }
-
-
-    /**
-     * Ensure geolocation is enabled
-     *
-     * @since 2.0.0
-     * @return void
-     */
-    private function ensure_geolocation() {
-        $current_address = get_option( 'woocommerce_default_customer_address', '' );
-        
-        if ( empty( $current_address ) ) {
-            update_option( 'woocommerce_default_customer_address', 'geolocation' );
-        }
     }
 
 
@@ -253,228 +230,20 @@ class Shipping_Calculator {
     /**
      * Get shipping rates for product
      *
+     * Kept for backwards compatibility. Calculation moved to
+     * Core\Shipping_Calculator_Service in 3.0.1, so this now returns
+     * normalized rows instead of WC_Shipping_Rate objects.
+     *
      * @since 2.0.0
+     * @version 3.0.1
      * @param int $product_id Product ID
      * @param string $postcode Shipping postcode
      * @param int $quantity Product quantity
-     * @return array
+     * @return array<int,array<string,mixed>>
      */
     public function get_rates( $product_id, $postcode, $quantity ) {
-        // Check cache first
-        $cache_key = $this->get_rates_cache_key( $product_id, $postcode, $quantity );
-        
-        if ( isset( self::$rates_cache[ $cache_key ] ) ) {
-            return self::$rates_cache[ $cache_key ];
-        }
+        $service = new Shipping_Calculator_Service();
 
-        // Validate and calculate rates
-        $rates = $this->calculate_rates( $product_id, $postcode, $quantity );
-        
-        // Cache the results
-        self::$rates_cache[ $cache_key ] = $rates;
-
-        return $rates;
-    }
-
-
-    /**
-     * Generate cache key for rates
-     *
-     * @since 2.0.0
-     * @param int $product_id
-     * @param string $postcode
-     * @param int $quantity
-     * @return string
-     */
-    private function get_rates_cache_key( $product_id, $postcode, $quantity ) {
-        return md5( $product_id . '|' . $postcode . '|' . $quantity );
-    }
-
-
-    /**
-     * Calculate shipping rates
-     *
-     * @since 2.0.0
-     * @param int $product_id
-     * @param string $postcode
-     * @param int $quantity
-     * @return array
-     */
-    private function calculate_rates( $product_id, $postcode, $quantity ) {
-        // Validate before calculation
-        if ( ! $this->can_calculate_rates( $product_id, $postcode ) ) {
-            return array();
-        }
-
-        $product = wc_get_product( $product_id );
-        
-        if ( ! $product ) {
-            return array();
-        }
-
-        // Prepare package for shipping calculation
-        $package = $this->prepare_shipping_package( $product, $postcode, $quantity );
-        
-        // Apply filters for external integrations
-        $package = apply_filters( 'Hubgo/Shipping_Calculator/Package', $package, $product_id, $postcode, $quantity );
-
-        // Calculate shipping for package
-        $package_rates = WC_Shipping::instance()->calculate_shipping_for_package( $package );
-        
-        // Extract rates
-        $rates = $this->extract_rates_from_package( $package_rates );
-
-        // Apply final filters
-        return apply_filters( 'Hubgo/Shipping_Calculator/Rates', $rates, $package );
-    }
-
-
-    /**
-     * Check if rates can be calculated
-     *
-     * @since 2.0.0
-     * @param int $product_id
-     * @param string $postcode
-     * @return bool
-     */
-    private function can_calculate_rates( $product_id, $postcode ) {
-        $product = wc_get_product( $product_id );
-
-        if ( ! $product ) {
-            return false;
-        }
-
-        // Check if product needs shipping
-        if ( ! $product->needs_shipping() ) {
-            return false;
-        }
-
-        // Check if shipping is enabled
-        if ( 'no' === get_option( 'woocommerce_calc_shipping' ) ) {
-            return false;
-        }
-
-        // Check if product is in stock
-        if ( ! $product->is_in_stock() ) {
-            return false;
-        }
-
-        // Validate postcode format
-        $country = WC()->customer->get_shipping_country();
-        
-        if ( ! WC_Validation::is_postcode( $postcode, $country ) ) {
-            return false;
-        }
-
-        return true;
-    }
-
-
-    /**
-     * Prepare shipping package for calculation
-     *
-     * @since 2.0.0
-     * @param object $product Product object
-     * @param string $postcode
-     * @param int $quantity
-     * @return array
-     */
-    private function prepare_shipping_package( $product, $postcode, $quantity ) {
-        $destination = $this->get_destination_array( $postcode );
-        
-        $price = $product->get_price_excluding_tax();
-        $tax = $product->get_price_including_tax() - $price;
-        
-        $cart_id = $this->generate_cart_id( $product );
-        $total_cost = $price * $quantity;
-
-        $package = array(
-            'destination'     => $destination,
-            'applied_coupons' => WC()->cart->get_applied_coupons(),
-            'user'            => array( 'ID' => get_current_user_id() ),
-            'contents'        => array(),
-            'contents_cost'   => 0,
-        );
-
-        $package['contents'][ $cart_id ] = array(
-            'product_id'        => $product->get_id(),
-            'variation_id'      => $this->get_variation_id( $product ),
-            'data'              => $product,
-            'quantity'          => $quantity,
-            'line_total'        => $total_cost,
-            'line_tax'          => $tax * $quantity,
-            'line_subtotal'     => $total_cost,
-            'line_subtotal_tax' => $tax * $quantity,
-            'contents_cost'     => $total_cost,
-        );
-        
-        $package['contents_cost'] = $total_cost;
-
-        return $package;
-    }
-
-
-    /**
-     * Get destination array
-     *
-     * @since 2.0.0
-     * @param string $postcode
-     * @return array
-     */
-    private function get_destination_array( $postcode ) {
-        return array(
-            'country'   => WC()->customer->get_shipping_country(),
-            'state'     => WC()->customer->get_shipping_state(),
-            'postcode'  => $postcode,
-            'city'      => WC()->customer->get_shipping_city(),
-            'address'   => WC()->customer->get_shipping_address(),
-            'address_2' => WC()->customer->get_shipping_address_2(),
-        );
-    }
-
-
-    /**
-     * Generate cart ID for package
-     *
-     * @since 2.0.0
-     * @param object $product
-     * @return string
-     */
-    private function generate_cart_id( $product ) {
-        $variation_id = $this->get_variation_id( $product );
-        
-        return WC()->cart->generate_cart_id( $product->get_id(), $variation_id );
-    }
-
-
-    /**
-     * Get variation ID if product is variable
-     *
-     * @since 2.0.0
-     * @param object $product
-     * @return int
-     */
-    private function get_variation_id( $product ) {
-        return $product->is_type( 'variable' ) ? $product->get_id() : 0;
-    }
-
-
-    /**
-     * Extract rates from package calculation
-     *
-     * @since 2.0.0
-     * @param array $package_rates
-     * @return array
-     */
-    private function extract_rates_from_package( $package_rates ) {
-        $rates = array();
-
-        if ( isset( $package_rates['rates'] ) && is_array( $package_rates['rates'] ) ) {
-            foreach ( $package_rates['rates'] as $rate ) {
-                $rates[] = $rate;
-            }
-        }
-
-        return $rates;
+        return $service->calculate( $product_id, 0, $postcode, $quantity );
     }
 }

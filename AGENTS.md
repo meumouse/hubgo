@@ -252,7 +252,9 @@ Overridable templates live in `templates/` and are loaded with `HUBGO_PATH . 'te
 
 Naming convention: **`Hubgo/Namespace/Thing`** — slash-separated, PascalCase segments mirroring the class path.
 
-Existing hooks include `Hubgo/Before_Init`, `Hubgo/After_Init`, `Hubgo/API/Routes`, `Hubgo/Admin/Settings/Schema`, `Hubgo/Admin/Settings/Field_Definitions`, `Hubgo/Admin/Settings/Bootstrap_Data`, `Hubgo/Admin/Settings_Capability`, `Hubgo/Core/Assets/FrontParams`, `Hubgo/Integrations/Registered`, `Hubgo/Integrations/Loaded`, `Hubgo/Shipping_Calculator/Rates`, `Hubgo/Tracking/Item_Saved`, `Hubgo/Tracking/Order_Shipped`.
+Existing hooks include `Hubgo/Before_Init`, `Hubgo/After_Init`, `Hubgo/API/Routes`, `Hubgo/Admin/Settings/Schema`, `Hubgo/Admin/Settings/Field_Definitions`, `Hubgo/Admin/Settings/Bootstrap_Data`, `Hubgo/Admin/Settings_Capability`, `Hubgo/Core/Assets/FrontParams`, `Hubgo/Integrations/Registered`, `Hubgo/Integrations/Loaded`, `Hubgo/Shipping_Calculator/Package`, `Hubgo/Shipping_Calculator/Rates`, `Hubgo/Shipping_Calculator/Positions`, `Hubgo/Shipping_Calculator/Postcode_Helper`, `Hubgo/Shipping_Calculator/Postcode_State_Map`, `Hubgo/Shipping_Calculator/Resolved_State`, `Hubgo/Shipping_Calculator/Country`, `Hubgo/Shipping_Calculator/Destination`, `Hubgo/Shipping_Calculator/Zone`, `Hubgo/Tracking/Item_Saved`, `Hubgo/Tracking/Order_Shipped`.
+
+**Shipping zone matching.** WooCommerce matches a package to a *single* zone using country + state + postcode and keeps the first by `zone_order`; the postcode can only *exclude* zones that declare postcode rules. So the package must carry the state that belongs to the informed postcode — `Core\Postcode_Locator` derives it from the CEP. Never populate `$package['destination']['state']` from the customer session: it is stale on the product page and absent entirely on REST requests, which silently hands the quote to the wrong zone.
 
 Add a filter to any list or payload a third party might reasonably want to extend. Never rename or remove a published hook.
 

@@ -173,6 +173,16 @@
             } )
             .then( function( data ) {
                 els.button.innerHTML = originalHtml;
+
+                // The endpoint answers with status 'error' for an unusable
+                // postcode, which must not read as "no delivery available".
+                if ( data && 'error' === data.status ) {
+                    renderMessage( data.message || i18n.error || '' );
+                    document.dispatchEvent( new CustomEvent( 'hubgo:shipping_error' ) );
+
+                    return;
+                }
+
                 renderRates( data && data.rates ? data.rates : [] );
             } )
             .catch( function() {
