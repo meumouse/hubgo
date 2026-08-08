@@ -1,21 +1,26 @@
 {
-  "_ConfirmDialog-n2qyW4de.js": {
-    "file": "chunks/ConfirmDialog-n2qyW4de.js",
+  "_ConfirmDialog-Rr1azm5F.js": {
+    "file": "chunks/ConfirmDialog-Rr1azm5F.js",
     "name": "ConfirmDialog",
     "imports": [
-      "_bootstrap-DdA0LEz3.js"
+      "_i18n-BrU5QHKO.js",
+      "_bootstrap-x0bVXBZv.js"
     ]
   },
-  "_SettingsActionBar-Drdq3OEv.js": {
-    "file": "chunks/SettingsActionBar-Drdq3OEv.js",
+  "_SettingsActionBar-CKiEfwDI.js": {
+    "file": "chunks/SettingsActionBar-CKiEfwDI.js",
     "name": "SettingsActionBar",
     "imports": [
-      "_bootstrap-DdA0LEz3.js"
+      "_i18n-BrU5QHKO.js",
+      "_bootstrap-x0bVXBZv.js"
     ]
   },
-  "_bootstrap-DdA0LEz3.js": {
-    "file": "chunks/bootstrap-DdA0LEz3.js",
+  "_bootstrap-x0bVXBZv.js": {
+    "file": "chunks/bootstrap-x0bVXBZv.js",
     "name": "bootstrap",
+    "imports": [
+      "_i18n-BrU5QHKO.js"
+    ],
     "css": [
       "styles/bootstrap.css"
     ]
@@ -24,14 +29,19 @@
     "file": "styles/bootstrap.css",
     "src": "_bootstrap.css"
   },
+  "_i18n-BrU5QHKO.js": {
+    "file": "chunks/i18n-BrU5QHKO.js",
+    "name": "i18n"
+  },
   "src/entries/integrations.js": {
     "file": "integrations/app.js",
     "name": "integrations",
     "src": "src/entries/integrations.js",
     "isEntry": true,
     "imports": [
-      "_bootstrap-DdA0LEz3.js",
-      "_SettingsActionBar-Drdq3OEv.js"
+      "_bootstrap-x0bVXBZv.js",
+      "_i18n-BrU5QHKO.js",
+      "_SettingsActionBar-CKiEfwDI.js"
     ]
   },
   "src/entries/license.js": {
@@ -40,8 +50,9 @@
     "src": "src/entries/license.js",
     "isEntry": true,
     "imports": [
-      "_bootstrap-DdA0LEz3.js",
-      "_ConfirmDialog-n2qyW4de.js"
+      "_bootstrap-x0bVXBZv.js",
+      "_i18n-BrU5QHKO.js",
+      "_ConfirmDialog-Rr1azm5F.js"
     ]
   },
   "src/entries/settings.js": {
@@ -50,9 +61,22 @@
     "src": "src/entries/settings.js",
     "isEntry": true,
     "imports": [
-      "_bootstrap-DdA0LEz3.js",
-      "_SettingsActionBar-Drdq3OEv.js",
-      "_ConfirmDialog-n2qyW4de.js"
+      "_bootstrap-x0bVXBZv.js",
+      "_i18n-BrU5QHKO.js",
+      "_SettingsActionBar-CKiEfwDI.js",
+      "_ConfirmDialog-Rr1azm5F.js"
+    ]
+  },
+  "src/entries/storefront.js": {
+    "file": "storefront/app.js",
+    "name": "storefront",
+    "src": "src/entries/storefront.js",
+    "isEntry": true,
+    "imports": [
+      "_i18n-BrU5QHKO.js"
+    ],
+    "css": [
+      "styles/storefront.css"
     ]
   }
 }

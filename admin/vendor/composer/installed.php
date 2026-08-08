@@ -3,7 +3,7 @@
         'name' => 'meumouse/hubgo',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '716bf5f88a8f79e8eeefa9fb9dedbbea547e8015',
+        'reference' => '87340182c681740b4052ffe398d181e3262d178d',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'meumouse/hubgo' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '716bf5f88a8f79e8eeefa9fb9dedbbea547e8015',
+            'reference' => '87340182c681740b4052ffe398d181e3262d178d',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
