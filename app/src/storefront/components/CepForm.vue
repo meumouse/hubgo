@@ -5,7 +5,7 @@
  * Shared by the compact card and the options modal so the two can never drift
  * apart in validation or masking behaviour.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 import { ref, watch } from 'vue';
 import { formatCep, isCompleteCep } from '../format';

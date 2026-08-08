@@ -12,7 +12,7 @@
  *     ViaCEP has no free-text endpoint, and it returns the postcode inline —
  *     so picking a suggestion resolves without a second round-trip.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 import { computed, ref, watch } from 'vue';
 import BaseModal from './BaseModal.vue';

@@ -11,7 +11,7 @@
  * preview live; unmounting the previous app first is what keeps that from
  * leaking a Vue instance per keystroke.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 import { createApp } from 'vue';
 import ShippingCalculator from './components/ShippingCalculator.vue';

@@ -12,7 +12,7 @@
  * copies the resolved values across on open, which is why the modal is styled
  * identically to the card that opened it.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import { bridgeTokens } from '../tokens';

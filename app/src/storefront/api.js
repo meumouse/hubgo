@@ -7,7 +7,7 @@
  * different bootstraps and have different auth expectations: these routes are
  * public, so the nonce is sent when present but never required.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 import { getNonce, getRestUrl } from './params';
 import { __ } from '../utils/i18n';

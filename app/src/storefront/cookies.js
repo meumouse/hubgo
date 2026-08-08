@@ -9,7 +9,7 @@
  * is why the reference React implementation could not carry the choice past the
  * product page.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 
 /**

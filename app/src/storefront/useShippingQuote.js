@@ -10,7 +10,7 @@
  * except this module, so its shape (`{ r, p, t }`) stays an implementation
  * detail of the pair.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 import { computed, ref, shallowRef } from 'vue';
 import { storefrontApi } from './api';
@@ -255,7 +255,7 @@ export function useShippingQuote( config ) {
     /**
      * Dispatch a DOM event so themes and third parties can react.
      *
-     * These names predate 3.1.0 and are part of the public contract.
+     * These names predate 3.0.0 and are part of the public contract.
      *
      * @param {string} name Event name.
      * @param {object} detail Event detail.

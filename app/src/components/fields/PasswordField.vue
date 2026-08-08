@@ -6,7 +6,7 @@
  * the store owner has to be able to check which key is in place, and the value
  * already travels over the same authenticated REST call as every other setting.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 import { ref } from 'vue';
 import { __ } from '../../utils/i18n';

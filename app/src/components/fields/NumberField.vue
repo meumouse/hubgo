@@ -6,7 +6,7 @@
  * several calculator settings read "" as "use the built-in default", and a
  * silent 0 would mean something very different.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 defineProps({
     modelValue: { type: [ String, Number ], default: '' },

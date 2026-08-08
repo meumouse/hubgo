@@ -6,7 +6,7 @@
  * lives here: the REST root, the address lookup descriptor and the preference
  * cookie contract PHP reads back at checkout.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 
 /**

@@ -11,7 +11,7 @@
  * the settings panel and Elementor both style this component without it holding
  * any knowledge of either.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 import { computed, onMounted, ref } from 'vue';
 import CepForm from './CepForm.vue';

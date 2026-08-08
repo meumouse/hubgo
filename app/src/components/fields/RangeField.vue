@@ -7,7 +7,7 @@
  * slider therefore renders at the field's `default` while the model is empty,
  * and a reset button puts it back to empty once the user has touched it.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 import { computed } from 'vue';
 import { __ } from '../../utils/i18n';

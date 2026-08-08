@@ -13,7 +13,7 @@
  * have to be copied across explicitly. Keep it in sync with
  * `Calculator_Styles::get_token_map()`.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 
 export const CALCULATOR_TOKENS = [

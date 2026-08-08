@@ -11,8 +11,8 @@
  * it, so renaming it here detaches the widget from every style control.
  *
  * @package HubGo
- * @since 3.1.0
- * @version 3.1.0
+ * @since 3.0.0
+ * @version 3.0.0
  * @var array $config Instance configuration.
  */
 

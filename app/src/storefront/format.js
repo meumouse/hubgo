@@ -9,7 +9,7 @@
  * the browser would reintroduce every rounding and locale bug WooCommerce
  * already solved.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 
 /**

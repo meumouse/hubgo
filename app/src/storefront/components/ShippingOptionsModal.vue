@@ -8,7 +8,7 @@
  *
  * The compact card owns the fetch and the state; this component is a renderer.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 import { computed, ref, watch } from 'vue';
 import BaseModal from './BaseModal.vue';
