@@ -262,7 +262,15 @@ class Order_Tracking_Meta_Box {
 
             <p class="meta">
                 <?php echo esc_html( $ship_date ); ?>
-                <a href="#" class="delete-tracking" rel="<?php echo esc_attr( $tracking_id ); ?>"><?php esc_html_e( 'Remover', 'hubgo' ); ?></a>
+
+                <?php if ( ! empty( $item['read_only'] ) ) : ?>
+                    <?php // Injected by an integration from another plugin's data: there is
+                          // nothing in HubGo's own meta to remove, so offering the action
+                          // would only produce a "tracking not found" error. ?>
+                    <span class="tracking-origin"><?php echo esc_html( $item['source_label'] ?? __( 'Somente leitura', 'hubgo' ) ); ?></span>
+                <?php else : ?>
+                    <a href="#" class="delete-tracking" rel="<?php echo esc_attr( $tracking_id ); ?>"><?php esc_html_e( 'Remover', 'hubgo' ); ?></a>
+                <?php endif; ?>
             </p>
         </div>
         <?php

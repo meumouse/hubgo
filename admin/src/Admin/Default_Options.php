@@ -119,6 +119,8 @@ class Default_Options {
             'enable_frenet_integration'            => 'no',
             'frenet_sync_tracking'                 => 'yes',
             'frenet_tracking_url'                  => '',
+            'enable_shipment_tracking_integration' => 'no',
+            'shipment_tracking_show_items'         => 'yes',
         ));
     }
 }

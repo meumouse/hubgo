@@ -396,6 +396,29 @@ abstract class Integrations_Base {
 
 
     /**
+     * Build a data-migration block for a modal.
+     *
+     * The block carries the whole migration status payload, so the frontend
+     * renders the progress bar and drives `POST hubgo/v1/migrations/run`
+     * without knowing which plugin is being migrated.
+     *
+     * @since 3.0.0
+     * @param array $migration Status payload from a Core\Abstract_Migration.
+     * @param array $extra Extra block attributes.
+     * @return array<string,mixed>
+     */
+    public static function modal_migration_block( $migration, $extra = array() ) {
+        $migration = is_array( $migration ) ? $migration : array();
+
+        return array_merge( array(
+            'type'      => 'migration',
+            'key'       => 'migration-' . sanitize_key( (string) ( $migration['id'] ?? '' ) ),
+            'migration' => $migration,
+        ), $extra );
+    }
+
+
+    /**
      * Field helper: toggle.
      *
      * @since 3.0.0

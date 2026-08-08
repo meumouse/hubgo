@@ -7,6 +7,7 @@ use MeuMouse\Hubgo\API\Routes\Settings_Save;
 use MeuMouse\Hubgo\API\Routes\Settings_Reset;
 use MeuMouse\Hubgo\API\Routes\Integrations_Bootstrap;
 use MeuMouse\Hubgo\API\Routes\Plugin_Install;
+use MeuMouse\Hubgo\API\Routes\Migration_Run;
 use MeuMouse\Hubgo\API\Routes\License_Bootstrap;
 use MeuMouse\Hubgo\API\Routes\License_Activate;
 use MeuMouse\Hubgo\API\Routes\License_Deactivate;
@@ -42,6 +43,7 @@ class Rest_Controller {
             Settings_Reset::class,
             Integrations_Bootstrap::class,
             Plugin_Install::class,
+            Migration_Run::class,
             License_Bootstrap::class,
             License_Activate::class,
             License_Deactivate::class,

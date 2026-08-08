@@ -13,7 +13,7 @@ HubGo is a WordPress plugin that extends WooCommerce with shipping features:
 - **Shipping calculator** on the product page: a Vue 3 storefront app (since 3.1.0) with a delivery-date forecast, a free-shipping badge, an address lookup for shoppers who do not know their postcode, and a preferred-method choice that is carried into the checkout.
 - **Order tracking**: tracking codes per order, admin metabox, "My Account" view, and transactional e-mails.
 - **"Order shipped" status**: a custom WooCommerce order status with bulk actions and e-mail notification.
-- **Integrations**: Joinotify (WhatsApp automation), Melhor Envio, Frenet and Elementor (licensed calculator widget), exposed as a card catalog on a dedicated admin screen.
+- **Integrations**: Joinotify (WhatsApp automation), Melhor Envio, Frenet, WooCommerce Shipment Tracking (read-only bridge + data migration) and Elementor (licensed calculator widget), exposed as a card catalog on a dedicated admin screen.
 - **Licensing & updates**: handled by the MDS PHP SDK (Modular Distribution Service), not by a bespoke updater.
 
 Since **3.0.0** the plugin is **API-first**: the admin UI is a Vue 3 SPA that talks exclusively to the `hubgo/v1` REST namespace. There is no `admin-ajax.php` usage and no server-rendered settings form.
@@ -59,6 +59,9 @@ admin/                      All PHP backend code + Composer
       Assets.php                Enqueues storefront + admin assets (page -> entry map)
       Scripts.php               Resolves the Vite manifest into URLs/versions
       Plugin_Installer.php      One-click install/activate for integration plugins
+      Abstract_Migration.php    Batching/progress base for data migrations
+      Migration_Registry.php    Registered migrations (filterable)
+      Woo_Shipment_Tracking_Migration.php
       Address_Lookup.php        Provider resolution + rate limit for the CEP finder
       Address/                  Address_Provider + ViaCep/Google_Places providers
       Delivery_Estimate.php     Carrier forecast -> business-day delivery date
@@ -280,8 +283,9 @@ Overridable templates live in `templates/` and are loaded with `HUBGO_PATH . 'te
 
 Naming convention: **`Hubgo/Namespace/Thing`** — slash-separated, PascalCase segments mirroring the class path.
 
-Existing hooks include `Hubgo/Before_Init`, `Hubgo/After_Init`, `Hubgo/API/Routes`, `Hubgo/Admin/Menu/Registered`, `Hubgo/Admin/Settings/Schema`, `Hubgo/Admin/Settings/Field_Definitions`, `Hubgo/Admin/Settings/Bootstrap_Data`, `Hubgo/Admin/Settings/Reset`, `Hubgo/Admin/Settings_Capability`, `Hubgo/Admin/System_Status`, `Hubgo/Admin/Integrations/Bootstrap_Data`, `Hubgo/Admin/Integrations/Cards`, `Hubgo/Core/Assets/Admin_Pages`, `Hubgo/Core/Assets/FrontParams`, `Hubgo/Core/License/Payload`, `Hubgo/Core/Plugin_Installer/Allowed_Hosts`, `Hubgo/Integrations/Registered`, `Hubgo/Integrations/Loaded`, `Hubgo/Integrations/Cards`, `Hubgo/Integrations/Card`, `Hubgo/Integrations/Categories`, `Hubgo/Shipping_Calculator/Package`, `Hubgo/Shipping_Calculator/Rates`, `Hubgo/Shipping_Calculator/Positions`, `Hubgo/Shipping_Calculator/Postcode_Helper`, `Hubgo/Shipping_Calculator/Postcode_State_Map`, `Hubgo/Shipping_Calculator/Resolved_State`, `Hubgo/Shipping_Calculator/Country`, `Hubgo/Shipping_Calculator/Destination`, `Hubgo/Shipping_Calculator/Zone`, `Hubgo/Shipping_Calculator/Config`, `Hubgo/Shipping_Calculator/Free_Shipping`, `Hubgo/Shipping_Calculator/Delivery_Estimate`, `Hubgo/Shipping_Calculator/Delivery_Days`, `Hubgo/Shipping_Calculator/Delivery_Meta_Keys`, `Hubgo/Shipping_Calculator/Holidays`, `Hubgo/Shipping_Calculator/Non_Business_Days`, `Hubgo/Shipping_Preference/Chosen_Method`, `Hubgo/Shipping_Preference/Postcode_Applied`, `Hubgo/Core/Address_Lookup/Providers`, `Hubgo/Core/Address_Lookup/Rate_Limit`, `Hubgo/Core/Address_Lookup/Client_Ip`, `Hubgo/Core/Address_Lookup/Region_Code`, `Hubgo/Views/Calculator_Styles/Token_Map`, `Hubgo/Tracking/Item_Saved`, `Hubgo/Tracking/Order_Shipped`.
+Existing hooks include `Hubgo/Before_Init`, `Hubgo/After_Init`, `Hubgo/API/Routes`, `Hubgo/Admin/Menu/Registered`, `Hubgo/Admin/Settings/Schema`, `Hubgo/Admin/Settings/Field_Definitions`, `Hubgo/Admin/Settings/Bootstrap_Data`, `Hubgo/Admin/Settings/Reset`, `Hubgo/Admin/Settings_Capability`, `Hubgo/Admin/System_Status`, `Hubgo/Admin/Integrations/Bootstrap_Data`, `Hubgo/Admin/Integrations/Cards`, `Hubgo/Core/Assets/Admin_Pages`, `Hubgo/Core/Assets/FrontParams`, `Hubgo/Core/License/Payload`, `Hubgo/Core/Plugin_Installer/Allowed_Hosts`, `Hubgo/Migrations/Registered`, `Hubgo/Migrations/Batch_Processed`, `Hubgo/Tracking/Items_Imported`, `Hubgo/Integrations/Registered`, `Hubgo/Integrations/Loaded`, `Hubgo/Integrations/Cards`, `Hubgo/Integrations/Card`, `Hubgo/Integrations/Categories`, `Hubgo/Shipping_Calculator/Package`, `Hubgo/Shipping_Calculator/Rates`, `Hubgo/Shipping_Calculator/Positions`, `Hubgo/Shipping_Calculator/Postcode_Helper`, `Hubgo/Shipping_Calculator/Postcode_State_Map`, `Hubgo/Shipping_Calculator/Resolved_State`, `Hubgo/Shipping_Calculator/Country`, `Hubgo/Shipping_Calculator/Destination`, `Hubgo/Shipping_Calculator/Zone`, `Hubgo/Shipping_Calculator/Config`, `Hubgo/Shipping_Calculator/Free_Shipping`, `Hubgo/Shipping_Calculator/Delivery_Estimate`, `Hubgo/Shipping_Calculator/Delivery_Days`, `Hubgo/Shipping_Calculator/Delivery_Meta_Keys`, `Hubgo/Shipping_Calculator/Holidays`, `Hubgo/Shipping_Calculator/Non_Business_Days`, `Hubgo/Shipping_Preference/Chosen_Method`, `Hubgo/Shipping_Preference/Postcode_Applied`, `Hubgo/Core/Address_Lookup/Providers`, `Hubgo/Core/Address_Lookup/Rate_Limit`, `Hubgo/Core/Address_Lookup/Client_Ip`, `Hubgo/Core/Address_Lookup/Region_Code`, `Hubgo/Views/Calculator_Styles/Token_Map`, `Hubgo/Tracking/Get_Items`, `Hubgo/Tracking/Item_Saved`, `Hubgo/Tracking/Order_Shipped`.
 
+**Tracking reads vs. writes.** `Hubgo/Tracking/Get_Items` is a *display* filter: an integration may inject items owned by another plugin (the Shipment Tracking bridge does, flagged `read_only`). Every write path in `Tracking_Manager` therefore starts from the unfiltered `read_items()` — feeding a filtered list back into storage would silently copy foreign data into HubGo's own meta on the next save.
 
 **Shipping zone matching.** WooCommerce matches a package to a *single* zone using country + state + postcode and keeps the first by `zone_order`; the postcode can only *exclude* zones that declare postcode rules. So the package must carry the state that belongs to the informed postcode — `Core\Postcode_Locator` derives it from the CEP. Never populate `$package['destination']['state']` from the customer session: it is stale on the product page and absent entirely on REST requests, which silently hands the quote to the wrong zone.
 
@@ -333,6 +337,37 @@ public function __construct() {
 `add_integration_item( $integrations )` returns the catalog with the card appended under its slug. Recognized keys: `title`, `description`, `icon` (inline brand SVG), `category`, `setting_key`, `is_plugin`, `plugin_active` (list of basenames — **any** match satisfies the dependency), `requires_license` (renders the Pro badge), `coming_soon`, `doc_url`, `install` (`plugin_slug` + `download_url`), `settings` (field definitions, same shape as the schema) and `modal` (`title`, `description`, `size`, `blocks`).
 
 Runtime flags (`enabled`, `plugin_active`, `is_locked`, `can_install`, `has_settings`, `disabled_message`) are computed by `Registry::get_integration_cards()`. The Vue side is a pure renderer — never re-derive them in the frontend.
+
+### Data migrations
+
+A migration imports another plugin's data into HubGo. Add a class under
+`admin/src/Core/` extending `Core\Abstract_Migration` and register it in the
+`Hubgo/Migrations/Registered` filter default array (`Core\Migration_Registry`).
+
+The subclass answers four questions — how many orders hold the source data, how
+to page through them, how to convert one, and whether the source is reachable.
+Batching, the progress option (`hubgo_migrations_state`) and the status payload
+belong to the base class. `POST hubgo/v1/migrations/run` processes one batch and
+the client calls it until the status reports `completed`, so a large store never
+depends on a single long request.
+
+Two rules are load-bearing:
+
+- **Idempotency lives in the subclass.** The progress option is only a resume
+  pointer; a re-run over an already migrated order must import nothing. HubGo's
+  Shipment Tracking migration flags the order (`_hubgo_wcst_migrated_at`) and
+  `Tracking_Manager::import_items()` additionally de-duplicates by
+  `source_tracking_id`.
+- **Never fire the per-record hooks.** `import_items()` deliberately skips
+  `Hubgo/Tracking/Item_Saved`: that hook drives the Joinotify automation, and
+  replaying it over a store's history would send one WhatsApp message per
+  historical shipment. Use `Hubgo/Tracking/Items_Imported` instead.
+
+Source data is copied, never deleted, so a store can roll back by re-activating
+the other plugin. A migration surfaces on the Integrations screen through a
+`migration` modal block (`Integrations_Base::modal_migration_block()`), which
+carries the whole status payload — the Vue block renders the progress bar and
+drives the endpoint without knowing which plugin is being migrated.
 
 One-click installs go through `Core\Plugin_Installer`, which only accepts packages from `Hubgo/Core/Plugin_Installer/Allowed_Hosts` and reads the URL from the server-side catalog, never from the request body. An integration whose plugin has not shipped yet leaves `download_url` empty and sets `coming_soon` — see `Integrations\Melhor_Envio`, which goes live by defining `HUBGO_MELHOR_ENVIO_PACKAGE_URL` (or filtering it), with no code change.
 

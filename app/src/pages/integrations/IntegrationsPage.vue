@@ -265,6 +265,8 @@ onMounted( bootstrap );
             :settings="settings"
             @close="closeConfig"
             @update-setting="updateSetting"
+            @toast="( message, tone ) => toast( message, tone )"
+            @refresh="refreshCards"
         />
 
         <ToastStack :toasts="toasts" @dismiss="dismissToast" />

@@ -3,16 +3,19 @@
  * IntegrationModalBlock.vue — renders one content block of an integration modal.
  *
  * Blocks let an integration prepend explanatory content above its fields
- * without shipping a Vue component: the backend declares `html` or `notice`
- * blocks and this component paints them.
+ * without shipping a Vue component: the backend declares `html`, `notice` or
+ * `migration` blocks and this component paints them.
  *
  * @since 3.0.0
  */
 import { computed } from 'vue';
+import IntegrationMigrationBlock from './IntegrationMigrationBlock.vue';
 
 const props = defineProps({
     block: { type: Object, required: true },
 });
+
+defineEmits([ 'toast', 'refresh' ]);
 
 const toneClass = computed( () => ( {
     info: 'border-primary-100 bg-primary-50 text-primary-800',
@@ -35,5 +38,12 @@ const toneClass = computed( () => ( {
         v-else-if="'html' === block.type && block.html"
         class="text-[13px] leading-6 text-slate-600"
         v-html="block.html"
+    />
+
+    <IntegrationMigrationBlock
+        v-else-if="'migration' === block.type"
+        :block="block"
+        @toast="( message, tone ) => $emit( 'toast', message, tone )"
+        @refresh="$emit( 'refresh' )"
     />
 </template>

@@ -26,7 +26,7 @@ const props = defineProps({
     settings: { type: Object, default: () => ( {} ) },
 });
 
-defineEmits([ 'close', 'update-setting' ]);
+defineEmits([ 'close', 'update-setting', 'toast', 'refresh' ]);
 
 const modal = computed( () => props.integration?.modal || {} );
 const fields = computed( () => ( Array.isArray( props.integration?.settings ) ? props.integration.settings : [] ) );
@@ -49,6 +49,8 @@ const sizeClass = computed( () => MODAL_SIZE_CLASSES[ modal.value.size ] || MODA
                 v-for="block in blocks"
                 :key="block.key"
                 :block="block"
+                @toast="( message, tone ) => $emit( 'toast', message, tone )"
+                @refresh="$emit( 'refresh' )"
             />
 
             <div v-if="fields.length" class="divide-y divide-slate-100">
