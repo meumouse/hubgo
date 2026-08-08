@@ -13,6 +13,7 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { api, getBootstrapConfig } from '../../utils/api';
 import { __ } from '../../utils/i18n';
 import { cloneValue, deepEqual } from '../../utils/object';
+import { withMinimumDuration } from '../../utils/async';
 import { useToasts } from '../../composables/useToasts';
 import PageHeader from '../../components/layout/PageHeader.vue';
 import IntegrationsGrid from './components/IntegrationsGrid.vue';
@@ -135,7 +136,9 @@ async function save() {
     saving.value = true;
 
     try {
-        const response = await api.post( 'settings', { settings: { ...settings } } );
+        // Held to a short floor so the button spinner is actually seen — a local
+        // save otherwise resolves before the loading state paints.
+        const response = await withMinimumDuration( api.post( 'settings', { settings: { ...settings } } ) );
 
         applySettings( response.settings || settings );
         toast( response.message || __( 'Integrations saved successfully!' ), 'success', __( 'Saved' ) );
