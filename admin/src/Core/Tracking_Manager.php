@@ -419,7 +419,7 @@ class Tracking_Manager {
     public function get_provider_label( $item ) {
         $carrier = $this->get_carrier_name( $item );
 
-        return '' !== $carrier ? $carrier : __( 'Transportadora não definida', 'hubgo' );
+        return '' !== $carrier ? $carrier : __( 'Carrier not set', 'hubgo' );
     }
 
 
@@ -517,11 +517,11 @@ class Tracking_Manager {
         $formatted = $this->format_ship_date( is_array( $item ) && isset( $item['ship_date'] ) ? $item['ship_date'] : '' );
 
         if ( '' === $formatted ) {
-            return __( 'Sem data de envio', 'hubgo' );
+            return __( 'No shipping date', 'hubgo' );
         }
 
         /* translators: %s: formatted shipping date. */
-        return sprintf( __( 'Enviado em %s', 'hubgo' ), $formatted );
+        return sprintf( __( 'Shipped on %s', 'hubgo' ), $formatted );
     }
 
 

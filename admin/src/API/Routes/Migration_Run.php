@@ -37,13 +37,13 @@ class Migration_Run extends Abstract_Route {
         $id = sanitize_key( (string) ( $params['id'] ?? '' ) );
 
         if ( '' === $id ) {
-            return $this->error_response( esc_html__( 'Informe a migração que deve ser executada.', 'hubgo' ) );
+            return $this->error_response( esc_html__( 'Tell us which migration should run.', 'hubgo' ) );
         }
 
         $migration = Migration_Registry::get( $id );
 
         if ( null === $migration ) {
-            return $this->error_response( esc_html__( 'Migração não encontrada.', 'hubgo' ), 404 );
+            return $this->error_response( esc_html__( 'Migration not found.', 'hubgo' ), 404 );
         }
 
         $status = $migration->run_batch( isset( $params['limit'] ) ? (int) $params['limit'] : 0 );
@@ -73,7 +73,7 @@ class Migration_Run extends Abstract_Route {
         if ( empty( $status['completed'] ) ) {
             /* translators: 1: processed orders, 2: total orders. */
             return sprintf(
-                esc_html__( 'Migrando pedidos... %1$d de %2$d.', 'hubgo' ),
+                esc_html__( 'Migrating orders... %1$d of %2$d.', 'hubgo' ),
                 (int) $status['processed'],
                 (int) $status['total']
             );
@@ -81,7 +81,7 @@ class Migration_Run extends Abstract_Route {
 
         /* translators: 1: number of tracking codes, 2: number of orders. */
         return sprintf(
-            esc_html__( 'Migração concluída: %1$d código(s) de rastreio em %2$d pedido(s).', 'hubgo' ),
+            esc_html__( 'Migration completed: %1$d tracking code(s) across %2$d order(s).', 'hubgo' ),
             (int) $status['imported_records'],
             (int) $status['migrated_orders']
         );

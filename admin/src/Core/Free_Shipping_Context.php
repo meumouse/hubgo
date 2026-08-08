@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
 /**
  * Free-shipping threshold context for a quoted package.
  *
- * The storefront card advertises "frete grátis acima de X" and how much is
+ * The storefront card advertises "free shipping over X" and how much is
  * missing to get there. Hardcoding X on the frontend (as the reference
  * implementation did) makes the badge lie the moment the store owner edits the
  * zone, so the threshold is read from the very `free_shipping` instances that

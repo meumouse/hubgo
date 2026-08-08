@@ -11,7 +11,7 @@ use MeuMouse\Hubgo\Core\Address\ViaCep_Provider;
 defined('ABSPATH') || exit;
 
 /**
- * Facade over the address lookup providers used by "Não sei meu CEP".
+ * Facade over the address lookup providers used by "I do not know my postcode".
  *
  * Resolves the configured provider, exposes the bootstrap the storefront modal
  * needs to render the right form, and enforces the per-visitor rate limit.

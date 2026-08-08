@@ -26,7 +26,7 @@ class Settings_Reset extends Abstract_Route {
      */
     public function handle( WP_REST_Request $request ) {
         return $this->success_response( array(
-            'message'  => esc_html__( 'Configurações restauradas para os valores padrão.', 'hubgo' ),
+            'message'  => esc_html__( 'Settings restored to their default values.', 'hubgo' ),
             'settings' => Repository::reset_settings(),
         ) );
     }

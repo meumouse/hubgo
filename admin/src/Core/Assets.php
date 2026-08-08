@@ -142,8 +142,8 @@ class Assets {
                 'header_shipping' => Settings::get_setting( 'text_header_ship' ),
                 'header_value'    => Settings::get_setting( 'text_header_value' ),
                 'bottom_note'     => Settings::get_setting( 'note_text_bottom_shipping_calc' ),
-                'no_shipping'     => __( 'Nenhuma forma de entrega disponível.', 'hubgo' ),
-                'error'           => __( 'Erro ao calcular o frete. Tente novamente.', 'hubgo' ),
+                'no_shipping'     => __( 'No delivery method available.', 'hubgo' ),
+                'error'           => __( 'Could not calculate shipping. Please try again.', 'hubgo' ),
             ),
         );
 
@@ -196,7 +196,7 @@ class Assets {
         if ( empty( $assets ) || empty( $assets['script'] ) ) {
             add_action( 'admin_notices', function() {
                 echo '<div class="notice notice-error"><p>';
-                echo esc_html__( 'HubGo: build de interface não encontrado. Execute "npm run build" no plugin.', 'hubgo' );
+                echo esc_html__( 'HubGo: interface build not found. Run "npm run build" in the plugin.', 'hubgo' );
                 echo '</p></div>';
             } );
 
@@ -354,10 +354,15 @@ class Assets {
             'nonce'     => wp_create_nonce( 'wp_rest' ),
             'order_id'  => $this->get_order_id_from_request(),
             'providers' => $this->get_tracking_providers_for_script(),
+            // The metabox script is plain, unbundled JS: it cannot reach wp.i18n
+            // the way the Vue bundles do, so every string it renders is passed
+            // in here rather than written in the script.
             'i18n'      => array(
-                'confirm_delete' => __( 'Tem certeza que deseja remover este rastreio?', 'hubgo' ),
-                'delete_error'   => __( 'Não foi possível remover o rastreio. Tente novamente.', 'hubgo' ),
-                'save_error'     => __( 'Não foi possível salvar o rastreio. Tente novamente.', 'hubgo' ),
+                'confirm_delete' => __( 'Are you sure you want to remove this tracking code?', 'hubgo' ),
+                'delete_error'   => __( 'Could not remove the tracking code. Please try again.', 'hubgo' ),
+                'save_error'     => __( 'Could not save the tracking code. Please try again.', 'hubgo' ),
+                'track'          => __( 'Track', 'hubgo' ),
+                'remove'         => __( 'Remove', 'hubgo' ),
             ),
         ) );
     }

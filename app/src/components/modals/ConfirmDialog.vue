@@ -12,7 +12,7 @@ defineProps({
     open: { type: Boolean, default: false },
     title: { type: String, default: '' },
     description: { type: String, default: '' },
-    confirmLabel: { type: String, default: () => __( 'Confirmar' ) },
+    confirmLabel: { type: String, default: () => __( 'Confirm' ) },
     loading: { type: Boolean, default: false },
 });
 
@@ -24,13 +24,13 @@ defineEmits([ 'confirm', 'cancel' ]);
         :open="open"
         :title="title"
         :description="description"
-        :eyebrow="__( 'Confirmação' )"
+        :eyebrow="__( 'Confirmation' )"
         size-class="max-w-lg"
         @close="$emit( 'cancel' )"
     >
         <div class="flex items-center justify-end gap-3">
             <BaseButton
-                :title="__( 'Cancelar' )"
+                :title="__( 'Cancel' )"
                 color="white"
                 :disabled="loading"
                 @click="$emit( 'cancel' )"

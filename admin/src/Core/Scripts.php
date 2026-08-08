@@ -60,6 +60,11 @@ class Scripts {
     /**
      * Resolve a cache-busting version for a built Vite asset.
      *
+     * The Vite entry script and its stylesheet keep fixed file names
+     * (e.g. `settings/app.js`, `styles/*.css`), so without a version query
+     * browsers serve a stale bundle after every rebuild. Use the file
+     * modification time so each rebuild produces a fresh URL.
+     *
      * @since 3.0.0
      * @param string $relative_path Manifest asset path, relative to the dist root.
      * @return string|null
@@ -184,7 +189,7 @@ class Scripts {
         }
 
         $manifest = array();
-        $manifest_path = trailingslashit( HUBGO_PATH ) . self::MANIFEST_PATH;
+        $manifest_path = self::get_manifest_path();
 
         if ( ! file_exists( $manifest_path ) || ! is_readable( $manifest_path ) ) {
             return $manifest;
@@ -203,6 +208,17 @@ class Scripts {
         }
 
         return $manifest;
+    }
+
+
+    /**
+     * Get the absolute manifest file path.
+     *
+     * @since 3.0.0
+     * @return string
+     */
+    private static function get_manifest_path() {
+        return trailingslashit( HUBGO_PATH ) . self::MANIFEST_PATH;
     }
 
 

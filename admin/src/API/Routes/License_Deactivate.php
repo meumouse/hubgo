@@ -32,7 +32,7 @@ class License_Deactivate extends Abstract_Route {
         }
 
         return $this->success_response( array(
-            'message' => esc_html__( 'Licença desativada neste site.', 'hubgo' ),
+            'message' => esc_html__( 'License deactivated on this site.', 'hubgo' ),
             'license' => License::get_payload(),
         ) );
     }

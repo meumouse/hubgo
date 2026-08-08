@@ -51,7 +51,7 @@ function handleInput( raw ) {
  */
 function submit() {
     if ( ! isCompleteCep( value.value ) ) {
-        localError.value = __( 'Digite um CEP válido' );
+        localError.value = __( 'Enter a valid postcode' );
 
         return;
     }
@@ -72,7 +72,7 @@ function submit() {
                 maxlength="9"
                 class="hubgo-calc__input"
                 :placeholder="placeholder"
-                :aria-label="placeholder || __( 'CEP' )"
+                :aria-label="placeholder || __( 'Postcode' )"
                 @input="handleInput( $event.target.value )"
             >
 

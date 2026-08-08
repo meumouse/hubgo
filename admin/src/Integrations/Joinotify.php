@@ -124,7 +124,7 @@ class Joinotify extends Integrations_Base {
     public function add_integration_item( $integrations ) {
         $integrations[ self::CARD_SLUG ] = array(
             'title'            => esc_html__( 'Joinotify', 'hubgo' ),
-            'description'      => esc_html__( 'Dispare mensagens automáticas no WhatsApp quando um pedido for enviado ou um código de rastreio for salvo.', 'hubgo' ),
+            'description'      => esc_html__( 'Send automatic WhatsApp messages when an order is shipped or a tracking code is saved.', 'hubgo' ),
             'icon'             => $this->get_card_icon_svg(),
             'category'         => 'notifications',
             'setting_key'      => self::HUBGO_SETTING_KEY,
@@ -134,15 +134,15 @@ class Joinotify extends Integrations_Base {
             'doc_url'          => 'https://ajuda.meumouse.com/docs/joinotify/overview',
             'install'          => array(
                 'plugin_slug' => self::PLUGIN_FILE,
-                'label'       => esc_html__( 'Conhecer o Joinotify', 'hubgo' ),
+                'label'       => esc_html__( 'Discover Joinotify', 'hubgo' ),
             ),
             'modal'            => array(
                 'title'       => esc_html__( 'Joinotify', 'hubgo' ),
-                'description' => esc_html__( 'Gatilhos de logística disponíveis no construtor de fluxos do Joinotify.', 'hubgo' ),
+                'description' => esc_html__( 'Logistics triggers available in the Joinotify flow builder.', 'hubgo' ),
                 'size'        => 'medium',
                 'blocks'      => array(
                     self::modal_notice_block(
-                        esc_html__( 'Além desta chave, o card "HubGo" também precisa estar ativo na aba Aplicações do Joinotify.', 'hubgo' ),
+                        esc_html__( 'Besides this switch, the "HubGo" card must also be enabled on the Joinotify Applications tab.', 'hubgo' ),
                         'info'
                     ),
                 ),
@@ -210,7 +210,7 @@ class Joinotify extends Integrations_Base {
         joinotify_register_integration( array(
             'slug'        => self::SLUG,
             'title'       => esc_html__( 'HubGo', 'hubgo' ),
-            'description' => esc_html__( 'Dispare mensagens automáticas no WhatsApp com eventos de logística, como pedido enviado e código de rastreio, integrando o HubGo ao Joinotify.', 'hubgo' ),
+            'description' => esc_html__( 'Send automatic WhatsApp messages from logistics events such as order shipped and tracking code saved, connecting HubGo to Joinotify.', 'hubgo' ),
             'icon'        => $this->get_icon_svg(),
             'category'    => 'ecommerce',
             'setting_key' => self::SETTING_KEY,
@@ -221,16 +221,16 @@ class Joinotify extends Integrations_Base {
 
         joinotify_register_trigger( self::SLUG, array(
             'data_trigger'     => self::TRIGGER_ORDER_SHIPPED,
-            'title'            => esc_html__( 'Pedido enviado', 'hubgo' ),
-            'description'      => esc_html__( 'Disparado quando o status do pedido é alterado para Pedido enviado.', 'hubgo' ),
+            'title'            => esc_html__( 'Order shipped', 'hubgo' ),
+            'description'      => esc_html__( 'Fired when the order status changes to Order shipped.', 'hubgo' ),
             'require_settings' => false,
             'icon'             => $this->get_icon_svg(),
         ) );
 
         joinotify_register_trigger( self::SLUG, array(
             'data_trigger'     => self::TRIGGER_ITEM_SAVED,
-            'title'            => esc_html__( 'Ao salvar um rastreio no pedido', 'hubgo' ),
-            'description'      => esc_html__( 'Disparado ao salvar um código de rastreio no pedido.', 'hubgo' ),
+            'title'            => esc_html__( 'When a tracking code is saved on the order', 'hubgo' ),
+            'description'      => esc_html__( 'Fired when a tracking code is saved on the order.', 'hubgo' ),
             'require_settings' => false,
             'icon'             => $this->get_icon_svg(),
         ) );
@@ -291,9 +291,9 @@ class Joinotify extends Integrations_Base {
         return array(
             '{{ hubgo_carrier_name }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Nome da transportadora', 'hubgo' ),
+                'description' => esc_html__( 'Carrier name', 'hubgo' ),
                 'replacement' => array(
-                    'sandbox'    => esc_html__( 'Correios', 'hubgo' ),
+                    'sandbox'    => esc_html__( 'Express Delivery', 'hubgo' ),
                     'production' => function( $payload ) use ( $tracking_from ) {
                         return $tracking_from( $payload, 'carrier_name' );
                     },
@@ -301,9 +301,9 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ hubgo_tracking_link }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Link de rastreio', 'hubgo' ),
+                'description' => esc_html__( 'Tracking link', 'hubgo' ),
                 'replacement' => array(
-                    'sandbox'    => 'https://transportadora.exemplo/rastreio/BR1234567890',
+                    'sandbox'    => 'https://carrier.example/tracking/BR1234567890',
                     'production' => function( $payload ) use ( $tracking_from ) {
                         return $tracking_from( $payload, 'tracking_link' );
                     },
@@ -311,7 +311,7 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ hubgo_tracking_code }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Código de rastreio', 'hubgo' ),
+                'description' => esc_html__( 'Tracking code', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => 'BR1234567890',
                     'production' => function( $payload ) use ( $tracking_from ) {
@@ -321,7 +321,7 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ hubgo_shipping_date }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Data do envio', 'hubgo' ),
+                'description' => esc_html__( 'Shipping date', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => wp_date( get_option( 'date_format' ) ),
                     'production' => function( $payload ) use ( $tracking_from ) {
@@ -334,7 +334,7 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ hubgo_tracking_count }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Quantidade de rastreios registrados no pedido', 'hubgo' ),
+                'description' => esc_html__( 'Number of tracking codes registered on the order', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => '2',
                     'production' => function( $payload ) {
@@ -346,9 +346,9 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ hubgo_tracking_list }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Todos os rastreios do pedido, um por linha (transportadora, código e link). Também pode ser usado como origem de uma ação de repetição.', 'hubgo' ),
+                'description' => esc_html__( 'Every tracking code on the order, one per line (carrier, code and link). It can also be used as the source of a loop action.', 'hubgo' ),
                 'replacement' => array(
-                    'sandbox'    => "Correios - BR1234567890 - https://transportadora.exemplo/rastreio/BR1234567890\nJadlog - JD9876543210 - https://transportadora.exemplo/rastreio/JD9876543210",
+                    'sandbox'    => "Express Delivery - BR1234567890 - https://carrier.example/tracking/BR1234567890\nStandard Post - JD9876543210 - https://carrier.example/tracking/JD9876543210",
                     'production' => function( $payload ) {
                         return $this->format_tracking_list( $payload );
                     },
@@ -356,9 +356,9 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ wc_billing_first_name }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Primeiro nome de faturamento do cliente (WooCommerce)', 'hubgo' ),
+                'description' => esc_html__( 'Customer billing first name (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
-                    'sandbox'    => esc_html__( 'João', 'hubgo' ),
+                    'sandbox'    => esc_html__( 'John', 'hubgo' ),
                     'production' => function( $payload ) use ( $order_from ) {
                         $order = $order_from( $payload );
 
@@ -368,9 +368,9 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ wc_billing_last_name }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Sobrenome de faturamento do cliente (WooCommerce)', 'hubgo' ),
+                'description' => esc_html__( 'Customer billing last name (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
-                    'sandbox'    => esc_html__( 'da Silva', 'hubgo' ),
+                    'sandbox'    => esc_html__( 'Doe', 'hubgo' ),
                     'production' => function( $payload ) use ( $order_from ) {
                         $order = $order_from( $payload );
 
@@ -380,9 +380,9 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ wc_billing_email }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'E-mail de faturamento do cliente (WooCommerce)', 'hubgo' ),
+                'description' => esc_html__( 'Customer billing e-mail (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
-                    'sandbox'    => 'usuario@exemplo.com',
+                    'sandbox'    => 'user@example.com',
                     'production' => function( $payload ) use ( $order_from ) {
                         $order = $order_from( $payload );
 
@@ -392,7 +392,7 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ wc_billing_phone }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Telefone de faturamento do pedido (WooCommerce)', 'hubgo' ),
+                'description' => esc_html__( 'Order billing phone (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => '+55 11 91234-5678',
                     'production' => function( $payload ) use ( $order_from ) {
@@ -404,7 +404,7 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ wc_shipping_phone }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Telefone de entrega do pedido (WooCommerce)', 'hubgo' ),
+                'description' => esc_html__( 'Order shipping phone (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => '+55 41 91234-5678',
                     'production' => function( $payload ) use ( $order_from ) {
@@ -421,7 +421,7 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ wc_order_number }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Número do pedido (WooCommerce)', 'hubgo' ),
+                'description' => esc_html__( 'Order number (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => '12345',
                     'production' => function( $payload ) use ( $order_from ) {
@@ -433,9 +433,9 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ wc_order_status }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Status do pedido (WooCommerce)', 'hubgo' ),
+                'description' => esc_html__( 'Order status (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
-                    'sandbox'    => esc_html__( 'Pedido enviado', 'hubgo' ),
+                    'sandbox'    => esc_html__( 'Order shipped', 'hubgo' ),
                     'production' => function( $payload ) use ( $order_from ) {
                         $order = $order_from( $payload );
 
@@ -445,9 +445,9 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ wc_order_total }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Valor total do pedido (WooCommerce)', 'hubgo' ),
+                'description' => esc_html__( 'Order total (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
-                    'sandbox'    => function_exists( 'joinotify_format_plain_text' ) && function_exists( 'wc_price' ) ? joinotify_format_plain_text( wc_price( 150 ) ) : 'R$ 150,00',
+                    'sandbox'    => function_exists( 'joinotify_format_plain_text' ) && function_exists( 'wc_price' ) ? joinotify_format_plain_text( wc_price( 150 ) ) : '150.00',
                     'production' => function( $payload ) use ( $order_from ) {
                         $order = $order_from( $payload );
 
@@ -461,9 +461,9 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ wc_billing_full_address }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Endereço completo de faturamento do cliente (WooCommerce)', 'hubgo' ),
+                'description' => esc_html__( 'Customer full billing address (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
-                    'sandbox'    => esc_html__( 'Rua das Flores, 123 - Curitiba/PR - Brasil (CEP: 80000-000)', 'hubgo' ),
+                    'sandbox'    => esc_html__( '123 Flower Street - Curitiba/PR - Brazil (postcode: 80000-000)', 'hubgo' ),
                     'production' => function( $payload ) use ( $order_from ) {
                         $order = $order_from( $payload );
 
@@ -473,9 +473,9 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ wc_shipping_full_address }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Endereço completo de entrega do cliente (WooCommerce)', 'hubgo' ),
+                'description' => esc_html__( 'Customer full shipping address (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
-                    'sandbox'    => esc_html__( 'Rua das Margaridas, 450 - Curitiba/PR - Brasil (CEP: 80000-100)', 'hubgo' ),
+                    'sandbox'    => esc_html__( '450 Daisy Street - Curitiba/PR - Brazil (postcode: 80000-100)', 'hubgo' ),
                     'production' => function( $payload ) use ( $order_from ) {
                         $order = $order_from( $payload );
 
@@ -485,9 +485,9 @@ class Joinotify extends Integrations_Base {
             ),
             '{{ wc_purchased_items }}' => array(
                 'triggers'    => $triggers,
-                'description' => esc_html__( 'Produtos e quantidades adquiridos no pedido, separados por linha', 'hubgo' ),
+                'description' => esc_html__( 'Products and quantities purchased on the order, one per line', 'hubgo' ),
                 'replacement' => array(
-                    'sandbox'    => "1x - Camiseta de algodão masculina (Produto exemplo)\n1x - Óculos de sol com proteção UV (Produto exemplo)",
+                    'sandbox'    => "1x - Men's cotton t-shirt (sample product)\n1x - UV protection sunglasses (sample product)",
                     'production' => function( $payload ) use ( $order_from ) {
                         $order = $order_from( $payload );
 
@@ -520,7 +520,7 @@ class Joinotify extends Integrations_Base {
             absint( $order_id ),
             is_array( $latest ) ? $latest : array(),
             $items,
-            esc_html__( 'Pedido enviado', 'hubgo' )
+            esc_html__( 'Order shipped', 'hubgo' )
         );
     }
 
@@ -542,7 +542,7 @@ class Joinotify extends Integrations_Base {
             absint( $order_id ),
             is_array( $item ) ? $item : array(),
             $all_items,
-            esc_html__( 'Rastreio salvo no pedido', 'hubgo' )
+            esc_html__( 'Tracking code saved on the order', 'hubgo' )
         );
     }
 
@@ -642,7 +642,7 @@ class Joinotify extends Integrations_Base {
 
         // get_carrier_name() (not get_provider_label()) because a message must
         // render an empty token for an unset carrier, never the UI's
-        // "Transportadora não definida" placeholder copy.
+        // "Carrier not set" placeholder copy.
         return array(
             'carrier_name'  => sanitize_text_field( $tracking->get_carrier_name( $item ) ),
             'tracking_link' => esc_url_raw( $tracking->get_display_tracking_link( $order_id, $item ) ),

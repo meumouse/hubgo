@@ -80,7 +80,7 @@ async function bootstrap() {
             version.value = data.version;
         }
     } catch ( error ) {
-        loadError.value = error.message || __( 'Não foi possível carregar as integrações.' );
+        loadError.value = error.message || __( 'Could not load the integrations.' );
     } finally {
         loading.value = false;
     }
@@ -138,13 +138,13 @@ async function save() {
         const response = await api.post( 'settings', { settings: { ...settings } } );
 
         applySettings( response.settings || settings );
-        toast( response.message || __( 'Integrações salvas com sucesso!' ), 'success', __( 'Salvo' ) );
+        toast( response.message || __( 'Integrations saved successfully!' ), 'success', __( 'Saved' ) );
 
         // A toggle can change what the cards may do (a disabled integration
         // hides its settings), so refresh the catalog from the server.
         await refreshCards();
     } catch ( error ) {
-        toast( error.message || __( 'Erro ao salvar as integrações.' ), 'error', __( 'Erro' ) );
+        toast( error.message || __( 'Error saving the integrations.' ), 'error', __( 'Error' ) );
     } finally {
         saving.value = false;
     }
@@ -184,9 +184,9 @@ async function installPlugin( slug ) {
         const response = await api.post( 'plugins/install', { slug } );
 
         cards.value = Array.isArray( response.cards ) ? response.cards : cards.value;
-        toast( response.message || __( 'Plugin instalado com sucesso!' ), 'success', __( 'Instalado' ) );
+        toast( response.message || __( 'Plugin installed successfully!' ), 'success', __( 'Installed' ) );
     } catch ( error ) {
-        toast( error.message || __( 'Não foi possível instalar o plugin.' ), 'error', __( 'Erro' ) );
+        toast( error.message || __( 'Could not install the plugin.' ), 'error', __( 'Error' ) );
     } finally {
         installingSlug.value = '';
     }
@@ -200,11 +200,11 @@ onMounted( bootstrap );
         <PageShellSkeleton v-if="loading" />
 
         <div v-else class="w-full">
-            <PageHeader :title="__( 'Integrações' )">
+            <PageHeader :title="__( 'Integrations' )">
                 <template #description>
-                    {{ __( 'Conecte o HubGo a outros plugins e serviços de logística. Se precisar de ajuda, acesse a nossa ' ) }}
+                    {{ __( 'Connect HubGo to other logistics plugins and services. If you need help, visit our' ) }}
                     <a class="font-semibold text-primary-700 underline underline-offset-4" :href="DOCS_URL" target="_blank" rel="noreferrer">
-                        {{ __( 'Central de Ajuda' ) }}
+                        {{ __( 'Help Center' ) }}
                     </a>
                 </template>
 
@@ -213,7 +213,7 @@ onMounted( bootstrap );
                         v-if="version"
                         class="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-800"
                     >
-                        {{ __( 'Versão' ) }} {{ version }}
+                        {{ __( 'Version' ) }} {{ version }}
                     </span>
                 </template>
             </PageHeader>
@@ -227,13 +227,13 @@ onMounted( bootstrap );
                     v-if="showLicenseNotice"
                     class="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-[8px] border border-amber-200 bg-amber-50 px-5 py-4 text-[13px] leading-5 text-amber-800"
                 >
-                    <span>{{ __( 'As integrações marcadas como Pro exigem uma licença ativa do HubGo.' ) }}</span>
+                    <span>{{ __( 'Integrations marked as Pro require an active HubGo license.' ) }}</span>
                     <a
                         v-if="licenseUrl"
                         class="font-semibold text-amber-900 underline underline-offset-4"
                         :href="licenseUrl"
                     >
-                        {{ __( 'Ativar licença' ) }}
+                        {{ __( 'Activate license' ) }}
                     </a>
                 </div>
 

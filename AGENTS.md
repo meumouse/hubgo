@@ -413,6 +413,10 @@ Use `__()` from `app/src/utils/i18n.js`, which proxies `window.wp.i18n` at call 
 - Use the brand scale from `tailwind.config.js` (`primary-*`, `shell-*`, `ink`, `success`, `danger`, `warning`, `info`, `muted`) instead of raw hex values.
 - Tailwind `content` also scans `admin/src/Views/**/*.php` — classes used in PHP-rendered markup are safe.
 
+**Control chrome lives in `main.css`, not in the components.** Height (`--hubgo-control-height`), padding, radius and border colour are declared once and applied both to bare inputs (through the `input`/`textarea`/`select` block that also beats wp-admin's `forms.css`) and to the `.hubgo-control` class, which any element acting as a control — the select trigger, the colour swatch, a shell wrapping an input plus a suffix — opts into. A control that needs an inner input renders it with `.hubgo-control__inner`, which strips the input's own chrome so the shell owns it. Do not re-declare border/radius/focus utilities on a field: that is how the fields drifted apart in the first place.
+
+Focus is a **2px solid primary border and nothing else**. The idle border is already 2px, so the focused state only recolours it and never resizes the box. Never reintroduce a `ring-*`/`box-shadow` glow; where a border cannot express focus (buttons, the toggle), use `outline-2 outline-offset-2 outline-primary-700`. A control whose focus lives elsewhere (an open dropdown teleported to `<body>`) keeps its border by carrying `is-focused`.
+
 ### Field system
 
 Settings controls are resolved at runtime by `app/src/components/fields/fieldRegistry.js`. To add a field type:
@@ -421,9 +425,11 @@ Settings controls are resolved at runtime by `app/src/components/fields/fieldReg
 2. `registerFieldComponent( 'my-type', MyField )` in `fieldRegistry.js`.
 3. Add the matching field builder in PHP `Settings\Registry` and a sanitizer case in `Settings\Repository`.
 
-Registered types: `toggle`, `text`, `textarea`, `select`, `color` (alias `color-picker`), `number`, `range`, `password`.
+Registered types: `toggle`, `text`, `textarea`, `select`, `color` (alias `color-picker`), `number`, `range`, `dimension`, `password`.
 
-`number` and `range` store their value as a **string**, and an empty string is meaningful: the calculator style keys read it as "use the built-in default". Do not coerce a cleared field to `0` — that is a different instruction. `range` renders at the field's declared `default` while unset and offers an explicit reset back to empty.
+`number`, `range` and `dimension` store their value as a **string**, and an empty string is meaningful: the calculator style keys read it as "use the built-in default". Do not coerce a cleared field to `0` — that is a different instruction. `range` renders at the field's declared `default` while unset and offers an explicit reset back to empty.
+
+`dimension` is the control for a CSS length: a numeric input plus a unit picker (`rem`, `em`, `px`, `%`, narrowed per field with `units`). It stores the **assembled CSS value** — `"1.5rem"`, `"12px"`, `"50%"` — so `Views\Calculator_Styles` can drop it straight into a custom property. A bare number is still valid input and is read with the field's declared `unit`: that is how every length was stored before the picker existed, and `Calculator_Styles::sanitize_value()` still appends the unit from the token map to it. A stored value is only ever re-saved with its unit spelled out. The Elementor widget offers the same unit list, so both editors can express the same value.
 
 The registry is exposed as `window.HubgoFieldComponents` and announces `hubgo:field-registry-ready` so external bundles can register or override widgets — keep that contract intact.
 
@@ -453,10 +459,10 @@ The published DOM events `hubgo:shipping_calculated` and `hubgo:shipping_error` 
 
 ## 7. Internationalization
 
-- Text domain: **`hubgo`**, loaded from `/languages`.
-- **Source strings are written in Brazilian Portuguese** and translated outward from there. Keep new user-facing strings in pt-BR to stay consistent with the existing `.pot`.
-- Code, comments, docblocks, commit messages and this documentation are in **English**.
-- Wrap every user-facing string: `__()`, `esc_html__()`, `_n()`, `esc_html_e()` in PHP; `__()` from `utils/i18n.js` in the SPA.
+- Text domain: **`hubgo`**, loaded from `/languages` on `init` at priority **0**.
+- **Source strings are written in en-US** (since 3.0.0) and translated outward from there, pt-BR included. Everything is English: code, comments, docblocks, commit messages, this documentation, the plugin header and every user-facing string.
+- Wrap every user-facing string: `__()`, `esc_html__()`, `_n()`, `esc_html_e()` in PHP; `__()` from `utils/i18n.js` in the SPA. This includes the storefront copy defaults in `Admin\Default_Options`, so an untouched install reads in the site language.
+- **Never call a translation function before `init`.** The text domain is not loaded yet and WordPress 6.7+ answers with *"Translation loading for the hubgo domain was triggered too early"*. In practice: nothing translatable may run at plugin-load time or on `plugins_loaded`. `Plugin::check_dependencies()` therefore yields error *codes* and `render_dependency_notices()` turns them into copy; the integrations registry and the tracking components boot on `init` (priority 5) rather than earlier.
 - Never concatenate translatable fragments — use `sprintf()` with placeholders.
 - Preserve sprintf placeholders, HTML, URLs and template tokens (`{{ hubgo_tracking_code }}`, `{{ wc_order_total }}`) inside translated strings.
 - After adding strings, run `npm run pot` (or a full `npm run build`) and commit the regenerated `languages/` artifacts. `.mo` and `.l10n.php` are committed; `.env` and `node_modules` are not.
@@ -509,4 +515,5 @@ Release artifacts go to `dist/` (`hubgo.zip`, `versions/<version>/`).
 - Don't rename or remove published hooks, REST routes, option keys or setting keys.
 - Don't edit `admin/vendor/` or `app/node_modules/` by hand.
 - Don't introduce new build tooling, test frameworks, linters or dependencies without being asked.
-- Don't translate code comments or documentation into Portuguese, and don't translate user-facing pt-BR source strings into English.
+- Don't write source strings, comments or documentation in Portuguese — en-US is the source language everywhere; locale copy belongs in `languages/`.
+- Don't call `__()` (or any sibling) before `init` — see section 7.

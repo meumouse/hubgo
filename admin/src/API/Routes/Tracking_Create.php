@@ -31,11 +31,11 @@ class Tracking_Create extends Abstract_Route {
         $order_id = isset( $params['order_id'] ) ? absint( $params['order_id'] ) : 0;
 
         if ( ! $order_id ) {
-            return $this->error_response( __( 'Pedido inválido.', 'hubgo' ), 400 );
+            return $this->error_response( __( 'Invalid order.', 'hubgo' ), 400 );
         }
 
         if ( empty( $params['tracking_number'] ) ) {
-            return $this->error_response( __( 'Informe o código de rastreio.', 'hubgo' ), 400 );
+            return $this->error_response( __( 'Enter the tracking code.', 'hubgo' ), 400 );
         }
 
         $manager = new Tracking_Manager();

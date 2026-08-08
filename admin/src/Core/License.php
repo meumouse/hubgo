@@ -370,7 +370,7 @@ final class License {
         try {
             return $integration->license()->activate( (string) $key );
         } catch ( Exception $e ) {
-            return new WP_Error( 'hubgo_license_transport', esc_html__( 'Não foi possível contatar o servidor de licenças. Tente novamente.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_license_transport', esc_html__( 'Could not reach the license server. Please try again.', 'hubgo' ) );
         }
     }
 
@@ -413,7 +413,7 @@ final class License {
         try {
             return $integration->license()->validate();
         } catch ( Exception $e ) {
-            return new WP_Error( 'hubgo_license_transport', esc_html__( 'Não foi possível contatar o servidor de licenças. Tente novamente.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_license_transport', esc_html__( 'Could not reach the license server. Please try again.', 'hubgo' ) );
         }
     }
 
@@ -511,7 +511,7 @@ final class License {
      * @return \WP_Error
      */
     private static function unavailable_error() {
-        return new WP_Error( 'hubgo_license_unavailable', esc_html__( 'O serviço de licenciamento não está disponível.', 'hubgo' ) );
+        return new WP_Error( 'hubgo_license_unavailable', esc_html__( 'The licensing service is not available.', 'hubgo' ) );
     }
 
 
@@ -554,7 +554,7 @@ final class License {
      */
     public static function plugin_action_links( $links ) {
         $license_link = '<a href="' . esc_url( self::get_license_url() ) . '">' .
-            esc_html__( 'Licença', 'hubgo' ) .
+            esc_html__( 'License', 'hubgo' ) .
         '</a>';
 
         array_unshift( $links, $license_link );

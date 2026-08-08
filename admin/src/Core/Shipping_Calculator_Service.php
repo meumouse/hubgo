@@ -782,7 +782,7 @@ class Shipping_Calculator_Service {
     /**
      * Resolve the free-shipping context and expose the rate filter.
      *
-     * Up to 3.0.1 this also appended "(Entrega em N dias úteis)" to every rate
+     * Up to 3.0.1 this also appended "(Delivery in N business days)" to every rate
      * label. The forecast is now structured data on each row (see
      * {@see Delivery_Estimate}), so appending it to the label as well would
      * print it twice on the storefront.

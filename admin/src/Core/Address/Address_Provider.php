@@ -8,7 +8,7 @@ use WP_Error;
 defined('ABSPATH') || exit;
 
 /**
- * Base class for the "Não sei meu CEP" address lookup providers.
+ * Base class for the "I do not know my postcode" address lookup providers.
  *
  * A provider answers two questions: which addresses match what the shopper
  * typed, and which postcode belongs to the one they picked. How it collects the
@@ -199,14 +199,14 @@ abstract class Address_Provider {
      */
     private function decode_response( $response ) {
         if ( is_wp_error( $response ) ) {
-            return new WP_Error( 'hubgo_address_transport', esc_html__( 'Não foi possível buscar endereços agora. Tente novamente.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_address_transport', esc_html__( 'Could not search addresses right now. Please try again.', 'hubgo' ) );
         }
 
         $code = (int) wp_remote_retrieve_response_code( $response );
         $body = json_decode( (string) wp_remote_retrieve_body( $response ), true );
 
         if ( $code < 200 || $code > 299 ) {
-            return new WP_Error( 'hubgo_address_http', esc_html__( 'Não foi possível buscar endereços agora. Tente novamente.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_address_http', esc_html__( 'Could not search addresses right now. Please try again.', 'hubgo' ) );
         }
 
         return is_array( $body ) ? $body : array();

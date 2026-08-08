@@ -22,8 +22,8 @@ class Email_Shipped_Order extends WC_Email {
      */
     public function __construct() {
         $this->id = 'hubgo_shipped_order';
-        $this->title = __( 'Pedido enviado', 'hubgo' );
-        $this->description = __( 'Enviado quando o pedido e marcado como enviado.', 'hubgo' );
+        $this->title = __( 'Order shipped', 'hubgo' );
+        $this->description = __( 'Sent when the order is marked as shipped.', 'hubgo' );
         $this->customer_email = true;
 
         $this->template_html = 'emails/hubgo-shipped-order.php';
@@ -46,7 +46,7 @@ class Email_Shipped_Order extends WC_Email {
      * @return string
      */
     public function get_default_subject() {
-        return __( 'Seu pedido foi enviado', 'hubgo' );
+        return __( 'Your order has been shipped', 'hubgo' );
     }
 
 
@@ -57,7 +57,7 @@ class Email_Shipped_Order extends WC_Email {
      * @return string
      */
     public function get_default_heading() {
-        return __( 'Pedido enviado', 'hubgo' );
+        return __( 'Order shipped', 'hubgo' );
     }
 
 

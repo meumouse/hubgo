@@ -39,7 +39,7 @@ const glyphSize = computed( () => ( 'sm' === props.size ? 12 : 14 ) );
     <span
         class="inline-flex items-center rounded-full font-semibold uppercase tracking-wide ring-1"
         :class="[ toneClass, sizeClass ]"
-        :title="locked ? __( 'Recurso disponível com licença ativa' ) : __( 'Recurso Pro liberado' )"
+        :title="locked ? __( 'Feature available with an active license' ) : __( 'Pro feature unlocked' )"
     >
         <component :is="Crown" :width="glyphSize" :height="glyphSize" aria-hidden="true" />
         <span>{{ label }}</span>

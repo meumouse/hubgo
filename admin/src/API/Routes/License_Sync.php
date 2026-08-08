@@ -37,14 +37,14 @@ class License_Sync extends Abstract_Route {
             $message = $status->message();
 
             return $this->error_response(
-                '' !== $message ? $message : esc_html__( 'A licença não está válida para este site.', 'hubgo' ),
+                '' !== $message ? $message : esc_html__( 'The license is not valid for this site.', 'hubgo' ),
                 400,
                 array( 'license' => $payload )
             );
         }
 
         return $this->success_response( array(
-            'message' => esc_html__( 'Licença sincronizada com sucesso!', 'hubgo' ),
+            'message' => esc_html__( 'License synchronized successfully!', 'hubgo' ),
             'license' => $payload,
         ) );
     }

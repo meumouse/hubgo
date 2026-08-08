@@ -38,9 +38,9 @@ const sizeClass = computed( () => MODAL_SIZE_CLASSES[ modal.value.size ] || MODA
 <template>
     <ModalDialog
         :open="open"
-        :title="modal.title || integration?.title || __( 'Configurações da integração' )"
+        :title="modal.title || integration?.title || __( 'Integration settings' )"
         :description="modal.description || ''"
-        :eyebrow="__( 'Integrações' )"
+        :eyebrow="__( 'Integrations' )"
         :size-class="sizeClass"
         @close="$emit( 'close' )"
     >
@@ -68,7 +68,7 @@ const sizeClass = computed( () => MODAL_SIZE_CLASSES[ modal.value.size ] || MODA
                 v-else-if="! blocks.length"
                 class="m-0 rounded-[8px] border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-500"
             >
-                {{ __( 'Esta integração não possui configurações adicionais.' ) }}
+                {{ __( 'This integration has no additional settings.' ) }}
             </p>
         </div>
     </ModalDialog>

@@ -33,7 +33,7 @@ class Tracking_Delete extends Abstract_Route {
         $tracking_id = sanitize_text_field( (string) $request->get_param( 'id' ) );
 
         if ( ! $order_id || '' === $tracking_id ) {
-            return $this->error_response( __( 'Requisição inválida.', 'hubgo' ), 400 );
+            return $this->error_response( __( 'Invalid request.', 'hubgo' ), 400 );
         }
 
         $manager = new Tracking_Manager();

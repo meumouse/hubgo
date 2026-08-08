@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
  * Address lookup backed by ViaCEP.
  *
  * The default provider: it needs no credential and no billing account, so the
- * "Não sei meu CEP" flow works on every install out of the box.
+ * "I do not know my postcode" flow works on every install out of the box.
  *
  * ViaCEP has no free-text endpoint — its reverse search is keyed on state,
  * city and street — hence MODE_STRUCTURED. In exchange it returns the postcode
@@ -103,7 +103,7 @@ class ViaCep_Provider extends Address_Provider {
      * @inheritDoc
      */
     public function get_label() {
-        return esc_html__( 'ViaCEP (gratuito)', 'hubgo' );
+        return esc_html__( 'ViaCEP (free)', 'hubgo' );
     }
 
 
@@ -116,13 +116,13 @@ class ViaCep_Provider extends Address_Provider {
         $street = trim( (string) ( $args['street'] ?? '' ) );
 
         if ( 2 !== strlen( $uf ) ) {
-            return new WP_Error( 'hubgo_address_invalid_uf', esc_html__( 'Selecione o estado.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_address_invalid_uf', esc_html__( 'Select the state.', 'hubgo' ) );
         }
 
         if ( mb_strlen( $city ) < self::MIN_TERM_LENGTH || mb_strlen( $street ) < self::MIN_TERM_LENGTH ) {
             return new WP_Error(
                 'hubgo_address_short_query',
-                esc_html__( 'Informe pelo menos 3 letras da cidade e da rua.', 'hubgo' )
+                esc_html__( 'Enter at least 3 letters of the city and of the street.', 'hubgo' )
             );
         }
 
@@ -172,7 +172,7 @@ class ViaCep_Provider extends Address_Provider {
         $postcode = self::normalize_postcode( (string) ( $args['id'] ?? '' ) );
 
         if ( '' === $postcode ) {
-            return new WP_Error( 'hubgo_address_not_found', esc_html__( 'Não foi possível obter o CEP desse endereço.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_address_not_found', esc_html__( 'Could not resolve the postcode for that address.', 'hubgo' ) );
         }
 
         return $postcode;

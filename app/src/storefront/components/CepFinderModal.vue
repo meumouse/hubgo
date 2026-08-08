@@ -1,6 +1,6 @@
 <script setup>
 /**
- * CepFinderModal.vue — "Não sei meu CEP".
+ * CepFinderModal.vue — "I do not know my postcode".
  *
  * Serves both lookup providers from one component. The server tells us which
  * form to render through `address_lookup.mode`:
@@ -143,7 +143,7 @@ async function runSearch() {
 
         suggestions.value = [];
         searched.value = true;
-        error.value = requestError.message || __( 'Não foi possível buscar endereços.' );
+        error.value = requestError.message || __( 'Could not search addresses.' );
     } finally {
         searching.value = false;
         controller = null;
@@ -157,7 +157,7 @@ async function runSearch() {
  */
 function submitStructured() {
     if ( ! uf.value || city.value.trim().length < 3 || street.value.trim().length < 3 ) {
-        error.value = __( 'Informe pelo menos 3 letras da cidade e da rua.' );
+        error.value = __( 'Enter at least 3 letters of the city and of the street.' );
 
         return;
     }
@@ -189,7 +189,7 @@ async function pick( suggestion ) {
         const postcode = String( payload.postcode || '' );
 
         if ( postcode.length !== 8 ) {
-            error.value = __( 'Esse endereço não tem um CEP exato. Tente incluir o número e a rua.' );
+            error.value = __( 'That address has no exact postcode. Try including the street and the number.' );
 
             return;
         }
@@ -200,7 +200,7 @@ async function pick( suggestion ) {
         session = newSessionToken();
         emit( 'close' );
     } catch ( requestError ) {
-        error.value = requestError.message || __( 'Não foi possível obter o CEP.' );
+        error.value = requestError.message || __( 'Could not resolve the postcode.' );
     } finally {
         resolvingId.value = '';
     }
@@ -211,10 +211,10 @@ async function pick( suggestion ) {
     <BaseModal
         :open="open"
         :token-source="tokenSource"
-        :title="__( 'Descobrir meu CEP' )"
+        :title="__( 'Find my postcode' )"
         :description="isFreetext
-            ? __( 'Digite seu endereço e selecione a opção correta.' )
-            : __( 'Informe o estado, a cidade e a rua para encontrar o CEP.' )"
+            ? __( 'Type your address and pick the right option.' )
+            : __( 'Enter the state, the city and the street to find the postcode.' )"
         @close="emit( 'close' )"
     >
         <form v-if="isFreetext" @submit.prevent="runSearch">
@@ -222,14 +222,14 @@ async function pick( suggestion ) {
                 v-model="query"
                 type="text"
                 class="hubgo-calc__finder-field"
-                :placeholder="__( 'Rua, número, cidade…' )"
-                :aria-label="__( 'Endereço' )"
+                :placeholder="__( 'Street, number, city…' )"
+                :aria-label="__( 'Address' )"
             >
         </form>
 
         <form v-else class="hubgo-calc__finder-grid" @submit.prevent="submitStructured">
-            <select v-model="uf" class="hubgo-calc__finder-field" :aria-label="__( 'Estado' )">
-                <option value="">{{ __( 'UF' ) }}</option>
+            <select v-model="uf" class="hubgo-calc__finder-field" :aria-label="__( 'State' )">
+                <option value="">{{ __( 'State' ) }}</option>
                 <option v-for="state in lookup.states" :key="state.value" :value="state.value">
                     {{ state.value }}
                 </option>
@@ -239,21 +239,21 @@ async function pick( suggestion ) {
                 v-model="city"
                 type="text"
                 class="hubgo-calc__finder-field"
-                :placeholder="__( 'Cidade' )"
-                :aria-label="__( 'Cidade' )"
+                :placeholder="__( 'City' )"
+                :aria-label="__( 'City' )"
             >
 
             <input
                 v-model="street"
                 type="text"
                 class="hubgo-calc__finder-field hubgo-calc__input--full"
-                :placeholder="__( 'Rua ou avenida' )"
-                :aria-label="__( 'Rua' )"
+                :placeholder="__( 'Street or avenue' )"
+                :aria-label="__( 'Street' )"
             >
 
             <button type="submit" class="hubgo-calc__button hubgo-calc__input--full" :disabled="searching">
                 <span v-if="searching" class="hubgo-calc__spinner" aria-hidden="true" />
-                <span v-else>{{ __( 'Buscar endereço' ) }}</span>
+                <span v-else>{{ __( 'Search address' ) }}</span>
             </button>
         </form>
 
@@ -261,7 +261,7 @@ async function pick( suggestion ) {
 
         <div v-if="searching && isFreetext" class="hubgo-calc__loading" style="margin-top: 10px">
             <span class="hubgo-calc__spinner" aria-hidden="true" />
-            {{ __( 'Buscando endereços…' ) }}
+            {{ __( 'Searching addresses…' ) }}
         </div>
 
         <div v-if="suggestions.length" class="hubgo-calc__suggestions">
@@ -283,7 +283,7 @@ async function pick( suggestion ) {
         </div>
 
         <p v-else-if="searched && ! searching && ! error" class="hubgo-calc__hint">
-            {{ __( 'Nenhum endereço encontrado. Tente ser mais específico.' ) }}
+            {{ __( 'No address found. Try being more specific.' ) }}
         </p>
     </BaseModal>
 </template>

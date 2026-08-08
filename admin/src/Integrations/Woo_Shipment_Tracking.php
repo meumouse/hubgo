@@ -108,7 +108,7 @@ class Woo_Shipment_Tracking extends Integrations_Base {
 
         $integrations[ self::CARD_SLUG ] = array(
             'title'       => esc_html__( 'WooCommerce Shipment Tracking', 'hubgo' ),
-            'description' => esc_html__( 'Exibe os rastreios do Shipment Tracking no HubGo e migra os dados dos pedidos para o rastreio nativo.', 'hubgo' ),
+            'description' => esc_html__( 'Displays Shipment Tracking codes inside HubGo and migrates the order data into native tracking.', 'hubgo' ),
             'icon'        => $this->get_icon_svg(),
             'category'    => 'shipping',
             'setting_key' => self::SETTING_KEY,
@@ -119,13 +119,13 @@ class Woo_Shipment_Tracking extends Integrations_Base {
             'settings'    => array(
                 self::field_toggle(
                     self::SYNC_SETTING_KEY,
-                    esc_html__( 'Exibir rastreios do Shipment Tracking', 'hubgo' ),
-                    esc_html__( 'Mostra os códigos gravados pelo outro plugin nas telas do HubGo, em modo somente leitura, enquanto a migração não é executada.', 'hubgo' )
+                    esc_html__( 'Display Shipment Tracking codes', 'hubgo' ),
+                    esc_html__( 'Shows the codes stored by the other plugin on the HubGo screens, read-only, until the migration is run.', 'hubgo' )
                 ),
             ),
             'modal'       => array(
                 'title'       => esc_html__( 'WooCommerce Shipment Tracking', 'hubgo' ),
-                'description' => esc_html__( 'Traga os códigos de rastreio já cadastrados no Shipment Tracking para o HubGo.', 'hubgo' ),
+                'description' => esc_html__( 'Bring the tracking codes already registered in Shipment Tracking into HubGo.', 'hubgo' ),
                 'size'        => 'medium',
                 'blocks'      => $this->get_modal_blocks(),
             ),
@@ -144,7 +144,7 @@ class Woo_Shipment_Tracking extends Integrations_Base {
     protected function get_modal_blocks() {
         $blocks = array(
             self::modal_notice_block(
-                esc_html__( 'A migração copia os dados: nada é apagado do Shipment Tracking. Depois de migrar e conferir os pedidos, você pode desativar o outro plugin com segurança.', 'hubgo' ),
+                esc_html__( 'The migration copies the data: nothing is deleted from Shipment Tracking. Once you have migrated and checked the orders, you can safely deactivate the other plugin.', 'hubgo' ),
                 'info'
             ),
         );

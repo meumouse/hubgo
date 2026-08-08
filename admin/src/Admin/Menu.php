@@ -75,7 +75,7 @@ class Menu {
         $capability = self::get_capability();
 
         add_menu_page(
-            esc_html__( 'HubGo - Gerenciamento de Frete', 'hubgo' ),
+            esc_html__( 'HubGo - Shipping Management', 'hubgo' ),
             esc_html__( 'HubGo', 'hubgo' ),
             $capability,
             self::PAGE_SLUG,
@@ -88,8 +88,8 @@ class Menu {
         // entry (which would otherwise read "HubGo") without duplicating it.
         add_submenu_page(
             self::PAGE_SLUG,
-            esc_html__( 'HubGo - Configurações', 'hubgo' ),
-            esc_html__( 'Configurações', 'hubgo' ),
+            esc_html__( 'HubGo - Settings', 'hubgo' ),
+            esc_html__( 'Settings', 'hubgo' ),
             $capability,
             self::PAGE_SLUG,
             array( $this, 'render_settings_page' )
@@ -97,8 +97,8 @@ class Menu {
 
         add_submenu_page(
             self::PAGE_SLUG,
-            esc_html__( 'HubGo - Integrações', 'hubgo' ),
-            esc_html__( 'Integrações', 'hubgo' ),
+            esc_html__( 'HubGo - Integrations', 'hubgo' ),
+            esc_html__( 'Integrations', 'hubgo' ),
             $capability,
             self::INTEGRATIONS_PAGE_SLUG,
             array( $this, 'render_integrations_page' )
@@ -106,8 +106,8 @@ class Menu {
 
         add_submenu_page(
             self::PAGE_SLUG,
-            esc_html__( 'HubGo - Licença', 'hubgo' ),
-            esc_html__( 'Licença', 'hubgo' ),
+            esc_html__( 'HubGo - License', 'hubgo' ),
+            esc_html__( 'License', 'hubgo' ),
             $capability,
             self::LICENSE_PAGE_SLUG,
             array( $this, 'render_license_page' )
@@ -198,7 +198,7 @@ class Menu {
      */
     private function render_app( $mount_id, $page_class ) {
         if ( ! current_user_can( self::get_capability() ) ) {
-            wp_die( esc_html__( 'Você não tem permissão para acessar esta página.', 'hubgo' ) );
+            wp_die( esc_html__( 'You do not have permission to access this page.', 'hubgo' ) );
         }
         ?>
         <div class="wrap <?php echo esc_attr( $page_class ); ?> hubgo-app">

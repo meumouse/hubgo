@@ -82,7 +82,7 @@ class Order_Tracking_Meta_Box {
         foreach ( $this->get_order_screen_ids() as $screen_id ) {
             add_meta_box(
                 'hubgo-order-tracking',
-                __( 'Rastreio - HubGo', 'hubgo' ),
+                __( 'Tracking - HubGo', 'hubgo' ),
                 array( $this, 'render_meta_box' ),
                 $screen_id,
                 'side',
@@ -105,7 +105,7 @@ class Order_Tracking_Meta_Box {
         $order_id = $this->get_order_id_from_post_or_order( $post_or_order );
 
         if ( $order_id <= 0 ) {
-            echo '<p>' . esc_html__( 'Pedido não encontrado.', 'hubgo' ) . '</p>';
+            echo '<p>' . esc_html__( 'Order not found.', 'hubgo' ) . '</p>';
 
             return;
         }
@@ -119,14 +119,14 @@ class Order_Tracking_Meta_Box {
 
             echo '</div>';
 
-            echo '<button type="button" class="button button-show-form">' . esc_html__( 'Adicionar código de rastreio', 'hubgo' ) . '</button>';
-            
+            echo '<button type="button" class="button button-show-form">' . esc_html__( 'Add tracking code', 'hubgo' ) . '</button>';
+
             echo '<div id="hubgo-shipment-tracking-form">';
 
             echo '<p class="form-field tracking_provider_field">';
-                echo '<label for="hubgo_tracking_provider">' . esc_html__( 'Transportadora:', 'hubgo' ) . '</label>';
+                echo '<label for="hubgo_tracking_provider">' . esc_html__( 'Carrier:', 'hubgo' ) . '</label>';
                     echo '<select id="hubgo_tracking_provider" name="hubgo_tracking_provider" style="width:100%;">';
-                        echo '<option value="">' . esc_html__( 'Transportadora personalizada', 'hubgo' ) . '</option>';
+                        echo '<option value="">' . esc_html__( 'Custom carrier', 'hubgo' ) . '</option>';
 
                         foreach ( Providers_Registry::get_providers() as $provider_group => $providers ) {
                             echo '<optgroup label="' . esc_attr( Providers_Registry::get_country_label( $provider_group ) ) . '">';
@@ -143,28 +143,28 @@ class Order_Tracking_Meta_Box {
                 echo '</p>';
 
                 echo '<p class="form-field custom_tracking_provider_field">';
-                echo '<label for="hubgo_custom_tracking_provider">' . esc_html__( 'Transportadora:', 'hubgo' ) . '</label>';
-                
+                echo '<label for="hubgo_custom_tracking_provider">' . esc_html__( 'Carrier:', 'hubgo' ) . '</label>';
+
                 echo '<input type="text" id="hubgo_custom_tracking_provider" name="hubgo_custom_tracking_provider" />';
             echo '</p>';
 
             echo '<p class="form-field">';
-                echo '<label for="hubgo_tracking_number">' . esc_html__( 'Código de rastreio:', 'hubgo' ) . '</label>';
+                echo '<label for="hubgo_tracking_number">' . esc_html__( 'Tracking code:', 'hubgo' ) . '</label>';
                 echo '<input type="text" id="hubgo_tracking_number" name="hubgo_tracking_number" />';
             echo '</p>';
 
             echo '<p class="form-field custom_tracking_link_field">';
-                echo '<label for="hubgo_custom_tracking_link">' . esc_html__( 'Link de rastreio:', 'hubgo' ) . '</label>';
+                echo '<label for="hubgo_custom_tracking_link">' . esc_html__( 'Tracking link:', 'hubgo' ) . '</label>';
                 echo '<input type="url" id="hubgo_custom_tracking_link" name="hubgo_custom_tracking_link" placeholder="https://" />';
             echo '</p>';
 
             echo '<p class="form-field">';
-                echo '<label for="hubgo_date_shipped">' . esc_html__( 'Data do envio:', 'hubgo' ) . '</label>';
+                echo '<label for="hubgo_date_shipped">' . esc_html__( 'Shipping date:', 'hubgo' ) . '</label>';
                 echo '<input type="date" id="hubgo_date_shipped" name="hubgo_date_shipped" value="' . esc_attr( gmdate( 'Y-m-d' ) ) . '" />';
             echo '</p>';
 
-            echo '<button type="button" class="button button-primary button-save-form">' . esc_html__( 'Salvar rastreio', 'hubgo' ) . '</button>';
-            echo '<p class="preview_tracking_link">' . esc_html__( 'Pré-visualizar:', 'hubgo' ) . ' <a href="" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Clique aqui para rastrear sua encomenda', 'hubgo' ) . '</a></p>';
+            echo '<button type="button" class="button button-primary button-save-form">' . esc_html__( 'Save tracking', 'hubgo' ) . '</button>';
+            echo '<p class="preview_tracking_link">' . esc_html__( 'Preview:', 'hubgo' ) . ' <a href="" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Click here to track your parcel', 'hubgo' ) . '</a></p>';
 
         echo '</div>';
 
@@ -253,7 +253,7 @@ class Order_Tracking_Meta_Box {
                 <strong><?php echo esc_html( $provider ); ?></strong>
 
                 <?php if ( ! empty( $tracking_link ) ) : ?>
-                    - <a href="<?php echo esc_url( $tracking_link ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Rastrear', 'hubgo' ); ?></a>
+                    - <a href="<?php echo esc_url( $tracking_link ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Track', 'hubgo' ); ?></a>
                 <?php endif; ?>
 
                 <br>
@@ -267,9 +267,9 @@ class Order_Tracking_Meta_Box {
                     <?php // Injected by an integration from another plugin's data: there is
                           // nothing in HubGo's own meta to remove, so offering the action
                           // would only produce a "tracking not found" error. ?>
-                    <span class="tracking-origin"><?php echo esc_html( $item['source_label'] ?? __( 'Somente leitura', 'hubgo' ) ); ?></span>
+                    <span class="tracking-origin"><?php echo esc_html( $item['source_label'] ?? __( 'Read only', 'hubgo' ) ); ?></span>
                 <?php else : ?>
-                    <a href="#" class="delete-tracking" rel="<?php echo esc_attr( $tracking_id ); ?>"><?php esc_html_e( 'Remover', 'hubgo' ); ?></a>
+                    <a href="#" class="delete-tracking" rel="<?php echo esc_attr( $tracking_id ); ?>"><?php esc_html_e( 'Remove', 'hubgo' ); ?></a>
                 <?php endif; ?>
             </p>
         </div>
@@ -287,7 +287,7 @@ class Order_Tracking_Meta_Box {
      * @return array
      */
     public function add_orders_list_column( $columns ) {
-        $columns['hubgo_tracking'] = __( 'Rastreio', 'hubgo' );
+        $columns['hubgo_tracking'] = __( 'Tracking', 'hubgo' );
 
         return $columns;
     }

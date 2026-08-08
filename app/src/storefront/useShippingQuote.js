@@ -138,7 +138,7 @@ export function useShippingQuote( config ) {
         const digits = cepDigits( value );
 
         if ( ! isCompleteCep( digits ) ) {
-            error.value = __( 'Digite um CEP válido' );
+            error.value = __( 'Enter a valid postcode' );
 
             return;
         }
@@ -191,7 +191,7 @@ export function useShippingQuote( config ) {
 
             rates.value = [];
             hasQuoted.value = true;
-            error.value = requestError.message || __( 'Erro ao calcular o frete. Tente novamente.' );
+            error.value = requestError.message || __( 'Could not calculate shipping. Please try again.' );
 
             emitEvent( 'hubgo:shipping_error', { message: error.value } );
         } finally {

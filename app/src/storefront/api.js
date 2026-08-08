@@ -24,7 +24,7 @@ async function request( path, { method = 'GET', body = null, query = null, signa
     const root = getRestUrl();
 
     if ( ! root ) {
-        throw new Error( __( 'Erro ao calcular o frete. Tente novamente.' ) );
+        throw new Error( __( 'Could not calculate shipping. Please try again.' ) );
     }
 
     let url = `${ root }/${ String( path ).replace( /^\//, '' ) }`;
@@ -79,7 +79,7 @@ async function request( path, { method = 'GET', body = null, query = null, signa
     // failures (a bad postcode, an exhausted rate limit). Surfacing that message
     // is the whole reason those cases are not modelled as empty results.
     if ( ! response.ok || ( payload && payload.status === 'error' ) ) {
-        const message = ( payload && payload.message ) ? payload.message : __( 'Erro ao calcular o frete. Tente novamente.' );
+        const message = ( payload && payload.message ) ? payload.message : __( 'Could not calculate shipping. Please try again.' );
         const error = new Error( message );
         error.status = response.status;
         error.payload = payload;

@@ -46,14 +46,14 @@ const statusTone = computed( () => {
 
 const statusLabel = computed( () => {
     if ( isActive.value ) {
-        return __( 'Ativa' );
+        return __( 'Active' );
     }
 
     if ( license.value?.is_expired ) {
-        return __( 'Expirada' );
+        return __( 'Expired' );
     }
 
-    return hasKey.value ? __( 'Inválida' ) : __( 'Não ativada' );
+    return hasKey.value ? __( 'Invalid' ) : __( 'Not activated' );
 } );
 
 const activationsLabel = computed( () => {
@@ -61,29 +61,29 @@ const activationsLabel = computed( () => {
     const used = Number( license.value?.used_activations || 0 );
 
     if ( ! max ) {
-        return used ? String( used ) : __( 'Não informado' );
+        return used ? String( used ) : __( 'Not available' );
     }
 
     return `${ used }/${ max }`;
 } );
 
 const detailRows = computed( () => [
-    { id: 'status', label: __( 'Situação' ), value: statusLabel.value, badge: true },
-    { id: 'plan', label: __( 'Plano' ), value: license.value?.plan_name || __( 'Não informado' ) },
-    { id: 'bundle', label: __( 'Pacote' ), value: license.value?.bundle?.name || __( 'Licença individual' ) },
-    { id: 'key', label: __( 'Chave de licença' ), value: license.value?.masked_key || __( 'Não informado' ) },
-    { id: 'domain', label: __( 'Domínio ativado' ), value: license.value?.domain || __( 'Não informado' ) },
-    { id: 'expires', label: __( 'Expira em' ), value: formatDate( license.value?.expires_at ) },
-    { id: 'support', label: __( 'Suporte até' ), value: formatDate( license.value?.support_expires_at ) },
-    { id: 'activations', label: __( 'Ativações' ), value: activationsLabel.value },
-    { id: 'checked', label: __( 'Última verificação' ), value: formatTimestamp( license.value?.checked_at ) },
+    { id: 'status', label: __( 'Status' ), value: statusLabel.value, badge: true },
+    { id: 'plan', label: __( 'Plan' ), value: license.value?.plan_name || __( 'Not available' ) },
+    { id: 'bundle', label: __( 'Bundle' ), value: license.value?.bundle?.name || __( 'Single license' ) },
+    { id: 'key', label: __( 'License key' ), value: license.value?.masked_key || __( 'Not available' ) },
+    { id: 'domain', label: __( 'Activated domain' ), value: license.value?.domain || __( 'Not available' ) },
+    { id: 'expires', label: __( 'Expires on' ), value: formatDate( license.value?.expires_at ) },
+    { id: 'support', label: __( 'Support until' ), value: formatDate( license.value?.support_expires_at ) },
+    { id: 'activations', label: __( 'Activations' ), value: activationsLabel.value },
+    { id: 'checked', label: __( 'Last check' ), value: formatTimestamp( license.value?.checked_at ) },
 ] );
 
 const licenseField = {
     key: 'license_key',
     type: 'text',
-    label: __( 'Chave de licença' ),
-    placeholder: __( 'Cole aqui a chave recebida na compra' ),
+    label: __( 'License key' ),
+    placeholder: __( 'Paste the key you received with your purchase' ),
 };
 
 /**
@@ -94,7 +94,7 @@ const licenseField = {
  */
 function formatDate( value ) {
     if ( ! value ) {
-        return __( 'Vitalícia' );
+        return __( 'Lifetime' );
     }
 
     const date = new Date( value );
@@ -112,7 +112,7 @@ function formatTimestamp( value ) {
     const seconds = Number( value || 0 );
 
     if ( ! seconds ) {
-        return __( 'Não informado' );
+        return __( 'Not available' );
     }
 
     return new Date( seconds * 1000 ).toLocaleString();
@@ -139,7 +139,7 @@ async function bootstrap() {
 
         applyLicense( data.license );
     } catch ( error ) {
-        loadError.value = error.message || __( 'Não foi possível carregar os dados da licença.' );
+        loadError.value = error.message || __( 'Could not load the license data.' );
     } finally {
         loading.value = false;
     }
@@ -168,10 +168,10 @@ async function runAction( action, endpoint, body, successMessage ) {
         const response = await api.post( endpoint, body );
 
         applyLicense( response.license );
-        toast( response.message || successMessage, 'success', __( 'Licença' ) );
+        toast( response.message || successMessage, 'success', __( 'License' ) );
     } catch ( error ) {
         applyLicense( error.response?.license );
-        toast( error.message || __( 'Não foi possível concluir a operação.' ), 'error', __( 'Erro' ) );
+        toast( error.message || __( 'Could not complete the operation.' ), 'error', __( 'Error' ) );
     } finally {
         busyAction.value = '';
     }
@@ -181,12 +181,12 @@ async function activate() {
     const key = form.license_key.trim();
 
     if ( ! key ) {
-        toast( __( 'Informe a chave de licença.' ), 'warning', __( 'Licença' ) );
+        toast( __( 'Enter the license key.' ), 'warning', __( 'License' ) );
 
         return;
     }
 
-    await runAction( 'activate', 'license/activate', { license_key: key }, __( 'Licença ativada com sucesso!' ) );
+    await runAction( 'activate', 'license/activate', { license_key: key }, __( 'License activated successfully!' ) );
 
     if ( license.value?.is_active ) {
         form.license_key = '';
@@ -194,13 +194,13 @@ async function activate() {
 }
 
 async function sync() {
-    await runAction( 'sync', 'license/sync', {}, __( 'Licença sincronizada!' ) );
+    await runAction( 'sync', 'license/sync', {}, __( 'License synchronized!' ) );
 }
 
 async function deactivate() {
     confirmOpen.value = false;
 
-    await runAction( 'deactivate', 'license/deactivate', {}, __( 'Licença desativada neste site.' ) );
+    await runAction( 'deactivate', 'license/deactivate', {}, __( 'License deactivated on this site.' ) );
 }
 
 onMounted( bootstrap );
@@ -211,11 +211,11 @@ onMounted( bootstrap );
         <PageShellSkeleton v-if="loading" />
 
         <div v-else class="w-full">
-            <PageHeader :title="__( 'Licença' )">
+            <PageHeader :title="__( 'License' )">
                 <template #description>
-                    {{ __( 'Ative sua licença para receber atualizações automáticas e liberar os recursos Pro. Dúvidas? Acesse a nossa ' ) }}
+                    {{ __( 'Activate your license to receive automatic updates and unlock the Pro features. Questions? Visit our' ) }}
                     <a class="font-semibold text-primary-700 underline underline-offset-4" :href="docsUrl" target="_blank" rel="noreferrer">
-                        {{ __( 'Central de Ajuda' ) }}
+                        {{ __( 'Help Center' ) }}
                     </a>
                 </template>
 
@@ -233,15 +233,15 @@ onMounted( bootstrap );
                     v-if="! license.configured"
                     class="mt-8 rounded-[8px] border border-amber-200 bg-amber-50 px-5 py-4 text-[13px] leading-5 text-amber-800"
                 >
-                    {{ __( 'O serviço de licenciamento não está configurado nesta instalação. Entre em contato com o suporte.' ) }}
+                    {{ __( 'The licensing service is not configured on this installation. Please contact support.' ) }}
                 </div>
 
                 <div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
                     <!-- Details -->
                     <section class="rounded-[8px] bg-white p-6 shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100 lg:p-8">
-                        <h2 class="m-0 text-[17px] font-semibold text-slate-800">{{ __( 'Detalhes da licença' ) }}</h2>
+                        <h2 class="m-0 text-[17px] font-semibold text-slate-800">{{ __( 'License details' ) }}</h2>
                         <p class="mb-0 mt-1 text-[13px] leading-5 text-slate-500">
-                            {{ __( 'Informações registradas na última verificação com o servidor.' ) }}
+                            {{ __( 'Information recorded on the last check with the server.' ) }}
                         </p>
 
                         <dl class="mt-6 divide-y divide-slate-100">
@@ -266,12 +266,12 @@ onMounted( bootstrap );
                     <section class="flex h-fit flex-col gap-4 rounded-[8px] bg-white p-6 shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100 lg:p-8">
                         <div>
                             <h2 class="m-0 text-[17px] font-semibold text-slate-800">
-                                {{ isActive ? __( 'Gerenciar licença' ) : __( 'Ativar licença' ) }}
+                                {{ isActive ? __( 'Manage license' ) : __( 'Activate license' ) }}
                             </h2>
                             <p class="mb-0 mt-1 text-[13px] leading-5 text-slate-500">
                                 {{ isActive
-                                    ? __( 'Sincronize os dados ou libere esta ativação para usar a chave em outro site.' )
-                                    : __( 'Informe a chave recebida na compra para liberar as atualizações e os recursos Pro.' ) }}
+                                    ? __( 'Synchronize the data or release this activation to use the key on another site.' )
+                                    : __( 'Enter the key you received with your purchase to unlock the updates and the Pro features.' ) }}
                             </p>
                         </div>
 
@@ -290,7 +290,7 @@ onMounted( bootstrap );
                             </div>
 
                             <BaseButton
-                                :title="__( 'Ativar licença' )"
+                                :title="__( 'Activate license' )"
                                 type="submit"
                                 color="primary"
                                 size="lg"
@@ -302,14 +302,14 @@ onMounted( bootstrap );
 
                         <div v-else class="flex flex-wrap gap-3">
                             <BaseButton
-                                :title="__( 'Sincronizar' )"
+                                :title="__( 'Synchronize' )"
                                 color="outline"
                                 :loading="busyAction === 'sync'"
                                 :disabled="Boolean( busyAction )"
                                 @click="sync"
                             />
                             <BaseButton
-                                :title="__( 'Desativar neste site' )"
+                                :title="__( 'Deactivate on this site' )"
                                 color="danger"
                                 :loading="busyAction === 'deactivate'"
                                 :disabled="Boolean( busyAction )"
@@ -319,10 +319,10 @@ onMounted( bootstrap );
 
                         <div class="mt-2 flex flex-col gap-2 border-t border-slate-100 pt-4 text-[13px]">
                             <a v-if="renewUrl" class="font-semibold text-primary-700 no-underline hover:underline" :href="renewUrl" target="_blank" rel="noreferrer">
-                                {{ __( 'Renovar assinatura' ) }}
+                                {{ __( 'Renew subscription' ) }}
                             </a>
                             <a class="font-semibold text-primary-700 no-underline hover:underline" :href="purchaseUrl" target="_blank" rel="noreferrer">
-                                {{ __( 'Comprar uma licença' ) }}
+                                {{ __( 'Buy a license' ) }}
                             </a>
                         </div>
                     </section>
@@ -332,9 +332,9 @@ onMounted( bootstrap );
 
         <ConfirmDialog
             :open="confirmOpen"
-            :title="__( 'Desativar a licença neste site?' )"
-            :description="__( 'O site deixará de receber atualizações e os recursos Pro serão bloqueados até uma nova ativação.' )"
-            :confirm-label="__( 'Sim, desativar' )"
+            :title="__( 'Deactivate the license on this site?' )"
+            :description="__( 'The site will stop receiving updates and the Pro features will be locked until a new activation.' )"
+            :confirm-label="__( 'Yes, deactivate' )"
             :loading="busyAction === 'deactivate'"
             @confirm="deactivate"
             @cancel="confirmOpen = false"

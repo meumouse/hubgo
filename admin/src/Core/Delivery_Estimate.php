@@ -336,12 +336,12 @@ class Delivery_Estimate {
      */
     private static function format_label( $days ) {
         if ( $days <= 0 ) {
-            return esc_html__( 'Entrega hoje', 'hubgo' );
+            return esc_html__( 'Delivered today', 'hubgo' );
         }
 
         return sprintf(
             /* translators: %s: number of business days. */
-            _n( '%s dia útil', '%s dias úteis', $days, 'hubgo' ),
+            _n( '%s business day', '%s business days', $days, 'hubgo' ),
             number_format_i18n( $days )
         );
     }
@@ -357,7 +357,7 @@ class Delivery_Estimate {
     private static function format_date_label( DateTimeImmutable $date ) {
         return sprintf(
             /* translators: %s: localized day and month, e.g. "14 de agosto". */
-            esc_html__( 'dia %s', 'hubgo' ),
+            esc_html__( 'day %s', 'hubgo' ),
             wp_date( 'j \d\e F', $date->getTimestamp() )
         );
     }
@@ -373,7 +373,7 @@ class Delivery_Estimate {
     private static function format_headline( DateTimeImmutable $date ) {
         return sprintf(
             /* translators: %s: localized delivery date, e.g. "dia 14 de agosto". */
-            esc_html__( 'Receba até %s', 'hubgo' ),
+            esc_html__( 'Get it by %s', 'hubgo' ),
             self::format_date_label( $date )
         );
     }

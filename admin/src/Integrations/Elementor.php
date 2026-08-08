@@ -109,7 +109,7 @@ class Elementor extends Integrations_Base {
     public function add_integration_item( $integrations ) {
         $integrations[ self::CARD_SLUG ] = array(
             'title'            => esc_html__( 'Elementor', 'hubgo' ),
-            'description'      => esc_html__( 'Adiciona a calculadora de frete como widget do Elementor, com controles próprios de cor, espaçamento e tipografia.', 'hubgo' ),
+            'description'      => esc_html__( 'Adds the shipping calculator as an Elementor widget, with its own color, spacing and typography controls.', 'hubgo' ),
             'icon'             => $this->get_icon_svg(),
             'category'         => 'ecommerce',
             'setting_key'      => self::SETTING_KEY,
@@ -120,18 +120,18 @@ class Elementor extends Integrations_Base {
             'install'          => array(
                 'plugin_slug'  => self::PLUGIN_FILE,
                 'download_url' => self::PACKAGE_URL,
-                'label'        => esc_html__( 'Instalar Elementor', 'hubgo' ),
+                'label'        => esc_html__( 'Install Elementor', 'hubgo' ),
             ),
             'modal'            => array(
                 'title'       => esc_html__( 'Elementor', 'hubgo' ),
-                'description' => esc_html__( 'Como usar a calculadora de frete dentro do Elementor.', 'hubgo' ),
+                'description' => esc_html__( 'How to use the shipping calculator inside Elementor.', 'hubgo' ),
                 'size'        => 'medium',
                 'blocks'      => array(
                     self::modal_html_block(
-                        '<p>' . esc_html__( 'Com a integração ativa, arraste o widget "Calculadora de frete" (categoria HubGo) para qualquer página. Os estilos definidos no widget valem apenas para aquela instância e têm prioridade sobre a aba Aparência.', 'hubgo' ) . '</p>'
+                        '<p>' . esc_html__( 'With the integration enabled, drag the "Shipping calculator" widget (HubGo category) onto any page. Styles set on the widget apply to that instance only and take precedence over the Appearance tab.', 'hubgo' ) . '</p>'
                     ),
                     self::modal_notice_block(
-                        esc_html__( 'O widget exige licença ativa. Sem licença ele deixa de ser registrado e some das páginas que já o utilizam — a calculadora exibida automaticamente na página do produto continua funcionando.', 'hubgo' ),
+                        esc_html__( 'The widget requires an active license. Without one it stops being registered and disappears from the pages already using it — the calculator displayed automatically on the product page keeps working.', 'hubgo' ),
                         'warning'
                     ),
                 ),
@@ -191,9 +191,9 @@ class Elementor extends Integrations_Base {
         printf(
             '<div class="notice notice-warning"><p><strong>%1$s</strong> %2$s <a href="%3$s">%4$s</a></p></div>',
             esc_html__( 'HubGo', 'hubgo' ),
-            esc_html__( 'O widget de calculadora de frete do Elementor exige uma licença ativa e não está disponível. Páginas que já usam o widget deixam de exibi-lo até a licença ser ativada.', 'hubgo' ),
+            esc_html__( 'The Elementor shipping calculator widget requires an active license and is unavailable. Pages already using the widget stop displaying it until the license is activated.', 'hubgo' ),
             esc_url( Menu::get_page_url( Menu::LICENSE_PAGE_SLUG ) ),
-            esc_html__( 'Ativar licença', 'hubgo' )
+            esc_html__( 'Activate license', 'hubgo' )
         );
     }
 

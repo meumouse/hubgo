@@ -58,10 +58,10 @@ final class Plugin {
     private $instances = array();
 
     /**
-     * Collected dependency error messages.
+     * Collected dependency error codes.
      *
      * @since 3.0.0
-     * @var array
+     * @var array<int,string>
      */
     private $dependency_errors = array();
 
@@ -105,10 +105,15 @@ final class Plugin {
         // when WooCommerce is missing.
         License::boot();
 
-        // Load text domain.
-        add_action( 'init', array( $this, 'load_textdomain' ) );
+        // Load the text domain at the very start of `init`, before any component
+        // boots. Nothing in the plugin may call a translation function earlier:
+        // since WordPress 6.7 that triggers the just-in-time loader and emits
+        // "Translation loading for the hubgo domain was triggered too early".
+        add_action( 'init', array( $this, 'load_textdomain' ), 0 );
 
-        // Check dependencies early.
+        // Check dependencies early. The check itself is translation-free — it
+        // yields error codes that are turned into copy at render time, which is
+        // an admin_notices callback and therefore safely past `init`.
         add_action( 'plugins_loaded', array( $this, 'check_dependencies' ), 5 );
 
         // Render dependency notices once (deduplicated).
@@ -123,8 +128,12 @@ final class Plugin {
         // Register all class hooks for lazy instantiation.
         $this->register_class_hooks();
 
-        // Initialize tracking management components.
-        $this->init_tracking();
+        // Tracking components read settings in their constructors, and the
+        // storefront defaults are translatable, so they cannot be built while
+        // plugin files are still loading — boot them right after the text
+        // domain. Every hook they register (add_meta_boxes, the order save
+        // hooks, woocommerce_email_classes) fires well after `init`.
+        add_action( 'init', array( $this, 'init_tracking' ), 5 );
 
         // Hook after plugin init.
         do_action('Hubgo/After_Init');
@@ -227,10 +236,14 @@ final class Plugin {
             // are assembled. Joinotify's developer guide asks third parties to
             // register on plugins_loaded/init; booting on wp_loaded left the
             // registration racing the catalog that reads it.
-            'plugins_loaded' => array(
-                'MeuMouse\Hubgo\Integrations\Integration_Registry',
-            ),
+            //
+            // `init` (not plugins_loaded) because the registration payloads are
+            // translated: on plugins_loaded the text domain is not loaded yet and
+            // WordPress 6.7+ warns about a just-in-time translation. The catalogs
+            // are only *read* when an admin screen or REST route renders, so the
+            // early priority below still lands comfortably ahead of every reader.
             'init' => array(
+                'MeuMouse\Hubgo\Integrations\Integration_Registry',
                 'MeuMouse\Hubgo\Core\Assets',
                 'MeuMouse\Hubgo\Admin\Menu',
                 'MeuMouse\Hubgo\Core\Order_Status',
@@ -258,20 +271,24 @@ final class Plugin {
      */
     private function get_hook_priorities() {
         return array(
-            // Run after the dependency check registered at priority 5, while
-            // still leaving room for host plugins to assemble the catalogs the
-            // integrations register into.
-            'plugins_loaded' => 15,
+            // Right after the text domain (priority 0) and ahead of the default
+            // priority, so the integration catalogs are populated before any
+            // host plugin reads them.
+            'init' => 5,
         );
     }
 
-/**
+    /**
      * Initialize tracking management components.
-     * 
+     *
+     * Wired to `init` (priority 5) rather than called inline: the constructors
+     * read settings, whose storefront defaults are translatable.
+     *
      * @since 2.1.0
+     * @version 3.0.0
      * @return void
      */
-    protected function init_tracking() {
+    public function init_tracking() {
         $tracking = new Tracking_Manager();
 
         new Order_Tracking_Meta_Box( $tracking );
@@ -288,9 +305,15 @@ final class Plugin {
     /**
      * Check plugin dependencies.
      *
-     * Collects any dependency error messages (without rendering) and returns
+     * Collects the failing dependency *codes* (without rendering) and returns
      * whether all dependencies are met. Rendering happens once via
      * {@see Plugin::render_dependency_notices()} to avoid duplicated notices.
+     *
+     * This runs on `plugins_loaded` and again from `safe_instance_class()`, so
+     * it must never call a translation function: the text domain only loads on
+     * `init`, and translating here makes WordPress 6.7+ report that "Translation
+     * loading for the hubgo domain was triggered too early". The copy lives in
+     * {@see Plugin::get_dependency_message()} instead.
      *
      * @since 2.0.0
      * @version 3.0.0
@@ -301,15 +324,15 @@ final class Plugin {
 
         // Check PHP version.
         if ( version_compare( phpversion(), '7.4', '<' ) ) {
-            $errors['php'] = esc_html__( 'requer PHP 7.4 ou superior.', 'hubgo' );
+            $errors[] = 'php';
         }
 
         // Check if WooCommerce is active.
         if ( ! class_exists( 'WooCommerce' ) ) {
-            $errors['woocommerce'] = esc_html__( 'requer que o WooCommerce esteja instalado e ativado.', 'hubgo' );
+            $errors[] = 'woocommerce';
         } elseif ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '6.0', '<' ) ) {
             // Check WC version (only when WooCommerce is active).
-            $errors['wc_version'] = esc_html__( 'requer WooCommerce 6.0 ou superior.', 'hubgo' );
+            $errors[] = 'wc_version';
         }
 
         $this->dependency_errors = $errors;
@@ -319,22 +342,43 @@ final class Plugin {
 
 
     /**
+     * Human-readable copy for a dependency error code.
+     *
+     * Only ever called from `admin_notices`, which is past `init`.
+     *
+     * @since 3.0.0
+     * @param string $code Dependency error code.
+     * @return string
+     */
+    private function get_dependency_message( $code ) {
+        $messages = array(
+            'php'         => esc_html__( 'requires PHP 7.4 or higher.', 'hubgo' ),
+            'woocommerce' => esc_html__( 'requires WooCommerce to be installed and active.', 'hubgo' ),
+            'wc_version'  => esc_html__( 'requires WooCommerce 6.0 or higher.', 'hubgo' ),
+        );
+
+        return $messages[ $code ] ?? '';
+    }
+
+
+    /**
      * Render dependency error notices once (deduplicated).
      *
      * @since 3.0.0
+     * @version 3.0.0
      * @return void
      */
     public function render_dependency_notices() {
         // Ensure errors are up to date at render time.
         $this->check_dependencies();
 
-        foreach ( $this->dependency_errors as $type => $message ) {
-            $action = ( 'woocommerce' === $type ) ? $this->get_woocommerce_action_button() : '';
+        foreach ( $this->dependency_errors as $code ) {
+            $action = ( 'woocommerce' === $code ) ? $this->get_woocommerce_action_button() : '';
 
             printf(
                 '<div class="notice notice-error"><p><strong>%1$s</strong> %2$s%3$s</p></div>',
                 esc_html__( 'HubGo', 'hubgo' ),
-                esc_html( $message ),
+                esc_html( $this->get_dependency_message( $code ) ),
                 $action
             );
         }
@@ -360,7 +404,7 @@ final class Plugin {
                 return '';
             }
 
-            $label = esc_html__( 'Ativar WooCommerce', 'hubgo' );
+            $label = esc_html__( 'Activate WooCommerce', 'hubgo' );
             $url = wp_nonce_url(
                 self_admin_url( 'plugins.php?action=activate&plugin=' . $plugin_file ),
                 'activate-plugin_' . $plugin_file
@@ -370,7 +414,7 @@ final class Plugin {
                 return '';
             }
 
-            $label = esc_html__( 'Instalar WooCommerce', 'hubgo' );
+            $label = esc_html__( 'Install WooCommerce', 'hubgo' );
             $url = wp_nonce_url(
                 self_admin_url( 'update.php?action=install-plugin&plugin=woocommerce' ),
                 'install-plugin_woocommerce'
@@ -527,10 +571,10 @@ final class Plugin {
     public function plugin_action_links( $links ) {
         $custom_links = array(
             '<a href="' . esc_url( admin_url( 'admin.php?page=hubgo-settings' ) ) . '">' . 
-                esc_html__( 'Configurar', 'hubgo' ) . 
+                esc_html__( 'Settings', 'hubgo' ) .
             '</a>',
-            '<a href="https://ajuda.meumouse.com/docs/hubgo/overview" target="_blank" rel="noopener noreferrer">' . 
-                esc_html__( 'Central de ajuda', 'hubgo' ) . 
+            '<a href="https://ajuda.meumouse.com/docs/hubgo/overview" target="_blank" rel="noopener noreferrer">' .
+                esc_html__( 'Help center', 'hubgo' ) .
             '</a>',
         );
 
@@ -545,7 +589,7 @@ final class Plugin {
      * @return void
      */
     public function __clone() {
-        _doing_it_wrong( __FUNCTION__, esc_html__( 'Trapaceando?', 'hubgo' ), '2.0.0' );
+        _doing_it_wrong( __FUNCTION__, esc_html__( 'Cheating, huh?', 'hubgo' ), '2.0.0' );
     }
 
 
@@ -556,6 +600,6 @@ final class Plugin {
      * @return void
      */
     public function __wakeup() {
-        _doing_it_wrong( __FUNCTION__, esc_html__( 'Trapaceando?', 'hubgo' ), '2.0.0' );
+        _doing_it_wrong( __FUNCTION__, esc_html__( 'Cheating, huh?', 'hubgo' ), '2.0.0' );
     }
 }

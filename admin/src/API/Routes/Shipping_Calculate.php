@@ -72,7 +72,7 @@ class Shipping_Calculate extends Abstract_Route {
         // "no delivery available" for a typo.
         if ( 'invalid_postcode' === $error ) {
             return $this->error_response(
-                __( 'CEP inválido. Verifique o número informado e tente novamente.', 'hubgo' ),
+                __( 'Invalid postcode. Check the number you entered and try again.', 'hubgo' ),
                 400
             );
         }

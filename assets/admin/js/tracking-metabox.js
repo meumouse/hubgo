@@ -57,7 +57,7 @@
         var date = item.date_label || '';
 
         var linkHtml = link
-            ? ' - <a href="' + escapeHtml( link ) + '" target="_blank" rel="noopener noreferrer">Rastrear</a>'
+            ? ' - <a href="' + escapeHtml( link ) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml( i18n.track || 'Track' ) + '</a>'
             : '';
 
         return '' +
@@ -65,7 +65,7 @@
                 '<p class="tracking-content"><strong>' + escapeHtml( provider ) + '</strong>' + linkHtml +
                     '<br><em>' + escapeHtml( number ) + '</em></p>' +
                 '<p class="meta">' + escapeHtml( date ) +
-                    ' <a href="#" class="delete-tracking" rel="' + escapeHtml( id ) + '">Remover</a></p>' +
+                    ' <a href="#" class="delete-tracking" rel="' + escapeHtml( id ) + '">' + escapeHtml( i18n.remove || 'Remove' ) + '</a></p>' +
             '</div>';
     }
 
@@ -115,7 +115,7 @@
                 resetForm();
             } )
             .catch( function() {
-                window.alert( i18n.save_error || 'Não foi possível salvar o rastreio.' );
+                window.alert( i18n.save_error || 'Could not save the tracking code.' );
             } )
             .finally( function() {
                 if ( button ) button.disabled = false;
@@ -123,7 +123,7 @@
     }
 
     function deleteItem( trackingId ) {
-        if ( ! window.confirm( i18n.confirm_delete || 'Remover este rastreio?' ) ) {
+        if ( ! window.confirm( i18n.confirm_delete || 'Remove this tracking code?' ) ) {
             return;
         }
 
@@ -134,7 +134,7 @@
                 renderItems( data && data.items ? data.items : [] );
             } )
             .catch( function() {
-                window.alert( i18n.delete_error || 'Não foi possível remover o rastreio.' );
+                window.alert( i18n.delete_error || 'Could not remove the tracking code.' );
             } );
     }
 

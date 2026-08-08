@@ -32,7 +32,7 @@ class Tracking_Get extends Abstract_Route {
         $order_id = absint( $request->get_param( 'order_id' ) );
 
         if ( ! $order_id ) {
-            return $this->error_response( __( 'Pedido inválido.', 'hubgo' ), 400 );
+            return $this->error_response( __( 'Invalid order.', 'hubgo' ), 400 );
         }
 
         $manager = new Tracking_Manager();

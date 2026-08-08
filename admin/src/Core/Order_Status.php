@@ -80,14 +80,14 @@ class Order_Status {
      */
     public function register_status() {
         register_post_status( self::STATUS, array(
-            'label'                     => __( 'Pedido enviado', 'hubgo' ),
+            'label'                     => __( 'Order shipped', 'hubgo' ),
             'public'                    => true,
             'exclude_from_search'       => false,
             'show_in_admin_status_list' => true,
             'show_in_admin_all_list'    => true,
             'label_count'               => _n_noop(
-                'Pedido enviado (%s)',
-                'Pedidos enviados (%s)',
+                'Order shipped (%s)',
+                'Orders shipped (%s)',
                 'hubgo'
             ),
         ) );
@@ -104,14 +104,14 @@ class Order_Status {
      */
     public function register_hpos_status( $statuses ) {
         $statuses[ self::STATUS ] = array(
-            'label'                     => __( 'Pedido enviado', 'hubgo' ),
+            'label'                     => __( 'Order shipped', 'hubgo' ),
             'public'                    => true,
             'exclude_from_search'       => false,
             'show_in_admin_status_list' => true,
             'show_in_admin_all_list'    => true,
             'label_count'               => _n_noop(
-                'Pedido enviado (%s)',
-                'Pedidos enviados (%s)',
+                'Order shipped (%s)',
+                'Orders shipped (%s)',
                 'hubgo'
             ),
         );
@@ -136,13 +136,13 @@ class Order_Status {
             $new_statuses[ $key ] = $label;
 
             if ( 'wc-processing' === $key ) {
-                $new_statuses[ self::STATUS ] = __( 'Pedido enviado', 'hubgo' );
+                $new_statuses[ self::STATUS ] = __( 'Order shipped', 'hubgo' );
                 $inserted = true;
             }
         }
 
         if ( ! $inserted ) {
-            $new_statuses[ self::STATUS ] = __( 'Pedido enviado', 'hubgo' );
+            $new_statuses[ self::STATUS ] = __( 'Order shipped', 'hubgo' );
         }
 
         return $new_statuses;
@@ -289,12 +289,12 @@ class Order_Status {
             $new_actions[ $action_key ] = $action_label;
 
             if ( 'mark_processing' === $action_key ) {
-                $new_actions['mark_shipped-order'] = __( 'Mudar status para Pedido enviado', 'hubgo' );
+                $new_actions['mark_shipped-order'] = __( 'Change status to Order shipped', 'hubgo' );
             }
         }
 
         if ( ! isset( $new_actions['mark_shipped-order'] ) ) {
-            $new_actions['mark_shipped-order'] = __( 'Mudar status para Pedido enviado', 'hubgo' );
+            $new_actions['mark_shipped-order'] = __( 'Change status to Order shipped', 'hubgo' );
         }
 
         return $new_actions;
@@ -324,7 +324,7 @@ class Order_Status {
                 continue;
             }
 
-            $order->update_status( 'shipped-order', __( 'Status alterado em massa para Pedido enviado.', 'hubgo' ), true );
+            $order->update_status( 'shipped-order', __( 'Status changed in bulk to Order shipped.', 'hubgo' ), true );
             $updated++;
         }
 
@@ -354,7 +354,7 @@ class Order_Status {
                 <?php
                 echo esc_html( sprintf(
                     /* translators: %s: number of orders updated. */
-                    _n( '%s pedido alterado para "Pedido enviado".', '%s pedidos alterados para "Pedido enviado".', $count, 'hubgo' ),
+                    _n( '%s order changed to "Order shipped".', '%s orders changed to "Order shipped".', $count, 'hubgo' ),
                     number_format_i18n( $count )
                 ) );
                 ?>

@@ -48,7 +48,7 @@ export function isCompleteCep( value ) {
  * Replace the first `%s` in a template.
  *
  * The free-shipping badge is authored by the store owner as
- * "Frete grátis acima de %s", so the placeholder has to survive translation and
+ * "Free shipping over %s", so the placeholder has to survive translation and
  * be filled at render time.
  *
  * @param {string} template Template string.

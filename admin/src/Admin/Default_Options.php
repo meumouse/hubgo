@@ -36,31 +36,35 @@ class Default_Options {
             'primary_main_color'                   => '#008aff',
             'hook_display_shipping_calculator'     => 'after_cart',
             'shipping_methods_display'             => 'table',
-            'text_info_before_input_shipping_calc' => 'Consultar prazo e valor da entrega',
-            'text_button_shipping_calc'            => 'Calcular',
-            'text_header_ship'                     => 'Entrega',
-            'text_header_value'                    => 'Valor',
-            'note_text_bottom_shipping_calc'       => '*Este resultado é apenas uma estimativa para este produto. O valor final considerado, deverá ser o total do carrinho.',
-            'text_placeholder_input_shipping_calc' => 'Informe seu CEP',
+            // Storefront copy. Wrapped in __() so a store that never edits these
+            // fields still reads them in the site language; the moment the
+            // merchant saves the settings screen the literal value is persisted
+            // and the translation stops applying, which is the expected trade.
+            'text_info_before_input_shipping_calc' => __( 'Check the delivery time and price', 'hubgo' ),
+            'text_button_shipping_calc'            => __( 'Calculate', 'hubgo' ),
+            'text_header_ship'                     => __( 'Delivery', 'hubgo' ),
+            'text_header_value'                    => __( 'Price', 'hubgo' ),
+            'note_text_bottom_shipping_calc'       => __( '*This result is only an estimate for this product. The final amount is the one calculated for the whole cart.', 'hubgo' ),
+            'text_placeholder_input_shipping_calc' => __( 'Enter your postcode', 'hubgo' ),
 
             // Storefront calculator (3.0.0). Empty strings hide the element they
             // belong to, so a store that wants a leaner card just clears them.
-            'text_calculator_title'                => 'Calcular frete e prazo',
-            'text_free_shipping_badge'             => 'Frete grátis acima de %s',
-            'text_free_shipping_active'            => 'Frete grátis neste produto',
-            'text_more_options'                    => 'Mais detalhes e formas de entrega',
-            'text_cep_finder_link'                 => 'Não sei meu CEP',
-            'text_preference_hint'                 => 'Será pré-selecionada no checkout',
-            'text_preference_saved'                => 'Opção salva como sua preferência',
-            'text_clear_preference'                => 'Remover preferência',
+            'text_calculator_title'                => __( 'Calculate shipping and delivery time', 'hubgo' ),
+            'text_free_shipping_badge'             => __( 'Free shipping over %s', 'hubgo' ),
+            'text_free_shipping_active'            => __( 'Free shipping on this product', 'hubgo' ),
+            'text_more_options'                    => __( 'More details and delivery methods', 'hubgo' ),
+            'text_cep_finder_link'                 => __( 'I do not know my postcode', 'hubgo' ),
+            'text_preference_hint'                 => __( 'It will be pre-selected at the checkout', 'hubgo' ),
+            'text_preference_saved'                => __( 'Option saved as your preference', 'hubgo' ),
+            'text_clear_preference'                => __( 'Clear preference', 'hubgo' ),
 
             // Delivery forecast and free-shipping badge. An empty threshold
             // means "read it from the shipping zone" — see Free_Shipping_Context.
             'shipping_handling_days'               => '0',
             'free_shipping_threshold'              => '',
 
-            // Address lookup ("Não sei meu CEP"). ViaCEP needs no credential, so
-            // the feature works on a fresh install without any setup.
+            // Address lookup ("I do not know my postcode"). ViaCEP needs no
+            // credential, so the feature works on a fresh install without setup.
             'address_lookup_provider'              => 'viacep',
             'google_places_api_key'                => '',
 
@@ -101,7 +105,7 @@ class Default_Options {
             'calc_modal_overlay'                   => '',
             'calc_modal_blur'                      => '',
 
-            // Maintenance ("Sobre" tab). enable_auto_updates is read by
+            // Maintenance ("About" tab). enable_auto_updates is read by
             // Core\License::enable_auto_update() and had no default before 3.0.0.
             'enable_auto_updates'                  => 'no',
             'enable_update_notice'                 => 'yes',

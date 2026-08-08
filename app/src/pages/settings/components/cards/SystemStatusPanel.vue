@@ -1,6 +1,6 @@
 <script setup>
 /**
- * SystemStatusPanel.vue — environment snapshot rendered by the "Sobre" tab.
+ * SystemStatusPanel.vue — environment snapshot rendered by the "About" tab.
  *
  * Purely presentational: every row (label, value and tone) is computed by
  * MeuMouse\Hubgo\Admin\System_Status and shipped in the settings bootstrap.
@@ -32,7 +32,7 @@ defineProps({
         </dl>
 
         <p v-else class="m-0 text-[13px] text-slate-500">
-            {{ __( 'Não foi possível ler as informações do ambiente.' ) }}
+            {{ __( 'Could not read the environment information.' ) }}
         </p>
     </div>
 </template>

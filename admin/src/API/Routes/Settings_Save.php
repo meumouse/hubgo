@@ -31,7 +31,7 @@ class Settings_Save extends Abstract_Route {
         $saved = Repository::save_settings( $settings );
 
         return $this->success_response( array(
-            'message'  => __( 'Configurações salvas com sucesso!', 'hubgo' ),
+            'message'  => __( 'Settings saved successfully!', 'hubgo' ),
             'settings' => $saved,
         ) );
     }

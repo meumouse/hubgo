@@ -8,7 +8,7 @@
  *
  * A card either declares `fields` — rendered by the field registry — or a
  * `component` name, resolved here against the page-local component map. That is
- * what lets the "Sobre" tab mix plain settings with the system status panel and
+ * what lets the "About" tab mix plain settings with the system status panel and
  * the danger zone without breaking the schema-driven contract.
  *
  * @since 3.0.0
@@ -136,7 +136,7 @@ async function bootstrap() {
             version.value = data.version;
         }
     } catch ( error ) {
-        loadError.value = error.message || __( 'Não foi possível carregar as configurações.' );
+        loadError.value = error.message || __( 'Could not load the settings.' );
     } finally {
         loading.value = false;
     }
@@ -153,9 +153,9 @@ async function save() {
         const response = await api.post( 'settings', { settings: { ...settings } } );
 
         applySettings( response.settings || settings );
-        toast( response.message || __( 'Configurações salvas com sucesso!' ), 'success', __( 'Salvo' ) );
+        toast( response.message || __( 'Settings saved successfully!' ), 'success', __( 'Saved' ) );
     } catch ( error ) {
-        toast( error.message || __( 'Erro ao salvar as configurações.' ), 'error', __( 'Erro' ) );
+        toast( error.message || __( 'Error saving the settings.' ), 'error', __( 'Error' ) );
     } finally {
         saving.value = false;
     }
@@ -177,9 +177,9 @@ async function resetSettings() {
         const response = await api.post( 'settings/reset', {} );
 
         applySettings( response.settings || {} );
-        toast( response.message || __( 'Configurações restauradas.' ), 'success', __( 'Restaurado' ) );
+        toast( response.message || __( 'Settings restored.' ), 'success', __( 'Restored' ) );
     } catch ( error ) {
-        toast( error.message || __( 'Não foi possível restaurar as configurações.' ), 'error', __( 'Erro' ) );
+        toast( error.message || __( 'Could not restore the settings.' ), 'error', __( 'Error' ) );
     } finally {
         resetting.value = false;
     }
@@ -193,11 +193,11 @@ onMounted( bootstrap );
         <PageShellSkeleton v-if="loading" />
 
         <div v-else class="w-full">
-            <PageHeader :title="__( 'Configurações' )">
+            <PageHeader :title="__( 'Settings' )">
                 <template #description>
-                    {{ __( 'Configure a calculadora de frete, o rastreio de pedidos e a aparência do HubGo. Se precisar de ajuda, acesse a nossa ' ) }}
+                    {{ __( 'Set up the shipping calculator, the order tracking and the HubGo appearance. If you need help, visit our' ) }}
                     <a class="font-semibold text-primary-700 underline underline-offset-4" :href="DOCS_URL" target="_blank" rel="noreferrer">
-                        {{ __( 'Central de Ajuda' ) }}
+                        {{ __( 'Help Center' ) }}
                     </a>
                 </template>
 
@@ -206,7 +206,7 @@ onMounted( bootstrap );
                         v-if="version"
                         class="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-800"
                     >
-                        {{ __( 'Versão' ) }} {{ version }}
+                        {{ __( 'Version' ) }} {{ version }}
                     </span>
                 </template>
             </PageHeader>

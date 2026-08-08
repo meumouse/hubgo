@@ -38,12 +38,12 @@ const percent = computed( () => ( 0 === total.value ? 0 : Math.round( ( processe
 
 const buttonLabel = computed( () => {
     if ( running.value ) {
-        return __( 'Migrando...' );
+        return __( 'Migrating...' );
     }
 
     // Once everything is migrated the run is not a repeat: it picks up orders
     // the other plugin has written since, which is what the label must promise.
-    return completed.value ? __( 'Verificar novos pedidos' ) : __( 'Migrar dados agora' );
+    return completed.value ? __( 'Check for new orders' ) : __( 'Migrate data now' );
 } );
 
 // The backend rebuilds the card (and this block) after a completed run, so the
@@ -80,7 +80,7 @@ async function run() {
             status.value = { ...next };
 
             if ( next.completed ) {
-                emit( 'toast', response.message || __( 'Migração concluída!' ), 'success' );
+                emit( 'toast', response.message || __( 'Migration completed!' ), 'success' );
                 emit( 'refresh' );
 
                 return;
@@ -93,9 +93,9 @@ async function run() {
             }
         }
 
-        error.value = __( 'A migração foi interrompida antes de terminar. Execute novamente para continuar de onde parou.' );
+        error.value = __( 'The migration stopped before it finished. Run it again to carry on from where it left off.' );
     } catch ( requestError ) {
-        error.value = requestError.message || __( 'Não foi possível executar a migração.' );
+        error.value = requestError.message || __( 'Could not run the migration.' );
         emit( 'toast', error.value, 'error' );
     } finally {
         running.value = false;
@@ -108,7 +108,7 @@ async function run() {
         <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
                 <h4 class="m-0 text-[14px] font-semibold text-slate-800">
-                    {{ status.title || __( 'Migração de dados' ) }}
+                    {{ status.title || __( 'Data migration' ) }}
                 </h4>
 
                 <p v-if="status.description" class="mb-0 mt-1 text-[13px] leading-5 text-slate-500">
@@ -135,23 +135,23 @@ async function run() {
             </div>
 
             <p class="mb-0 mt-2 text-[13px] leading-5 text-slate-600">
-                {{ sprintf( __( '%1$d de %2$d pedido(s) processado(s).' ), processed, total ) }}
+                {{ sprintf( __( '%1$d of %2$d order(s) processed.' ), processed, total ) }}
 
                 <span v-if="status.imported_records">
-                    {{ sprintf( __( '%1$d código(s) importado(s).' ), status.imported_records ) }}
+                    {{ sprintf( __( '%1$d code(s) imported.' ), status.imported_records ) }}
                 </span>
             </p>
         </div>
 
         <p v-else class="mb-0 mt-3 text-[13px] leading-5 text-slate-500">
-            {{ __( 'Nenhum dado do Shipment Tracking foi encontrado nos pedidos desta loja.' ) }}
+            {{ __( 'No Shipment Tracking data was found on the orders of this store.' ) }}
         </p>
 
         <p
             v-if="completed"
             class="mb-0 mt-3 rounded-[8px] border border-emerald-200 bg-emerald-50 px-3 py-2 text-[13px] leading-5 text-emerald-800"
         >
-            {{ __( 'Todos os pedidos foram migrados. Você já pode desativar o plugin Shipment Tracking.' ) }}
+            {{ __( 'Every order has been migrated. You can now deactivate the Shipment Tracking plugin.' ) }}
         </p>
 
         <p

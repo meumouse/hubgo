@@ -35,14 +35,14 @@ function confirmReset() {
     <div class="py-6">
         <div class="flex flex-col gap-4 rounded-[8px] border border-rose-200 bg-rose-50 p-5 lg:flex-row lg:items-center lg:justify-between">
             <div>
-                <h3 class="m-0 text-[15px] font-semibold text-rose-800">{{ __( 'Restaurar configurações padrão' ) }}</h3>
+                <h3 class="m-0 text-[15px] font-semibold text-rose-800">{{ __( 'Restore default settings' ) }}</h3>
                 <p class="mb-0 mt-1 max-w-2xl text-[13px] leading-5 text-rose-700">
-                    {{ __( 'Todas as opções do HubGo voltarão aos valores originais. Códigos de rastreio dos pedidos não são afetados.' ) }}
+                    {{ __( 'Every HubGo option goes back to its original value. Order tracking codes are not affected.' ) }}
                 </p>
             </div>
 
             <BaseButton
-                :title="__( 'Restaurar' )"
+                :title="__( 'Restore' )"
                 color="danger"
                 :loading="resetting"
                 @click="confirmOpen = true"
@@ -51,9 +51,9 @@ function confirmReset() {
 
         <ConfirmDialog
             :open="confirmOpen"
-            :title="__( 'Restaurar configurações padrão?' )"
-            :description="__( 'Esta ação não pode ser desfeita. Todas as configurações do HubGo voltarão aos valores originais.' )"
-            :confirm-label="__( 'Sim, restaurar' )"
+            :title="__( 'Restore the default settings?' )"
+            :description="__( 'This action cannot be undone. Every HubGo setting goes back to its original value.' )"
+            :confirm-label="__( 'Yes, restore' )"
             :loading="resetting"
             @confirm="confirmReset"
             @cancel="confirmOpen = false"

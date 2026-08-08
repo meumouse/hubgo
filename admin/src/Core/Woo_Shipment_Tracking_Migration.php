@@ -82,7 +82,7 @@ class Woo_Shipment_Tracking_Migration extends Abstract_Migration {
      * @inheritDoc
      */
     public function get_title() {
-        return esc_html__( 'Migrar dados do WooCommerce Shipment Tracking', 'hubgo' );
+        return esc_html__( 'Migrate WooCommerce Shipment Tracking data', 'hubgo' );
     }
 
 
@@ -90,7 +90,7 @@ class Woo_Shipment_Tracking_Migration extends Abstract_Migration {
      * @inheritDoc
      */
     public function get_description() {
-        return esc_html__( 'Copia os códigos de rastreio gravados pelo Shipment Tracking para o rastreio do HubGo. Os dados originais são mantidos, então nada é perdido se você precisar voltar atrás.', 'hubgo' );
+        return esc_html__( 'Copies the tracking codes stored by Shipment Tracking into HubGo tracking. The original data is kept, so nothing is lost if you need to roll back.', 'hubgo' );
     }
 
 

@@ -109,7 +109,7 @@ class Google_Places_Provider extends Address_Provider {
      * @inheritDoc
      */
     public function get_label() {
-        return esc_html__( 'Google Places (requer chave de API)', 'hubgo' );
+        return esc_html__( 'Google Places (requires an API key)', 'hubgo' );
     }
 
 
@@ -124,7 +124,7 @@ class Google_Places_Provider extends Address_Provider {
         }
 
         if ( ! $this->is_configured() ) {
-            return new WP_Error( 'hubgo_address_unconfigured', esc_html__( 'A busca de endereços não está configurada.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_address_unconfigured', esc_html__( 'Address lookup is not configured.', 'hubgo' ) );
         }
 
         $payload = array(
@@ -159,11 +159,11 @@ class Google_Places_Provider extends Address_Provider {
         $place_id = $this->normalize_place_id( (string) ( $args['id'] ?? '' ) );
 
         if ( '' === $place_id ) {
-            return new WP_Error( 'hubgo_address_invalid_place', esc_html__( 'Endereço inválido. Selecione uma das sugestões.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_address_invalid_place', esc_html__( 'Invalid address. Select one of the suggestions.', 'hubgo' ) );
         }
 
         if ( ! $this->is_configured() ) {
-            return new WP_Error( 'hubgo_address_unconfigured', esc_html__( 'A busca de endereços não está configurada.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_address_unconfigured', esc_html__( 'Address lookup is not configured.', 'hubgo' ) );
         }
 
         $cache_key = self::CACHE_PREFIX . md5( $place_id );
@@ -194,7 +194,7 @@ class Google_Places_Provider extends Address_Provider {
         if ( '' === $postcode ) {
             return new WP_Error(
                 'hubgo_address_no_postcode',
-                esc_html__( 'Esse endereço não tem um CEP exato. Tente incluir o número e a rua.', 'hubgo' )
+                esc_html__( 'That address has no exact postcode. Try including the street and the number.', 'hubgo' )
             );
         }
 
