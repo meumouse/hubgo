@@ -6,11 +6,11 @@
  * Plugin URI:              https://meumouse.com/plugins/hubgo/?utm_source=wordpress&utm_medium=hubgo&utm_campaign=plugins_list
  * Author:                  MeuMouse.com
  * Author URI:              https://meumouse.com/?utm_source=wordpress&utm_medium=hubgo&utm_campaign=plugins_list
- * Version:                 3.0.1
+ * Version:                 3.0.0
  * WC requires at least:    6.0.0
  * WC tested up to:         10.6.0
  * Requires PHP:            7.4
- * Tested up to:            6.9.4
+ * Tested up to:            7.0.3
  * Text Domain:             hubgo
  * Domain Path:             /languages
  * License:                 GPLv2 or later
@@ -38,7 +38,7 @@ if ( file_exists( $mds_sdk ) ) {
     require_once $mds_sdk;
 }
 
-$plugin_version = '3.0.1';
+$plugin_version = '3.0.0';
 
 Plugin::get_instance()->init( $plugin_version, __FILE__ );
 
