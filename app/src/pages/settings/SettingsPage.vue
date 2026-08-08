@@ -6,14 +6,24 @@
  * active section's cards through the shared field system and persists changes
  * through the sticky action bar.
  *
+ * A card either declares `fields` — rendered by the field registry — or a
+ * `component` name, resolved here against the page-local component map. That is
+ * what lets the "Sobre" tab mix plain settings with the system status panel and
+ * the danger zone without breaking the schema-driven contract.
+ *
  * @since 3.0.0
+ * @version 3.0.0
  */
-import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { api, getBootstrapConfig } from '../../utils/api';
 import { __ } from '../../utils/i18n';
+import { cloneValue, deepEqual } from '../../utils/object';
+import { useToasts } from '../../composables/useToasts';
 import PageHeader from '../../components/layout/PageHeader.vue';
 import SectionTabs from './components/SectionTabs.vue';
 import SettingsActionBar from './components/SettingsActionBar.vue';
+import SystemStatusPanel from './components/cards/SystemStatusPanel.vue';
+import DangerZone from './components/cards/DangerZone.vue';
 import FieldRow from '../../components/fields/FieldRow.vue';
 import ToastStack from '../../components/toasts/ToastStack.vue';
 import PageShellSkeleton from '../../components/skeletons/PageShellSkeleton.vue';
@@ -21,21 +31,26 @@ import PageShellSkeleton from '../../components/skeletons/PageShellSkeleton.vue'
 const DOCS_URL = 'https://ajuda.meumouse.com/docs/hubgo/overview';
 const ACTIVE_SECTION_STORAGE_KEY = 'hubgo-settings-active-section';
 
+const CARD_COMPONENTS = {
+    'system-status': SystemStatusPanel,
+    'danger-zone': DangerZone,
+};
+
 const loading = ref( true );
 const saving = ref( false );
+const resetting = ref( false );
 const loadError = ref( '' );
 
 const schema = ref( [] );
 const activeSectionId = ref( '' );
 const settings = reactive( {} );
-const savedSnapshot = ref( '{}' );
+const savedSettings = ref( {} );
+const system = ref( [] );
 const version = ref( getBootstrapConfig().version || '' );
 
-const toasts = ref( [] );
-const toastTimers = new Map();
-let toastSeed = 0;
+const { toasts, toast, dismissToast } = useToasts();
 
-const hasUnsavedChanges = computed( () => JSON.stringify( settings ) !== savedSnapshot.value );
+const hasUnsavedChanges = computed( () => ! deepEqual( settings, savedSettings.value ) );
 
 const activeSection = computed(
     () => schema.value.find( ( section ) => section.id === activeSectionId.value ) || schema.value[ 0 ] || null,
@@ -60,50 +75,33 @@ function resolveInitialSection( sections ) {
     return saved && sections.some( ( section ) => section.id === saved ) ? saved : fallback;
 }
 
-function clearToastTimers( id ) {
-    const timers = toastTimers.get( id );
-
-    if ( ! timers ) {
-        return;
-    }
-
-    window.clearTimeout( timers.hide );
-    window.clearTimeout( timers.remove );
-    toastTimers.delete( id );
+/**
+ * Resolve the Vue component a `component` card asks for.
+ *
+ * @param {object} card Card definition.
+ * @return {object|null}
+ */
+function componentFor( card ) {
+    return card && card.component ? ( CARD_COMPONENTS[ card.component ] || null ) : null;
 }
 
 /**
- * Push a toast onto the stack, scheduling its fade-out and removal.
+ * Props for a `component` card. Bound per component so an unrelated prop never
+ * leaks onto the rendered element as a stray attribute.
  *
- * @param {string} message Body text.
- * @param {string} tone One of success|error|warning|info.
- * @param {string} title Header text.
- * @return {void}
+ * @param {object} card Card definition.
+ * @return {object}
  */
-function toast( message, tone = 'info', title = __( 'HubGo' ) ) {
-    const id = ++toastSeed;
+function componentPropsFor( card ) {
+    if ( 'system-status' === card.component ) {
+        return { rows: system.value };
+    }
 
-    toasts.value.push( { id, title, message, tone, closing: false } );
+    if ( 'danger-zone' === card.component ) {
+        return { resetting: resetting.value, onReset: resetSettings };
+    }
 
-    const hide = window.setTimeout( () => {
-        const item = toasts.value.find( ( entry ) => entry.id === id );
-
-        if ( item ) {
-            item.closing = true;
-        }
-    }, 3000 );
-
-    const remove = window.setTimeout( () => {
-        toasts.value = toasts.value.filter( ( entry ) => entry.id !== id );
-        toastTimers.delete( id );
-    }, 3500 );
-
-    toastTimers.set( id, { hide, remove } );
-}
-
-function dismissToast( id ) {
-    clearToastTimers( id );
-    toasts.value = toasts.value.filter( ( entry ) => entry.id !== id );
+    return {};
 }
 
 /**
@@ -119,7 +117,7 @@ function applySettings( values ) {
         settings[ key ] = value;
     } );
 
-    savedSnapshot.value = JSON.stringify( settings );
+    savedSettings.value = cloneValue( settings );
 }
 
 async function bootstrap() {
@@ -130,6 +128,7 @@ async function bootstrap() {
         const data = await api.get( 'settings' );
 
         schema.value = Array.isArray( data.schema ) ? data.schema : [];
+        system.value = Array.isArray( data.system ) ? data.system : [];
         applySettings( data.settings || {} );
         activeSectionId.value = resolveInitialSection( schema.value );
 
@@ -162,15 +161,31 @@ async function save() {
     }
 }
 
-onMounted( bootstrap );
+/**
+ * Restore every setting to its default value.
+ *
+ * @return {Promise<void>}
+ */
+async function resetSettings() {
+    if ( resetting.value ) {
+        return;
+    }
 
-onBeforeUnmount( () => {
-    toastTimers.forEach( ( timers ) => {
-        window.clearTimeout( timers.hide );
-        window.clearTimeout( timers.remove );
-    } );
-    toastTimers.clear();
-} );
+    resetting.value = true;
+
+    try {
+        const response = await api.post( 'settings/reset', {} );
+
+        applySettings( response.settings || {} );
+        toast( response.message || __( 'Configurações restauradas.' ), 'success', __( 'Restaurado' ) );
+    } catch ( error ) {
+        toast( error.message || __( 'Não foi possível restaurar as configurações.' ), 'error', __( 'Erro' ) );
+    } finally {
+        resetting.value = false;
+    }
+}
+
+onMounted( bootstrap );
 </script>
 
 <template>
@@ -217,7 +232,13 @@ onBeforeUnmount( () => {
                                 </p>
                             </div>
 
-                            <div class="divide-y divide-slate-100">
+                            <component
+                                :is="componentFor( card )"
+                                v-if="componentFor( card )"
+                                v-bind="componentPropsFor( card )"
+                            />
+
+                            <div v-else class="divide-y divide-slate-100">
                                 <FieldRow
                                     v-for="field in ( card.fields || [] )"
                                     :key="field.key"

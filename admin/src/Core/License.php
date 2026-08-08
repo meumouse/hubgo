@@ -9,7 +9,9 @@ use MeuMouse\MDS\SDK\SDK;
 use MeuMouse\MDS\SDK\Integration;
 use MeuMouse\MDS\SDK\License\LicenseStatus;
 
+use Exception;
 use InvalidArgumentException;
+use WP_Error;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -133,7 +135,13 @@ final class License {
                 'public_key'      => self::get_public_key(),
                 'item_name'       => 'HubGo',
                 'text_domain'     => 'hubgo',
-                'settings_parent' => self::get_settings_parent(),
+                // A null parent stops the SDK from registering its own submenu
+                // and rendering its own form: HubGo ships a Vue license screen
+                // (Admin\Menu::LICENSE_PAGE_SLUG) driven by the hubgo/v1 routes,
+                // which call this same SDK license manager underneath. The
+                // admin_post handlers the SDK registers stay wired, so a legacy
+                // bookmark to them keeps working.
+                'settings_parent' => null,
             ) );
         } catch ( InvalidArgumentException $e ) {
             self::log( 'MDS registration failed: ' . $e->getMessage() );
@@ -141,11 +149,9 @@ final class License {
             return;
         }
 
-        // The SDK submenu label is only available in its own text domain; relabel
-        // it so the entry reads in the plugin language.
-        add_action( 'admin_menu', array( __CLASS__, 'localize_submenu' ), 11 );
-
-        // Link to the license screen from the plugins list.
+        // Link to the license screen from the plugins list. Safe to wire now
+        // that get_license_url() resolves to the HubGo license subpage instead
+        // of the SDK's own (no longer registered) screen.
         add_filter( 'plugin_action_links_' . self::get_plugin_file(), array( __CLASS__, 'plugin_action_links' ) );
 
         // Opt this plugin into WordPress background updates when enabled.
@@ -335,12 +341,177 @@ final class License {
      * URL of the license screen.
      *
      * @since 3.0.0
+     * @version 3.0.0
      * @return string
      */
     public static function get_license_url() {
+        return Menu::get_page_url( Menu::LICENSE_PAGE_SLUG );
+    }
+
+
+    /**
+     * Activate a license key against the MDS API.
+     *
+     * A refused key is NOT an error: the SDK persists an "invalid" status and
+     * returns it, so the caller reads `is_valid()`/`message()` to tell the user
+     * why. Only a transport failure produces a WP_Error.
+     *
+     * @since 3.0.0
+     * @param string $key License key.
+     * @return LicenseStatus|\WP_Error
+     */
+    public static function activate( $key ) {
         $integration = self::get_integration();
 
-        return $integration ? $integration->settings()->settings_url() : admin_url('plugins.php');
+        if ( ! $integration ) {
+            return self::unavailable_error();
+        }
+
+        try {
+            return $integration->license()->activate( (string) $key );
+        } catch ( Exception $e ) {
+            return new WP_Error( 'hubgo_license_transport', esc_html__( 'Não foi possível contatar o servidor de licenças. Tente novamente.', 'hubgo' ) );
+        }
+    }
+
+
+    /**
+     * Release this site's activation and forget the key locally.
+     *
+     * Best-effort by design: the SDK clears the local state even when the
+     * server call fails, so the admin can always enter another key.
+     *
+     * @since 3.0.0
+     * @return true|\WP_Error
+     */
+    public static function deactivate_license() {
+        $integration = self::get_integration();
+
+        if ( ! $integration ) {
+            return self::unavailable_error();
+        }
+
+        $integration->license()->deactivate();
+
+        return true;
+    }
+
+
+    /**
+     * Re-validate the stored key against the API.
+     *
+     * @since 3.0.0
+     * @return LicenseStatus|\WP_Error
+     */
+    public static function sync() {
+        $integration = self::get_integration();
+
+        if ( ! $integration ) {
+            return self::unavailable_error();
+        }
+
+        try {
+            return $integration->license()->validate();
+        } catch ( Exception $e ) {
+            return new WP_Error( 'hubgo_license_transport', esc_html__( 'Não foi possível contatar o servidor de licenças. Tente novamente.', 'hubgo' ) );
+        }
+    }
+
+
+    /**
+     * The stored license key, if any.
+     *
+     * @since 3.0.0
+     * @return string
+     */
+    public static function get_key() {
+        $integration = self::get_integration();
+
+        return $integration ? (string) $integration->license()->get_key() : '';
+    }
+
+
+    /**
+     * Compact license summary shipped with every admin bootstrap payload.
+     *
+     * Never performs a network call: it reads the status the daily heartbeat
+     * persisted, so opening any screen stays instant even when MDS is down.
+     *
+     * @since 3.0.0
+     * @return array<string,mixed>
+     */
+    public static function get_summary() {
+        $status = self::get_status();
+
+        return array(
+            'configured' => self::is_configured(),
+            'is_active'  => self::is_active(),
+            'status'     => $status ? $status->status() : 'unknown',
+            'message'    => self::get_message(),
+            'has_key'    => '' !== self::get_key(),
+            'plan_name'  => self::get_plan_name(),
+            'url'        => self::get_license_url(),
+        );
+    }
+
+
+    /**
+     * Full payload for the license screen.
+     *
+     * @since 3.0.0
+     * @return array<string,mixed>
+     */
+    public static function get_payload() {
+        $status = self::get_status();
+        $bundle = self::get_bundle();
+
+        return apply_filters( 'Hubgo/Core/License/Payload', array_merge( self::get_summary(), array(
+            'version'           => defined( 'HUBGO_VERSION' ) ? HUBGO_VERSION : '',
+            'masked_key'        => self::mask_key( self::get_key() ),
+            'domain'            => $status ? $status->domain() : '',
+            'expires_at'        => self::get_expires_at(),
+            'checked_at'        => $status ? $status->checked_at() : 0,
+            'is_expired'        => $status ? $status->is_expired() : false,
+            'is_signed'         => $status ? $status->is_signed() : false,
+            'is_bundle'         => self::is_bundle(),
+            'bundle'            => $bundle,
+            'renew_url'         => self::get_renew_url(),
+            'purchase_url'      => 'https://meumouse.com/plugins/hubgo/',
+            'docs_url'          => 'https://ajuda.meumouse.com/docs/hubgo/overview',
+            'max_activations'   => (int) self::get_data( 'max_activations', 0 ),
+            'used_activations'  => (int) self::get_data( 'used_activations', 0 ),
+            'support_expires_at' => (string) self::get_data( 'support_expires_at', '' ),
+        ) ) );
+    }
+
+
+    /**
+     * Mask a license key for display, keeping only its edges readable.
+     *
+     * @since 3.0.0
+     * @param string $key Raw license key.
+     * @return string
+     */
+    public static function mask_key( $key ) {
+        $key = (string) $key;
+        $length = strlen( $key );
+
+        if ( $length <= 8 ) {
+            return $key;
+        }
+
+        return substr( $key, 0, 4 ) . str_repeat( '•', 8 ) . substr( $key, -4 );
+    }
+
+
+    /**
+     * Error returned when the SDK is missing or misconfigured.
+     *
+     * @since 3.0.0
+     * @return \WP_Error
+     */
+    private static function unavailable_error() {
+        return new WP_Error( 'hubgo_license_unavailable', esc_html__( 'O serviço de licenciamento não está disponível.', 'hubgo' ) );
     }
 
 
@@ -370,39 +541,6 @@ final class License {
 
         if ( $integration ) {
             $integration->rollback_page()->render();
-        }
-    }
-
-
-    /**
-     * Translate the SDK submenu entry into the plugin language.
-     *
-     * @since 3.0.0
-     * @return void
-     */
-    public static function localize_submenu() {
-        global $submenu;
-
-        $integration = self::get_integration();
-
-        if ( ! $integration ) {
-            return;
-        }
-
-        $parent = self::get_settings_parent();
-        $slug = $integration->settings()->page_slug();
-
-        if ( empty( $submenu[ $parent ] ) || ! is_array( $submenu[ $parent ] ) ) {
-            return;
-        }
-
-        foreach ( $submenu[ $parent ] as $index => $item ) {
-            if ( isset( $item[2] ) && $slug === $item[2] ) {
-                $submenu[ $parent ][ $index ][0] = esc_html__( 'HubGo - Licença', 'hubgo' );
-                $submenu[ $parent ][ $index ][3] = esc_html__( 'HubGo - Licença', 'hubgo' );
-
-                break;
-            }
         }
     }
 
@@ -465,21 +603,6 @@ final class License {
         }
 
         return defined('HUBGO_FILE') ? plugin_basename( HUBGO_FILE ) : '';
-    }
-
-
-    /**
-     * Parent menu slug the license screen is attached to.
-     *
-     * Mirrors MeuMouse\Hubgo\Admin\Menu: WooCommerce when present, Settings
-     * otherwise. Resolved on `mds_sdk_loaded` (every plugin file is loaded by
-     * then), so the WooCommerce class check is reliable.
-     *
-     * @since 3.0.0
-     * @return string
-     */
-    private static function get_settings_parent() {
-        return class_exists('WooCommerce') ? Menu::PARENT_MENU_SLUG : 'options-general.php';
     }
 
 

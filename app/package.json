@@ -8,6 +8,7 @@
         "build": "vite build"
     },
     "dependencies": {
+        "@boxicons/vue": "^1.0.1",
         "pinia": "^2.3.0",
         "vue": "^3.5.13"
     },

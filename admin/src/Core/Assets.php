@@ -2,6 +2,7 @@
 
 namespace MeuMouse\Hubgo\Core;
 
+use MeuMouse\Hubgo\Admin\Menu;
 use MeuMouse\Hubgo\Admin\Settings;
 
 defined('ABSPATH') || exit;
@@ -22,6 +23,10 @@ class Assets {
 
     const FRONT_SCRIPT_HANDLE = 'hubgo-front';
     const FRONT_STYLE_HANDLE  = 'hubgo-front-style';
+
+    // Kept as published constants for third parties. The authoritative
+    // page -> entry/handle mapping is get_admin_pages(); these mirror the
+    // settings row of that map.
     const SETTINGS_HANDLE     = 'hubgo-settings-app';
     const SETTINGS_ENTRY      = 'src/entries/settings.js';
     const SETTINGS_PAGE_ID    = 'hubgo-settings';
@@ -36,6 +41,40 @@ class Assets {
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
         add_filter( 'script_loader_tag', array( $this, 'add_module_type_attribute' ), 10, 3 );
+        add_filter( 'load_script_translation_file', array( $this, 'resolve_script_translation_file' ), 10, 3 );
+    }
+
+
+    /**
+     * Admin page slug => Vite entry, script handle and DOM mount node.
+     *
+     * One entry per admin screen: adding a page means adding a row here, a
+     * Rollup input in `app/vite.config.js` and a `src/entries/*.js` file.
+     *
+     * @since 3.0.0
+     * @return array<string,array<string,string>>
+     */
+    public static function get_admin_pages() {
+        return apply_filters( 'Hubgo/Core/Assets/Admin_Pages', array(
+            Menu::PAGE_SLUG => array(
+                'entry'    => 'src/entries/settings.js',
+                'handle'   => 'hubgo-settings-app',
+                'page'     => 'settings',
+                'endpoint' => 'settings',
+            ),
+            Menu::INTEGRATIONS_PAGE_SLUG => array(
+                'entry'    => 'src/entries/integrations.js',
+                'handle'   => 'hubgo-integrations-app',
+                'page'     => 'integrations',
+                'endpoint' => 'integrations',
+            ),
+            Menu::LICENSE_PAGE_SLUG => array(
+                'entry'    => 'src/entries/license.js',
+                'handle'   => 'hubgo-license-app',
+                'page'     => 'license',
+                'endpoint' => 'license',
+            ),
+        ) );
     }
 
 
@@ -106,8 +145,10 @@ class Assets {
      * @return void
      */
     public function enqueue_admin_assets( $hook ) {
-        if ( strpos( (string) $hook, self::SETTINGS_PAGE_ID ) !== false ) {
-            $this->enqueue_settings_app();
+        $page = $this->get_current_admin_page();
+
+        if ( '' !== $page ) {
+            $this->enqueue_admin_app( $page );
         }
 
         if ( $this->is_order_screen() ) {
@@ -117,13 +158,21 @@ class Assets {
 
 
     /**
-     * Enqueue the Vue settings SPA from the Vite manifest.
+     * Enqueue one of the Vue admin SPAs from the Vite manifest.
      *
      * @since 3.0.0
+     * @param string $page Admin page slug present in {@see self::get_admin_pages()}.
      * @return void
      */
-    private function enqueue_settings_app() {
-        $assets = Scripts::get_entry_assets( self::SETTINGS_ENTRY );
+    private function enqueue_admin_app( $page ) {
+        $pages = self::get_admin_pages();
+
+        if ( empty( $pages[ $page ] ) ) {
+            return;
+        }
+
+        $definition = $pages[ $page ];
+        $assets = Scripts::get_entry_assets( $definition['entry'] );
 
         if ( empty( $assets ) || empty( $assets['script'] ) ) {
             add_action( 'admin_notices', function() {
@@ -135,49 +184,120 @@ class Assets {
             return;
         }
 
+        $handle = $definition['handle'];
         $version = ! empty( $assets['version'] ) ? $assets['version'] : $this->get_asset_version();
 
         if ( ! empty( $assets['styles'] ) && is_array( $assets['styles'] ) ) {
             foreach ( $assets['styles'] as $index => $style_url ) {
-                wp_enqueue_style( self::SETTINGS_HANDLE . '-' . $index, $style_url, array(), $version );
+                wp_enqueue_style( $handle . '-' . $index, $style_url, array(), $version );
             }
         }
 
-        wp_enqueue_script( self::SETTINGS_HANDLE, $assets['script'], array( 'wp-i18n' ), $version, true );
-        wp_set_script_translations( self::SETTINGS_HANDLE, 'hubgo', trailingslashit( HUBGO_PATH ) . 'languages' );
+        wp_enqueue_script( $handle, $assets['script'], array( 'wp-i18n' ), $version, true );
+        wp_set_script_translations( $handle, 'hubgo', trailingslashit( HUBGO_PATH ) . 'languages' );
 
-        wp_localize_script( self::SETTINGS_HANDLE, 'hubgoBootstrapConfig', array(
+        wp_localize_script( $handle, 'hubgoBootstrapConfig', array(
             'restUrl'   => $this->rest_root(),
             'nonce'     => wp_create_nonce( 'wp_rest' ),
-            'page'      => 'settings',
-            'endpoint'  => 'settings',
+            'page'      => $definition['page'],
+            'endpoint'  => $definition['endpoint'],
             'version'   => defined( 'HUBGO_VERSION' ) ? HUBGO_VERSION : '',
             // Brand assets are resolved at runtime so the logo also loads on
             // sites installed in a subdirectory or served from a custom domain.
             'assetsUrl' => defined( 'HUBGO_ASSETS' ) ? esc_url_raw( HUBGO_ASSETS ) : '',
+            'pages'     => array(
+                'settings'     => Menu::get_page_url( Menu::PAGE_SLUG ),
+                'integrations' => Menu::get_page_url( Menu::INTEGRATIONS_PAGE_SLUG ),
+                'license'      => Menu::get_page_url( Menu::LICENSE_PAGE_SLUG ),
+            ),
         ) );
     }
 
 
     /**
-     * Inject type="module" on the Vue entry script so the browser loads it as ESM.
+     * Resolve the HubGo admin page currently being rendered.
      *
      * @since 3.0.0
-     * @param string $tag Script tag HTML.
+     * @return string Page slug, or an empty string outside HubGo screens.
+     */
+    private function get_current_admin_page() {
+        if ( ! is_admin() || empty( $_GET['page'] ) ) {
+            return '';
+        }
+
+        $page = sanitize_text_field( wp_unslash( $_GET['page'] ) );
+
+        return isset( self::get_admin_pages()[ $page ] ) ? $page : '';
+    }
+
+
+    /**
+     * Inject type="module" on the Vue entry scripts so browsers load them as ESM.
+     *
+     * WordPress hands this filter the whole printed block for the handle — the
+     * main `<script>` tag PLUS the inline `wp.i18n.setLocaleData` block emitted by
+     * `wp_set_script_translations()`. Match only this handle's own tag (by its
+     * `id`) so those sibling scripts survive untouched.
+     *
+     * @since 3.0.0
+     * @version 3.0.0
+     * @param string $tag Script tag HTML (may include translation/inline scripts).
      * @param string $handle Script handle.
      * @param string $src Script source URL.
      * @return string
      */
     public function add_module_type_attribute( $tag, $handle, $src ) {
-        if ( self::SETTINGS_HANDLE !== $handle ) {
+        $tag = is_scalar( $tag ) ? (string) $tag : '';
+        $handles = wp_list_pluck( self::get_admin_pages(), 'handle' );
+
+        if ( ! in_array( $handle, $handles, true ) ) {
             return $tag;
         }
 
-        if ( false !== strpos( $tag, ' type=' ) ) {
-            return $tag;
+        $pattern = '#<script\b(?![^>]*\stype=)([^>]*\sid=(["\'])'
+            . preg_quote( $handle, '#' ) . '-js\2[^>]*)>#';
+
+        $result = preg_replace( $pattern, '<script type="module"$1>', $tag, 1 );
+
+        return null === $result ? $tag : $result;
+    }
+
+
+    /**
+     * Point WordPress at the handle-named JSON translation files.
+     *
+     * Core resolves script translations as "{domain}-{locale}-{md5(src)}.json",
+     * but the languages pipeline emits "{domain}-{locale}-{handle}.json". Vite
+     * hashes the entry paths, so a stable md5-based name cannot be generated
+     * ahead of the build; without this remap wp.i18n keeps the original strings
+     * and every Vue screen renders untranslated.
+     *
+     * @since 3.0.0
+     * @param string|false $file Translation file path resolved by core.
+     * @param string $handle Script handle being translated.
+     * @param string $domain Text domain.
+     * @return string|false
+     */
+    public function resolve_script_translation_file( $file, $handle, $domain ) {
+        if ( 'hubgo' !== $domain ) {
+            return $file;
         }
 
-        return str_replace( '<script ', '<script type="module" ', $tag );
+        $languages = trailingslashit( HUBGO_PATH ) . 'languages/';
+        $locale = function_exists( 'determine_locale' ) ? determine_locale() : get_locale();
+        $candidate = $languages . "hubgo-{$locale}-{$handle}.json";
+
+        if ( is_readable( $candidate ) ) {
+            return $candidate;
+        }
+
+        // Each per-handle JSON the pipeline emits is a full copy of the same
+        // translation table, so any HubGo screen can be served the base file.
+        // A new admin page therefore gets its translations without touching the
+        // languages pipeline.
+        $base = $languages . "hubgo-{$locale}-hubgo.json";
+
+        return is_readable( $base ) ? $base : $file;
     }
 
 

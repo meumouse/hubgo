@@ -4,6 +4,13 @@ namespace MeuMouse\Hubgo\API;
 
 use MeuMouse\Hubgo\API\Routes\Settings_Bootstrap;
 use MeuMouse\Hubgo\API\Routes\Settings_Save;
+use MeuMouse\Hubgo\API\Routes\Settings_Reset;
+use MeuMouse\Hubgo\API\Routes\Integrations_Bootstrap;
+use MeuMouse\Hubgo\API\Routes\Plugin_Install;
+use MeuMouse\Hubgo\API\Routes\License_Bootstrap;
+use MeuMouse\Hubgo\API\Routes\License_Activate;
+use MeuMouse\Hubgo\API\Routes\License_Deactivate;
+use MeuMouse\Hubgo\API\Routes\License_Sync;
 use MeuMouse\Hubgo\API\Routes\Shipping_Calculate;
 use MeuMouse\Hubgo\API\Routes\Providers;
 use MeuMouse\Hubgo\API\Routes\Tracking_Get;
@@ -30,6 +37,13 @@ class Rest_Controller {
         $routes = apply_filters( 'Hubgo/API/Routes', array(
             Settings_Bootstrap::class,
             Settings_Save::class,
+            Settings_Reset::class,
+            Integrations_Bootstrap::class,
+            Plugin_Install::class,
+            License_Bootstrap::class,
+            License_Activate::class,
+            License_Deactivate::class,
+            License_Sync::class,
             Shipping_Calculate::class,
             Providers::class,
             Tracking_Get::class,

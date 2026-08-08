@@ -18,6 +18,21 @@ Versão 3.0.1 (07/08/2026)
     - Suporte a licenças de bundle: uma única chave cobre vários produtos (ex.: "Clube M"), com os produtos inclusos disponíveis em MeuMouse\Hubgo\Core\License::get_bundle()
     - Dados do plano, URL de renovação, expiração do suporte e limite de ativações acessíveis por License::get_data() sem nova requisição
 * Removido: verificador de atualizações próprio (MeuMouse\Hubgo\API\Updater) que consultava um JSON estático em packages.meumouse.com
+* Novo: menu próprio do HubGo no painel, com as subpáginas Configurações, Integrações e Licença
+    - A página de Configurações passa a ter as abas Geral, Aparência, Textos e Sobre
+    - A aba Sobre reúne preferências de manutenção, status do sistema e a restauração das configurações padrão
+    - O slug hubgo-settings continua válido: links antigos seguem funcionando
+* Novo: página de Integrações com grade de aplicações, filtro por categoria e modal de configuração por integração
+    - Joinotify (Pro), Melhor Envio (Pro, em breve) e Frenet
+    - Instalação e ativação do plugin da integração direto do painel (Frenet)
+    - Selo "Pro" nas integrações que dependem de licença ativa
+* Novo: tela de Licença própria, com formulário de ativação, sincronização e desativação do site
+* Novos endpoints REST: GET hubgo/v1/integrations, POST hubgo/v1/plugins/install, POST hubgo/v1/settings/reset, GET hubgo/v1/license, POST hubgo/v1/license/activate, POST hubgo/v1/license/deactivate, POST hubgo/v1/license/sync
+* Novos filtros: Hubgo/Integrations/Cards, Hubgo/Integrations/Card, Hubgo/Integrations/Categories, Hubgo/Admin/Integrations/Cards, Hubgo/Admin/Integrations/Bootstrap_Data, Hubgo/Admin/System_Status, Hubgo/Core/Assets/Admin_Pages, Hubgo/Core/License/Payload, Hubgo/Core/Plugin_Installer/Allowed_Hosts
+* Correção de bugs:
+    - A opção "Atualizações automáticas" era lida por MeuMouse\Hubgo\Core\License mas não existia nas configurações nem nos valores padrão, então nunca ligava
+    - A opção "Exibição dos métodos de entrega" tinha valor padrão mas não aparecia na tela de configurações
+    - app/dist estava no .gitignore, o que deixaria os pacotes das novas telas fora do zip de distribuição
 
 Versão 3.0.0 (06/07/2026)
 * Mudança de arquitetura: interface de configurações reescrita em Vue 3 + Vite (padrão Joinotify)

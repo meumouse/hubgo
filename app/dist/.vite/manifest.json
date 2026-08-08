@@ -1,11 +1,58 @@
 {
+  "_ConfirmDialog-n2qyW4de.js": {
+    "file": "chunks/ConfirmDialog-n2qyW4de.js",
+    "name": "ConfirmDialog",
+    "imports": [
+      "_bootstrap-DdA0LEz3.js"
+    ]
+  },
+  "_SettingsActionBar-Drdq3OEv.js": {
+    "file": "chunks/SettingsActionBar-Drdq3OEv.js",
+    "name": "SettingsActionBar",
+    "imports": [
+      "_bootstrap-DdA0LEz3.js"
+    ]
+  },
+  "_bootstrap-DdA0LEz3.js": {
+    "file": "chunks/bootstrap-DdA0LEz3.js",
+    "name": "bootstrap",
+    "css": [
+      "styles/bootstrap.css"
+    ]
+  },
+  "_bootstrap.css": {
+    "file": "styles/bootstrap.css",
+    "src": "_bootstrap.css"
+  },
+  "src/entries/integrations.js": {
+    "file": "integrations/app.js",
+    "name": "integrations",
+    "src": "src/entries/integrations.js",
+    "isEntry": true,
+    "imports": [
+      "_bootstrap-DdA0LEz3.js",
+      "_SettingsActionBar-Drdq3OEv.js"
+    ]
+  },
+  "src/entries/license.js": {
+    "file": "license/app.js",
+    "name": "license",
+    "src": "src/entries/license.js",
+    "isEntry": true,
+    "imports": [
+      "_bootstrap-DdA0LEz3.js",
+      "_ConfirmDialog-n2qyW4de.js"
+    ]
+  },
   "src/entries/settings.js": {
     "file": "settings/app.js",
     "name": "settings",
     "src": "src/entries/settings.js",
     "isEntry": true,
-    "css": [
-      "styles/settings.css"
+    "imports": [
+      "_bootstrap-DdA0LEz3.js",
+      "_SettingsActionBar-Drdq3OEv.js",
+      "_ConfirmDialog-n2qyW4de.js"
     ]
   }
 }

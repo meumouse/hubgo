@@ -3,11 +3,14 @@
  * TextField.vue — single-line text control for schema-driven settings.
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 defineProps({
     modelValue: { type: [ String, Number ], default: '' },
     field: { type: Object, required: true },
     name: { type: String, required: true },
+    // Bound on the input (not the wrapper) so an external <label for> works.
+    inputId: { type: String, default: '' },
 });
 
 defineEmits([ 'update:modelValue' ]);
@@ -16,6 +19,7 @@ defineEmits([ 'update:modelValue' ]);
 <template>
     <div>
         <input
+            :id="inputId || undefined"
             :name="name"
             :value="modelValue"
             :placeholder="field.placeholder || ''"

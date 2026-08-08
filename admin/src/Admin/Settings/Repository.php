@@ -78,6 +78,24 @@ class Repository {
 
 
     /**
+     * Restore every setting to its default value.
+     *
+     * The option is deleted rather than overwritten with the defaults so a later
+     * change to Default_Options reaches sites that were reset.
+     *
+     * @since 3.0.0
+     * @return array The defaults now in effect.
+     */
+    public static function reset_settings() {
+        delete_option( self::OPTION_NAME );
+
+        do_action( 'Hubgo/Admin/Settings/Reset' );
+
+        return self::get_settings();
+    }
+
+
+    /**
      * Sanitize a value according to its field type.
      *
      * @since 3.0.0

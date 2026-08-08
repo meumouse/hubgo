@@ -33,6 +33,8 @@ class Integration_Registry {
     public function __construct() {
         $classes = apply_filters( 'Hubgo/Integrations/Registered', array(
             Joinotify::class,
+            Melhor_Envio::class,
+            Frenet::class,
         ) );
 
         foreach ( (array) $classes as $class ) {

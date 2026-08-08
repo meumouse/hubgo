@@ -24,7 +24,7 @@ class Default_Options {
      * Can be filtered via 'Hubgo/Admin/Default_Options' filter.
      *
      * @since 2.0.0
-     * @version 2.1.0
+     * @version 3.0.0
      * @return array Default options
      */
     public static function get_defaults() {
@@ -42,6 +42,24 @@ class Default_Options {
             'text_header_value'                    => 'Valor',
             'note_text_bottom_shipping_calc'       => '*Este resultado é apenas uma estimativa para este produto. O valor final considerado, deverá ser o total do carrinho.',
             'text_placeholder_input_shipping_calc' => 'Informe seu CEP',
+
+            // Maintenance ("Sobre" tab). enable_auto_updates is read by
+            // Core\License::enable_auto_update() and had no default before 3.0.0.
+            'enable_auto_updates'                  => 'no',
+            'enable_update_notice'                 => 'yes',
+            'enable_debug_mode'                    => 'no',
+
+            // Integrations. Joinotify defaults to "yes" because HubGo registered
+            // its triggers unconditionally before the Integrations screen
+            // existed — flipping it off by default would silently break flows
+            // already running on updated sites.
+            'enable_joinotify_integration'         => 'yes',
+            'enable_melhor_envio_integration'      => 'no',
+            'melhor_envio_sync_tracking'           => 'yes',
+            'melhor_envio_mark_as_shipped'         => 'no',
+            'enable_frenet_integration'            => 'no',
+            'frenet_sync_tracking'                 => 'yes',
+            'frenet_tracking_url'                  => '',
         ));
     }
 }

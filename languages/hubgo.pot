@@ -6,7 +6,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "x-domain: hubgo\n"
 
-#: admin/src/Core/Shipping_Calculator_Service.php:641
+#: admin/src/Core/Shipping_Calculator_Service.php:643
 msgid "(Entrega em %s dias úteis)"
 msgstr ""
 
@@ -16,7 +16,19 @@ msgid_plural "%s pedidos alterados para \"Pedido enviado\"."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/src/Admin/Settings/Registry.php:40
+#: admin/src/API/Routes/License_Sync.php:40
+msgid "A licença não está válida para este site."
+msgstr ""
+
+#: admin/src/Core/Plugin_Installer.php:102
+msgid "A origem do pacote não é permitida."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:156
+msgid "Ações irreversíveis sobre a configuração do plugin."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:54
 msgid "Adiciona o status de pedido enviado ao WooCommerce."
 msgstr ""
 
@@ -24,32 +36,101 @@ msgstr ""
 msgid "Adicionar código de rastreio"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:51
+#: app/src/pages/integrations/components/IntegrationsGrid.vue:141
+msgid "Agrupar por categoria"
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:145
+msgid ""
+"Além desta chave, o card \"HubGo\" também precisa estar ativo na aba "
+"Aplicações do Joinotify."
+msgstr ""
+
+#: admin/src/Integrations/Melhor_Envio.php:120
+msgid ""
+"Altera o pedido para o status \"Pedido enviado\" assim que a etiqueta é "
+"postada."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:65
 msgid "Antes do botão de compra"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:147
+#: admin/src/Integrations/Joinotify.php:232
 msgid "Ao salvar um rastreio no pedido"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:64
+#: admin/src/Admin/Settings/Registry.php:75
 msgid "Aparência"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:50
+#: admin/src/Admin/Settings/Registry.php:64
 msgid "Após o botão de compra"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:52
+#: admin/src/Admin/Settings/Registry.php:66
 msgid "Após os metadados do produto"
+msgstr ""
+
+#: app/src/pages/integrations/IntegrationsPage.vue:230
+msgid "As integrações marcadas como Pro exigem uma licença ativa do HubGo."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:49
+msgid "Ativa"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:78
+msgid "Ativações"
+msgstr ""
+
+#: admin/src/Admin/System_Status.php:44
+#: admin/src/Admin/System_Status.php:55
+msgid "Ativado"
+msgstr ""
+
+#: app/src/pages/integrations/components/IntegrationCard.vue:98
+msgid "Ativar %s"
+msgstr ""
+
+#: app/src/pages/integrations/IntegrationsPage.vue:236
+#: app/src/pages/license/LicensePage.vue:269
+#: app/src/pages/license/LicensePage.vue:293
+msgid "Ativar licença"
 msgstr ""
 
 #: admin/src/Core/Plugin.php:359
 msgid "Ativar WooCommerce"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:36
+#: app/src/pages/integrations/components/IntegrationCard.vue:91
+msgid "Ative a integração para acessar as configurações."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:43
+msgid "Ative os módulos do HubGo e defina onde a calculadora aparece."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:50
 msgid "Ative ou desative os módulos do HubGo."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:353
+msgid "Ative sua licença do HubGo para usar esta integração."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:216
+msgid ""
+"Ative sua licença para receber atualizações automáticas e liberar os "
+"recursos Pro. Dúvidas? Acesse a nossa "
+msgstr ""
+
+#: admin/src/Admin/System_Status.php:49
+msgid "Ativo"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:142
+msgid "Atualizações automáticas"
 msgstr ""
 
 #: admin/src/Core/Providers_Registry.php:189
@@ -60,6 +141,10 @@ msgstr ""
 msgid "Austria"
 msgstr ""
 
+#: admin/src/Admin/Settings/Registry.php:143
+msgid "Avisos de atualização"
+msgstr ""
+
 #: admin/src/Core/Providers_Registry.php:191
 msgid "Belgium"
 msgstr ""
@@ -68,27 +153,32 @@ msgstr ""
 msgid "Brasil"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:73
+#: admin/src/Admin/Settings/Registry.php:123
 msgid "Cabeçalho \"Entrega\""
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:74
+#: admin/src/Admin/Settings/Registry.php:124
 msgid "Cabeçalho \"Valor\""
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:39
+#: admin/src/Admin/Settings/Registry.php:121
+msgid "Cabeçalhos e observações exibidos no resultado da consulta."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:53
 msgid "Calcula o frete automaticamente com o CEP salvo do cliente."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:46
+#: admin/src/Admin/Settings/Registry.php:60
+#: admin/src/Admin/Settings/Registry.php:110
 msgid "Calculadora"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:38
+#: admin/src/Admin/Settings/Registry.php:52
 msgid "Calculadora de frete"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:39
+#: admin/src/Admin/Settings/Registry.php:53
 msgid "Cálculo automático"
 msgstr ""
 
@@ -104,12 +194,19 @@ msgstr ""
 msgid "Central de ajuda"
 msgstr ""
 
-#: app/src/pages/settings/SettingsPage.vue:185
+#: app/src/pages/integrations/IntegrationsPage.vue:207
+#: app/src/pages/license/LicensePage.vue:218
+#: app/src/pages/settings/SettingsPage.vue:200
 msgid "Central de Ajuda"
 msgstr ""
 
 #: admin/src/API/Routes/Shipping_Calculate.php:68
 msgid "CEP inválido. Verifique o número informado e tente novamente."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:74
+#: app/src/pages/license/LicensePage.vue:85
+msgid "Chave de licença"
 msgstr ""
 
 #: admin/src/Admin/Order_Tracking_Meta_Box.php:167
@@ -120,7 +217,7 @@ msgstr ""
 msgid "Codigo"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:229
+#: admin/src/Integrations/Joinotify.php:314
 msgid "Código de rastreio"
 msgstr ""
 
@@ -136,20 +233,67 @@ msgstr ""
 msgid "Codigo:"
 msgstr ""
 
-#: app/src/pages/settings/SettingsPage.vue:181
+#: app/src/pages/license/LicensePage.vue:86
+msgid "Cole aqui a chave recebida na compra"
+msgstr ""
+
+#: admin/src/Integrations/Frenet.php:121
+msgid "Como o HubGo lê os dados de envio gerados pela Frenet."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:91
+msgid "Como os métodos de entrega são apresentados ao cliente."
+msgstr ""
+
+#: admin/src/Integrations/Melhor_Envio.php:125
+msgid ""
+"Comportamento da sincronização entre o Melhor Envio e o rastreio de pedidos "
+"do HubGo."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:140
+msgid "Comportamento operacional do plugin."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:325
+msgid "Comprar uma licença"
+msgstr ""
+
+#: app/src/pages/integrations/IntegrationsPage.vue:205
+msgid ""
+"Conecte o HubGo a outros plugins e serviços de logística. Se precisar de "
+"ajuda, acesse a nossa "
+msgstr ""
+
+#: admin/src/Admin/Menu.php:92
+#: app/src/pages/settings/SettingsPage.vue:196
 msgid "Configurações"
 msgstr ""
 
+#: app/src/components/modals/IntegrationSettingsModal.vue:41
+msgid "Configurações da integração"
+msgstr ""
+
+#: admin/src/API/Routes/Settings_Reset.php:29
+msgid "Configurações restauradas para os valores padrão."
+msgstr ""
+
+#: app/src/pages/settings/SettingsPage.vue:180
+msgid "Configurações restauradas."
+msgstr ""
+
 #: admin/src/API/Routes/Settings_Save.php:34
-#: app/src/pages/settings/SettingsPage.vue:157
+#: app/src/pages/settings/SettingsPage.vue:156
 msgid "Configurações salvas com sucesso!"
 msgstr ""
 
 #: admin/src/Core/Plugin.php:526
+#: admin/src/Integrations/Integrations_Base.php:353
+#: app/src/pages/integrations/components/IntegrationCard.vue:38
 msgid "Configurar"
 msgstr ""
 
-#: app/src/pages/settings/SettingsPage.vue:183
+#: app/src/pages/settings/SettingsPage.vue:198
 msgid ""
 "Configure a calculadora de frete, o rastreio de pedidos e a aparência do "
 "HubGo. Se precisar de ajuda, acesse a nossa "
@@ -163,27 +307,41 @@ msgstr ""
 msgid "Confirmar"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:72
+#: admin/src/Integrations/Joinotify.php:137
+msgid "Conhecer o Joinotify"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:85
 msgid "Cor de destaque usada na interface do frete."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:72
+#: admin/src/Admin/Settings/Registry.php:85
 msgid "Cor principal"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:69
-msgid "Cores e textos"
+#: admin/src/Admin/Settings/Registry.php:82
+msgid "Cores"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:211
+#: admin/src/Admin/Settings/Registry.php:76
+msgid "Cores e formato da tabela de fretes exibida na loja."
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:296
 msgid "Correios"
+msgstr ""
+
+#: admin/src/Integrations/Melhor_Envio.php:95
+msgid ""
+"Cotação, etiquetas e rastreio do Melhor Envio integrados ao HubGo, com o "
+"plugin oficial da MeuMouse.com."
 msgstr ""
 
 #: admin/src/Core/Providers_Registry.php:193
 msgid "Czech Republic"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:288
+#: admin/src/Integrations/Joinotify.php:373
 msgid "da Silva"
 msgstr ""
 
@@ -196,7 +354,7 @@ msgstr ""
 msgid "Data de envio:"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:239
+#: admin/src/Integrations/Joinotify.php:324
 msgid "Data do envio"
 msgstr ""
 
@@ -204,30 +362,69 @@ msgstr ""
 msgid "Data do envio:"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:148
+#: admin/src/Admin/System_Status.php:44
+#: admin/src/Admin/System_Status.php:55
+msgid "Desativado"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:335
+msgid "Desativar a licença neste site?"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:312
+msgid "Desativar neste site"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:242
+msgid "Detalhes da licença"
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:233
 msgid "Disparado ao salvar um código de rastreio no pedido."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:140
+#: admin/src/Integrations/Joinotify.php:225
 msgid "Disparado quando o status do pedido é alterado para Pedido enviado."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:128
+#: admin/src/Integrations/Joinotify.php:213
 msgid ""
 "Dispare mensagens automáticas no WhatsApp com eventos de logística, como "
 "pedido enviado e código de rastreio, integrando o HubGo ao Joinotify."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:298
+#: admin/src/Integrations/Joinotify.php:127
+msgid ""
+"Dispare mensagens automáticas no WhatsApp quando um pedido for enviado ou "
+"um código de rastreio for salvo."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:75
+msgid "Domínio ativado"
+msgstr ""
+
+#: admin/src/Integrations/Integrations_Base.php:74
+msgid "E-commerce"
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:383
 msgid "E-mail de faturamento do cliente (WooCommerce)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:391
+#: app/src/pages/integrations/components/IntegrationCard.vue:77
+msgid "Em breve"
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:476
 msgid "Endereço completo de entrega do cliente (WooCommerce)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:379
+#: admin/src/Integrations/Joinotify.php:464
 msgid "Endereço completo de faturamento do cliente (WooCommerce)"
+msgstr ""
+
+#: admin/src/Integrations/Frenet.php:115
+msgid "Endereço usado no link de rastreio. Use %1$s onde o código deve entrar."
 msgstr ""
 
 #: admin/src/Core/Tracking_Manager.php:385
@@ -238,28 +435,70 @@ msgstr ""
 msgid "Enviado quando o pedido e marcado como enviado."
 msgstr ""
 
-#: app/src/pages/settings/SettingsPage.vue:159
+#: app/src/pages/integrations/IntegrationsPage.vue:147
+#: app/src/pages/integrations/IntegrationsPage.vue:189
+#: app/src/pages/license/LicensePage.vue:174
+#: app/src/pages/settings/SettingsPage.vue:158
+#: app/src/pages/settings/SettingsPage.vue:182
 msgid "Erro"
 msgstr ""
 
-#: admin/src/Core/Assets.php:88
+#: admin/src/Core/Assets.php:123
 msgid "Erro ao calcular o frete. Tente novamente."
 msgstr ""
 
-#: app/src/pages/settings/SettingsPage.vue:159
+#: app/src/pages/settings/SettingsPage.vue:158
 msgid "Erro ao salvar as configurações."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:38
+#: app/src/pages/integrations/IntegrationsPage.vue:147
+msgid "Erro ao salvar as integrações."
+msgstr ""
+
+#: app/src/pages/settings/components/cards/DangerZone.vue:55
+msgid ""
+"Esta ação não pode ser desfeita. Todas as configurações do HubGo voltarão "
+"aos valores originais."
+msgstr ""
+
+#: admin/src/API/Routes/Plugin_Install.php:61
+msgid "Esta integração ainda não pode ser instalada pelo painel."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:345
+msgid "Esta integração estará disponível em breve."
+msgstr ""
+
+#: app/src/components/modals/IntegrationSettingsModal.vue:69
+msgid "Esta integração não possui configurações adicionais."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:52
 msgid "Exibe a calculadora de frete na página do produto."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:41
+#: admin/src/Admin/Settings/Registry.php:143
+msgid "Exibe notificações quando uma nova versão está disponível."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:55
 msgid "Exibe o metabox de código de rastreio na tela do pedido."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:93
+msgid "Exibição dos métodos"
 msgstr ""
 
 #: app/src/pages/settings/components/SettingsActionBar.vue:34
 msgid "Existem alterações não salvas."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:76
+msgid "Expira em"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:53
+msgid "Expirada"
 msgstr ""
 
 #: app/src/components/modals/ModalDialog.vue:61
@@ -272,16 +511,37 @@ msgstr ""
 msgid "Finland"
 msgstr ""
 
+#: admin/src/Admin/Settings/Registry.php:93
+msgid "Formato usado para listar os métodos de entrega retornados."
+msgstr ""
+
 #: admin/src/Core/Providers_Registry.php:195
 msgid "France"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:35
+#: admin/src/Integrations/Frenet.php:93
+#: admin/src/Integrations/Frenet.php:120
+msgid "Frenet"
+msgstr ""
+
+#: admin/src/Integrations/Integrations_Base.php:62
+msgid "Fretes e transportadoras"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:49
 msgid "Funcionalidades"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:30
+#: admin/src/Integrations/Joinotify.php:141
+msgid "Gatilhos de logística disponíveis no construtor de fluxos do Joinotify."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:42
 msgid "Geral"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:269
+msgid "Gerenciar licença"
 msgstr ""
 
 #: admin/src/Core/Providers_Registry.php:196
@@ -292,29 +552,58 @@ msgstr ""
 msgid "Global"
 msgstr ""
 
-#: admin/src/Admin/Menu.php:54
+#: admin/src/Admin/System_Status.php:48
+msgid "HTTPS"
+msgstr ""
+
+#: admin/src/Admin/Menu.php:79
 #: admin/src/Core/Plugin.php:332
-#: admin/src/Integrations/Joinotify.php:127
+#: admin/src/Integrations/Joinotify.php:212
 #: app/src/components/brand/BrandMark.vue:17
 #: app/src/components/brand/BrandMark.vue:18
 #: app/src/components/layout/PageHeader.vue:33
-#: app/src/pages/settings/SettingsPage.vue:83
+#: app/src/composables/useToasts.js:52
 msgid "HubGo"
 msgstr ""
 
-#: admin/src/Admin/Menu.php:53
+#: admin/src/Admin/Menu.php:91
+msgid "HubGo - Configurações"
+msgstr ""
+
+#: admin/src/Admin/Menu.php:78
 msgid "HubGo - Gerenciamento de Frete"
 msgstr ""
 
-#: admin/src/Core/License.php:263
-#: admin/src/Core/License.php:264
+#: admin/src/Admin/Menu.php:100
+msgid "HubGo - Integrações"
+msgstr ""
+
+#: admin/src/Admin/Menu.php:109
 msgid "HubGo - Licença"
 msgstr ""
 
-#: admin/src/Core/Assets.php:131
+#: admin/src/Core/Assets.php:176
 msgid ""
 "HubGo: build de interface não encontrado. Execute \"npm run build\" no "
 "plugin."
+msgstr ""
+
+#: admin/src/Admin/System_Status.php:59
+msgid "Idioma do site"
+msgstr ""
+
+#: admin/src/Integrations/Melhor_Envio.php:115
+msgid ""
+"Importa automaticamente o código de rastreio gerado no Melhor Envio para o "
+"pedido."
+msgstr ""
+
+#: admin/src/Integrations/Frenet.php:109
+msgid "Importar rastreio"
+msgstr ""
+
+#: admin/src/Admin/System_Status.php:49
+msgid "Inativo"
 msgstr ""
 
 #: admin/src/Core/Providers_Registry.php:199
@@ -327,12 +616,74 @@ msgstr ""
 msgid "Informações de rastreio"
 msgstr ""
 
+#: app/src/pages/license/LicensePage.vue:244
+msgid "Informações registradas na última verificação com o servidor."
+msgstr ""
+
+#: admin/src/API/Routes/License_Activate.php:35
+#: app/src/pages/license/LicensePage.vue:184
+msgid "Informe a chave de licença."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:274
+msgid ""
+"Informe a chave recebida na compra para liberar as atualizações e os "
+"recursos Pro."
+msgstr ""
+
+#: admin/src/API/Routes/Plugin_Install.php:48
+msgid "Informe a integração que deve ser instalada."
+msgstr ""
+
 #: admin/src/API/Routes/Tracking_Create.php:38
 msgid "Informe o código de rastreio."
 msgstr ""
 
+#: app/src/pages/integrations/IntegrationsPage.vue:187
+msgid "Instalado"
+msgstr ""
+
+#: admin/src/Integrations/Frenet.php:104
+msgid "Instalar Frenet"
+msgstr ""
+
+#: admin/src/Integrations/Melhor_Envio.php:109
+msgid "Instalar Melhor Envio"
+msgstr ""
+
+#: admin/src/Integrations/Integrations_Base.php:332
+#: app/src/pages/integrations/components/IntegrationCard.vue:39
+msgid "Instalar plugin"
+msgstr ""
+
 #: admin/src/Core/Plugin.php:369
 msgid "Instalar WooCommerce"
+msgstr ""
+
+#: app/src/pages/integrations/components/IntegrationsGrid.vue:217
+msgid "integração"
+msgstr ""
+
+#: admin/src/API/Routes/Plugin_Install.php:54
+msgid "Integração não encontrada."
+msgstr ""
+
+#: app/src/pages/integrations/components/IntegrationsGrid.vue:217
+msgid "integrações"
+msgstr ""
+
+#: admin/src/Admin/Menu.php:101
+#: app/src/components/modals/IntegrationSettingsModal.vue:43
+#: app/src/pages/integrations/IntegrationsPage.vue:203
+msgid "Integrações"
+msgstr ""
+
+#: app/src/pages/integrations/IntegrationsPage.vue:141
+msgid "Integrações salvas com sucesso!"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:56
+msgid "Inválida"
 msgstr ""
 
 #: admin/src/Core/Providers_Registry.php:197
@@ -343,19 +694,68 @@ msgstr ""
 msgid "Italy"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:276
+#: admin/src/Integrations/Joinotify.php:361
 msgid "João"
 msgstr ""
 
-#: admin/src/Core/License.php:281
+#: admin/src/Integrations/Joinotify.php:126
+#: admin/src/Integrations/Joinotify.php:140
+msgid "Joinotify"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:90
+msgid "Layout"
+msgstr ""
+
+#: admin/src/Integrations/Frenet.php:110
+msgid ""
+"Lê o código de rastreio gravado pela Frenet no pedido e o exibe no rastreio "
+"do HubGo."
+msgstr ""
+
+#: admin/src/Admin/Menu.php:110
+#: admin/src/Core/License.php:557
+#: app/src/pages/license/LicensePage.vue:171
+#: app/src/pages/license/LicensePage.vue:184
+#: app/src/pages/license/LicensePage.vue:214
 msgid "Licença"
+msgstr ""
+
+#: admin/src/API/Routes/License_Activate.php:57
+#: app/src/pages/license/LicensePage.vue:189
+msgid "Licença ativada com sucesso!"
+msgstr ""
+
+#: admin/src/API/Routes/License_Deactivate.php:35
+#: app/src/pages/license/LicensePage.vue:203
+msgid "Licença desativada neste site."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:73
+msgid "Licença individual"
+msgstr ""
+
+#: admin/src/API/Routes/License_Sync.php:47
+msgid "Licença sincronizada com sucesso!"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:197
+msgid "Licença sincronizada!"
+msgstr ""
+
+#: admin/src/Admin/System_Status.php:57
+msgid "Limite de memória"
+msgstr ""
+
+#: app/src/pages/integrations/components/IntegrationsGrid.vue:197
+msgid "Limpe o filtro de categoria para mudar o modo de exibição."
 msgstr ""
 
 #: templates/email/hubgo-tracking-info.php:18
 msgid "Link"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:219
+#: admin/src/Integrations/Joinotify.php:304
 msgid "Link de rastreio"
 msgstr ""
 
@@ -364,29 +764,115 @@ msgstr ""
 msgid "Link de rastreio:"
 msgstr ""
 
+#: admin/src/Admin/Settings/Registry.php:95
+msgid "Lista"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:139
+msgid "Manutenção e preferências"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:133
+msgid "Manutenção, atualizações e informações do ambiente."
+msgstr ""
+
+#: admin/src/Integrations/Melhor_Envio.php:119
+msgid "Marcar como enviado"
+msgstr ""
+
+#: admin/src/Integrations/Melhor_Envio.php:94
+#: admin/src/Integrations/Melhor_Envio.php:124
+msgid "Melhor Envio"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:144
+msgid "Modo de depuração"
+msgstr ""
+
+#: app/src/pages/integrations/components/IntegrationsGrid.vue:185
+msgid "Modo de exibição"
+msgstr ""
+
 #: admin/src/Core/Order_Status.php:292
 #: admin/src/Core/Order_Status.php:297
 msgid "Mudar status para Pedido enviado"
 msgstr ""
 
-#: app/src/pages/settings/SettingsPage.vue:140
+#: app/src/pages/license/LicensePage.vue:56
+msgid "Não ativada"
+msgstr ""
+
+#: admin/src/Admin/System_Status.php:38
+msgid "Não detectado"
+msgstr ""
+
+#: admin/src/API/Routes/License_Activate.php:50
+msgid "Não foi possível ativar esta licença."
+msgstr ""
+
+#: app/src/pages/settings/SettingsPage.vue:139
 msgid "Não foi possível carregar as configurações."
 msgstr ""
 
-#: admin/src/Core/Assets.php:216
+#: app/src/pages/integrations/IntegrationsPage.vue:83
+msgid "Não foi possível carregar as integrações."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:142
+msgid "Não foi possível carregar os dados da licença."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:174
+msgid "Não foi possível concluir a operação."
+msgstr ""
+
+#: admin/src/Core/License.php:373
+#: admin/src/Core/License.php:416
+msgid "Não foi possível contatar o servidor de licenças. Tente novamente."
+msgstr ""
+
+#: app/src/pages/integrations/IntegrationsPage.vue:189
+msgid "Não foi possível instalar o plugin."
+msgstr ""
+
+#: admin/src/Core/Plugin_Installer.php:128
+msgid "Não foi possível instalar o plugin. Tente instalar manualmente."
+msgstr ""
+
+#: app/src/pages/settings/components/cards/SystemStatusPanel.vue:35
+msgid "Não foi possível ler as informações do ambiente."
+msgstr ""
+
+#: admin/src/Core/Assets.php:332
 msgid "Não foi possível remover o rastreio. Tente novamente."
 msgstr ""
 
-#: admin/src/Core/Assets.php:217
+#: app/src/pages/settings/SettingsPage.vue:182
+msgid "Não foi possível restaurar as configurações."
+msgstr ""
+
+#: admin/src/Core/Assets.php:333
 msgid "Não foi possível salvar o rastreio. Tente novamente."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:64
+#: app/src/pages/license/LicensePage.vue:72
+#: app/src/pages/license/LicensePage.vue:74
+#: app/src/pages/license/LicensePage.vue:75
+#: app/src/pages/license/LicensePage.vue:115
+msgid "Não informado"
 msgstr ""
 
 #: admin/src/Views/Shipping_Calculator.php:174
 msgid "Não sei meu CEP"
 msgstr ""
 
-#: admin/src/Core/Assets.php:87
+#: admin/src/Core/Assets.php:122
 msgid "Nenhuma forma de entrega disponível."
+msgstr ""
+
+#: app/src/pages/integrations/components/IntegrationsGrid.vue:261
+msgid "Nenhuma integração disponível nesta categoria."
 msgstr ""
 
 #: app/src/components/fields/SelectField.vue:312
@@ -401,24 +887,70 @@ msgstr ""
 msgid "New Zealand"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:209
+#: admin/src/Integrations/Joinotify.php:294
 msgid "Nome da transportadora"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:75
+#: admin/src/Admin/Settings/Registry.php:125
 msgid "Nota de rodapé"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:339
+#: admin/src/Integrations/Integrations_Base.php:68
+msgid "Notificações"
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:424
 msgid "Número do pedido (WooCommerce)"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:75
+#: admin/src/Admin/Settings/Registry.php:349
+msgid ""
+"O plugin correspondente precisa estar instalado e ativo para usar esta "
+"integração."
+msgstr ""
+
+#: admin/src/Core/Plugin_Installer.php:132
+msgid "O plugin foi baixado, mas o arquivo principal não foi encontrado."
+msgstr ""
+
+#: admin/src/Core/Plugin_Installer.php:98
+msgid "O plugin informado é inválido."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:236
+msgid ""
+"O serviço de licenciamento não está configurado nesta instalação. Entre em "
+"contato com o suporte."
+msgstr ""
+
+#: admin/src/Core/License.php:514
+msgid "O serviço de licenciamento não está disponível."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:336
+msgid ""
+"O site deixará de receber atualizações e os recursos Pro serão bloqueados "
+"até uma nova ativação."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:125
 msgid "Observação exibida abaixo da tabela de fretes."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:49
+#: admin/src/Admin/Settings/Registry.php:61
+msgid "Onde e como a calculadora de frete é exibida."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:63
 msgid "Onde exibir a calculadora na página do produto."
+msgstr ""
+
+#: admin/src/Integrations/Integrations_Base.php:80
+msgid "Outros"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:73
+msgid "Pacote"
 msgstr ""
 
 #: admin/src/Core/Order_Status.php:83
@@ -427,9 +959,9 @@ msgstr ""
 #: admin/src/Core/Order_Status.php:145
 #: admin/src/Emails/Email_Shipped_Order.php:25
 #: admin/src/Emails/Email_Shipped_Order.php:60
-#: admin/src/Integrations/Joinotify.php:139
-#: admin/src/Integrations/Joinotify.php:353
+#: admin/src/Integrations/Joinotify.php:224
 #: admin/src/Integrations/Joinotify.php:438
+#: admin/src/Integrations/Joinotify.php:523
 msgid "Pedido enviado"
 msgstr ""
 
@@ -442,43 +974,63 @@ msgstr ""
 msgid "Pedido não encontrado."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:70
-msgid "Personalize a aparência da tabela de fretes."
+#: admin/src/Admin/Settings/Registry.php:142
+msgid "Permite que o HubGo se atualize sozinho sempre que possível."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:83
+msgid "Personalize as cores usadas pela interface de frete."
 msgstr ""
 
 #: app/src/components/fields/SelectField.vue:298
 msgid "Pesquisar..."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:57
+#: admin/src/Admin/System_Status.php:34
+msgid "PHP"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:114
 msgid "Placeholder do campo"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:72
+msgid "Plano"
+msgstr ""
+
+#: app/src/pages/integrations/IntegrationsPage.vue:187
+msgid "Plugin instalado com sucesso!"
+msgstr ""
+
+#: admin/src/API/Routes/Plugin_Install.php:71
+msgid "Plugin instalado e ativado com sucesso."
 msgstr ""
 
 #: admin/src/Core/Providers_Registry.php:202
 msgid "Poland"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:49
+#: admin/src/Admin/Settings/Registry.php:63
 msgid "Posição de exibição"
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:47
-msgid "Posição e textos da calculadora de frete."
 msgstr ""
 
 #: admin/src/Admin/Order_Tracking_Meta_Box.php:167
 msgid "Pré-visualizar:"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:274
+#: admin/src/Integrations/Joinotify.php:359
 msgid "Primeiro nome de faturamento do cliente (WooCommerce)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:403
+#: app/src/components/badges/ProBadge.vue:17
+msgid "Pro"
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:488
 msgid "Produtos e quantidades adquiridos no pedido, separados por linha"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:252
+#: admin/src/Integrations/Joinotify.php:337
 msgid "Quantidade de rastreios registrados no pedido"
 msgstr ""
 
@@ -499,16 +1051,32 @@ msgstr ""
 msgid "Rastreio - HubGo"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:41
+#: admin/src/Admin/Settings/Registry.php:55
 msgid "Rastreio no pedido (admin)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:460
+#: admin/src/Integrations/Joinotify.php:545
 msgid "Rastreio salvo no pedido"
+msgstr ""
+
+#: app/src/components/badges/ProBadge.vue:42
+msgid "Recurso disponível com licença ativa"
+msgstr ""
+
+#: app/src/components/badges/ProBadge.vue:42
+msgid "Recurso Pro liberado"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:144
+msgid "Registra detalhes adicionais de erros e processos no log do WordPress."
 msgstr ""
 
 #: admin/src/Admin/Order_Tracking_Meta_Box.php:265
 msgid "Remover"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:322
+msgid "Renovar assinatura"
 msgstr ""
 
 #: admin/src/Core/Plugin.php:300
@@ -527,20 +1095,40 @@ msgstr ""
 msgid "Requisição inválida."
 msgstr ""
 
+#: app/src/pages/settings/SettingsPage.vue:180
+msgid "Restaurado"
+msgstr ""
+
+#: app/src/pages/settings/components/cards/DangerZone.vue:45
+msgid "Restaurar"
+msgstr ""
+
+#: app/src/pages/settings/components/cards/DangerZone.vue:38
+msgid "Restaurar configurações padrão"
+msgstr ""
+
+#: app/src/pages/settings/components/cards/DangerZone.vue:54
+msgid "Restaurar configurações padrão?"
+msgstr ""
+
 #: admin/src/Core/Providers_Registry.php:203
 msgid "Romania"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:56
+#: admin/src/Admin/Settings/Registry.php:115
 msgid "Rótulo do botão de calcular."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:381
+#: admin/src/Integrations/Joinotify.php:466
 msgid "Rua das Flores, 123 - Curitiba/PR - Brasil (CEP: 80000-000)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:393
+#: admin/src/Integrations/Joinotify.php:478
 msgid "Rua das Margaridas, 450 - Curitiba/PR - Brasil (CEP: 80000-100)"
+msgstr ""
+
+#: app/src/pages/integrations/components/IntegrationCard.vue:128
+msgid "Saiba mais"
 msgstr ""
 
 #: app/src/pages/settings/components/SettingsActionBar.vue:23
@@ -551,7 +1139,8 @@ msgstr ""
 msgid "Salvar rastreio"
 msgstr ""
 
-#: app/src/pages/settings/SettingsPage.vue:157
+#: app/src/pages/integrations/IntegrationsPage.vue:141
+#: app/src/pages/settings/SettingsPage.vue:156
 msgid "Salvo"
 msgstr ""
 
@@ -572,11 +1161,39 @@ msgstr ""
 msgid "Seu pedido foi enviado e ja esta a caminho."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:286
+#: app/src/pages/license/LicensePage.vue:337
+msgid "Sim, desativar"
+msgstr ""
+
+#: app/src/pages/settings/components/cards/DangerZone.vue:56
+msgid "Sim, restaurar"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:305
+msgid "Sincronizar"
+msgstr ""
+
+#: admin/src/Integrations/Melhor_Envio.php:114
+msgid "Sincronizar rastreio"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:273
+msgid "Sincronize os dados ou libere esta ativação para usar a chave em outro site."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:71
+msgid "Situação"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:132
+msgid "Sobre"
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:371
 msgid "Sobrenome de faturamento do cliente (WooCommerce)"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:53
+#: admin/src/Admin/Settings/Registry.php:67
 msgid "Somente via shortcode"
 msgstr ""
 
@@ -584,7 +1201,7 @@ msgstr ""
 msgid "South African"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:40
+#: admin/src/Admin/Settings/Registry.php:54
 msgid "Status \"Pedido enviado\""
 msgstr ""
 
@@ -592,54 +1209,100 @@ msgstr ""
 msgid "Status alterado em massa para Pedido enviado."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:351
+#: admin/src/Integrations/Joinotify.php:436
 msgid "Status do pedido (WooCommerce)"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:149
+msgid "Status do sistema"
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:77
+msgid "Suporte até"
 msgstr ""
 
 #: admin/src/Core/Providers_Registry.php:205
 msgid "Sweden"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:322
+#: admin/src/Admin/Settings/Registry.php:94
+msgid "Tabela"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:120
+msgid "Tabela de fretes"
+msgstr ""
+
+#: admin/src/Admin/System_Status.php:43
+msgid "Tabelas de pedidos (HPOS)"
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:407
 msgid "Telefone de entrega do pedido (WooCommerce)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:310
+#: admin/src/Integrations/Joinotify.php:395
 msgid "Telefone de faturamento do pedido (WooCommerce)"
 msgstr ""
 
-#: admin/src/Core/Assets.php:215
+#: admin/src/Core/Assets.php:331
 msgid "Tem certeza que deseja remover este rastreio?"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:57
+#: admin/src/Admin/System_Status.php:58
+msgid "Tempo máximo de execução"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:114
 msgid "Texto de exemplo dentro do campo de CEP."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:55
+#: admin/src/Admin/Settings/Registry.php:113
 msgid "Texto de informação"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:56
+#: admin/src/Admin/Settings/Registry.php:115
 msgid "Texto do botão"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:55
+#: admin/src/Admin/Settings/Registry.php:113
 msgid "Texto exibido acima do campo de CEP."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:73
+#: admin/src/Admin/Settings/Registry.php:103
+msgid "Textos"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:111
+msgid "Textos do formulário de consulta de frete."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:123
 msgid "Título da coluna de método de entrega."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:74
+#: admin/src/Admin/Settings/Registry.php:124
 msgid "Título da coluna de valor."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:264
+#: app/src/pages/integrations/components/IntegrationsGrid.vue:118
+msgid "Todas"
+msgstr ""
+
+#: app/src/pages/settings/components/cards/DangerZone.vue:40
+msgid ""
+"Todas as opções do HubGo voltarão aos valores originais. Códigos de "
+"rastreio dos pedidos não são afetados."
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:349
 msgid ""
 "Todos os rastreios do pedido, um por linha (transportadora, código e link). "
 "Também pode ser usado como origem de uma ação de repetição."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:104
+msgid "Todos os textos exibidos pela calculadora e pela tabela de fretes."
 msgstr ""
 
 #: templates/email/hubgo-tracking-info.php:15
@@ -665,6 +1328,10 @@ msgstr ""
 msgid "Trapaceando?"
 msgstr ""
 
+#: app/src/pages/license/LicensePage.vue:79
+msgid "Última verificação"
+msgstr ""
+
 #: admin/src/Core/Providers_Registry.php:206
 msgid "United Kingdom"
 msgstr ""
@@ -673,14 +1340,61 @@ msgstr ""
 msgid "United States"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:363
+#: admin/src/Integrations/Frenet.php:114
+msgid "URL de rastreio"
+msgstr ""
+
+#: admin/src/Integrations/Frenet.php:94
+msgid ""
+"Use as cotações da Frenet no cálculo de frete e leve o código de rastreio "
+"para o painel de pedidos do HubGo."
+msgstr ""
+
+#: admin/src/Integrations/Joinotify.php:448
 msgid "Valor total do pedido (WooCommerce)"
 msgstr ""
 
-#: app/src/pages/settings/SettingsPage.vue:194
+#: app/src/pages/integrations/components/IntegrationsGrid.vue:140
+msgid "Ver todas"
+msgstr ""
+
+#: app/src/pages/integrations/IntegrationsPage.vue:216
+#: app/src/pages/settings/SettingsPage.vue:209
 msgid "Versão"
 msgstr ""
 
-#: admin/src/Admin/Menu.php:81
+#: admin/src/Admin/System_Status.php:32
+msgid "Versão do HubGo"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:150
+msgid "Visão rápida do ambiente WordPress, PHP e WooCommerce."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:97
+msgid "Vitalícia"
+msgstr ""
+
+#: admin/src/Admin/Menu.php:201
 msgid "Você não tem permissão para acessar esta página."
+msgstr ""
+
+#: admin/src/Core/Plugin_Installer.php:92
+msgid "Você não tem permissão para instalar plugins."
+msgstr ""
+
+#: admin/src/Admin/System_Status.php:37
+msgid "WooCommerce"
+msgstr ""
+
+#: admin/src/Admin/System_Status.php:33
+msgid "WordPress"
+msgstr ""
+
+#: admin/src/Admin/System_Status.php:54
+msgid "WP_DEBUG"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:155
+msgid "Zona de perigo"
 msgstr ""

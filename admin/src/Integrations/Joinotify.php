@@ -2,6 +2,7 @@
 
 namespace MeuMouse\Hubgo\Integrations;
 
+use MeuMouse\Hubgo\Admin\Settings;
 use MeuMouse\Hubgo\Core\Tracking_Manager;
 
 use MeuMouse\Joinotify\Integrations\Woocommerce;
@@ -26,7 +27,7 @@ defined('ABSPATH') || exit;
  * @package MeuMouse\Hubgo\Integrations
  * @author MeuMouse.com
  */
-class Joinotify {
+class Joinotify extends Integrations_Base {
 
     /**
      * Integration slug / trigger context.
@@ -34,6 +35,14 @@ class Joinotify {
      * @var string
      */
     const SLUG = 'hubgo';
+
+    /**
+     * Card slug on the HubGo Integrations screen.
+     *
+     * @since 3.0.0
+     * @var string
+     */
+    const CARD_SLUG = 'joinotify';
 
     /**
      * Trigger identifiers.
@@ -49,6 +58,22 @@ class Joinotify {
     const SETTING_KEY = 'enable_hubgo_integration';
 
     /**
+     * Option key toggling the integration on the HubGo side.
+     *
+     * @since 3.0.0
+     * @var string
+     */
+    const HUBGO_SETTING_KEY = 'enable_joinotify_integration';
+
+    /**
+     * Plugin basename of the host plugin.
+     *
+     * @since 3.0.0
+     * @var string
+     */
+    const PLUGIN_FILE = 'joinotify/joinotify.php';
+
+    /**
      * Tracking manager used to normalize items.
      *
      * @since 3.0.0
@@ -61,9 +86,15 @@ class Joinotify {
      * Constructor.
      *
      * @since 3.0.0
+     * @version 3.0.0
      */
     public function __construct() {
-        if ( ! $this->is_supported() ) {
+        // The card is registered unconditionally: the Integrations screen must
+        // list the integration even when Joinotify is absent or switched off,
+        // otherwise there is no way for the user to discover or enable it.
+        $this->register_integration_card( 10 );
+
+        if ( ! $this->is_supported() || ! $this->is_enabled() ) {
             return;
         }
 
@@ -76,6 +107,60 @@ class Joinotify {
         // Give the builder's trigger cards the HubGo brand icon instead of the
         // generic fallback used for unregistered contexts.
         add_filter( 'Joinotify/Builder/Trigger_Context_Icons', array( $this, 'register_context_icon' ) );
+    }
+
+
+    /**
+     * Register the HubGo card on the Integrations screen.
+     *
+     * Note this is the HubGo-side switch. Joinotify keeps its own toggle for
+     * the HubGo card inside its Applications tab (see self::SETTING_KEY); both
+     * must be on for notifications to flow, which the modal spells out.
+     *
+     * @since 3.0.0
+     * @param array $integrations Current catalog.
+     * @return array
+     */
+    public function add_integration_item( $integrations ) {
+        $integrations[ self::CARD_SLUG ] = array(
+            'title'            => esc_html__( 'Joinotify', 'hubgo' ),
+            'description'      => esc_html__( 'Dispare mensagens automáticas no WhatsApp quando um pedido for enviado ou um código de rastreio for salvo.', 'hubgo' ),
+            'icon'             => $this->get_card_icon_svg(),
+            'category'         => 'notifications',
+            'setting_key'      => self::HUBGO_SETTING_KEY,
+            'is_plugin'        => true,
+            'plugin_active'    => array( self::PLUGIN_FILE ),
+            'requires_license' => true,
+            'doc_url'          => 'https://ajuda.meumouse.com/docs/joinotify/overview',
+            'install'          => array(
+                'plugin_slug' => self::PLUGIN_FILE,
+                'label'       => esc_html__( 'Conhecer o Joinotify', 'hubgo' ),
+            ),
+            'modal'            => array(
+                'title'       => esc_html__( 'Joinotify', 'hubgo' ),
+                'description' => esc_html__( 'Gatilhos de logística disponíveis no construtor de fluxos do Joinotify.', 'hubgo' ),
+                'size'        => 'medium',
+                'blocks'      => array(
+                    self::modal_notice_block(
+                        esc_html__( 'Além desta chave, o card "HubGo" também precisa estar ativo na aba Aplicações do Joinotify.', 'hubgo' ),
+                        'info'
+                    ),
+                ),
+            ),
+        );
+
+        return $integrations;
+    }
+
+
+    /**
+     * Whether the HubGo-side toggle is on.
+     *
+     * @since 3.0.0
+     * @return bool
+     */
+    private function is_enabled() {
+        return 'yes' === Settings::get_setting( self::HUBGO_SETTING_KEY, 'yes' );
     }
 
 
@@ -636,7 +721,24 @@ class Joinotify {
 
 
     /**
-     * HubGo icon SVG for the integration card.
+     * Joinotify brand mark used on the HubGo Integrations card.
+     *
+     * The card represents the *other* product, so it carries the Joinotify
+     * logo — unlike self::get_icon_svg(), which brands HubGo's own triggers
+     * inside the Joinotify builder.
+     *
+     * @since 3.0.0
+     * @return string
+     */
+    private function get_card_icon_svg() {
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 703 882.5" role="img" aria-label="Joinotify">'
+            . '<path d="M908.66,248V666a126.5,126.5,0,0,1-207.21,97.41l-16.7-16.7L434.08,496.07l-62-62a47.19,47.19,0,0,0-72,30.86V843.36a47.52,47.52,0,0,0,69.57,35.22l19.3-19.3,56-56,81.19-81.19,10.44-10.44a47.65,47.65,0,0,1,67.63,65.05l-13,13L428.84,952.12l-9.59,9.59a128,128,0,0,1-213.59-95.18V413.17a124.52,124.52,0,0,1,199.78-82.54l22.13,22.13L674.45,599.64l46.22,46.22,17,17a47.8,47.8,0,0,0,71-31.44V270.19a48.19,48.19,0,0,0-75-40.05L720.43,243.4l-68.09,68.09L575.7,388.13a48.39,48.39,0,0,1-67.43-67.93L680,148.46A136,136,0,0,1,908.66,248Z" transform="translate(-205.66 -112.03)" fill="#22c55e"/>'
+            . '</svg>';
+    }
+
+
+    /**
+     * HubGo icon SVG for the trigger cards inside the Joinotify builder.
      *
      * @since 3.0.0
      * @return string

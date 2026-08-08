@@ -16,6 +16,8 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 settings: resolve( __dirname, 'src/entries/settings.js' ),
+                integrations: resolve( __dirname, 'src/entries/integrations.js' ),
+                license: resolve( __dirname, 'src/entries/license.js' ),
             },
             output: {
                 entryFileNames: '[name]/app.js',

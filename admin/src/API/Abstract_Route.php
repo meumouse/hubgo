@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Hubgo\API;
 
+use MeuMouse\Hubgo\Admin\Menu;
+
 use WP_REST_Request;
 
 defined('ABSPATH') || exit;
@@ -76,12 +78,16 @@ abstract class Abstract_Route {
     /**
      * Default permission check (admin/shop manager).
      *
+     * Resolved through Admin\Menu so REST access and the admin screens are
+     * gated by the same filterable capability.
+     *
      * @since 3.0.0
+     * @version 3.0.0
      * @param WP_REST_Request $request REST request instance.
      * @return bool
      */
     public function permission( WP_REST_Request $request ) {
-        return current_user_can( 'manage_woocommerce' );
+        return current_user_can( Menu::get_capability() );
     }
 
 
