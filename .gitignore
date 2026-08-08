@@ -9,7 +9,9 @@ admin/vendor
 # Local tooling
 .history/
 *.log
+app/dist
 
 # OS
 .DS_Store
 Thumbs.db
+.env
