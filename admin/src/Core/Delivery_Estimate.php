@@ -27,7 +27,7 @@ defined('ABSPATH') || exit;
  * pushed forward until it lands on a business day — a carrier that says "5 dias
  * úteis" is not promising a Sunday.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -39,7 +39,7 @@ class Delivery_Estimate {
      * Guards the business-day walk against a carrier returning nonsense (or a
      * filter returning a huge number), which would otherwise spin the loop.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var int
      */
     const MAX_DAYS = 180;
@@ -52,7 +52,7 @@ class Delivery_Estimate {
      * Melhor Envio, the remaining ones from smaller gateways that copied one of
      * those two conventions.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<int,string>
      */
     public static function get_meta_keys() {
@@ -70,7 +70,7 @@ class Delivery_Estimate {
         /**
          * Filters the rate meta keys scanned for a delivery forecast.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param array<int,string> $keys Meta keys in priority order.
          */
         return apply_filters( 'Hubgo/Shipping_Calculator/Delivery_Meta_Keys', $keys );
@@ -80,7 +80,7 @@ class Delivery_Estimate {
     /**
      * Build the delivery estimate for a shipping rate.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param WC_Shipping_Rate $rate Rate to inspect.
      * @return array<string,mixed>
      */
@@ -94,7 +94,7 @@ class Delivery_Estimate {
     /**
      * Build the estimate payload from a number of business days.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param int|null $days Carrier forecast in business days, null when unknown.
      * @param WC_Shipping_Rate|null $rate Rate the estimate belongs to, for filters.
      * @return array<string,mixed>
@@ -128,7 +128,7 @@ class Delivery_Estimate {
         /**
          * Filters the delivery estimate computed for a rate.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param array<string,mixed> $estimate Estimate payload.
          * @param int|null $days Raw carrier forecast, before handling time.
          * @param WC_Shipping_Rate|null $rate Rate the estimate belongs to.
@@ -140,7 +140,7 @@ class Delivery_Estimate {
     /**
      * Extra business days the store needs before handing the parcel over.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return int
      */
     public static function get_handling_days() {
@@ -151,7 +151,7 @@ class Delivery_Estimate {
     /**
      * Read the carrier forecast out of a rate's meta data.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param WC_Shipping_Rate $rate Rate to inspect.
      * @return int|null Business days, or null when no key carried one.
      */
@@ -182,7 +182,7 @@ class Delivery_Estimate {
          * Lets an integration teach HubGo about a forecast stored somewhere
          * other than the rate meta (an option, the method instance settings).
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param int|null $days Business days read from the meta, null when absent.
          * @param WC_Shipping_Rate $rate Rate being inspected.
          * @param array $meta Rate meta data.
@@ -194,7 +194,7 @@ class Delivery_Estimate {
     /**
      * Coerce a meta value into a number of business days.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param mixed $value Raw meta value.
      * @return int|null
      */
@@ -224,7 +224,7 @@ class Delivery_Estimate {
     /**
      * Today, in the site timezone.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return DateTimeImmutable
      */
     private static function get_today() {
@@ -237,7 +237,7 @@ class Delivery_Estimate {
     /**
      * Walk forward N business days, then land on the next business day.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param DateTimeImmutable $start Starting date.
      * @param int $days Business days to add.
      * @return DateTimeImmutable
@@ -271,7 +271,7 @@ class Delivery_Estimate {
     /**
      * Whether a date is a working day for delivery purposes.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param DateTimeImmutable $date Date to test.
      * @param array<int,string> $holidays Holidays as Y-m-d strings.
      * @return bool
@@ -288,14 +288,14 @@ class Delivery_Estimate {
     /**
      * ISO weekday numbers that are not working days (1 = Monday, 7 = Sunday).
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<int,int>
      */
     private static function get_non_business_weekdays() {
         /**
          * Filters the weekdays treated as non-working days.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param array<int,int> $weekdays ISO weekday numbers (1 = Monday).
          */
         $weekdays = apply_filters( 'Hubgo/Shipping_Calculator/Non_Business_Days', array( 6, 7 ) );
@@ -311,14 +311,14 @@ class Delivery_Estimate {
      * wrong shifts every promised date on the storefront, so the store owner
      * (or a locale plugin) supplies it.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<int,string> Dates as Y-m-d.
      */
     private static function get_holidays() {
         /**
          * Filters the holidays skipped when computing a delivery date.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param array<int,string> $holidays Dates as Y-m-d strings.
          */
         $holidays = apply_filters( 'Hubgo/Shipping_Calculator/Holidays', array() );
@@ -330,7 +330,7 @@ class Delivery_Estimate {
     /**
      * "3 dias úteis" label for a forecast.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param int $days Business days.
      * @return string
      */
@@ -350,7 +350,7 @@ class Delivery_Estimate {
     /**
      * "dia 14 de agosto" — the date fragment reused by every headline.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param DateTimeImmutable $date Promised delivery date.
      * @return string
      */
@@ -366,7 +366,7 @@ class Delivery_Estimate {
     /**
      * "Receba até dia 14 de agosto" headline for a delivery date.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param DateTimeImmutable $date Promised delivery date.
      * @return string
      */

@@ -522,7 +522,7 @@ class Registry {
     /**
      * Numeric field. `min`/`max` are enforced again on save by the repository.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $key Setting key.
      * @param string $label Field label.
      * @param string $description Field description.
@@ -537,7 +537,7 @@ class Registry {
     /**
      * Slider field, for style values that read better as a continuum.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $key Setting key.
      * @param string $label Field label.
      * @param string $description Field description.
@@ -561,7 +561,7 @@ class Registry {
     /**
      * Masked field for credentials.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $key Setting key.
      * @param string $label Field label.
      * @param string $description Field description.

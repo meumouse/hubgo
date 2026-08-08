@@ -28,7 +28,7 @@ defined('ABSPATH') || exit;
  * including products the calculator cannot see) sets `free_shipping_threshold`
  * and that wins outright.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -37,7 +37,7 @@ class Free_Shipping_Context {
     /**
      * `requires` values that make a free shipping instance depend on the total.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var array<int,string>
      */
     const AMOUNT_REQUIREMENTS = array( 'min_amount', 'either', 'both' );
@@ -50,7 +50,7 @@ class Free_Shipping_Context {
      * to carry every key the populated version does: an empty PHP array
      * serializes to a JSON array, and the storefront reads this as an object.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<string,mixed>
      */
     public static function get_empty() {
@@ -71,7 +71,7 @@ class Free_Shipping_Context {
     /**
      * Build the free-shipping context for a package.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param WC_Shipping_Zone|null $zone Zone matched for the package.
      * @param array $package Shipping package.
      * @param array $rates Rate objects returned for the package.
@@ -99,7 +99,7 @@ class Free_Shipping_Context {
         /**
          * Filters the free-shipping context advertised by the calculator.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param array<string,mixed> $context Context payload.
          * @param WC_Shipping_Zone|null $zone Zone matched for the package.
          * @param array $package Shipping package.
@@ -111,7 +111,7 @@ class Free_Shipping_Context {
     /**
      * Resolve the threshold to advertise, in store currency.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param WC_Shipping_Zone|null $zone Zone matched for the package.
      * @return float Zero when there is nothing to advertise.
      */
@@ -130,7 +130,7 @@ class Free_Shipping_Context {
     /**
      * Lowest amount-based free shipping threshold declared by a zone.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param WC_Shipping_Zone|null $zone Zone to inspect.
      * @return float
      */
@@ -174,7 +174,7 @@ class Free_Shipping_Context {
      * calculator quotes, so the number shown on the storefront and the number
      * WC_Shipping_Free_Shipping::is_available() compares against never diverge.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $package Shipping package.
      * @return float
      */
@@ -201,7 +201,7 @@ class Free_Shipping_Context {
     /**
      * Whether any of the returned rates is actually free.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $rates Rate objects.
      * @return bool
      */
@@ -226,7 +226,7 @@ class Free_Shipping_Context {
      * Shares the service's formatter so the badge and the rate rows can never
      * present the same currency differently.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param float $amount Amount in store currency.
      * @return string
      */

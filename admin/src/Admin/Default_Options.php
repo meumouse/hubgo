@@ -43,7 +43,7 @@ class Default_Options {
             'note_text_bottom_shipping_calc'       => '*Este resultado é apenas uma estimativa para este produto. O valor final considerado, deverá ser o total do carrinho.',
             'text_placeholder_input_shipping_calc' => 'Informe seu CEP',
 
-            // Storefront calculator (3.1.0). Empty strings hide the element they
+            // Storefront calculator (3.0.0). Empty strings hide the element they
             // belong to, so a store that wants a leaner card just clears them.
             'text_calculator_title'                => 'Calcular frete e prazo',
             'text_free_shipping_badge'             => 'Frete grátis acima de %s',
@@ -74,7 +74,7 @@ class Default_Options {
             // on purpose: empty means "use the built-in value", which keeps the
             // CSS custom properties defined in exactly one place (the storefront
             // stylesheet) instead of duplicating them here where they would
-            // silently drift. Only primary_main_color predates 3.1.0 and keeps
+            // silently drift. Only primary_main_color predates 3.0.0 and keeps
             // its concrete default.
             'calc_surface_bg'                      => '',
             'calc_surface_border'                  => '',

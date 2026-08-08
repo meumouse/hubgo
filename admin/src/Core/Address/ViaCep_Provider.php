@@ -20,7 +20,7 @@ defined('ABSPATH') || exit;
  * Results are cached because the street/postcode mapping is effectively static
  * and shoppers on the same street would otherwise each hit the service.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Core\Address
  * @author MeuMouse.com
  */
@@ -29,7 +29,7 @@ class ViaCep_Provider extends Address_Provider {
     /**
      * Provider identifier.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const ID = 'viacep';
@@ -37,7 +37,7 @@ class ViaCep_Provider extends Address_Provider {
     /**
      * Reverse search endpoint template: state / city / street.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const SEARCH_URL = 'https://viacep.com.br/ws/%1$s/%2$s/%3$s/json/';
@@ -45,7 +45,7 @@ class ViaCep_Provider extends Address_Provider {
     /**
      * Transient prefix for cached searches.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const CACHE_PREFIX = 'hubgo_viacep_';
@@ -53,7 +53,7 @@ class ViaCep_Provider extends Address_Provider {
     /**
      * Cache lifetime for a search, in seconds.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var int
      */
     const CACHE_TTL = DAY_IN_SECONDS;
@@ -61,7 +61,7 @@ class ViaCep_Provider extends Address_Provider {
     /**
      * Minimum characters ViaCEP requires for the city and street terms.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var int
      */
     const MIN_TERM_LENGTH = 3;
@@ -69,7 +69,7 @@ class ViaCep_Provider extends Address_Provider {
     /**
      * Upper bound on returned suggestions.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var int
      */
     const MAX_RESULTS = 25;
@@ -182,7 +182,7 @@ class ViaCep_Provider extends Address_Provider {
     /**
      * Map ViaCEP rows to normalized suggestions.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $rows Decoded ViaCEP response.
      * @return array<int,array<string,string>>
      */

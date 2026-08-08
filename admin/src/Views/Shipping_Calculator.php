@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
 /**
  * Class Shipping_Calculator
  *
- * Renders the storefront shipping calculator mount node. Since 3.1.0 the
+ * Renders the storefront shipping calculator mount node. Since 3.0.0 the
  * calculator itself is a Vue application (app/src/storefront): this class only
  * prints the placeholder and the per-instance config the app reads from it.
  *
@@ -24,7 +24,7 @@ defined('ABSPATH') || exit;
  * having one place build that config is what keeps the three in step.
  *
  * @since 2.0.0
- * @version 3.1.0
+ * @version 3.0.0
  * @package MeuMouse\Hubgo\Views
  * @author MeuMouse.com
  */
@@ -123,7 +123,7 @@ class Shipping_Calculator {
      * Render shipping calculator mount node
      *
      * @since 2.0.0
-     * @version 3.1.0
+     * @version 3.0.0
      * @return void
      */
     public function render_form() {
@@ -138,7 +138,7 @@ class Shipping_Calculator {
     /**
      * Whether the calculator module is switched on.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     public static function is_enabled() {
@@ -149,7 +149,7 @@ class Shipping_Calculator {
     /**
      * Print the mount node the Vue app attaches to.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $overrides Config overrides (used by the Elementor widget).
      * @return void
      */
@@ -172,7 +172,7 @@ class Shipping_Calculator {
      * belongs to when it is blank, which is how a store owner removes the
      * title, the note or the address finder without a dedicated toggle.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $overrides Values replacing the settings-derived defaults.
      * @return array<string,mixed>
      */
@@ -223,7 +223,7 @@ class Shipping_Calculator {
         /**
          * Filters the config handed to a storefront calculator instance.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param array<string,mixed> $config Instance config.
          * @param array<string,mixed> $overrides Overrides that were applied.
          */
@@ -237,7 +237,7 @@ class Shipping_Calculator {
      * Only the manually configured value can be known here: the zone-derived
      * one depends on a destination the shopper has not typed yet.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     private static function get_free_shipping_hint() {
@@ -254,7 +254,7 @@ class Shipping_Calculator {
     /**
      * Resolve the product the calculator should quote.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return int
      */
     private static function get_current_product_id() {
@@ -274,7 +274,7 @@ class Shipping_Calculator {
      * Render via shortcode
      *
      * @since 2.0.0
-     * @version 3.1.0
+     * @version 3.0.0
      * @param array $atts Shortcode attributes
      * @return string
      */

@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
  * spend their Place Details lookup here, which is also what closes the billing
  * session opened by the autocomplete requests.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\API\Routes
  * @author MeuMouse.com
  */

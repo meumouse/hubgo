@@ -22,7 +22,7 @@ defined('ABSPATH') || exit;
  * never highlights a method this zone does not offer).
  *
  * @since 3.0.0
- * @version 3.1.0
+ * @version 3.0.0
  * @package MeuMouse\Hubgo\API\Routes
  */
 class Shipping_Calculate extends Abstract_Route {
@@ -52,7 +52,7 @@ class Shipping_Calculate extends Abstract_Route {
     /**
      * @inheritDoc
      *
-     * @version 3.1.0
+     * @version 3.0.0
      */
     public function handle( WP_REST_Request $request ) {
         $service = new Shipping_Calculator_Service();

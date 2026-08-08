@@ -20,7 +20,7 @@ defined('ABSPATH') || exit;
  * Providers never run in the browser: whatever credential they need stays on
  * the server and the storefront only ever talks to `hubgo/v1/address/*`.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Core\Address
  * @author MeuMouse.com
  */
@@ -29,7 +29,7 @@ abstract class Address_Provider {
     /**
      * Provider takes a single free-text query.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const MODE_FREETEXT = 'freetext';
@@ -37,7 +37,7 @@ abstract class Address_Provider {
     /**
      * Provider needs the state, city and street as separate fields.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const MODE_STRUCTURED = 'structured';
@@ -45,7 +45,7 @@ abstract class Address_Provider {
     /**
      * Outbound request timeout, in seconds.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var int
      */
     const TIMEOUT = 8;
@@ -54,7 +54,7 @@ abstract class Address_Provider {
     /**
      * Provider identifier, as stored in the settings.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     abstract public function get_id();
@@ -63,7 +63,7 @@ abstract class Address_Provider {
     /**
      * How the storefront should collect the query.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string One of MODE_FREETEXT|MODE_STRUCTURED.
      */
     abstract public function get_mode();
@@ -72,7 +72,7 @@ abstract class Address_Provider {
     /**
      * Whether the provider holds everything it needs to answer.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     abstract public function is_configured();
@@ -81,7 +81,7 @@ abstract class Address_Provider {
     /**
      * Search addresses matching the shopper's input.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $args Sanitized query parts: q, uf, city, street, session.
      * @return array<int,array<string,string>>|WP_Error Suggestions or an error.
      */
@@ -91,7 +91,7 @@ abstract class Address_Provider {
     /**
      * Resolve the postcode of a previously suggested address.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $args Sanitized args: id, session.
      * @return string|WP_Error Eight-digit postcode, or an error.
      */
@@ -101,7 +101,7 @@ abstract class Address_Provider {
     /**
      * Human-readable label shown on the settings screen.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     public function get_label() {
@@ -115,7 +115,7 @@ abstract class Address_Provider {
      * `postcode` is filled by providers that already know it at search time —
      * the storefront then skips the resolve round-trip entirely.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $id Opaque identifier the provider can resolve later.
      * @param string $primary Main line (street, number).
      * @param string $secondary Supporting line (neighbourhood, city, state).
@@ -135,7 +135,7 @@ abstract class Address_Provider {
     /**
      * Reduce a postcode to its eight digits, or an empty string.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $postcode Raw postcode.
      * @return string
      */
@@ -149,7 +149,7 @@ abstract class Address_Provider {
     /**
      * Perform a GET request and decode its JSON body.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $url Absolute URL.
      * @param array $headers Extra request headers.
      * @return array|WP_Error Decoded body, or an error.
@@ -167,7 +167,7 @@ abstract class Address_Provider {
     /**
      * Perform a POST request with a JSON body and decode the JSON response.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $url Absolute URL.
      * @param array $body Payload to encode.
      * @param array $headers Extra request headers.
@@ -193,7 +193,7 @@ abstract class Address_Provider {
      * Upstream error messages are deliberately not forwarded to the storefront:
      * they can echo the API key back, and they are written for developers.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array|WP_Error $response Response from the HTTP API.
      * @return array|WP_Error
      */

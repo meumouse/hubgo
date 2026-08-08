@@ -37,7 +37,7 @@ defined('ABSPATH') || exit;
  * session or the checkout rate cache.
  *
  * @since 3.0.0
- * @version 3.1.0
+ * @version 3.0.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -50,7 +50,7 @@ class Shipping_Calculator_Service {
      * upgrade never serves a row set the new storefront cannot read.
      *
      * @since 3.0.1
-     * @version 3.1.0
+     * @version 3.0.0
      * @var string
      */
     const CACHE_PREFIX = 'hubgo_ship_v2_';
@@ -77,7 +77,7 @@ class Shipping_Calculator_Service {
      * Kept alongside the id/name pair because the free-shipping context has to
      * read the zone's method instances, not just identify it.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var WC_Shipping_Zone|null
      */
     private $matched_zone_object = null;
@@ -85,7 +85,7 @@ class Shipping_Calculator_Service {
     /**
      * Free-shipping context produced by the last calculation.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var array
      */
     private $free_shipping = array();
@@ -93,7 +93,7 @@ class Shipping_Calculator_Service {
     /**
      * Destination context resolved on the last calculation.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var array
      */
     private $context = array();
@@ -111,7 +111,7 @@ class Shipping_Calculator_Service {
      * Calculate normalized shipping rows for a product/postcode.
      *
      * @since 3.0.0
-     * @version 3.1.0
+     * @version 3.0.0
      * @param int $product_id Product ID.
      * @param int $variation_id Variation ID (optional).
      * @param string $postcode Destination postcode.
@@ -190,7 +190,7 @@ class Shipping_Calculator_Service {
     /**
      * Get the free-shipping context of the last calculation.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array Empty array when no calculation ran.
      */
     public function get_free_shipping_context() {
@@ -201,7 +201,7 @@ class Shipping_Calculator_Service {
     /**
      * Get the destination context of the last calculation.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array
      */
     public function get_context() {
@@ -215,7 +215,7 @@ class Shipping_Calculator_Service {
      * The formatted postcode and the resolved state let the client render the
      * destination without re-deriving anything the server already knows.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $postcode Normalized postcode.
      * @param string $country Resolved country code.
      * @return array<string,mixed>
@@ -234,7 +234,7 @@ class Shipping_Calculator_Service {
     /**
      * Destination context shape used before (or instead of) a calculation.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<string,string>
      */
     private static function get_empty_context() {
@@ -279,7 +279,7 @@ class Shipping_Calculator_Service {
      * as the shopper's preferred method (see {@see Shipping_Preference}).
      *
      * @since 3.0.0
-     * @version 3.1.0
+     * @version 3.0.0
      * @param array $rates Rate objects.
      * @return array<int,array<string,mixed>>
      */
@@ -319,7 +319,7 @@ class Shipping_Calculator_Service {
      * straight to `wp_json_encode()` leaks internals into a public response, so
      * only scalars survive the trip to the storefront.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param WC_Shipping_Rate $rate Rate to read.
      * @return array<string,string>
      */
@@ -347,7 +347,7 @@ class Shipping_Calculator_Service {
      * prints them literally: "&#82;&#36;&nbsp;100,00" instead of "R$ 100,00".
      * Decoding is what makes the string safe to hand to a non-HTML consumer.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param float $amount Amount in store currency.
      * @return string
      */
@@ -788,7 +788,7 @@ class Shipping_Calculator_Service {
      * print it twice on the storefront.
      *
      * @since 3.0.1
-     * @version 3.1.0
+     * @version 3.0.0
      * @param array $rates Rate objects keyed by rate ID.
      * @param array $package Shipping package the rates came from.
      * @return array<int,WC_Shipping_Rate>

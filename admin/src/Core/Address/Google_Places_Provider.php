@@ -26,7 +26,7 @@ defined('ABSPATH') || exit;
  * `maps.googleapis.com/maps/api/place` endpoints are not used: Google has them
  * on a deprecation path.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Core\Address
  * @author MeuMouse.com
  */
@@ -35,7 +35,7 @@ class Google_Places_Provider extends Address_Provider {
     /**
      * Provider identifier.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const ID = 'google';
@@ -43,7 +43,7 @@ class Google_Places_Provider extends Address_Provider {
     /**
      * Autocomplete endpoint.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const AUTOCOMPLETE_URL = 'https://places.googleapis.com/v1/places:autocomplete';
@@ -51,7 +51,7 @@ class Google_Places_Provider extends Address_Provider {
     /**
      * Place details endpoint template.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const DETAILS_URL = 'https://places.googleapis.com/v1/places/%s';
@@ -59,7 +59,7 @@ class Google_Places_Provider extends Address_Provider {
     /**
      * Transient prefix for cached place resolutions.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const CACHE_PREFIX = 'hubgo_places_';
@@ -67,7 +67,7 @@ class Google_Places_Provider extends Address_Provider {
     /**
      * Cache lifetime for a resolved place, in seconds.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var int
      */
     const CACHE_TTL = WEEK_IN_SECONDS;
@@ -75,7 +75,7 @@ class Google_Places_Provider extends Address_Provider {
     /**
      * Minimum characters before a query is worth billing.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var int
      */
     const MIN_QUERY_LENGTH = 3;
@@ -207,7 +207,7 @@ class Google_Places_Provider extends Address_Provider {
     /**
      * Map Places predictions to normalized suggestions.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $predictions Raw `suggestions` array.
      * @return array<int,array<string,string>>
      */
@@ -240,7 +240,7 @@ class Google_Places_Provider extends Address_Provider {
     /**
      * Pull the postal code out of a Place Details address component list.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $components Raw `addressComponents` array.
      * @return string
      */
@@ -266,7 +266,7 @@ class Google_Places_Provider extends Address_Provider {
     /**
      * Configured Google API key.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     private function get_api_key() {
@@ -277,7 +277,7 @@ class Google_Places_Provider extends Address_Provider {
     /**
      * Region the autocomplete is restricted to.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     private function get_region_code() {
@@ -287,7 +287,7 @@ class Google_Places_Provider extends Address_Provider {
         /**
          * Filters the region code the address autocomplete is restricted to.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param string $country Two letter region code.
          */
         return strtolower( apply_filters( 'Hubgo/Core/Address_Lookup/Region_Code', $country ) );
@@ -297,7 +297,7 @@ class Google_Places_Provider extends Address_Provider {
     /**
      * Language the suggestions should come back in.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     private function get_language_code() {
@@ -313,7 +313,7 @@ class Google_Places_Provider extends Address_Provider {
      * The token reaches Google verbatim, so it is limited to the character set
      * a UUID uses rather than forwarded as-is.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $session Raw token.
      * @return string
      */
@@ -327,7 +327,7 @@ class Google_Places_Provider extends Address_Provider {
     /**
      * Constrain a client-supplied place id to a safe shape.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $place_id Raw place id.
      * @return string
      */

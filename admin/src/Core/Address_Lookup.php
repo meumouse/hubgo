@@ -21,7 +21,7 @@ defined('ABSPATH') || exit;
  * Google quota on every call. Without a ceiling, a single script can turn the
  * storefront into a billing incident.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -30,7 +30,7 @@ class Address_Lookup {
     /**
      * Setting holding the active provider id.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const PROVIDER_SETTING = 'address_lookup_provider';
@@ -38,7 +38,7 @@ class Address_Lookup {
     /**
      * Value disabling the feature entirely.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const PROVIDER_OFF = 'off';
@@ -46,7 +46,7 @@ class Address_Lookup {
     /**
      * Transient prefix for the per-visitor request counter.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const RATE_LIMIT_PREFIX = 'hubgo_addr_rl_';
@@ -54,7 +54,7 @@ class Address_Lookup {
     /**
      * Rate limit window, in seconds.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var int
      */
     const RATE_LIMIT_WINDOW = 60;
@@ -65,7 +65,7 @@ class Address_Lookup {
      * Sized for a shopper typing an address with a debounced field, not for a
      * script: roughly one search per two seconds.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var int
      */
     const RATE_LIMIT_MAX = 30;
@@ -74,7 +74,7 @@ class Address_Lookup {
     /**
      * Instantiate every known provider, keyed by id.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<string,Address_Provider>
      */
     public static function get_providers() {
@@ -89,7 +89,7 @@ class Address_Lookup {
         /**
          * Filters the address lookup provider classes.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param array<int,string> $classes Provider class names.
          */
         $classes = apply_filters( 'Hubgo/Core/Address_Lookup/Providers', array(
@@ -122,7 +122,7 @@ class Address_Lookup {
      * credential: losing the feature silently because a key was never pasted in
      * is worse than serving the free provider.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return Address_Provider|null
      */
     public static function get_active_provider() {
@@ -148,7 +148,7 @@ class Address_Lookup {
     /**
      * Whether the address lookup is available to the storefront.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     public static function is_enabled() {
@@ -159,7 +159,7 @@ class Address_Lookup {
     /**
      * Payload the storefront needs to render the lookup modal.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<string,mixed>
      */
     public static function get_bootstrap() {
@@ -185,7 +185,7 @@ class Address_Lookup {
     /**
      * Options for the state select of the structured lookup form.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<int,array<string,string>>
      */
     public static function get_states() {
@@ -211,7 +211,7 @@ class Address_Lookup {
     /**
      * Consume one unit of the caller's rate-limit budget.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool False once the visitor is over the ceiling.
      */
     public static function consume_rate_limit() {
@@ -221,7 +221,7 @@ class Address_Lookup {
         /**
          * Filters how many address lookups a visitor may perform per window.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param int $max Requests allowed per {@see self::RATE_LIMIT_WINDOW} seconds.
          */
         $max = (int) apply_filters( 'Hubgo/Core/Address_Lookup/Rate_Limit', self::RATE_LIMIT_MAX );
@@ -246,7 +246,7 @@ class Address_Lookup {
      * thing the limit exists to prevent. Sites behind a reverse proxy should
      * filter this to read whatever header their proxy actually sets.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     private static function get_client_ip() {
@@ -255,7 +255,7 @@ class Address_Lookup {
         /**
          * Filters the client IP used to bucket address lookup rate limiting.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param string $ip Address read from REMOTE_ADDR.
          */
         return (string) apply_filters( 'Hubgo/Core/Address_Lookup/Client_Ip', $ip );

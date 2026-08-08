@@ -29,7 +29,7 @@ defined('ABSPATH') || exit;
  * value", which is why the style defaults in {@see \MeuMouse\Hubgo\Admin\Default_Options}
  * are empty strings rather than copies of the stylesheet's numbers.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Views
  * @author MeuMouse.com
  */
@@ -38,7 +38,7 @@ class Calculator_Styles {
     /**
      * Root class every calculator instance carries.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const ROOT_CLASS = 'hubgo-shipping-calculator';
@@ -46,7 +46,7 @@ class Calculator_Styles {
     /**
      * Id of the printed style tag.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const STYLE_ID = 'hubgo-calculator-styles';
@@ -55,11 +55,11 @@ class Calculator_Styles {
     /**
      * Constructor.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      */
     public function __construct() {
         // Priority 20 keeps this after Views\Custom_Colors, whose legacy block
-        // targets the pre-3.1.0 markup and must not win over these tokens.
+        // targets the pre-3.0.0 markup and must not win over these tokens.
         add_action( 'wp_head', array( $this, 'render' ), 20 );
     }
 
@@ -67,7 +67,7 @@ class Calculator_Styles {
     /**
      * Setting key => CSS custom property (and the unit its value takes).
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<string,array<string,string>>
      */
     public static function get_token_map() {
@@ -121,7 +121,7 @@ class Calculator_Styles {
          * Both the settings panel and the Elementor widget build their output
          * from this map, so an entry added here is editable from both.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param array<string,array<string,string>> $map Setting key => token/unit.
          */
         return apply_filters( 'Hubgo/Views/Calculator_Styles/Token_Map', $map );
@@ -134,7 +134,7 @@ class Calculator_Styles {
      * The Elementor widget builds its `selectors` from this, so a control and
      * the matching panel field always write to the same property.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $key Setting key.
      * @return string Empty string when the key drives no property.
      */
@@ -148,7 +148,7 @@ class Calculator_Styles {
     /**
      * Print the custom property block.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     public function render() {
@@ -170,7 +170,7 @@ class Calculator_Styles {
     /**
      * Build the `--token:value;` declarations for a settings map.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $settings Settings map.
      * @return array<int,string>
      */
@@ -200,7 +200,7 @@ class Calculator_Styles {
      * write — but a style block is the one place where a stray `}` or `<` turns
      * a bad value into markup, so lengths and character sets are checked again.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param mixed $value Raw setting value.
      * @param string $unit Unit to append to a numeric value.
      * @return string Empty string when the value cannot be used.

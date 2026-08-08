@@ -26,7 +26,7 @@ defined('ABSPATH') || exit;
  * admin, and the product-page position keeps working regardless, but pages
  * built around the widget do lose the block until the licence is renewed.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Integrations
  * @author MeuMouse.com
  */
@@ -35,7 +35,7 @@ class Elementor extends Integrations_Base {
     /**
      * Card slug.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const CARD_SLUG = 'elementor';
@@ -43,7 +43,7 @@ class Elementor extends Integrations_Base {
     /**
      * Option key toggling the integration.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const SETTING_KEY = 'enable_elementor_integration';
@@ -51,7 +51,7 @@ class Elementor extends Integrations_Base {
     /**
      * Plugin basename of Elementor.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const PLUGIN_FILE = 'elementor/elementor.php';
@@ -59,7 +59,7 @@ class Elementor extends Integrations_Base {
     /**
      * Package URL served by wordpress.org.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const PACKAGE_URL = 'https://downloads.wordpress.org/plugin/elementor.zip';
@@ -67,7 +67,7 @@ class Elementor extends Integrations_Base {
     /**
      * Elementor widget category the calculator is filed under.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const CATEGORY = 'hubgo';
@@ -76,7 +76,7 @@ class Elementor extends Integrations_Base {
     /**
      * Constructor.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      */
     public function __construct() {
         // Always first: the card has to be listed even when Elementor is
@@ -102,7 +102,7 @@ class Elementor extends Integrations_Base {
     /**
      * Register the card on the Integrations screen.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $integrations Current catalog.
      * @return array
      */
@@ -145,7 +145,7 @@ class Elementor extends Integrations_Base {
     /**
      * Register the HubGo widget category.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param \Elementor\Elements_Manager $manager Elementor elements manager.
      * @return void
      */
@@ -160,7 +160,7 @@ class Elementor extends Integrations_Base {
     /**
      * Register the calculator widget.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param \Elementor\Widgets_Manager $manager Elementor widgets manager.
      * @return void
      */
@@ -176,7 +176,7 @@ class Elementor extends Integrations_Base {
     /**
      * Warn on the Elementor and HubGo screens when the licence is not active.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     public function render_license_notice() {
@@ -201,7 +201,7 @@ class Elementor extends Integrations_Base {
     /**
      * Whether the current admin screen is one where the notice is useful.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     private function is_relevant_admin_screen() {
@@ -225,7 +225,7 @@ class Elementor extends Integrations_Base {
     /**
      * Whether Elementor is installed and active.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     public static function is_available() {
@@ -236,7 +236,7 @@ class Elementor extends Integrations_Base {
     /**
      * Whether the integration toggle is on.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     public static function is_enabled() {
@@ -247,7 +247,7 @@ class Elementor extends Integrations_Base {
     /**
      * Elementor brand mark.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     private function get_icon_svg() {

@@ -35,7 +35,7 @@ defined('ABSPATH') || exit;
  * guards protect cases where overriding would actively harm the shopper — see
  * {@see self::filter_chosen_method()}.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -48,7 +48,7 @@ class Shipping_Preference {
      * Reverse proxies that hash on the full cookie jar should be told to ignore
      * it.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const COOKIE_NAME = 'hubgo_ship_pref';
@@ -61,7 +61,7 @@ class Shipping_Preference {
      * the package rates — never to build one — and this pattern rejects the
      * obvious garbage before it gets that far.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const RATE_ID_PATTERN = '/^[a-z0-9_\-]+:[0-9]+$/i';
@@ -69,7 +69,7 @@ class Shipping_Preference {
     /**
      * Default cookie lifetime, in days.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var int
      */
     const DEFAULT_TTL_DAYS = 30;
@@ -77,7 +77,7 @@ class Shipping_Preference {
     /**
      * Whether the postcode seed already ran this request.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var bool
      */
     private static $seeded = false;
@@ -86,7 +86,7 @@ class Shipping_Preference {
     /**
      * Constructor: wire the cart/checkout hooks.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      */
     public function __construct() {
         if ( ! self::is_enabled() ) {
@@ -105,7 +105,7 @@ class Shipping_Preference {
     /**
      * Whether the feature is switched on.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     public static function is_enabled() {
@@ -125,7 +125,7 @@ class Shipping_Preference {
      *    preference on top would charge someone who had earned free delivery.
      * 3. Nothing in this package matches the preference.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $default Default chosen by WooCommerce.
      * @param array $rates Available rates, keyed by rate id.
      * @param string $chosen_method Method currently held in the session.
@@ -153,7 +153,7 @@ class Shipping_Preference {
          *
          * Returning an empty string falls back to WooCommerce's own default.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param string $preferred Rate id resolved from the preference, or ''.
          * @param array $rates Available rates, keyed by rate id.
          * @param string $default Default chosen by WooCommerce.
@@ -175,7 +175,7 @@ class Shipping_Preference {
      * matches zones on country + state + postcode — seeding the postcode alone
      * can hand the cart to a different zone than the one that was quoted.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     public function maybe_seed_customer_postcode() {
@@ -227,7 +227,7 @@ class Shipping_Preference {
         /**
          * Fires after the calculator postcode was applied to the customer.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param string $postcode Postcode that was applied.
          * @param string $country Country it was applied under.
          */
@@ -238,7 +238,7 @@ class Shipping_Preference {
     /**
      * Read and validate the preference cookie.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array{rate_id:string,postcode:string}
      */
     public static function get_preference() {
@@ -279,7 +279,7 @@ class Shipping_Preference {
     /**
      * Resolve the preference against a set of WC rate objects.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array<string,WC_Shipping_Rate> $rates Rates keyed by rate id.
      * @return string Rate id, or an empty string when nothing matches.
      */
@@ -297,7 +297,7 @@ class Shipping_Preference {
     /**
      * Resolve the preference against the normalized rows the REST route returns.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array<int,array<string,mixed>> $rows Normalized rate rows.
      * @return string Rate id, or an empty string when nothing matches.
      */
@@ -325,7 +325,7 @@ class Shipping_Preference {
      *    though the instance id differs.
      * 3. Nothing, letting WooCommerce decide.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array<string,float> $costs Available rate ids mapped to their cost.
      * @return string
      */
@@ -366,7 +366,7 @@ class Shipping_Preference {
     /**
      * Method id portion of a rate id (`flat_rate:3` -> `flat_rate`).
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $rate_id Rate id.
      * @return string
      */
@@ -380,7 +380,7 @@ class Shipping_Preference {
     /**
      * Configured fallback strategy.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string One of `exact` or `same_method`.
      */
     private static function get_fallback_mode() {
@@ -393,7 +393,7 @@ class Shipping_Preference {
     /**
      * Whether the shopper has a still-available local pickup selected.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $rates Available rates, keyed by rate id.
      * @param string $chosen_method Method held in the session.
      * @return bool
@@ -410,7 +410,7 @@ class Shipping_Preference {
     /**
      * Method ids WooCommerce treats as local pickup.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<int,string>
      */
     private static function get_local_pickup_ids() {
@@ -427,7 +427,7 @@ class Shipping_Preference {
     /**
      * Whether the default rate is free shipping granted by a coupon.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $default Default rate id chosen by WooCommerce.
      * @return bool
      */
@@ -453,7 +453,7 @@ class Shipping_Preference {
     /**
      * Cookie descriptor handed to the storefront so JS and PHP agree on it.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<string,mixed>
      */
     public static function get_cookie_config() {

@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
  * Public endpoint (guests use the calculator), rate limited per visitor because
  * the active provider may be spending the store owner's Google quota.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\API\Routes
  * @author MeuMouse.com
  */
@@ -38,7 +38,7 @@ class Address_Autocomplete extends Abstract_Route {
      * A postal address never needs more, and capping it keeps a padded query
      * from being forwarded to a metered upstream.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var int
      */
     const MAX_TERM_LENGTH = 120;
@@ -93,7 +93,7 @@ class Address_Autocomplete extends Abstract_Route {
     /**
      * Trim a query term to the accepted length.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param mixed $value Raw parameter.
      * @return string
      */

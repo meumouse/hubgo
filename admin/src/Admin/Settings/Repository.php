@@ -99,7 +99,7 @@ class Repository {
      * Sanitize a value according to its field type.
      *
      * @since 3.0.0
-     * @version 3.1.0
+     * @version 3.0.0
      * @param string $type Field type.
      * @param mixed $value Raw value.
      * @param array $definition Field definition, for type-specific constraints.
@@ -139,7 +139,7 @@ class Repository {
      * Stored as a string so an unset value stays distinguishable from a real
      * zero — several calculator style keys treat "" as "use the default".
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param mixed $value Raw value.
      * @param array $definition Field definition (min, max).
      * @return string

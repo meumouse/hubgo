@@ -27,7 +27,7 @@ class Assets {
     const FRONT_SCRIPT_HANDLE = 'hubgo-front';
     const FRONT_STYLE_HANDLE  = 'hubgo-front-style';
 
-    // Vite entry backing the storefront calculator. Since 3.1.0 the storefront
+    // Vite entry backing the storefront calculator. Since 3.0.0 the storefront
     // is a Vue app resolved through the manifest, like the admin screens; the
     // handles above are kept so `hubgo_front_params` stays localized under the
     // name third parties already filter.
@@ -102,7 +102,7 @@ class Assets {
      * Enqueue frontend (storefront) assets.
      *
      * @since 2.0.0
-     * @version 3.1.0
+     * @version 3.0.0
      * @return void
      */
     public function enqueue_frontend_assets() {
@@ -259,7 +259,7 @@ class Assets {
      * `id`) so those sibling scripts survive untouched.
      *
      * @since 3.0.0
-     * @version 3.1.0
+     * @version 3.0.0
      * @param string $tag Script tag HTML (may include translation/inline scripts).
      * @param string $handle Script handle.
      * @param string $src Script source URL.

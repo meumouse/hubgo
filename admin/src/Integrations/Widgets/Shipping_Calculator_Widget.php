@@ -25,7 +25,7 @@ defined('ABSPATH') || exit;
  * control means adding one entry to that map and one control here — never
  * hardcoding a property name in two places.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Integrations\Widgets
  * @author MeuMouse.com
  */
@@ -34,7 +34,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Element the custom properties are scoped to, relative to the wrapper.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const ROOT_SELECTOR = '{{WRAPPER}} .hubgo-shipping-calculator';
@@ -43,7 +43,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Widget name, used by the Elementor frontend hook the Vue app listens to.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     public function get_name() {
@@ -54,7 +54,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Widget title.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     public function get_title() {
@@ -65,7 +65,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Widget icon.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     public function get_icon() {
@@ -76,7 +76,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Widget categories.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<int,string>
      */
     public function get_categories() {
@@ -87,7 +87,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Editor search keywords.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<int,string>
      */
     public function get_keywords() {
@@ -98,7 +98,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Scripts the widget needs on the frontend.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<int,string>
      */
     public function get_script_depends() {
@@ -109,7 +109,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Register content and style controls.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     protected function register_controls() {
@@ -128,7 +128,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Content: what the calculator quotes and which parts are visible.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     private function register_content_controls() {
@@ -205,7 +205,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Content: per-instance text overrides.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     private function register_text_controls() {
@@ -253,7 +253,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Style: the card container.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     private function register_surface_controls() {
@@ -274,7 +274,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Style: colours and type scale.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     private function register_typography_controls() {
@@ -304,7 +304,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Style: free shipping badge.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     private function register_badge_controls() {
@@ -324,7 +324,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Style: postcode field.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     private function register_input_controls() {
@@ -345,7 +345,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Style: submit button, with a hover tab.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     private function register_button_controls() {
@@ -366,7 +366,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Style: delivery option rows.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     private function register_option_controls() {
@@ -387,7 +387,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Style: modal shell.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     private function register_modal_controls() {
@@ -420,7 +420,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Register a colour control bound to a calculator token.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $control_id Elementor control id.
      * @param string $label Control label.
      * @param string $setting_key Setting key whose token this control drives.
@@ -444,7 +444,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Register a slider control bound to a calculator token.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $control_id Elementor control id.
      * @param string $label Control label.
      * @param string $setting_key Setting key whose token this control drives.
@@ -474,7 +474,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Build the `selectors` array for a setting's CSS custom property.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $setting_key Setting key.
      * @param string $value_placeholder Elementor value placeholder.
      * @return array<string,string> Empty when the key drives no property.
@@ -495,7 +495,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Render the mount node with this instance's overrides.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     protected function render() {
@@ -553,7 +553,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
      * An empty control means "inherit", so blank values must not reach the
      * config — they would blank out the setting-level text instead.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $settings Widget settings.
      * @return array<string,string>
      */
@@ -585,7 +585,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Whether Elementor is currently rendering inside the editor.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     private function is_edit_mode() {
@@ -598,7 +598,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Print an editor-only explanation in place of the widget.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $message Message to show.
      * @return void
      */
