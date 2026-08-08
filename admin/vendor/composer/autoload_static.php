@@ -9,11 +9,16 @@ class ComposerStaticInit70fafb160f8425af8683a6a043652ea4
     public static $prefixLengthsPsr4 = array (
         'M' =>
         array (
+            'MeuMouse\\MDS\\SDK\\' => 17,
             'MeuMouse\\Hubgo\\' => 15,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'MeuMouse\\MDS\\SDK\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src',
+        ),
         'MeuMouse\\Hubgo\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
@@ -22,6 +27,58 @@ class ComposerStaticInit70fafb160f8425af8683a6a043652ea4
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'MeuMouse\\Hubgo\\API\\Abstract_Route' => __DIR__ . '/../..' . '/src/API/Abstract_Route.php',
+        'MeuMouse\\Hubgo\\API\\Rest_Controller' => __DIR__ . '/../..' . '/src/API/Rest_Controller.php',
+        'MeuMouse\\Hubgo\\API\\Routes\\Providers' => __DIR__ . '/../..' . '/src/API/Routes/Providers.php',
+        'MeuMouse\\Hubgo\\API\\Routes\\Settings_Bootstrap' => __DIR__ . '/../..' . '/src/API/Routes/Settings_Bootstrap.php',
+        'MeuMouse\\Hubgo\\API\\Routes\\Settings_Save' => __DIR__ . '/../..' . '/src/API/Routes/Settings_Save.php',
+        'MeuMouse\\Hubgo\\API\\Routes\\Shipping_Calculate' => __DIR__ . '/../..' . '/src/API/Routes/Shipping_Calculate.php',
+        'MeuMouse\\Hubgo\\API\\Routes\\Tracking_Create' => __DIR__ . '/../..' . '/src/API/Routes/Tracking_Create.php',
+        'MeuMouse\\Hubgo\\API\\Routes\\Tracking_Delete' => __DIR__ . '/../..' . '/src/API/Routes/Tracking_Delete.php',
+        'MeuMouse\\Hubgo\\API\\Routes\\Tracking_Get' => __DIR__ . '/../..' . '/src/API/Routes/Tracking_Get.php',
+        'MeuMouse\\Hubgo\\Admin\\Default_Options' => __DIR__ . '/../..' . '/src/Admin/Default_Options.php',
+        'MeuMouse\\Hubgo\\Admin\\Menu' => __DIR__ . '/../..' . '/src/Admin/Menu.php',
+        'MeuMouse\\Hubgo\\Admin\\Order_Tracking_Meta_Box' => __DIR__ . '/../..' . '/src/Admin/Order_Tracking_Meta_Box.php',
+        'MeuMouse\\Hubgo\\Admin\\Settings' => __DIR__ . '/../..' . '/src/Admin/Settings.php',
+        'MeuMouse\\Hubgo\\Admin\\Settings\\Registry' => __DIR__ . '/../..' . '/src/Admin/Settings/Registry.php',
+        'MeuMouse\\Hubgo\\Admin\\Settings\\Repository' => __DIR__ . '/../..' . '/src/Admin/Settings/Repository.php',
+        'MeuMouse\\Hubgo\\Core\\Assets' => __DIR__ . '/../..' . '/src/Core/Assets.php',
+        'MeuMouse\\Hubgo\\Core\\License' => __DIR__ . '/../..' . '/src/Core/License.php',
+        'MeuMouse\\Hubgo\\Core\\Order_Status' => __DIR__ . '/../..' . '/src/Core/Order_Status.php',
+        'MeuMouse\\Hubgo\\Core\\Plugin' => __DIR__ . '/../..' . '/src/Core/Plugin.php',
+        'MeuMouse\\Hubgo\\Core\\Postcode_Locator' => __DIR__ . '/../..' . '/src/Core/Postcode_Locator.php',
+        'MeuMouse\\Hubgo\\Core\\Providers_Registry' => __DIR__ . '/../..' . '/src/Core/Providers_Registry.php',
+        'MeuMouse\\Hubgo\\Core\\Scripts' => __DIR__ . '/../..' . '/src/Core/Scripts.php',
+        'MeuMouse\\Hubgo\\Core\\Shipping_Calculator_Service' => __DIR__ . '/../..' . '/src/Core/Shipping_Calculator_Service.php',
+        'MeuMouse\\Hubgo\\Core\\Tracking_Manager' => __DIR__ . '/../..' . '/src/Core/Tracking_Manager.php',
+        'MeuMouse\\Hubgo\\Emails\\Email_Shipped_Order' => __DIR__ . '/../..' . '/src/Emails/Email_Shipped_Order.php',
+        'MeuMouse\\Hubgo\\Integrations\\Integration_Registry' => __DIR__ . '/../..' . '/src/Integrations/Integration_Registry.php',
+        'MeuMouse\\Hubgo\\Integrations\\Joinotify' => __DIR__ . '/../..' . '/src/Integrations/Joinotify.php',
+        'MeuMouse\\Hubgo\\Views\\Custom_Colors' => __DIR__ . '/../..' . '/src/Views/Custom_Colors.php',
+        'MeuMouse\\Hubgo\\Views\\Order_Tracking_View' => __DIR__ . '/../..' . '/src/Views/Order_Tracking_View.php',
+        'MeuMouse\\Hubgo\\Views\\Shipping_Calculator' => __DIR__ . '/../..' . '/src/Views/Shipping_Calculator.php',
+        'MeuMouse\\MDS\\SDK\\Admin\\LicenseSettings' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Admin/LicenseSettings.php',
+        'MeuMouse\\MDS\\SDK\\Admin\\Notices' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Admin/Notices.php',
+        'MeuMouse\\MDS\\SDK\\Admin\\RollbackPage' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Admin/RollbackPage.php',
+        'MeuMouse\\MDS\\SDK\\Admin\\View' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Admin/View.php',
+        'MeuMouse\\MDS\\SDK\\Api\\ApiException' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Api/ApiException.php',
+        'MeuMouse\\MDS\\SDK\\Api\\ApiResponse' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Api/ApiResponse.php',
+        'MeuMouse\\MDS\\SDK\\Api\\Client' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Api/Client.php',
+        'MeuMouse\\MDS\\SDK\\Config\\Product' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Config/Product.php',
+        'MeuMouse\\MDS\\SDK\\Cron\\Scheduler' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Cron/Scheduler.php',
+        'MeuMouse\\MDS\\SDK\\Integration' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Integration.php',
+        'MeuMouse\\MDS\\SDK\\License\\LicenseStatus' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/License/LicenseStatus.php',
+        'MeuMouse\\MDS\\SDK\\License\\Manager' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/License/Manager.php',
+        'MeuMouse\\MDS\\SDK\\Rollback\\Manager' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Rollback/Manager.php',
+        'MeuMouse\\MDS\\SDK\\SDK' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/SDK.php',
+        'MeuMouse\\MDS\\SDK\\Security\\SignatureVerifier' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Security/SignatureVerifier.php',
+        'MeuMouse\\MDS\\SDK\\Support\\Cache' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Support/Cache.php',
+        'MeuMouse\\MDS\\SDK\\Support\\Environment' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Support/Environment.php',
+        'MeuMouse\\MDS\\SDK\\Support\\Logger' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Support/Logger.php',
+        'MeuMouse\\MDS\\SDK\\Updates\\AbstractUpdater' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Updates/AbstractUpdater.php',
+        'MeuMouse\\MDS\\SDK\\Updates\\PluginUpdater' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Updates/PluginUpdater.php',
+        'MeuMouse\\MDS\\SDK\\Updates\\ThemeUpdater' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Updates/ThemeUpdater.php',
+        'MeuMouse\\MDS\\SDK\\Updates\\UpdateTransformer' => __DIR__ . '/..' . '/meumouse/mds-php-sdk/src/Updates/UpdateTransformer.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

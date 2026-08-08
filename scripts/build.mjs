@@ -3,13 +3,15 @@
 /**
  * HubGo build orchestrator.
  *
- * 1. Build the Vue frontend (app/ -> app/dist/ via Vite).
- * 2. Generate / translate / compile translations (languages/).
+ * 1. Install PHP dependencies (admin/ -> admin/vendor/ via Composer).
+ * 2. Build the Vue frontend (app/ -> app/dist/ via Vite).
+ * 3. Generate / translate / compile translations (languages/).
  *
  * Usage:
- *   node scripts/build.mjs                 # build app + refresh + compile translations
+ *   node scripts/build.mjs                 # composer install + build app + refresh + compile translations
  *   node scripts/build.mjs --translate     # also AI-translate every locale (needs API key)
  *   node scripts/build.mjs --skip-app
+ *   node scripts/build.mjs --skip-composer
  *   node scripts/build.mjs --skip-translations
  *   node scripts/build.mjs --engine=google # translation engine for --translate (default: openai)
  *   node scripts/build.mjs --no-install    # skip npm install steps
@@ -24,6 +26,7 @@ const __dirname = dirname( fileURLToPath( import.meta.url ) );
 const rootDir = resolve( __dirname, '..' );
 const appDir = resolve( rootDir, 'app' );
 const langDir = resolve( rootDir, 'languages' );
+const adminDir = resolve( rootDir, 'admin' );
 
 const args = process.argv.slice( 2 );
 const hasFlag = ( name ) => args.includes( name );
@@ -34,6 +37,7 @@ const getOpt = ( name, fallback ) => {
 
 const opts = {
     skipApp: hasFlag( '--skip-app' ),
+    skipComposer: hasFlag( '--skip-composer' ),
     skipTranslations: hasFlag( '--skip-translations' ),
     translate: hasFlag( '--translate' ),
     engine: getOpt( '--engine', 'openai' ),
@@ -59,6 +63,18 @@ function ensureInstalled( cwd ) {
     if ( opts.install && ! existsSync( resolve( cwd, 'node_modules' ) ) ) {
         run( 'npm', [ 'install' ], cwd );
     }
+}
+
+function installPhpDependencies() {
+    if ( opts.skipComposer ) {
+        console.log( '\nSkipping Composer install (--skip-composer).' );
+        return;
+    }
+
+    // admin/vendor is gitignored, so the MDS SDK (licensing + signed updates)
+    // only reaches the shipped zip if Composer runs as part of the build.
+    run( 'composer', [ 'install', '--no-dev', '--optimize-autoloader', '--no-interaction' ], adminDir );
+    console.log( '\nPHP dependencies installed → admin/vendor/' );
 }
 
 function buildFrontend() {
@@ -95,6 +111,7 @@ function buildTranslations() {
     console.log( '\nTranslations compiled → languages/*.mo, *.l10n.php' );
 }
 
+installPhpDependencies();
 buildFrontend();
 buildTranslations();
 

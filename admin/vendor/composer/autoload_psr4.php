@@ -6,5 +6,6 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'MeuMouse\\MDS\\SDK\\' => array($vendorDir . '/meumouse/mds-php-sdk/src'),
     'MeuMouse\\Hubgo\\' => array($baseDir . '/src'),
 );

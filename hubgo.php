@@ -17,6 +17,7 @@
  * License URI:             https://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use MeuMouse\Hubgo\Core\License;
 use MeuMouse\Hubgo\Core\Plugin;
 
 // Exit if accessed directly.
@@ -28,9 +29,21 @@ if ( file_exists( $autoload ) ) {
     require_once $autoload;
 }
 
+// MDS SDK bootstrap (licensing, signed updates and rollback). It declares no
+// class at include time; the newest embedded copy across all plugins is elected
+// on plugins_loaded and fires `mds_sdk_loaded`.
+$mds_sdk = plugin_dir_path( __FILE__ ) . 'admin/vendor/meumouse/mds-php-sdk/mds-sdk.php';
+
+if ( file_exists( $mds_sdk ) ) {
+    require_once $mds_sdk;
+}
+
 $plugin_version = '3.0.1';
 
 Plugin::get_instance()->init( $plugin_version, __FILE__ );
 
 // Activation hook must use the main plugin file path.
 register_activation_hook( __FILE__, array( Plugin::class, 'activate' ) );
+
+// Drop the license heartbeat cron when the plugin is deactivated.
+register_deactivation_hook( __FILE__, array( License::class, 'deactivate' ) );
