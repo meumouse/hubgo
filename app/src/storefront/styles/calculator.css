@@ -20,7 +20,18 @@
  * @since 3.1.0
  */
 
-.hubgo-shipping-calculator {
+/*
+ * Tokens and the inherited text context, shared by the card and the modal.
+ *
+ * The modal is teleported to <body>, so it needs its own copy of the defaults —
+ * but it must NOT pick up the card's surface (background, border, padding,
+ * margin). Giving the modal root `.hubgo-shipping-calculator` did exactly that:
+ * an opaque white layer at `inset: 0` covering the page, which is also what
+ * left `backdrop-filter` with nothing but flat white to blur. Store-wide and
+ * Elementor overrides still reach the modal, copied across by bridgeTokens().
+ */
+.hubgo-shipping-calculator,
+.hubgo-calc-modal {
     /* Layout */
     --hubgo-calc-font-family: inherit;
     --hubgo-calc-radius: 12px;
@@ -72,17 +83,21 @@
     --hubgo-calc-modal-blur: 8px;
 
     box-sizing: border-box;
+    font-family: var(--hubgo-calc-font-family);
+    font-size: var(--hubgo-calc-body-size);
+    line-height: 1.5;
+    color: var(--hubgo-calc-text);
+    text-align: left;
+}
+
+/* The card surface, which the modal deliberately does not inherit. */
+.hubgo-shipping-calculator {
     margin: 24px 0;
     padding: var(--hubgo-calc-surface-padding);
     border: 1px solid var(--hubgo-calc-surface-border);
     border-radius: var(--hubgo-calc-radius);
     background: var(--hubgo-calc-surface-bg);
     box-shadow: var(--hubgo-calc-surface-shadow);
-    font-family: var(--hubgo-calc-font-family);
-    font-size: var(--hubgo-calc-body-size);
-    line-height: 1.5;
-    color: var(--hubgo-calc-text);
-    text-align: left;
 }
 
 /* --------------------------------------------------------------------------
@@ -91,7 +106,10 @@
 
 .hubgo-shipping-calculator *,
 .hubgo-shipping-calculator *::before,
-.hubgo-shipping-calculator *::after {
+.hubgo-shipping-calculator *::after,
+.hubgo-calc-modal *,
+.hubgo-calc-modal *::before,
+.hubgo-calc-modal *::after {
     box-sizing: border-box;
 }
 
@@ -99,13 +117,19 @@
 .hubgo-shipping-calculator ul,
 .hubgo-shipping-calculator li,
 .hubgo-shipping-calculator h3,
-.hubgo-shipping-calculator h4 {
+.hubgo-shipping-calculator h4,
+.hubgo-calc-modal p,
+.hubgo-calc-modal ul,
+.hubgo-calc-modal li,
+.hubgo-calc-modal h3,
+.hubgo-calc-modal h4 {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.hubgo-shipping-calculator button {
+.hubgo-shipping-calculator button,
+.hubgo-calc-modal button {
     margin: 0;
     border: 0;
     background: none;
@@ -117,13 +141,17 @@
     cursor: pointer;
 }
 
-.hubgo-shipping-calculator input {
+.hubgo-shipping-calculator input,
+.hubgo-shipping-calculator select,
+.hubgo-calc-modal input,
+.hubgo-calc-modal select {
     margin: 0;
     font: inherit;
     line-height: inherit;
 }
 
-.hubgo-shipping-calculator a {
+.hubgo-shipping-calculator a,
+.hubgo-calc-modal a {
     text-decoration: none;
 }
 

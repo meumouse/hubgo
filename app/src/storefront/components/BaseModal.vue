@@ -69,7 +69,7 @@ function handleKeydown( event ) {
         <div
             v-if="open"
             ref="rootEl"
-            class="hubgo-shipping-calculator hubgo-calc-modal"
+            class="hubgo-calc-modal"
             role="dialog"
             aria-modal="true"
         >
