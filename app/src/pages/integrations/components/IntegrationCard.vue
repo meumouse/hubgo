@@ -51,9 +51,15 @@ const enabledProxy = computed( {
 <template>
     <div class="flex h-full flex-col rounded-[8px] bg-white ring-1 ring-slate-200">
         <div class="flex min-h-[140px] items-center justify-center border-b border-slate-100 px-6 py-8">
+            <!--
+                The box is 80px tall but up to 200px wide so horizontal
+                wordmarks (Melhor Envio, Frenet) keep a readable size. The SVG
+                scales with preserveAspectRatio, so square brand marks still
+                render at 80x80 — height stays the binding constraint.
+            -->
             <div
                 v-if="card.icon"
-                class="flex h-20 w-20 items-center justify-center [&_svg]:h-full [&_svg]:w-full"
+                class="flex h-20 w-full max-w-[200px] items-center justify-center [&_svg]:h-full [&_svg]:w-full"
                 v-html="card.icon"
             />
             <component :is="Package" v-else width="48" height="48" class="text-slate-300" aria-hidden="true" />

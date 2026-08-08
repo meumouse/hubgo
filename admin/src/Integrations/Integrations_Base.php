@@ -549,6 +549,51 @@ abstract class Integrations_Base {
 
 
     /**
+     * Inline SVG shipped under `assets/admin/img/`.
+     *
+     * Card icons travel through the REST payload as markup (the frontend
+     * detects them with `isMarkup()`), so a brand logo has to be inlined rather
+     * than linked. Reading it from disk keeps the artwork in a real `.svg` file
+     * the designer can replace, instead of a multi-kilobyte string pasted into
+     * PHP; the result is cached per request so a screen listing several cards
+     * still only touches each file once.
+     *
+     * @since 3.0.0
+     * @param string $file SVG file name inside assets/admin/img/.
+     * @param string $label Accessible name applied to the root <svg> element.
+     * @return string Inline SVG markup, or an empty string when unavailable.
+     */
+    protected static function get_brand_svg( $file, $label = '' ) {
+        static $cache = array();
+
+        $file = basename( (string) $file );
+
+        if ( ! isset( $cache[ $file ] ) ) {
+            $path = trailingslashit( HUBGO_PATH ) . 'assets/admin/img/' . $file;
+
+            $cache[ $file ] = ( '.svg' === strtolower( (string) substr( $file, -4 ) ) && is_readable( $path ) )
+                ? trim( (string) file_get_contents( $path ) )
+                : '';
+        }
+
+        $svg = $cache[ $file ];
+
+        if ( '' === $svg || '' === $label || false !== strpos( $svg, 'aria-label' ) ) {
+            return $svg;
+        }
+
+        // The exported artwork carries no accessible name: give it one without
+        // asking every designer to hand-edit the file after each export.
+        return preg_replace(
+            '/^<svg\b/',
+            '<svg role="img" aria-label="' . esc_attr( $label ) . '"',
+            $svg,
+            1
+        );
+    }
+
+
+    /**
      * Default value implied by a field type.
      *
      * @since 3.0.0

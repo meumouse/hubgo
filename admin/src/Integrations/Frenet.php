@@ -178,10 +178,6 @@ class Frenet extends Integrations_Base {
      * @return string
      */
     private function get_icon_svg() {
-        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Frenet">'
-            . '<rect x="2" y="2" width="60" height="60" rx="14" fill="#2f3192"/>'
-            . '<path d="M24.5 44V20h16.8v4.6H29.7v5.1h10.1v4.6H29.7V44z" fill="#ffffff"/>'
-            . '<path d="M17 33.6h6.2v3.1H17zm0 6.2h6.2v3.1H17z" fill="#00b3e3"/>'
-            . '</svg>';
+        return self::get_brand_svg( 'frenet-logo.svg', __( 'Frenet', 'hubgo' ) );
     }
 }

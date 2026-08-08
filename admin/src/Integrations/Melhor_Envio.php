@@ -191,9 +191,6 @@ class Melhor_Envio extends Integrations_Base {
      * @return string
      */
     private function get_icon_svg() {
-        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Melhor Envio">'
-            . '<rect x="2" y="2" width="60" height="60" rx="14" fill="#0fbb87"/>'
-            . '<path d="M17 40.5V23.5a1.5 1.5 0 0 1 2.3-1.28l12.7 7.9 12.7-7.9A1.5 1.5 0 0 1 47 23.5v17a1.5 1.5 0 0 1-1.5 1.5h-3V30.6l-9.7 6.03a1.5 1.5 0 0 1-1.6 0L21.5 30.6V42h-3a1.5 1.5 0 0 1-1.5-1.5z" fill="#ffffff"/>'
-            . '</svg>';
+        return self::get_brand_svg( 'melhor-envio-logo.svg', __( 'Melhor Envio', 'hubgo' ) );
     }
 }
