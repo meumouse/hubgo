@@ -4,6 +4,7 @@ namespace MeuMouse\Hubgo\API\Routes;
 
 use MeuMouse\Hubgo\API\Abstract_Route;
 use MeuMouse\Hubgo\Core\Shipping_Calculator_Service;
+use MeuMouse\Hubgo\Core\Shipping_Preference;
 
 use WP_REST_Request;
 
@@ -13,9 +14,15 @@ defined('ABSPATH') || exit;
  * POST /hubgo/v1/shipping/calculate — public storefront shipping quote.
  *
  * Public endpoint (guests can calculate shipping). Returns normalized rate rows
- * as JSON; the storefront renders the table client-side.
+ * as JSON; the storefront renders them client-side.
+ *
+ * The response carries three blocks: `rates` (the rows), `free_shipping` (the
+ * threshold badge context) and `context` (destination + the shopper's preferred
+ * rate id, resolved against the rates actually available here so the storefront
+ * never highlights a method this zone does not offer).
  *
  * @since 3.0.0
+ * @version 3.1.0
  * @package MeuMouse\Hubgo\API\Routes
  */
 class Shipping_Calculate extends Abstract_Route {
@@ -45,7 +52,7 @@ class Shipping_Calculate extends Abstract_Route {
     /**
      * @inheritDoc
      *
-     * @version 3.0.1
+     * @version 3.1.0
      */
     public function handle( WP_REST_Request $request ) {
         $service = new Shipping_Calculator_Service();
@@ -70,7 +77,14 @@ class Shipping_Calculate extends Abstract_Route {
             );
         }
 
-        $data = array( 'rates' => $rates );
+        $context = $service->get_context();
+        $context['preferred_id'] = Shipping_Preference::match_preferred_rate( wp_list_pluck( $rates, 'id' ) );
+
+        $data = array(
+            'rates'         => $rates,
+            'free_shipping' => $service->get_free_shipping_context(),
+            'context'       => $context,
+        );
 
         // Surface the matched zone while the store owner is debugging shipping,
         // so zone priority can be confirmed without touching the database.

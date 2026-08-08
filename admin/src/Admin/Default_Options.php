@@ -43,6 +43,64 @@ class Default_Options {
             'note_text_bottom_shipping_calc'       => '*Este resultado é apenas uma estimativa para este produto. O valor final considerado, deverá ser o total do carrinho.',
             'text_placeholder_input_shipping_calc' => 'Informe seu CEP',
 
+            // Storefront calculator (3.1.0). Empty strings hide the element they
+            // belong to, so a store that wants a leaner card just clears them.
+            'text_calculator_title'                => 'Calcular frete e prazo',
+            'text_free_shipping_badge'             => 'Frete grátis acima de %s',
+            'text_free_shipping_active'            => 'Frete grátis neste produto',
+            'text_more_options'                    => 'Mais detalhes e formas de entrega',
+            'text_cep_finder_link'                 => 'Não sei meu CEP',
+            'text_preference_hint'                 => 'Será pré-selecionada no checkout',
+            'text_preference_saved'                => 'Opção salva como sua preferência',
+            'text_clear_preference'                => 'Remover preferência',
+
+            // Delivery forecast and free-shipping badge. An empty threshold
+            // means "read it from the shipping zone" — see Free_Shipping_Context.
+            'shipping_handling_days'               => '0',
+            'free_shipping_threshold'              => '',
+
+            // Address lookup ("Não sei meu CEP"). ViaCEP needs no credential, so
+            // the feature works on a fresh install without any setup.
+            'address_lookup_provider'              => 'viacep',
+            'google_places_api_key'                => '',
+
+            // Preferred shipping method carried into the checkout.
+            'enable_shipping_preference'           => 'yes',
+            'shipping_preference_apply_postcode'   => 'yes',
+            'shipping_preference_fallback'         => 'same_method',
+            'shipping_preference_ttl'              => '30',
+
+            // Calculator appearance. Every style key defaults to an empty string
+            // on purpose: empty means "use the built-in value", which keeps the
+            // CSS custom properties defined in exactly one place (the storefront
+            // stylesheet) instead of duplicating them here where they would
+            // silently drift. Only primary_main_color predates 3.1.0 and keeps
+            // its concrete default.
+            'calc_surface_bg'                      => '',
+            'calc_surface_border'                  => '',
+            'calc_surface_radius'                  => '',
+            'calc_surface_padding'                 => '',
+            'calc_text_color'                      => '',
+            'calc_muted_color'                     => '',
+            'calc_font_size'                       => '',
+            'calc_badge_bg'                        => '',
+            'calc_badge_text_color'                => '',
+            'calc_input_bg'                        => '',
+            'calc_input_border'                    => '',
+            'calc_input_radius'                    => '',
+            'calc_input_height'                    => '',
+            'calc_button_bg'                       => '',
+            'calc_button_hover_bg'                 => '',
+            'calc_button_text_color'               => '',
+            'calc_button_radius'                   => '',
+            'calc_option_border'                   => '',
+            'calc_option_radius'                   => '',
+            'calc_option_selected_bg'              => '',
+            'calc_modal_bg'                        => '',
+            'calc_modal_radius'                    => '',
+            'calc_modal_overlay'                   => '',
+            'calc_modal_blur'                      => '',
+
             // Maintenance ("Sobre" tab). enable_auto_updates is read by
             // Core\License::enable_auto_update() and had no default before 3.0.0.
             'enable_auto_updates'                  => 'no',
@@ -57,6 +115,7 @@ class Default_Options {
             'enable_melhor_envio_integration'      => 'no',
             'melhor_envio_sync_tracking'           => 'yes',
             'melhor_envio_mark_as_shipped'         => 'no',
+            'enable_elementor_integration'         => 'no',
             'enable_frenet_integration'            => 'no',
             'frenet_sync_tracking'                 => 'yes',
             'frenet_tracking_url'                  => '',

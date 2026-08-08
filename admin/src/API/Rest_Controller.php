@@ -12,6 +12,8 @@ use MeuMouse\Hubgo\API\Routes\License_Activate;
 use MeuMouse\Hubgo\API\Routes\License_Deactivate;
 use MeuMouse\Hubgo\API\Routes\License_Sync;
 use MeuMouse\Hubgo\API\Routes\Shipping_Calculate;
+use MeuMouse\Hubgo\API\Routes\Address_Autocomplete;
+use MeuMouse\Hubgo\API\Routes\Address_Resolve;
 use MeuMouse\Hubgo\API\Routes\Providers;
 use MeuMouse\Hubgo\API\Routes\Tracking_Get;
 use MeuMouse\Hubgo\API\Routes\Tracking_Create;
@@ -45,6 +47,8 @@ class Rest_Controller {
             License_Deactivate::class,
             License_Sync::class,
             Shipping_Calculate::class,
+            Address_Autocomplete::class,
+            Address_Resolve::class,
             Providers::class,
             Tracking_Get::class,
             Tracking_Create::class,

@@ -2,11 +2,14 @@
 
 namespace MeuMouse\Hubgo\Core;
 
+use MeuMouse\Hubgo\Core\Delivery_Estimate;
+use MeuMouse\Hubgo\Core\Free_Shipping_Context;
 use MeuMouse\Hubgo\Core\Postcode_Locator;
 
 use WC_Cache_Helper;
 use WC_Shipping;
 use WC_Shipping_Rate;
+use WC_Shipping_Zone;
 use WC_Shipping_Zones;
 use WC_Validation;
 
@@ -17,8 +20,8 @@ defined('ABSPATH') || exit;
  *
  * Computes shipping rates for a single product without rendering HTML, so the
  * REST endpoint (and any other caller) can quote a postcode from the product
- * page. Returns normalized rows:
- * [ [ 'label' => string, 'cost' => float, 'cost_formatted' => string ], ... ].
+ * page. Returns normalized rows carrying the WooCommerce rate id, the cost and
+ * the delivery forecast — see {@see self::normalize_rows()} for the shape.
  *
  * Zone resolution notes (WooCommerce >= 6.0):
  * WooCommerce matches a package to a single zone using country + state +
@@ -34,7 +37,7 @@ defined('ABSPATH') || exit;
  * session or the checkout rate cache.
  *
  * @since 3.0.0
- * @version 3.0.1
+ * @version 3.1.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -43,10 +46,14 @@ class Shipping_Calculator_Service {
     /**
      * Transient prefix for calculated quotes.
      *
+     * The suffix is bumped whenever the cached payload shape changes, so an
+     * upgrade never serves a row set the new storefront cannot read.
+     *
      * @since 3.0.1
+     * @version 3.1.0
      * @var string
      */
-    const CACHE_PREFIX = 'hubgo_ship_';
+    const CACHE_PREFIX = 'hubgo_ship_v2_';
 
     /**
      * Quote cache lifetime, in seconds.
@@ -65,6 +72,33 @@ class Shipping_Calculator_Service {
     private $matched_zone = array();
 
     /**
+     * Zone object matched on the last calculation, when there was one.
+     *
+     * Kept alongside the id/name pair because the free-shipping context has to
+     * read the zone's method instances, not just identify it.
+     *
+     * @since 3.1.0
+     * @var WC_Shipping_Zone|null
+     */
+    private $matched_zone_object = null;
+
+    /**
+     * Free-shipping context produced by the last calculation.
+     *
+     * @since 3.1.0
+     * @var array
+     */
+    private $free_shipping = array();
+
+    /**
+     * Destination context resolved on the last calculation.
+     *
+     * @since 3.1.0
+     * @var array
+     */
+    private $context = array();
+
+    /**
      * Error code produced by the last calculation, empty when it succeeded.
      *
      * @since 3.0.1
@@ -77,7 +111,7 @@ class Shipping_Calculator_Service {
      * Calculate normalized shipping rows for a product/postcode.
      *
      * @since 3.0.0
-     * @version 3.0.1
+     * @version 3.1.0
      * @param int $product_id Product ID.
      * @param int $variation_id Variation ID (optional).
      * @param string $postcode Destination postcode.
@@ -86,8 +120,14 @@ class Shipping_Calculator_Service {
      * @return array<int,array<string,mixed>>
      */
     public function calculate( $product_id, $variation_id, $postcode, $quantity, $country = '' ) {
-        $this->matched_zone = array();
-        $this->last_error   = '';
+        // Seeded with fully-shaped empties so an early return still answers the
+        // storefront with the object it expects — an empty PHP array would
+        // serialize as a JSON array and break every property read on it.
+        $this->matched_zone        = array();
+        $this->matched_zone_object = null;
+        $this->free_shipping       = Free_Shipping_Context::get_empty();
+        $this->context             = self::get_empty_context();
+        $this->last_error          = '';
 
         $product_id   = absint( $product_id );
         $variation_id = absint( $variation_id );
@@ -116,12 +156,15 @@ class Shipping_Calculator_Service {
             return array();
         }
 
-        $country   = $this->resolve_country( $country );
+        $country       = $this->resolve_country( $country );
+        $this->context = $this->build_context( $postcode, $country );
+
         $cache_key = $this->get_cache_key( $product_id, $variation_id, $quantity, $postcode, $country );
         $cached    = get_transient( $cache_key );
 
         if ( is_array( $cached ) && isset( $cached['rows'] ) ) {
-            $this->matched_zone = isset( $cached['zone'] ) ? (array) $cached['zone'] : array();
+            $this->matched_zone  = isset( $cached['zone'] ) ? (array) $cached['zone'] : array();
+            $this->free_shipping = isset( $cached['free_shipping'] ) ? (array) $cached['free_shipping'] : array();
 
             return $cached['rows'];
         }
@@ -134,12 +177,74 @@ class Shipping_Calculator_Service {
         // that can change at any moment, so they must be re-evaluated.
         if ( '' === $this->last_error ) {
             set_transient( $cache_key, array(
-                'rows' => $rows,
-                'zone' => $this->matched_zone,
+                'rows'          => $rows,
+                'zone'          => $this->matched_zone,
+                'free_shipping' => $this->free_shipping,
             ), self::CACHE_TTL );
         }
 
         return $rows;
+    }
+
+
+    /**
+     * Get the free-shipping context of the last calculation.
+     *
+     * @since 3.1.0
+     * @return array Empty array when no calculation ran.
+     */
+    public function get_free_shipping_context() {
+        return $this->free_shipping;
+    }
+
+
+    /**
+     * Get the destination context of the last calculation.
+     *
+     * @since 3.1.0
+     * @return array
+     */
+    public function get_context() {
+        return $this->context;
+    }
+
+
+    /**
+     * Build the destination context echoed back to the storefront.
+     *
+     * The formatted postcode and the resolved state let the client render the
+     * destination without re-deriving anything the server already knows.
+     *
+     * @since 3.1.0
+     * @param string $postcode Normalized postcode.
+     * @param string $country Resolved country code.
+     * @return array<string,mixed>
+     */
+    private function build_context( $postcode, $country ) {
+        return array(
+            'postcode'           => $postcode,
+            'formatted_postcode' => wc_format_postcode( $postcode, $country ),
+            'state'              => Postcode_Locator::get_state( $postcode, $country ),
+            'country'            => $country,
+            'currency'           => get_woocommerce_currency(),
+        );
+    }
+
+
+    /**
+     * Destination context shape used before (or instead of) a calculation.
+     *
+     * @since 3.1.0
+     * @return array<string,string>
+     */
+    private static function get_empty_context() {
+        return array(
+            'postcode'           => '',
+            'formatted_postcode' => '',
+            'state'              => '',
+            'country'            => '',
+            'currency'           => '',
+        );
     }
 
 
@@ -168,8 +273,13 @@ class Shipping_Calculator_Service {
     /**
      * Normalize WC rate objects to plain rows.
      *
+     * `label`, `cost` and `cost_formatted` are the original 3.0.0 contract and
+     * must stay: they are what every published consumer of this service reads.
+     * Everything else is additive — the rate id is what makes a row selectable
+     * as the shopper's preferred method (see {@see Shipping_Preference}).
+     *
      * @since 3.0.0
-     * @version 3.0.1
+     * @version 3.1.0
      * @param array $rates Rate objects.
      * @return array<int,array<string,mixed>>
      */
@@ -186,13 +296,67 @@ class Shipping_Calculator_Service {
             $total = $cost + (float) $taxes;
 
             $rows[] = array(
+                'id'             => (string) $rate->get_id(),
+                'method_id'      => (string) $rate->get_method_id(),
+                'instance_id'    => (int) $rate->get_instance_id(),
                 'label'          => $rate->get_label(),
                 'cost'           => $total,
-                'cost_formatted' => wp_strip_all_tags( wc_price( $total ) ),
+                'cost_formatted' => self::format_price( $total ),
+                'is_free'        => 0.0 === $total,
+                'delivery'       => Delivery_Estimate::for_rate( $rate ),
+                'meta'           => $this->normalize_rate_meta( $rate ),
             );
         }
 
         return $rows;
+    }
+
+
+    /**
+     * Flatten a rate's meta data into scalar strings.
+     *
+     * Carriers occasionally store objects or arrays in there; passing those
+     * straight to `wp_json_encode()` leaks internals into a public response, so
+     * only scalars survive the trip to the storefront.
+     *
+     * @since 3.1.0
+     * @param WC_Shipping_Rate $rate Rate to read.
+     * @return array<string,string>
+     */
+    private function normalize_rate_meta( $rate ) {
+        $meta = array();
+
+        foreach ( (array) $rate->get_meta_data() as $key => $value ) {
+            if ( ! is_scalar( $value ) ) {
+                continue;
+            }
+
+            $meta[ sanitize_key( (string) $key ) ] = wp_strip_all_tags( (string) $value );
+        }
+
+        return $meta;
+    }
+
+
+    /**
+     * Format an amount as plain text, safe to render as a JSON string.
+     *
+     * `wc_price()` returns markup whose currency symbol is HTML-encoded
+     * (`&#82;&#36;`). Stripping the tags leaves those entities behind, and a
+     * client that escapes on output — the Vue storefront does, correctly —
+     * prints them literally: "&#82;&#36;&nbsp;100,00" instead of "R$ 100,00".
+     * Decoding is what makes the string safe to hand to a non-HTML consumer.
+     *
+     * @since 3.1.0
+     * @param float $amount Amount in store currency.
+     * @return string
+     */
+    public static function format_price( $amount ) {
+        return html_entity_decode(
+            wp_strip_all_tags( wc_price( (float) $amount ) ),
+            ENT_QUOTES,
+            'UTF-8'
+        );
     }
 
 
@@ -509,6 +673,8 @@ class Shipping_Calculator_Service {
          */
         $zone = apply_filters( 'Hubgo/Shipping_Calculator/Zone', $zone, $package );
 
+        $this->matched_zone_object = $zone;
+
         $this->matched_zone = array(
             'id'   => (int) $zone->get_id(),
             'name' => (string) $zone->get_zone_name(),
@@ -591,19 +757,11 @@ class Shipping_Calculator_Service {
         $has_min_amount = false;
 
         if ( in_array( $requires, array( 'min_amount', 'both', 'either' ), true ) ) {
-            $total = 0;
-            $incl  = ( WC()->cart ) ? WC()->cart->display_prices_including_tax() : false;
+            // Same helper the storefront badge uses, so the threshold shown and
+            // the threshold enforced can never drift apart.
+            $total = Free_Shipping_Context::get_package_subtotal( $package );
 
-            // Mirrors WC_Cart::get_displayed_subtotal() for this single line.
-            foreach ( $package['contents'] as $item ) {
-                $total += isset( $item['line_total'] ) ? (float) $item['line_total'] : 0;
-
-                if ( $incl && isset( $item['line_tax'] ) ) {
-                    $total += (float) $item['line_tax'];
-                }
-            }
-
-            $has_min_amount = ( round( $total, wc_get_price_decimals() ) >= (float) $method->min_amount );
+            $has_min_amount = ( $total >= (float) $method->min_amount );
         }
 
         switch ( $requires ) {
@@ -622,31 +780,21 @@ class Shipping_Calculator_Service {
 
 
     /**
-     * Append the delivery forecast to rate labels and expose the rate filter.
+     * Resolve the free-shipping context and expose the rate filter.
+     *
+     * Up to 3.0.1 this also appended "(Entrega em N dias úteis)" to every rate
+     * label. The forecast is now structured data on each row (see
+     * {@see Delivery_Estimate}), so appending it to the label as well would
+     * print it twice on the storefront.
      *
      * @since 3.0.1
+     * @version 3.1.0
      * @param array $rates Rate objects keyed by rate ID.
      * @param array $package Shipping package the rates came from.
      * @return array<int,WC_Shipping_Rate>
      */
     private function decorate_rates( $rates, $package ) {
-        foreach ( $rates as $rate ) {
-            if ( ! $rate instanceof WC_Shipping_Rate ) {
-                continue;
-            }
-
-            $meta = $rate->get_meta_data();
-
-            if ( isset( $meta['_delivery_forecast'] ) ) {
-                $forecast = sprintf(
-                    /* translators: %s: number of business days. */
-                    __( '(Entrega em %s dias úteis)', 'hubgo' ),
-                    $meta['_delivery_forecast']
-                );
-
-                $rate->set_label( $rate->get_label() . ' ' . $forecast );
-            }
-        }
+        $this->free_shipping = Free_Shipping_Context::build( $this->matched_zone_object, $package, $rates );
 
         /**
          * Filters the rates returned by the shipping calculator.

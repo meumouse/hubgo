@@ -1,0 +1,686 @@
+/**
+ * calculator.css
+ *
+ * Styles for the storefront shipping calculator.
+ *
+ * Deliberately plain CSS, not Tailwind: the admin build scopes every utility
+ * under `.hubgo-app` (`important: '.hubgo-app'` in tailwind.config.js), so a
+ * utility class here would compile to a selector that never matches on the
+ * storefront.
+ *
+ * Every visual decision is expressed as a CSS custom property with the default
+ * inlined as a fallback. That is what lets the settings panel and Elementor
+ * both drive the component without either one knowing about the other — see
+ * `Views\Calculator_Styles` for the full precedence chain.
+ *
+ * The reset block is intentionally narrow. Themes style bare `button`, `input`
+ * and `a` aggressively, so the elements the widget owns are neutralised, but
+ * nothing outside `.hubgo-shipping-calculator` is touched.
+ *
+ * @since 3.1.0
+ */
+
+.hubgo-shipping-calculator {
+    /* Layout */
+    --hubgo-calc-font-family: inherit;
+    --hubgo-calc-radius: 12px;
+    --hubgo-calc-gap: 12px;
+    --hubgo-calc-surface-bg: #ffffff;
+    --hubgo-calc-surface-border: #e5e8ec;
+    --hubgo-calc-surface-padding: 20px;
+    --hubgo-calc-surface-shadow: none;
+
+    /* Typography */
+    --hubgo-calc-text: #102033;
+    --hubgo-calc-text-muted: #6b7280;
+    --hubgo-calc-accent: #008aff;
+    --hubgo-calc-accent-contrast: #ffffff;
+    --hubgo-calc-title-size: 15px;
+    --hubgo-calc-body-size: 14px;
+    --hubgo-calc-small-size: 12px;
+
+    /* Free shipping badge */
+    --hubgo-calc-badge-bg: #059669;
+    --hubgo-calc-badge-text: #ffffff;
+    --hubgo-calc-badge-radius: 999px;
+
+    /* Postcode field */
+    --hubgo-calc-input-bg: #ffffff;
+    --hubgo-calc-input-border: #d5dae1;
+    --hubgo-calc-input-text: #102033;
+    --hubgo-calc-input-radius: 10px;
+    --hubgo-calc-input-height: 48px;
+
+    /* Submit button */
+    --hubgo-calc-button-bg: var(--hubgo-calc-accent);
+    --hubgo-calc-button-hover-bg: #0069c2;
+    --hubgo-calc-button-text: var(--hubgo-calc-accent-contrast);
+    --hubgo-calc-button-radius: 10px;
+
+    /* Delivery options */
+    --hubgo-calc-option-bg: transparent;
+    --hubgo-calc-option-border: #e5e8ec;
+    --hubgo-calc-option-radius: 10px;
+    --hubgo-calc-option-selected-bg: #f4f9ff;
+
+    /* Modal shell. The scrim is deliberately light — the backdrop blur does the
+       separation work, and stacking a heavy tint on top of it only muddies the
+       page behind without making the dialog any easier to read. */
+    --hubgo-calc-modal-bg: #ffffff;
+    --hubgo-calc-modal-radius: 14px;
+    --hubgo-calc-modal-overlay: rgba(16, 32, 51, 0.25);
+    --hubgo-calc-modal-blur: 8px;
+
+    box-sizing: border-box;
+    margin: 24px 0;
+    padding: var(--hubgo-calc-surface-padding);
+    border: 1px solid var(--hubgo-calc-surface-border);
+    border-radius: var(--hubgo-calc-radius);
+    background: var(--hubgo-calc-surface-bg);
+    box-shadow: var(--hubgo-calc-surface-shadow);
+    font-family: var(--hubgo-calc-font-family);
+    font-size: var(--hubgo-calc-body-size);
+    line-height: 1.5;
+    color: var(--hubgo-calc-text);
+    text-align: left;
+}
+
+/* --------------------------------------------------------------------------
+   Scoped reset
+   -------------------------------------------------------------------------- */
+
+.hubgo-shipping-calculator *,
+.hubgo-shipping-calculator *::before,
+.hubgo-shipping-calculator *::after {
+    box-sizing: border-box;
+}
+
+.hubgo-shipping-calculator p,
+.hubgo-shipping-calculator ul,
+.hubgo-shipping-calculator li,
+.hubgo-shipping-calculator h3,
+.hubgo-shipping-calculator h4 {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.hubgo-shipping-calculator button {
+    margin: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    line-height: inherit;
+    text-transform: none;
+    letter-spacing: normal;
+    cursor: pointer;
+}
+
+.hubgo-shipping-calculator input {
+    margin: 0;
+    font: inherit;
+    line-height: inherit;
+}
+
+.hubgo-shipping-calculator a {
+    text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   Compact card
+   -------------------------------------------------------------------------- */
+
+.hubgo-calc__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 14px;
+    padding: 5px 12px;
+    border-radius: var(--hubgo-calc-badge-radius);
+    background: var(--hubgo-calc-badge-bg);
+    color: var(--hubgo-calc-badge-text);
+    font-size: calc(var(--hubgo-calc-small-size) - 1px);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    text-transform: uppercase;
+}
+
+.hubgo-calc__badge svg {
+    width: 15px;
+    height: 15px;
+    flex: 0 0 auto;
+    fill: currentColor;
+}
+
+.hubgo-calc__title {
+    margin-bottom: 4px;
+    font-size: var(--hubgo-calc-title-size);
+    font-weight: 600;
+    color: var(--hubgo-calc-text);
+}
+
+.hubgo-calc__info {
+    margin-bottom: 10px;
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-body-size);
+}
+
+.hubgo-calc__form {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.hubgo-calc__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: var(--hubgo-calc-input-height);
+    padding: 0 14px;
+    border: 1px solid var(--hubgo-calc-input-border);
+    border-radius: var(--hubgo-calc-input-radius);
+    background: var(--hubgo-calc-input-bg);
+    color: var(--hubgo-calc-input-text);
+    font-size: var(--hubgo-calc-body-size);
+    outline: none;
+    transition: border-color 0.15s ease-in-out;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.hubgo-calc__input:focus {
+    border-color: var(--hubgo-calc-accent);
+}
+
+.hubgo-calc__button {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    min-width: 110px;
+    height: var(--hubgo-calc-input-height);
+    padding: 0 18px;
+    border-radius: var(--hubgo-calc-button-radius);
+    background: var(--hubgo-calc-button-bg);
+    color: var(--hubgo-calc-button-text);
+    font-size: var(--hubgo-calc-body-size);
+    font-weight: 600;
+    transition: background-color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+}
+
+.hubgo-calc__button:hover:not(:disabled) {
+    background: var(--hubgo-calc-button-hover-bg);
+}
+
+.hubgo-calc__button:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.hubgo-calc__finder-link,
+.hubgo-calc__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 12px;
+    background: none;
+    color: var(--hubgo-calc-accent);
+    font-size: var(--hubgo-calc-small-size);
+    text-decoration: none;
+}
+
+.hubgo-calc__finder-link:hover,
+.hubgo-calc__more:hover {
+    text-decoration: underline;
+}
+
+/* The "more options" link is a navigational affordance, not a call to action:
+   it reads as body text with a chevron rather than competing with the button. */
+.hubgo-calc__more {
+    color: var(--hubgo-calc-text);
+    font-size: var(--hubgo-calc-body-size);
+}
+
+.hubgo-calc__more svg,
+.hubgo-calc__destination-edit svg {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.hubgo-calc__error {
+    margin-top: 8px;
+    color: #d63638;
+    font-size: var(--hubgo-calc-small-size);
+}
+
+.hubgo-calc__note {
+    display: block;
+    margin-top: 10px;
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-small-size);
+}
+
+.hubgo-calc__result {
+    margin-top: 4px;
+}
+
+.hubgo-calc__headline {
+    font-size: var(--hubgo-calc-title-size);
+    font-weight: 600;
+    color: var(--hubgo-calc-text);
+}
+
+.hubgo-calc__meta {
+    margin-top: 2px;
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-small-size);
+}
+
+.hubgo-calc__empty {
+    color: var(--hubgo-calc-text-muted);
+}
+
+.hubgo-calc__loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--hubgo-calc-text-muted);
+}
+
+.hubgo-calc__spinner {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    flex: 0 0 auto;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: hubgo-calc-spin 0.7s linear infinite;
+}
+
+.hubgo-calc__button .hubgo-calc__spinner {
+    border-color: var(--hubgo-calc-button-text);
+    border-right-color: transparent;
+}
+
+@keyframes hubgo-calc-spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hubgo-calc__spinner {
+        animation-duration: 2s;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Delivery options
+   -------------------------------------------------------------------------- */
+
+.hubgo-calc__options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hubgo-calc__option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--hubgo-calc-option-border);
+    border-radius: var(--hubgo-calc-option-radius);
+    background: var(--hubgo-calc-option-bg);
+    text-align: left;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.hubgo-calc__option:hover {
+    border-color: var(--hubgo-calc-accent);
+}
+
+/* The selected row is marked by its outline, not by a fill. A tinted row plus a
+   filled radio says the same thing twice and makes the price harder to read. */
+.hubgo-calc__option.is-selected {
+    border-color: var(--hubgo-calc-accent);
+    box-shadow: 0 0 0 1px var(--hubgo-calc-accent);
+}
+
+.hubgo-calc__option-radio {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    margin-top: 2px;
+    border: 2px solid var(--hubgo-calc-option-border);
+    border-radius: 50%;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.hubgo-calc__option.is-selected .hubgo-calc__option-radio {
+    border-color: var(--hubgo-calc-accent);
+}
+
+.hubgo-calc__option.is-selected .hubgo-calc__option-radio::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--hubgo-calc-accent);
+    transform: translate(-50%, -50%);
+    content: "";
+}
+
+.hubgo-calc__option-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.hubgo-calc__option-label {
+    display: block;
+    color: var(--hubgo-calc-text);
+}
+
+.hubgo-calc__option-delivery {
+    display: block;
+    margin-top: 3px;
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-small-size);
+}
+
+.hubgo-calc__option-price {
+    flex: 0 0 auto;
+    padding-left: 8px;
+    font-weight: 600;
+    color: var(--hubgo-calc-text);
+    white-space: nowrap;
+}
+
+.hubgo-calc__pref-hint,
+.hubgo-calc__pref-saved {
+    margin-top: 10px;
+    font-size: var(--hubgo-calc-small-size);
+    color: var(--hubgo-calc-text-muted);
+}
+
+.hubgo-calc__pref-saved {
+    color: var(--hubgo-calc-accent);
+}
+
+.hubgo-calc__clear-pref {
+    margin-left: 6px;
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-small-size);
+    text-decoration: underline;
+}
+
+/* Table display mode --------------------------------------------------- */
+
+.hubgo-calc__table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    font-size: var(--hubgo-calc-body-size);
+}
+
+.hubgo-calc__table th,
+.hubgo-calc__table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--hubgo-calc-option-border);
+    text-align: left;
+    vertical-align: top;
+}
+
+.hubgo-calc__table th {
+    color: var(--hubgo-calc-accent);
+    font-weight: 700;
+}
+
+.hubgo-calc__table td:last-child,
+.hubgo-calc__table th:last-child {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.hubgo-calc__table tr:last-child td {
+    border-bottom: 0;
+}
+
+.hubgo-calc__table tr.is-selected td {
+    background: var(--hubgo-calc-option-selected-bg);
+}
+
+/* --------------------------------------------------------------------------
+   Modal shell (teleported to <body>)
+   -------------------------------------------------------------------------- */
+
+.hubgo-calc-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.hubgo-calc-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--hubgo-calc-modal-overlay);
+    /* Prefixed for Safari, which still ships backdrop-filter behind -webkit-.
+       Browsers without support simply get the scrim, which is why the scrim is
+       a real colour rather than fully transparent. */
+    -webkit-backdrop-filter: blur(var(--hubgo-calc-modal-blur));
+    backdrop-filter: blur(var(--hubgo-calc-modal-blur));
+}
+
+.hubgo-calc-modal__dialog {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    max-width: 520px;
+    max-height: calc(100vh - 32px);
+    flex-direction: column;
+    padding: 20px;
+    border-radius: var(--hubgo-calc-modal-radius);
+    background: var(--hubgo-calc-modal-bg);
+    box-shadow: 0 24px 60px rgba(16, 32, 51, 0.25);
+}
+
+.hubgo-calc-modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.hubgo-calc-modal__title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--hubgo-calc-text);
+}
+
+.hubgo-calc-modal__description {
+    margin-top: 4px;
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-small-size);
+}
+
+.hubgo-calc-modal__close {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    color: var(--hubgo-calc-text-muted);
+    font-size: 20px;
+    line-height: 1;
+}
+
+.hubgo-calc-modal__close:hover {
+    background: var(--hubgo-calc-option-selected-bg);
+    color: var(--hubgo-calc-text);
+}
+
+.hubgo-calc-modal__body {
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+.hubgo-calc-modal__section + .hubgo-calc-modal__section {
+    margin-top: 18px;
+}
+
+.hubgo-calc-modal__section-title {
+    margin-bottom: 8px;
+    font-size: var(--hubgo-calc-body-size);
+    font-weight: 600;
+    color: var(--hubgo-calc-text);
+}
+
+.hubgo-calc__destination {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--hubgo-calc-option-border);
+    border-radius: var(--hubgo-calc-option-radius);
+    background: var(--hubgo-calc-option-selected-bg);
+}
+
+.hubgo-calc__destination svg.hubgo-calc__pin {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    margin-top: 2px;
+    fill: none;
+    stroke: var(--hubgo-calc-accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.hubgo-calc__destination-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.hubgo-calc__destination-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 3px;
+    background: none;
+    color: var(--hubgo-calc-accent);
+    font-size: var(--hubgo-calc-small-size);
+}
+
+.hubgo-calc__destination-edit:hover {
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   CEP finder
+   -------------------------------------------------------------------------- */
+
+.hubgo-calc__finder-grid {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 8px;
+}
+
+.hubgo-calc__finder-grid .hubgo-calc__input--full {
+    grid-column: 1 / -1;
+}
+
+.hubgo-calc__finder-field {
+    display: block;
+    width: 100%;
+    height: var(--hubgo-calc-input-height);
+    padding: 0 12px;
+    border: 1px solid var(--hubgo-calc-input-border);
+    border-radius: var(--hubgo-calc-input-radius);
+    background: var(--hubgo-calc-input-bg);
+    color: var(--hubgo-calc-input-text);
+    font-size: var(--hubgo-calc-body-size);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.hubgo-calc__finder-field:focus {
+    border-color: var(--hubgo-calc-accent);
+}
+
+.hubgo-calc__suggestions {
+    max-height: 300px;
+    margin-top: 12px;
+    overflow-y: auto;
+    border: 1px solid var(--hubgo-calc-option-border);
+    border-radius: var(--hubgo-calc-option-radius);
+}
+
+.hubgo-calc__suggestion {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--hubgo-calc-option-border);
+    text-align: left;
+}
+
+.hubgo-calc__suggestion:last-child {
+    border-bottom: 0;
+}
+
+.hubgo-calc__suggestion:hover:not(:disabled) {
+    background: var(--hubgo-calc-option-selected-bg);
+}
+
+.hubgo-calc__suggestion:disabled {
+    opacity: 0.6;
+}
+
+.hubgo-calc__suggestion-primary {
+    font-weight: 600;
+    color: var(--hubgo-calc-text);
+}
+
+.hubgo-calc__suggestion-secondary {
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-small-size);
+}
+
+.hubgo-calc__hint {
+    margin-top: 10px;
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-small-size);
+}
+
+/* --------------------------------------------------------------------------
+   Narrow viewports
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 480px) {
+    .hubgo-calc__form {
+        flex-wrap: wrap;
+    }
+
+    .hubgo-calc__input,
+    .hubgo-calc__button {
+        flex: 1 1 100%;
+    }
+}

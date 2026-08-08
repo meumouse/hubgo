@@ -10,9 +10,18 @@ defined('ABSPATH') || exit;
 /**
  * Class Custom_Colors
  *
- * Handles the injection of custom CSS variables and styles based on user settings
+ * Injects the legacy `--hubgo-primary-color` variable based on user settings.
+ *
+ * @deprecated 3.1.0 Superseded by {@see Calculator_Styles}, which drives the
+ * storefront calculator through the `--hubgo-calc-*` token set. The class stays
+ * because `Hubgo/Core/Custom_Colors/Css_Rules` and `Hubgo/Core/Custom_Colors/Primary_Color`
+ * are published hooks, and because sites may have custom CSS keyed on the
+ * variable — but it no longer ships rules of its own: the selectors it used to
+ * target (`#hubgo-postcode`, `#hubgo-shipping-calc-button`) belonged to the
+ * pre-3.1.0 markup and match nothing now.
  *
  * @since 2.0.0
+ * @version 3.1.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -150,37 +159,17 @@ class Custom_Colors {
     /**
      * Get CSS rules
      *
+     * Empty since 3.1.0: every selector this used to emit belonged to the
+     * server-rendered calculator that the Vue storefront replaced, so the rules
+     * matched nothing while still being printed on every page. The filter runs
+     * on an empty array so third parties that hooked it keep working.
+     *
      * @since 2.0.0
+     * @version 3.1.0
      * @return string
      */
     private function get_css_rules() {
-        $rules = array(
-            '#hubgo-shipping-calc-button' => array(
-                'background-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
-                'border-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
-            ),
-            '.hubgo-shipping-header th' => array(
-                'color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
-            ),
-            '#hubgo-shipping-calc-button:hover' => array(
-                'background-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
-                'border-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
-                'opacity' => '0.9',
-            ),
-            '.hubgo-postcode-search' => array(
-                'color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
-            ),
-            '.hubgo-postcode-search:hover' => array(
-                'color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
-                'text-decoration' => 'underline',
-            ),
-            '#hubgo-postcode:focus' => array(
-                'border-color' => 'var(' . self::PRIMARY_COLOR_VAR . ')',
-            ),
-            '#hubgo-response table .hubgo-shipping-header th' => array(
-                'background-color' => 'var(' . self::PRIMARY_COLOR_VAR . ') !important',
-            ),
-        );
+        $rules = array();
 
         /**
          * Filter CSS rules

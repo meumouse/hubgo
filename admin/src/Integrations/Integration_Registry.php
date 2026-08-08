@@ -35,6 +35,7 @@ class Integration_Registry {
             Joinotify::class,
             Melhor_Envio::class,
             Frenet::class,
+            Elementor::class,
         ) );
 
         foreach ( (array) $classes as $class ) {

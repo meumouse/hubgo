@@ -68,7 +68,7 @@ class Repository {
                 continue;
             }
 
-            $sanitized[ $key ] = self::sanitize_value( $type, $incoming[ $key ] );
+            $sanitized[ $key ] = self::sanitize_value( $type, $incoming[ $key ], $definition );
         }
 
         update_option( self::OPTION_NAME, $sanitized );
@@ -99,24 +99,75 @@ class Repository {
      * Sanitize a value according to its field type.
      *
      * @since 3.0.0
+     * @version 3.1.0
      * @param string $type Field type.
      * @param mixed $value Raw value.
+     * @param array $definition Field definition, for type-specific constraints.
      * @return mixed
      */
-    private static function sanitize_value( $type, $value ) {
+    private static function sanitize_value( $type, $value, $definition = array() ) {
         switch ( $type ) {
             case 'toggle':
                 return self::sanitize_toggle( $value );
             case 'color':
+                // An empty colour is meaningful for the calculator style keys:
+                // it means "keep the built-in value", so it must survive the
+                // round-trip instead of being coerced to a default.
+                if ( '' === trim( (string) $value ) ) {
+                    return '';
+                }
+
                 $color = sanitize_hex_color( (string) $value );
                 return $color ? $color : '';
+            case 'number':
+            case 'range':
+                return self::sanitize_number( $value, $definition );
             case 'textarea':
                 return sanitize_textarea_field( (string) $value );
+            case 'password':
             case 'select':
             case 'text':
             default:
                 return sanitize_text_field( (string) $value );
         }
+    }
+
+
+    /**
+     * Normalize a numeric value and clamp it to the field's declared bounds.
+     *
+     * Stored as a string so an unset value stays distinguishable from a real
+     * zero — several calculator style keys treat "" as "use the default".
+     *
+     * @since 3.1.0
+     * @param mixed $value Raw value.
+     * @param array $definition Field definition (min, max).
+     * @return string
+     */
+    private static function sanitize_number( $value, $definition ) {
+        if ( ! is_scalar( $value ) ) {
+            return '';
+        }
+
+        $value = trim( (string) $value );
+
+        if ( '' === $value || ! is_numeric( $value ) ) {
+            return '';
+        }
+
+        $number = (float) $value;
+
+        if ( isset( $definition['min'] ) && is_numeric( $definition['min'] ) ) {
+            $number = max( (float) $definition['min'], $number );
+        }
+
+        if ( isset( $definition['max'] ) && is_numeric( $definition['max'] ) ) {
+            $number = min( (float) $definition['max'], $number );
+        }
+
+        // Keep whole numbers whole: "12" reads better than "12.0" both in the
+        // option table and in the CSS custom properties built from it.
+        return ( floor( $number ) === $number ) ? (string) (int) $number : (string) $number;
     }
 
 

@@ -235,10 +235,14 @@ final class Plugin {
                 'MeuMouse\Hubgo\Admin\Menu',
                 'MeuMouse\Hubgo\Core\Order_Status',
                 'MeuMouse\Hubgo\API\Rest_Controller',
+                // Hooks into the cart/checkout rate selection, which runs well
+                // after init but must be wired before the first calculation.
+                'MeuMouse\Hubgo\Core\Shipping_Preference',
             ),
             'wp_loaded' => array(
                 'MeuMouse\Hubgo\Views\Shipping_Calculator',
                 'MeuMouse\Hubgo\Views\Custom_Colors',
+                'MeuMouse\Hubgo\Views\Calculator_Styles',
             ),
         );
     }

@@ -13,6 +13,9 @@ import TextField from './TextField.vue';
 import TextareaField from './TextareaField.vue';
 import SelectField from './SelectField.vue';
 import ColorField from './ColorField.vue';
+import NumberField from './NumberField.vue';
+import RangeField from './RangeField.vue';
+import PasswordField from './PasswordField.vue';
 
 const registry = new Map();
 
@@ -114,6 +117,9 @@ registerFieldComponent( 'textarea', TextareaField );
 registerFieldComponent( 'select', SelectField );
 registerFieldComponent( 'color', ColorField );
 registerFieldComponent( 'color-picker', ColorField );
+registerFieldComponent( 'number', NumberField );
+registerFieldComponent( 'range', RangeField );
+registerFieldComponent( 'password', PasswordField );
 
 /**
  * Signal (once) that the registry accepts external registrations. The `ready`

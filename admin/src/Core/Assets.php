@@ -4,6 +4,9 @@ namespace MeuMouse\Hubgo\Core;
 
 use MeuMouse\Hubgo\Admin\Menu;
 use MeuMouse\Hubgo\Admin\Settings;
+use MeuMouse\Hubgo\Core\Address_Lookup;
+use MeuMouse\Hubgo\Core\Shipping_Preference;
+use MeuMouse\Hubgo\Views\Shipping_Calculator;
 
 defined('ABSPATH') || exit;
 
@@ -23,6 +26,12 @@ class Assets {
 
     const FRONT_SCRIPT_HANDLE = 'hubgo-front';
     const FRONT_STYLE_HANDLE  = 'hubgo-front-style';
+
+    // Vite entry backing the storefront calculator. Since 3.1.0 the storefront
+    // is a Vue app resolved through the manifest, like the admin screens; the
+    // handles above are kept so `hubgo_front_params` stays localized under the
+    // name third parties already filter.
+    const FRONT_ENTRY = 'src/entries/storefront.js';
 
     // Kept as published constants for third parties. The authoritative
     // page -> entry/handle mapping is get_admin_pages(); these mirror the
@@ -93,32 +102,42 @@ class Assets {
      * Enqueue frontend (storefront) assets.
      *
      * @since 2.0.0
-     * @version 3.0.0
+     * @version 3.1.0
      * @return void
      */
     public function enqueue_frontend_assets() {
-        $version = $this->get_asset_version();
+        if ( ! Shipping_Calculator::is_enabled() ) {
+            return;
+        }
 
-        wp_enqueue_style(
-            self::FRONT_STYLE_HANDLE,
-            $this->get_asset_url( 'front/css/hubgo-front.css' ),
-            array(),
-            $version
-        );
+        $assets = Scripts::get_entry_assets( self::FRONT_ENTRY );
 
-        wp_enqueue_script(
-            self::FRONT_SCRIPT_HANDLE,
-            $this->get_asset_url( 'front/js/hubgo-front.js' ),
-            array(),
-            $version,
-            true
-        );
+        if ( empty( $assets['script'] ) ) {
+            return;
+        }
+
+        $version = ! empty( $assets['version'] ) ? $assets['version'] : $this->get_asset_version();
+
+        if ( ! empty( $assets['styles'] ) && is_array( $assets['styles'] ) ) {
+            foreach ( $assets['styles'] as $index => $style_url ) {
+                wp_enqueue_style( self::FRONT_STYLE_HANDLE . '-' . $index, $style_url, array(), $version );
+            }
+        }
+
+        wp_enqueue_script( self::FRONT_SCRIPT_HANDLE, $assets['script'], array( 'wp-i18n' ), $version, true );
+        wp_set_script_translations( self::FRONT_SCRIPT_HANDLE, 'hubgo', trailingslashit( HUBGO_PATH ) . 'languages' );
 
         $front_params = array(
             'rest_url'           => $this->rest_root(),
             'nonce'              => wp_create_nonce( 'wp_rest' ),
             'auto_shipping'      => Settings::get_setting( 'enable_auto_shipping_calculator', 'no' ),
             'current_product_id' => $this->get_current_product_id(),
+            // Tells the CEP finder which form to render, and supplies the state
+            // list the structured (ViaCEP) variant needs.
+            'address_lookup'     => Address_Lookup::get_bootstrap(),
+            // Cookie contract shared with Core\Shipping_Preference, which reads
+            // it back at the cart and the checkout.
+            'preference'         => Shipping_Preference::get_cookie_config(),
             'i18n'               => array(
                 'header_shipping' => Settings::get_setting( 'text_header_ship' ),
                 'header_value'    => Settings::get_setting( 'text_header_value' ),
@@ -240,7 +259,7 @@ class Assets {
      * `id`) so those sibling scripts survive untouched.
      *
      * @since 3.0.0
-     * @version 3.0.0
+     * @version 3.1.0
      * @param string $tag Script tag HTML (may include translation/inline scripts).
      * @param string $handle Script handle.
      * @param string $src Script source URL.
@@ -249,6 +268,10 @@ class Assets {
     public function add_module_type_attribute( $tag, $handle, $src ) {
         $tag = is_scalar( $tag ) ? (string) $tag : '';
         $handles = wp_list_pluck( self::get_admin_pages(), 'handle' );
+
+        // The storefront calculator is a Vite build too, so it needs the same
+        // treatment as the admin entries.
+        $handles[] = self::FRONT_SCRIPT_HANDLE;
 
         if ( ! in_array( $handle, $handles, true ) ) {
             return $tag;
