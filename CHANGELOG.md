@@ -29,7 +29,16 @@ Versão 3.0.1 (07/08/2026)
 * Novo: tela de Licença própria, com formulário de ativação, sincronização e desativação do site
 * Novos endpoints REST: GET hubgo/v1/integrations, POST hubgo/v1/plugins/install, POST hubgo/v1/settings/reset, GET hubgo/v1/license, POST hubgo/v1/license/activate, POST hubgo/v1/license/deactivate, POST hubgo/v1/license/sync
 * Novos filtros: Hubgo/Integrations/Cards, Hubgo/Integrations/Card, Hubgo/Integrations/Categories, Hubgo/Admin/Integrations/Cards, Hubgo/Admin/Integrations/Bootstrap_Data, Hubgo/Admin/System_Status, Hubgo/Core/Assets/Admin_Pages, Hubgo/Core/License/Payload, Hubgo/Core/Plugin_Installer/Allowed_Hosts
+* Novo: campo de medida (tipo dimension) nas configurações de aparência, com seletor de unidade (rem, em, px e %)
+    - Arredondamentos, espaçamentos, altura, tamanho da fonte e desfoque deixam de ser sliders e passam a aceitar a unidade escolhida
+    - O valor é gravado com a unidade ("1.5rem"); valores gravados antes continuam válidos e são lidos em px
+    - O widget do Elementor passa a oferecer as mesmas unidades nos controles equivalentes
+* Padronização visual dos campos do painel: mesma altura (3rem), mesmo raio e mesma borda em campos, seletores, senha e cor
+    - O seletor de cor passa a ter amostra quadrada de 3rem ao lado do campo de código hexadecimal
+    - Foco passa a ser borda de 2px na cor primária, sem sombra
+    - Correção: botões sem estilo próprio herdavam a aparência nativa do sistema, porque o preflight do Tailwind está desativado
 * Correção de bugs:
+    - Textos com aspas apareciam escapados no painel (&quot;), porque as strings entregues ao SPA passavam por esc_html__() e o Vue escapa novamente ao renderizar
     - A opção "Atualizações automáticas" era lida por MeuMouse\Hubgo\Core\License mas não existia nas configurações nem nos valores padrão, então nunca ligava
     - A opção "Exibição dos métodos de entrega" tinha valor padrão mas não aparecia na tela de configurações
     - app/dist estava no .gitignore, o que deixaria os pacotes das novas telas fora do zip de distribuição

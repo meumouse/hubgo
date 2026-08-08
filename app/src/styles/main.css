@@ -55,6 +55,20 @@
     --hubgo-panel: #ffffff;
     --hubgo-muted: #6b7280;
 
+    /*
+     * Control chrome. Every field — input, textarea, select trigger, colour
+     * swatch, unit picker — is built from these four values, so a control is
+     * the same height and the same shape wherever it is rendered.
+     *
+     * The idle border is already 2px: the focus state only recolours it, which
+     * keeps the "2px solid primary, no shadow" focus from resizing the box and
+     * nudging every neighbouring pixel by one.
+     */
+    --hubgo-control-height: 3rem;
+    --hubgo-control-padding: 0.875rem;
+    --hubgo-control-radius: 10px;
+    --hubgo-control-border: #e6ebf2;
+
     color: var(--hubgo-ink);
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 14px;
@@ -70,22 +84,52 @@
 }
 
 /*
+ * Native buttons. Tailwind's preflight — which normally strips the platform
+ * chrome off <button> — is disabled, so an unstyled button rendered inside the
+ * SPA came out as a grey OS button. Reset it here instead, without !important,
+ * so utility classes (backgrounds, padding, radius) still win.
+ */
+.hubgo-app button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    background-image: none;
+    color: inherit;
+    font: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    cursor: pointer;
+}
+
+.hubgo-app button:disabled {
+    cursor: not-allowed;
+}
+
+/*
  * wp-admin ships its own aggressive input chrome (forms.css) that overrides
  * utility classes on borders, radius and focus rings. Restate the control look
- * here — scoped to the app — so fields match the Joinotify design system.
+ * here — scoped to the app — so every field shares one shape.
  */
-.hubgo-app input:not([type='checkbox']):not([type='radio']):not([type='color']):not(.hubgo-input-group__control),
+.hubgo-app input:not([type='checkbox']):not([type='radio']):not([type='color']):not(.hubgo-control__inner),
 .hubgo-app textarea,
 .hubgo-app select {
-    border-color: #e2e8f0 !important;
-    border-width: 1px !important;
-    border-radius: 8px !important;
+    border: 2px solid var(--hubgo-control-border) !important;
+    border-radius: var(--hubgo-control-radius) !important;
     background-color: #ffffff !important;
     color: #334155 !important;
     box-shadow: none !important;
     outline: none !important;
-    min-height: 0;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+    min-height: var(--hubgo-control-height);
+    padding: 0 var(--hubgo-control-padding) !important;
+    transition: border-color 0.15s ease, background-color 0.15s ease !important;
+}
+
+/* A textarea grows with its rows, so it pads vertically instead of centring. */
+.hubgo-app textarea {
+    padding: 0.75rem var(--hubgo-control-padding) !important;
 }
 
 .hubgo-app input::placeholder,
@@ -94,24 +138,115 @@
     opacity: 1 !important;
 }
 
-.hubgo-app input:not([type='checkbox']):not([type='radio']):not([type='color']):not(.hubgo-input-group__control):focus,
+/*
+ * Focus: a 2px primary border and nothing else. The idle border is already 2px,
+ * so recolouring it costs no layout, and the box-shadow reset kills both the old
+ * glow ring and whatever wp-admin would otherwise paint.
+ */
+.hubgo-app input:not([type='checkbox']):not([type='radio']):not([type='color']):not(.hubgo-control__inner):focus,
 .hubgo-app textarea:focus,
 .hubgo-app select:focus {
     border-color: var(--hubgo-primary-700) !important;
-    box-shadow: 0 0 0 4px var(--hubgo-primary-50) !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
-/* Controls nested inside an input group render seamless (the group owns the chrome). */
-.hubgo-app .hubgo-input-group__control {
+/*
+ * Shared control shell. Carries the chrome for controls that are not a bare
+ * input — the select trigger, the colour swatch, and any group pairing an input
+ * with a suffix (unit picker, reveal button).
+ *
+ * Background and text colour stay out of it on purpose: a shell may need to be
+ * muted while disabled, and a utility class must be able to say so without
+ * losing a specificity fight with this rule.
+ */
+.hubgo-app .hubgo-control {
+    min-height: var(--hubgo-control-height);
+    border: 2px solid var(--hubgo-control-border);
+    border-radius: var(--hubgo-control-radius);
+    box-shadow: none;
+    outline: none;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+/*
+ * `is-focused` covers the states the browser cannot express on the shell: an
+ * open select keeps its ring while focus sits on the teleported dropdown.
+ */
+.hubgo-app .hubgo-control:focus,
+.hubgo-app .hubgo-control:focus-visible,
+.hubgo-app .hubgo-control:focus-within,
+.hubgo-app .hubgo-control.is-focused {
+    border-color: var(--hubgo-primary-700);
+    box-shadow: none;
+    outline: none;
+}
+
+/*
+ * Number spinners are hidden: the fields they sit on are typed, not stepped,
+ * and their native chrome fights the shell's own suffix (unit picker).
+ */
+.hubgo-app input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.hubgo-app input[type='number']::-webkit-outer-spin-button,
+.hubgo-app input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Branded range slider — the global input chrome does not apply to it. */
+.hubgo-app input[type='range'].hubgo-range {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    padding: 0 !important;
+    min-height: 0;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: #e2e8f0 !important;
+}
+
+.hubgo-app input[type='range'].hubgo-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ffffff;
+    border-radius: 999px;
+    background: var(--hubgo-primary-700);
+    box-shadow: 0 1px 3px rgba(16, 32, 51, 0.25);
+    cursor: pointer;
+}
+
+.hubgo-app input[type='range'].hubgo-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ffffff;
+    border-radius: 999px;
+    background: var(--hubgo-primary-700);
+    box-shadow: 0 1px 3px rgba(16, 32, 51, 0.25);
+    cursor: pointer;
+}
+
+.hubgo-app input[type='range'].hubgo-range:focus-visible::-webkit-slider-thumb {
+    border-color: var(--hubgo-primary-100);
+}
+
+.hubgo-app input[type='range'].hubgo-range:focus-visible::-moz-range-thumb {
+    border-color: var(--hubgo-primary-100);
+}
+
+/* Inputs nested in a shell render seamless — the shell owns the chrome. */
+.hubgo-app .hubgo-control__inner,
+.hubgo-app .hubgo-control__inner:focus {
     border: 0 !important;
     border-radius: 0 !important;
     background-color: transparent !important;
     box-shadow: none !important;
-}
-
-.hubgo-app .hubgo-input-group__control:focus {
-    border-color: transparent !important;
-    box-shadow: none !important;
+    outline: none !important;
 }
 
 /* Section tab icons follow the active/inactive state of their button. */

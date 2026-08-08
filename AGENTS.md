@@ -226,6 +226,7 @@ Every class, method and property gets a docblock. This is not optional — the w
 
 - Escape on output: `esc_html__()`, `esc_attr()`, `esc_url()`, `wp_kses_post()`.
 - Sanitize on input: `sanitize_text_field()`, `sanitize_textarea_field()`, `sanitize_hex_color()`, `absint()`.
+- **A string that travels to the SPA as data uses plain `__()`, never `esc_html__()`.** The schema, the integration catalog, the system status and every REST message are JSON that Vue renders with text interpolation, which escapes on its own; pre-escaping in PHP is what put a literal `&quot;` on screen. Keep `esc_html__()` for strings PHP concatenates into markup — an `echo`, a `printf()` of an admin notice, or the HTML of a modal block, which the SPA renders with `v-html`.
 - Capability checks on every admin/REST surface. Default capability is `manage_woocommerce` (filterable via `Hubgo/Admin/Settings_Capability`).
 - REST requests authenticate with the `wp_rest` nonce (`X-WP-Nonce`), issued through `wp_localize_script()`.
 - Never trust `$_POST` / `$_GET` directly; go through `WP_REST_Request` or sanitize explicitly.

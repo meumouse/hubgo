@@ -108,8 +108,8 @@ class Elementor extends Integrations_Base {
      */
     public function add_integration_item( $integrations ) {
         $integrations[ self::CARD_SLUG ] = array(
-            'title'            => esc_html__( 'Elementor', 'hubgo' ),
-            'description'      => esc_html__( 'Adds the shipping calculator as an Elementor widget, with its own color, spacing and typography controls.', 'hubgo' ),
+            'title'            => __( 'Elementor', 'hubgo' ),
+            'description'      => __( 'Adds the shipping calculator as an Elementor widget, with its own color, spacing and typography controls.', 'hubgo' ),
             'icon'             => $this->get_icon_svg(),
             'category'         => 'ecommerce',
             'setting_key'      => self::SETTING_KEY,
@@ -120,18 +120,18 @@ class Elementor extends Integrations_Base {
             'install'          => array(
                 'plugin_slug'  => self::PLUGIN_FILE,
                 'download_url' => self::PACKAGE_URL,
-                'label'        => esc_html__( 'Install Elementor', 'hubgo' ),
+                'label'        => __( 'Install Elementor', 'hubgo' ),
             ),
             'modal'            => array(
-                'title'       => esc_html__( 'Elementor', 'hubgo' ),
-                'description' => esc_html__( 'How to use the shipping calculator inside Elementor.', 'hubgo' ),
+                'title'       => __( 'Elementor', 'hubgo' ),
+                'description' => __( 'How to use the shipping calculator inside Elementor.', 'hubgo' ),
                 'size'        => 'medium',
                 'blocks'      => array(
                     self::modal_html_block(
                         '<p>' . esc_html__( 'With the integration enabled, drag the "Shipping calculator" widget (HubGo category) onto any page. Styles set on the widget apply to that instance only and take precedence over the Appearance tab.', 'hubgo' ) . '</p>'
                     ),
                     self::modal_notice_block(
-                        esc_html__( 'The widget requires an active license. Without one it stops being registered and disappears from the pages already using it — the calculator displayed automatically on the product page keeps working.', 'hubgo' ),
+                        __( 'The widget requires an active license. Without one it stops being registered and disappears from the pages already using it — the calculator displayed automatically on the product page keeps working.', 'hubgo' ),
                         'warning'
                     ),
                 ),
@@ -151,7 +151,7 @@ class Elementor extends Integrations_Base {
      */
     public function register_category( $manager ) {
         $manager->add_category( self::CATEGORY, array(
-            'title' => esc_html__( 'HubGo', 'hubgo' ),
+            'title' => __( 'HubGo', 'hubgo' ),
             'icon'  => 'eicon-shipping',
         ) );
     }

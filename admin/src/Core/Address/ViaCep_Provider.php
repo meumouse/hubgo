@@ -103,7 +103,7 @@ class ViaCep_Provider extends Address_Provider {
      * @inheritDoc
      */
     public function get_label() {
-        return esc_html__( 'ViaCEP (free)', 'hubgo' );
+        return __( 'ViaCEP (free)', 'hubgo' );
     }
 
 
@@ -116,13 +116,13 @@ class ViaCep_Provider extends Address_Provider {
         $street = trim( (string) ( $args['street'] ?? '' ) );
 
         if ( 2 !== strlen( $uf ) ) {
-            return new WP_Error( 'hubgo_address_invalid_uf', esc_html__( 'Select the state.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_address_invalid_uf', __( 'Select the state.', 'hubgo' ) );
         }
 
         if ( mb_strlen( $city ) < self::MIN_TERM_LENGTH || mb_strlen( $street ) < self::MIN_TERM_LENGTH ) {
             return new WP_Error(
                 'hubgo_address_short_query',
-                esc_html__( 'Enter at least 3 letters of the city and of the street.', 'hubgo' )
+                __( 'Enter at least 3 letters of the city and of the street.', 'hubgo' )
             );
         }
 
@@ -172,7 +172,7 @@ class ViaCep_Provider extends Address_Provider {
         $postcode = self::normalize_postcode( (string) ( $args['id'] ?? '' ) );
 
         if ( '' === $postcode ) {
-            return new WP_Error( 'hubgo_address_not_found', esc_html__( 'Could not resolve the postcode for that address.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_address_not_found', __( 'Could not resolve the postcode for that address.', 'hubgo' ) );
         }
 
         return $postcode;

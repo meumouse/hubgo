@@ -21,7 +21,7 @@ defined('ABSPATH') || exit;
  *
  * Every style selector is built by {@see self::token_selector()} from
  * {@see Calculator_Styles::get_token_map()}, so a control and its counterpart on
- * the Aparência tab are guaranteed to drive the same property. Adding a style
+ * the Appearance tab are guaranteed to drive the same property. Adding a style
  * control means adding one entry to that map and one control here — never
  * hardcoding a property name in two places.
  *
@@ -58,7 +58,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
      * @return string
      */
     public function get_title() {
-        return esc_html__( 'Calculadora de frete', 'hubgo' );
+        return esc_html__( 'Shipping calculator', 'hubgo' );
     }
 
 
@@ -91,7 +91,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
      * @return array<int,string>
      */
     public function get_keywords() {
-        return array( 'frete', 'shipping', 'cep', 'entrega', 'hubgo', 'correios' );
+        return array( 'shipping', 'delivery', 'postcode', 'frete', 'cep', 'entrega', 'hubgo', 'correios' );
     }
 
 
@@ -133,66 +133,66 @@ class Shipping_Calculator_Widget extends Widget_Base {
      */
     private function register_content_controls() {
         $this->start_controls_section( 'content_section', array(
-            'label' => esc_html__( 'Calculadora', 'hubgo' ),
+            'label' => esc_html__( 'Calculator', 'hubgo' ),
             'tab'   => Controls_Manager::TAB_CONTENT,
         ) );
 
         $this->add_control( 'product_source', array(
-            'label'   => esc_html__( 'Produto', 'hubgo' ),
+            'label'   => esc_html__( 'Product', 'hubgo' ),
             'type'    => Controls_Manager::SELECT,
             'default' => 'current',
             'options' => array(
-                'current' => esc_html__( 'Produto da página atual', 'hubgo' ),
-                'manual'  => esc_html__( 'Produto específico', 'hubgo' ),
+                'current' => esc_html__( 'Product on the current page', 'hubgo' ),
+                'manual'  => esc_html__( 'Specific product', 'hubgo' ),
             ),
         ) );
 
         $this->add_control( 'product_id', array(
-            'label'       => esc_html__( 'ID do produto', 'hubgo' ),
+            'label'       => esc_html__( 'Product ID', 'hubgo' ),
             'type'        => Controls_Manager::NUMBER,
             'min'         => 1,
             'condition'   => array( 'product_source' => 'manual' ),
-            'description' => esc_html__( 'Use quando a calculadora estiver fora de uma página de produto.', 'hubgo' ),
+            'description' => esc_html__( 'Use it when the calculator sits outside a product page.', 'hubgo' ),
         ) );
 
         $this->add_control( 'quantity', array(
-            'label'   => esc_html__( 'Quantidade base', 'hubgo' ),
+            'label'   => esc_html__( 'Base quantity', 'hubgo' ),
             'type'    => Controls_Manager::NUMBER,
             'min'     => 1,
             'default' => 1,
         ) );
 
         $this->add_control( 'display', array(
-            'label'   => esc_html__( 'Formato das opções', 'hubgo' ),
+            'label'   => esc_html__( 'Options format', 'hubgo' ),
             'type'    => Controls_Manager::SELECT,
             'default' => '',
             'options' => array(
-                ''      => esc_html__( 'Herdar das configurações', 'hubgo' ),
-                'list'  => esc_html__( 'Lista', 'hubgo' ),
-                'table' => esc_html__( 'Tabela', 'hubgo' ),
+                ''      => esc_html__( 'Inherit from the settings', 'hubgo' ),
+                'list'  => esc_html__( 'List', 'hubgo' ),
+                'table' => esc_html__( 'Table', 'hubgo' ),
             ),
         ) );
 
         $this->add_control( 'features_heading', array(
-            'label'     => esc_html__( 'Elementos exibidos', 'hubgo' ),
+            'label'     => esc_html__( 'Displayed elements', 'hubgo' ),
             'type'      => Controls_Manager::HEADING,
             'separator' => 'before',
         ) );
 
         $features = array(
-            'show_badge'      => esc_html__( 'Selo de frete grátis', 'hubgo' ),
-            'show_finder'     => esc_html__( 'Link "Não sei meu CEP"', 'hubgo' ),
-            'show_options'    => esc_html__( 'Janela de mais opções', 'hubgo' ),
-            'show_preference' => esc_html__( 'Escolha do método preferido', 'hubgo' ),
-            'auto_calculate'  => esc_html__( 'Calcular automaticamente', 'hubgo' ),
+            'show_badge'      => esc_html__( 'Free shipping badge', 'hubgo' ),
+            'show_finder'     => esc_html__( '"I do not know my postcode" link', 'hubgo' ),
+            'show_options'    => esc_html__( 'More options window', 'hubgo' ),
+            'show_preference' => esc_html__( 'Preferred method choice', 'hubgo' ),
+            'auto_calculate'  => esc_html__( 'Calculate automatically', 'hubgo' ),
         );
 
         foreach ( $features as $key => $label ) {
             $this->add_control( $key, array(
                 'label'        => $label,
                 'type'         => Controls_Manager::SWITCHER,
-                'label_on'     => esc_html__( 'Sim', 'hubgo' ),
-                'label_off'    => esc_html__( 'Não', 'hubgo' ),
+                'label_on'     => esc_html__( 'Yes', 'hubgo' ),
+                'label_off'    => esc_html__( 'No', 'hubgo' ),
                 'return_value' => 'yes',
                 'default'      => 'auto_calculate' === $key ? '' : 'yes',
             ) );
@@ -210,24 +210,24 @@ class Shipping_Calculator_Widget extends Widget_Base {
      */
     private function register_text_controls() {
         $this->start_controls_section( 'texts_section', array(
-            'label' => esc_html__( 'Textos', 'hubgo' ),
+            'label' => esc_html__( 'Texts', 'hubgo' ),
             'tab'   => Controls_Manager::TAB_CONTENT,
         ) );
 
         $this->add_control( 'texts_notice', array(
             'type' => Controls_Manager::RAW_HTML,
             'raw'  => '<div class="elementor-control-field-description">'
-                . esc_html__( 'Deixe vazio para usar o texto definido em HubGo → Configurações → Textos.', 'hubgo' )
+                . esc_html__( 'Leave empty to use the text defined in HubGo → Settings → Texts.', 'hubgo' )
                 . '</div>',
         ) );
 
         $texts = array(
-            'text_title'        => esc_html__( 'Título do card', 'hubgo' ),
-            'text_info'         => esc_html__( 'Texto de informação', 'hubgo' ),
-            'text_placeholder'  => esc_html__( 'Placeholder do CEP', 'hubgo' ),
-            'text_button'       => esc_html__( 'Texto do botão', 'hubgo' ),
-            'text_more_options' => esc_html__( 'Link de mais opções', 'hubgo' ),
-            'text_finder_link'  => esc_html__( 'Link "Não sei meu CEP"', 'hubgo' ),
+            'text_title'        => esc_html__( 'Card title', 'hubgo' ),
+            'text_info'         => esc_html__( 'Information text', 'hubgo' ),
+            'text_placeholder'  => esc_html__( 'Postcode placeholder', 'hubgo' ),
+            'text_button'       => esc_html__( 'Button text', 'hubgo' ),
+            'text_more_options' => esc_html__( 'More options link', 'hubgo' ),
+            'text_finder_link'  => esc_html__( '"I do not know my postcode" link', 'hubgo' ),
         );
 
         foreach ( $texts as $key => $label ) {
@@ -240,7 +240,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
         }
 
         $this->add_control( 'text_note', array(
-            'label'       => esc_html__( 'Nota de rodapé', 'hubgo' ),
+            'label'       => esc_html__( 'Footer note', 'hubgo' ),
             'type'        => Controls_Manager::TEXTAREA,
             'rows'        => 3,
             'default'     => '',
@@ -262,10 +262,10 @@ class Shipping_Calculator_Widget extends Widget_Base {
             'tab'   => Controls_Manager::TAB_STYLE,
         ) );
 
-        $this->add_color_control( 'style_surface_bg', esc_html__( 'Cor de fundo', 'hubgo' ), 'calc_surface_bg' );
-        $this->add_color_control( 'style_surface_border', esc_html__( 'Cor da borda', 'hubgo' ), 'calc_surface_border' );
-        $this->add_slider_control( 'style_surface_radius', esc_html__( 'Arredondamento', 'hubgo' ), 'calc_surface_radius', 0, 40 );
-        $this->add_slider_control( 'style_surface_padding', esc_html__( 'Espaçamento interno', 'hubgo' ), 'calc_surface_padding', 0, 64 );
+        $this->add_color_control( 'style_surface_bg', esc_html__( 'Background color', 'hubgo' ), 'calc_surface_bg' );
+        $this->add_color_control( 'style_surface_border', esc_html__( 'Border color', 'hubgo' ), 'calc_surface_border' );
+        $this->add_slider_control( 'style_surface_radius', esc_html__( 'Corner radius', 'hubgo' ), 'calc_surface_radius', 0, 40 );
+        $this->add_slider_control( 'style_surface_padding', esc_html__( 'Inner spacing', 'hubgo' ), 'calc_surface_padding', 0, 64 );
 
         $this->end_controls_section();
     }
@@ -279,12 +279,12 @@ class Shipping_Calculator_Widget extends Widget_Base {
      */
     private function register_typography_controls() {
         $this->start_controls_section( 'style_typography', array(
-            'label' => esc_html__( 'Cores e tipografia', 'hubgo' ),
+            'label' => esc_html__( 'Colors and typography', 'hubgo' ),
             'tab'   => Controls_Manager::TAB_STYLE,
         ) );
 
         $this->add_control( 'style_font_family', array(
-            'label'     => esc_html__( 'Fonte', 'hubgo' ),
+            'label'     => esc_html__( 'Font', 'hubgo' ),
             'type'      => Controls_Manager::FONT,
             'default'   => '',
             'selectors' => array(
@@ -292,10 +292,10 @@ class Shipping_Calculator_Widget extends Widget_Base {
             ),
         ) );
 
-        $this->add_color_control( 'style_accent', esc_html__( 'Cor principal', 'hubgo' ), 'primary_main_color' );
-        $this->add_color_control( 'style_text', esc_html__( 'Cor do texto', 'hubgo' ), 'calc_text_color' );
-        $this->add_color_control( 'style_muted', esc_html__( 'Cor do texto secundário', 'hubgo' ), 'calc_muted_color' );
-        $this->add_slider_control( 'style_font_size', esc_html__( 'Tamanho da fonte', 'hubgo' ), 'calc_font_size', 10, 28 );
+        $this->add_color_control( 'style_accent', esc_html__( 'Primary color', 'hubgo' ), 'primary_main_color' );
+        $this->add_color_control( 'style_text', esc_html__( 'Text color', 'hubgo' ), 'calc_text_color' );
+        $this->add_color_control( 'style_muted', esc_html__( 'Secondary text color', 'hubgo' ), 'calc_muted_color' );
+        $this->add_slider_control( 'style_font_size', esc_html__( 'Font size', 'hubgo' ), 'calc_font_size', 10, 28 );
 
         $this->end_controls_section();
     }
@@ -309,13 +309,13 @@ class Shipping_Calculator_Widget extends Widget_Base {
      */
     private function register_badge_controls() {
         $this->start_controls_section( 'style_badge', array(
-            'label'     => esc_html__( 'Selo de frete grátis', 'hubgo' ),
+            'label'     => esc_html__( 'Free shipping badge', 'hubgo' ),
             'tab'       => Controls_Manager::TAB_STYLE,
             'condition' => array( 'show_badge' => 'yes' ),
         ) );
 
-        $this->add_color_control( 'style_badge_bg', esc_html__( 'Cor de fundo', 'hubgo' ), 'calc_badge_bg' );
-        $this->add_color_control( 'style_badge_text', esc_html__( 'Cor do texto', 'hubgo' ), 'calc_badge_text_color' );
+        $this->add_color_control( 'style_badge_bg', esc_html__( 'Background color', 'hubgo' ), 'calc_badge_bg' );
+        $this->add_color_control( 'style_badge_text', esc_html__( 'Text color', 'hubgo' ), 'calc_badge_text_color' );
 
         $this->end_controls_section();
     }
@@ -329,14 +329,14 @@ class Shipping_Calculator_Widget extends Widget_Base {
      */
     private function register_input_controls() {
         $this->start_controls_section( 'style_input', array(
-            'label' => esc_html__( 'Campo de CEP', 'hubgo' ),
+            'label' => esc_html__( 'Postcode field', 'hubgo' ),
             'tab'   => Controls_Manager::TAB_STYLE,
         ) );
 
-        $this->add_color_control( 'style_input_bg', esc_html__( 'Cor de fundo', 'hubgo' ), 'calc_input_bg' );
-        $this->add_color_control( 'style_input_border', esc_html__( 'Cor da borda', 'hubgo' ), 'calc_input_border' );
-        $this->add_slider_control( 'style_input_radius', esc_html__( 'Arredondamento', 'hubgo' ), 'calc_input_radius', 0, 40 );
-        $this->add_slider_control( 'style_input_height', esc_html__( 'Altura', 'hubgo' ), 'calc_input_height', 32, 80 );
+        $this->add_color_control( 'style_input_bg', esc_html__( 'Background color', 'hubgo' ), 'calc_input_bg' );
+        $this->add_color_control( 'style_input_border', esc_html__( 'Border color', 'hubgo' ), 'calc_input_border' );
+        $this->add_slider_control( 'style_input_radius', esc_html__( 'Corner radius', 'hubgo' ), 'calc_input_radius', 0, 40 );
+        $this->add_slider_control( 'style_input_height', esc_html__( 'Height', 'hubgo' ), 'calc_input_height', 32, 80 );
 
         $this->end_controls_section();
     }
@@ -350,14 +350,14 @@ class Shipping_Calculator_Widget extends Widget_Base {
      */
     private function register_button_controls() {
         $this->start_controls_section( 'style_button', array(
-            'label' => esc_html__( 'Botão calcular', 'hubgo' ),
+            'label' => esc_html__( 'Calculate button', 'hubgo' ),
             'tab'   => Controls_Manager::TAB_STYLE,
         ) );
 
-        $this->add_color_control( 'style_button_bg', esc_html__( 'Cor de fundo', 'hubgo' ), 'calc_button_bg' );
-        $this->add_color_control( 'style_button_hover_bg', esc_html__( 'Cor de fundo (hover)', 'hubgo' ), 'calc_button_hover_bg' );
-        $this->add_color_control( 'style_button_text', esc_html__( 'Cor do texto', 'hubgo' ), 'calc_button_text_color' );
-        $this->add_slider_control( 'style_button_radius', esc_html__( 'Arredondamento', 'hubgo' ), 'calc_button_radius', 0, 40 );
+        $this->add_color_control( 'style_button_bg', esc_html__( 'Background color', 'hubgo' ), 'calc_button_bg' );
+        $this->add_color_control( 'style_button_hover_bg', esc_html__( 'Background color (hover)', 'hubgo' ), 'calc_button_hover_bg' );
+        $this->add_color_control( 'style_button_text', esc_html__( 'Text color', 'hubgo' ), 'calc_button_text_color' );
+        $this->add_slider_control( 'style_button_radius', esc_html__( 'Corner radius', 'hubgo' ), 'calc_button_radius', 0, 40 );
 
         $this->end_controls_section();
     }
@@ -371,14 +371,14 @@ class Shipping_Calculator_Widget extends Widget_Base {
      */
     private function register_option_controls() {
         $this->start_controls_section( 'style_options', array(
-            'label'     => esc_html__( 'Opções de entrega', 'hubgo' ),
+            'label'     => esc_html__( 'Delivery options', 'hubgo' ),
             'tab'       => Controls_Manager::TAB_STYLE,
             'condition' => array( 'show_options' => 'yes' ),
         ) );
 
-        $this->add_color_control( 'style_option_border', esc_html__( 'Cor da borda', 'hubgo' ), 'calc_option_border' );
-        $this->add_color_control( 'style_option_selected_bg', esc_html__( 'Fundo da opção escolhida', 'hubgo' ), 'calc_option_selected_bg' );
-        $this->add_slider_control( 'style_option_radius', esc_html__( 'Arredondamento', 'hubgo' ), 'calc_option_radius', 0, 40 );
+        $this->add_color_control( 'style_option_border', esc_html__( 'Border color', 'hubgo' ), 'calc_option_border' );
+        $this->add_color_control( 'style_option_selected_bg', esc_html__( 'Selected option background', 'hubgo' ), 'calc_option_selected_bg' );
+        $this->add_slider_control( 'style_option_radius', esc_html__( 'Corner radius', 'hubgo' ), 'calc_option_radius', 0, 40 );
 
         $this->end_controls_section();
     }
@@ -392,7 +392,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
      */
     private function register_modal_controls() {
         $this->start_controls_section( 'style_modal', array(
-            'label'     => esc_html__( 'Janela de detalhes', 'hubgo' ),
+            'label'     => esc_html__( 'Details window', 'hubgo' ),
             'tab'       => Controls_Manager::TAB_STYLE,
             'condition' => array( 'show_options' => 'yes' ),
         ) );
@@ -400,18 +400,19 @@ class Shipping_Calculator_Widget extends Widget_Base {
         $this->add_control( 'style_modal_notice', array(
             'type' => Controls_Manager::RAW_HTML,
             'raw'  => '<div class="elementor-control-field-description">'
-                . esc_html__( 'A janela é aberta fora do widget, mas herda estes valores automaticamente.', 'hubgo' )
+                . esc_html__( 'The window opens outside the widget but inherits these values automatically.', 'hubgo' )
                 . '</div>',
         ) );
 
-        $this->add_color_control( 'style_modal_bg', esc_html__( 'Cor de fundo', 'hubgo' ), 'calc_modal_bg' );
-        $this->add_slider_control( 'style_modal_radius', esc_html__( 'Arredondamento', 'hubgo' ), 'calc_modal_radius', 0, 40 );
+        $this->add_color_control( 'style_modal_bg', esc_html__( 'Background color', 'hubgo' ), 'calc_modal_bg' );
+        $this->add_slider_control( 'style_modal_radius', esc_html__( 'Corner radius', 'hubgo' ), 'calc_modal_radius', 0, 40 );
 
         // Elementor's colour control emits rgba(), so the overlay is editable
         // here even though the settings panel — whose picker speaks hex — has
         // no field for it.
-        $this->add_color_control( 'style_modal_overlay', esc_html__( 'Cor do fundo escurecido', 'hubgo' ), 'calc_modal_overlay' );
-        $this->add_slider_control( 'style_modal_blur', esc_html__( 'Desfoque do fundo', 'hubgo' ), 'calc_modal_blur', 0, 24 );
+        $this->add_color_control( 'style_modal_overlay', esc_html__( 'Overlay color', 'hubgo' ), 'calc_modal_overlay' );
+        // A percentage is not a valid blur() radius, so it is left out here.
+        $this->add_slider_control( 'style_modal_blur', esc_html__( 'Backdrop blur', 'hubgo' ), 'calc_modal_blur', 0, 24, array( 'px', 'rem', 'em' ) );
 
         $this->end_controls_section();
     }
@@ -444,15 +445,20 @@ class Shipping_Calculator_Widget extends Widget_Base {
     /**
      * Register a slider control bound to a calculator token.
      *
+     * The unit list mirrors the settings panel's length field, so a store can
+     * express the same value in the same units on both editors.
+     *
      * @since 3.0.0
+     * @version 3.0.1
      * @param string $control_id Elementor control id.
      * @param string $label Control label.
      * @param string $setting_key Setting key whose token this control drives.
      * @param int $min Minimum value.
      * @param int $max Maximum value.
+     * @param array $units Units the control offers.
      * @return void
      */
-    private function add_slider_control( $control_id, $label, $setting_key, $min, $max ) {
+    private function add_slider_control( $control_id, $label, $setting_key, $min, $max, $units = array( 'px', 'rem', 'em', '%' ) ) {
         $selector = $this->token_selector( $setting_key, '{{SIZE}}{{UNIT}}' );
 
         if ( empty( $selector ) ) {
@@ -462,9 +468,12 @@ class Shipping_Calculator_Widget extends Widget_Base {
         $this->add_responsive_control( $control_id, array(
             'label'      => $label,
             'type'       => Controls_Manager::SLIDER,
-            'size_units' => array( 'px' ),
+            'size_units' => $units,
             'range'      => array(
-                'px' => array( 'min' => $min, 'max' => $max, 'step' => 1 ),
+                'px'  => array( 'min' => $min, 'max' => $max, 'step' => 1 ),
+                'rem' => array( 'min' => 0, 'max' => 10, 'step' => 0.1 ),
+                'em'  => array( 'min' => 0, 'max' => 10, 'step' => 0.1 ),
+                '%'   => array( 'min' => 0, 'max' => 100, 'step' => 1 ),
             ),
             'selectors'  => $selector,
         ) );
@@ -502,7 +511,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
         $settings = $this->get_settings_for_display();
 
         if ( ! Shipping_Calculator::is_enabled() ) {
-            $this->render_editor_hint( esc_html__( 'A calculadora de frete está desativada nas configurações do HubGo.', 'hubgo' ) );
+            $this->render_editor_hint( esc_html__( 'The shipping calculator is disabled in the HubGo settings.', 'hubgo' ) );
 
             return;
         }
@@ -538,7 +547,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
         // In the editor there is no product context, so the widget would render
         // an input that can never return a quote. Say so instead.
         if ( empty( $config['product'] ) && $this->is_edit_mode() ) {
-            $this->render_editor_hint( esc_html__( 'Nenhum produto encontrado. Escolha "Produto específico" para pré-visualizar aqui.', 'hubgo' ) );
+            $this->render_editor_hint( esc_html__( 'No product found. Choose "Specific product" to preview it here.', 'hubgo' ) );
 
             return;
         }

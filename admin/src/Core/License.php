@@ -370,7 +370,7 @@ final class License {
         try {
             return $integration->license()->activate( (string) $key );
         } catch ( Exception $e ) {
-            return new WP_Error( 'hubgo_license_transport', esc_html__( 'Could not reach the license server. Please try again.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_license_transport', __( 'Could not reach the license server. Please try again.', 'hubgo' ) );
         }
     }
 
@@ -413,7 +413,7 @@ final class License {
         try {
             return $integration->license()->validate();
         } catch ( Exception $e ) {
-            return new WP_Error( 'hubgo_license_transport', esc_html__( 'Could not reach the license server. Please try again.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_license_transport', __( 'Could not reach the license server. Please try again.', 'hubgo' ) );
         }
     }
 
@@ -511,7 +511,7 @@ final class License {
      * @return \WP_Error
      */
     private static function unavailable_error() {
-        return new WP_Error( 'hubgo_license_unavailable', esc_html__( 'The licensing service is not available.', 'hubgo' ) );
+        return new WP_Error( 'hubgo_license_unavailable', __( 'The licensing service is not available.', 'hubgo' ) );
     }
 
 

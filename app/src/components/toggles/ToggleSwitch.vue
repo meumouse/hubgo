@@ -66,7 +66,7 @@ function handleChange( event ) {
                 :class="[
                     'inline-flex shrink-0 rounded-full border border-slate-200 bg-slate-300 transition-colors duration-200 ease-in-out',
                     size === 'md' ? 'h-6 w-11' : 'h-5 w-9',
-                    'peer-focus-visible:outline-none peer-focus-visible:ring-4 peer-focus-visible:ring-primary-100',
+                    'peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-700',
                     'peer-checked:border-primary-700 peer-checked:bg-primary-700',
                 ]"
             />

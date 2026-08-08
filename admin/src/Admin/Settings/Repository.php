@@ -99,7 +99,7 @@ class Repository {
      * Sanitize a value according to its field type.
      *
      * @since 3.0.0
-     * @version 3.0.0
+     * @version 3.0.1
      * @param string $type Field type.
      * @param mixed $value Raw value.
      * @param array $definition Field definition, for type-specific constraints.
@@ -122,6 +122,8 @@ class Repository {
             case 'number':
             case 'range':
                 return self::sanitize_number( $value, $definition );
+            case 'dimension':
+                return self::sanitize_dimension( $value, $definition );
             case 'textarea':
                 return sanitize_textarea_field( (string) $value );
             case 'password':
@@ -168,6 +170,50 @@ class Repository {
         // Keep whole numbers whole: "12" reads better than "12.0" both in the
         // option table and in the CSS custom properties built from it.
         return ( floor( $number ) === $number ) ? (string) (int) $number : (string) $number;
+    }
+
+
+    /**
+     * Normalize a CSS length: an amount, optionally followed by a unit.
+     *
+     * The unit is kept on the value because that is what the calculator's custom
+     * properties consume. A bare number is accepted and stored as-is — that is
+     * how every length was stored before 3.0.1, and the token map still knows
+     * which unit to append to it.
+     *
+     * Anything the field did not offer is refused rather than coerced: an
+     * unexpected unit reaching a style block is how a setting turns into markup.
+     *
+     * @since 3.0.1
+     * @param mixed $value Raw value.
+     * @param array $definition Field definition (min, max, units).
+     * @return string Empty string when the value cannot be used.
+     */
+    private static function sanitize_dimension( $value, $definition ) {
+        if ( ! is_scalar( $value ) ) {
+            return '';
+        }
+
+        $value = strtolower( trim( (string) $value ) );
+
+        if ( '' === $value ) {
+            return '';
+        }
+
+        if ( ! preg_match( '/^(-?\d*\.?\d+)\s*(rem|em|px|%)?$/', $value, $matches ) ) {
+            return '';
+        }
+
+        $unit  = isset( $matches[2] ) ? $matches[2] : '';
+        $units = isset( $definition['units'] ) && is_array( $definition['units'] ) ? $definition['units'] : array( 'rem', 'em', 'px', '%' );
+
+        if ( '' !== $unit && ! in_array( $unit, $units, true ) ) {
+            return '';
+        }
+
+        $number = self::sanitize_number( $matches[1], $definition );
+
+        return '' === $number ? '' : $number . $unit;
     }
 
 

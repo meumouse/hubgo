@@ -7,6 +7,7 @@
  * contract — and listen for `hubgo:field-registry-ready` to register late.
  *
  * @since 3.0.0
+ * @version 3.0.1
  */
 import ToggleSwitch from '../toggles/ToggleSwitch.vue';
 import TextField from './TextField.vue';
@@ -15,6 +16,7 @@ import SelectField from './SelectField.vue';
 import ColorField from './ColorField.vue';
 import NumberField from './NumberField.vue';
 import RangeField from './RangeField.vue';
+import DimensionField from './DimensionField.vue';
 import PasswordField from './PasswordField.vue';
 
 const registry = new Map();
@@ -119,6 +121,7 @@ registerFieldComponent( 'color', ColorField );
 registerFieldComponent( 'color-picker', ColorField );
 registerFieldComponent( 'number', NumberField );
 registerFieldComponent( 'range', RangeField );
+registerFieldComponent( 'dimension', DimensionField );
 registerFieldComponent( 'password', PasswordField );
 
 /**

@@ -7,8 +7,10 @@
  * already travels over the same authenticated REST call as every other setting.
  *
  * @since 3.0.0
+ * @version 3.0.1
  */
 import { ref } from 'vue';
+import { Eye, EyeSlash } from '@boxicons/vue';
 import { __ } from '../../utils/i18n';
 
 defineProps({
@@ -24,7 +26,7 @@ const revealed = ref( false );
 </script>
 
 <template>
-    <div class="relative md:min-w-[330px]">
+    <div class="hubgo-control flex items-stretch overflow-hidden bg-white md:min-w-[330px]">
         <input
             :id="inputId || undefined"
             :name="name"
@@ -33,17 +35,24 @@ const revealed = ref( false );
             :type="revealed ? 'text' : 'password'"
             spellcheck="false"
             autocomplete="off"
-            class="w-full rounded-[8px] border border-slate-200 bg-white py-3 pl-4 pr-12 font-mono text-[13px] text-slate-700 outline-none transition placeholder:font-sans placeholder:text-slate-400 focus:border-primary-700 focus:ring-4 focus:ring-primary-100"
+            class="hubgo-control__inner w-full min-w-0 flex-1 px-3.5 font-mono text-[13px] text-slate-700 placeholder:font-sans"
             @input="$emit( 'update:modelValue', $event.target.value )"
         >
 
         <button
             type="button"
-            class="absolute right-2 top-1/2 -translate-y-1/2 rounded-[6px] px-2 py-1 text-[12px] text-slate-400 transition hover:bg-slate-50 hover:text-slate-600"
-            :aria-label="revealed ? __( 'Ocultar' ) : __( 'Mostrar' )"
+            class="flex shrink-0 items-center justify-center px-3 text-slate-400 transition hover:text-primary-700"
+            :aria-label="revealed ? __( 'Hide' ) : __( 'Show' )"
+            :title="revealed ? __( 'Hide' ) : __( 'Show' )"
             @click="revealed = ! revealed"
         >
-            {{ revealed ? __( 'Ocultar' ) : __( 'Mostrar' ) }}
+            <component
+                :is="revealed ? EyeSlash : Eye"
+                class="h-[18px] w-[18px]"
+                width="18"
+                height="18"
+                aria-hidden="true"
+            />
         </button>
     </div>
 </template>

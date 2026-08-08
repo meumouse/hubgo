@@ -39,76 +39,76 @@ class Registry {
         $schema = array(
             array(
                 'id'          => 'general',
-                'title'       => esc_html__( 'Geral', 'hubgo' ),
-                'description' => esc_html__( 'Ative os módulos do HubGo e defina onde a calculadora aparece.', 'hubgo' ),
+                'title'       => __( 'General', 'hubgo' ),
+                'description' => __( 'Enable the HubGo modules and choose where the calculator shows up.', 'hubgo' ),
                 'icon'        => 'slider-alt',
                 'layout'      => 'fields',
                 'cards'       => array(
                     array(
                         'id'          => 'general-features',
-                        'title'       => esc_html__( 'Funcionalidades', 'hubgo' ),
-                        'description' => esc_html__( 'Ative ou desative os módulos do HubGo.', 'hubgo' ),
+                        'title'       => __( 'Features', 'hubgo' ),
+                        'description' => __( 'Turn the HubGo modules on or off.', 'hubgo' ),
                         'fields'      => array(
-                            self::toggle( 'enable_shipping_calculator', esc_html__( 'Calculadora de frete', 'hubgo' ), esc_html__( 'Exibe a calculadora de frete na página do produto.', 'hubgo' ) ),
-                            self::toggle( 'enable_auto_shipping_calculator', esc_html__( 'Cálculo automático', 'hubgo' ), esc_html__( 'Calcula o frete automaticamente com o CEP salvo do cliente.', 'hubgo' ) ),
-                            self::toggle( 'enable_order_shipped_status', esc_html__( 'Status "Pedido enviado"', 'hubgo' ), esc_html__( 'Adiciona o status de pedido enviado ao WooCommerce.', 'hubgo' ) ),
-                            self::toggle( 'enable_order_tracking_admin_ui', esc_html__( 'Rastreio no pedido (admin)', 'hubgo' ), esc_html__( 'Exibe o metabox de código de rastreio na tela do pedido.', 'hubgo' ) ),
+                            self::toggle( 'enable_shipping_calculator', __( 'Shipping calculator', 'hubgo' ), __( 'Displays the shipping calculator on the product page.', 'hubgo' ) ),
+                            self::toggle( 'enable_auto_shipping_calculator', __( 'Automatic calculation', 'hubgo' ), __( 'Calculates shipping automatically using the customer saved postcode.', 'hubgo' ) ),
+                            self::toggle( 'enable_order_shipped_status', __( '"Order shipped" status', 'hubgo' ), __( 'Adds the order shipped status to WooCommerce.', 'hubgo' ) ),
+                            self::toggle( 'enable_order_tracking_admin_ui', __( 'Order tracking (admin)', 'hubgo' ), __( 'Displays the tracking code metabox on the order screen.', 'hubgo' ) ),
                         ),
                     ),
                     array(
                         'id'          => 'general-calculator',
-                        'title'       => esc_html__( 'Calculadora', 'hubgo' ),
-                        'description' => esc_html__( 'Onde e como a calculadora de frete é exibida.', 'hubgo' ),
+                        'title'       => __( 'Calculator', 'hubgo' ),
+                        'description' => __( 'Where and how the shipping calculator is displayed.', 'hubgo' ),
                         'fields'      => array(
-                            self::select( 'hook_display_shipping_calculator', esc_html__( 'Posição de exibição', 'hubgo' ), esc_html__( 'Onde exibir a calculadora na página do produto.', 'hubgo' ), array(
-                                array( 'value' => 'after_cart', 'label' => esc_html__( 'Após o botão de compra', 'hubgo' ) ),
-                                array( 'value' => 'before_cart', 'label' => esc_html__( 'Antes do botão de compra', 'hubgo' ) ),
-                                array( 'value' => 'meta_end', 'label' => esc_html__( 'Após os metadados do produto', 'hubgo' ) ),
-                                array( 'value' => 'shortcode', 'label' => esc_html__( 'Somente via shortcode', 'hubgo' ) ),
+                            self::select( 'hook_display_shipping_calculator', __( 'Display position', 'hubgo' ), __( 'Where to display the calculator on the product page.', 'hubgo' ), array(
+                                array( 'value' => 'after_cart', 'label' => __( 'After the add to cart button', 'hubgo' ) ),
+                                array( 'value' => 'before_cart', 'label' => __( 'Before the add to cart button', 'hubgo' ) ),
+                                array( 'value' => 'meta_end', 'label' => __( 'After the product meta', 'hubgo' ) ),
+                                array( 'value' => 'shortcode', 'label' => __( 'Shortcode only', 'hubgo' ) ),
                             ) ),
-                            self::number( 'shipping_handling_days', esc_html__( 'Dias de manuseio', 'hubgo' ), esc_html__( 'Dias úteis somados ao prazo da transportadora antes de mostrar a data de entrega.', 'hubgo' ), array(
+                            self::number( 'shipping_handling_days', __( 'Handling days', 'hubgo' ), __( 'Business days added to the carrier estimate before showing the delivery date.', 'hubgo' ), array(
                                 'min'  => 0,
                                 'max'  => 60,
                                 'step' => 1,
-                                'unit' => esc_html__( 'dias', 'hubgo' ),
+                                'unit' => __( 'days', 'hubgo' ),
                             ) ),
-                            self::number( 'free_shipping_threshold', esc_html__( 'Valor para frete grátis', 'hubgo' ), esc_html__( 'Deixe vazio para ler automaticamente da zona de entrega do WooCommerce.', 'hubgo' ), array(
+                            self::number( 'free_shipping_threshold', __( 'Free shipping amount', 'hubgo' ), __( 'Leave empty to read it automatically from the WooCommerce shipping zone.', 'hubgo' ), array(
                                 'min'         => 0,
                                 'step'        => 0.01,
-                                'placeholder' => esc_html__( 'Automático', 'hubgo' ),
+                                'placeholder' => __( 'Automatic', 'hubgo' ),
                             ) ),
                         ),
                     ),
                     array(
                         'id'          => 'general-preference',
-                        'title'       => esc_html__( 'Método preferido', 'hubgo' ),
-                        'description' => esc_html__( 'Leva a opção de entrega escolhida pelo cliente na página do produto para o checkout.', 'hubgo' ),
+                        'title'       => __( 'Preferred method', 'hubgo' ),
+                        'description' => __( 'Carries the delivery option the customer picked on the product page into the checkout.', 'hubgo' ),
                         'fields'      => array(
-                            self::toggle( 'enable_shipping_preference', esc_html__( 'Salvar método preferido', 'hubgo' ), esc_html__( 'Pré-seleciona no checkout a opção que o cliente escolheu na calculadora.', 'hubgo' ) ),
-                            self::toggle( 'shipping_preference_apply_postcode', esc_html__( 'Aplicar o CEP no checkout', 'hubgo' ), esc_html__( 'Preenche o CEP de entrega quando o cliente ainda não informou um endereço.', 'hubgo' ) ),
-                            self::select( 'shipping_preference_fallback', esc_html__( 'Quando a opção não existir', 'hubgo' ), esc_html__( 'O que fazer se o método preferido não estiver disponível para o endereço do checkout.', 'hubgo' ), array(
-                                array( 'value' => 'same_method', 'label' => esc_html__( 'Usar a mesma transportadora, se houver', 'hubgo' ) ),
-                                array( 'value' => 'exact', 'label' => esc_html__( 'Deixar o WooCommerce escolher', 'hubgo' ) ),
+                            self::toggle( 'enable_shipping_preference', __( 'Save preferred method', 'hubgo' ), __( 'Pre-selects at the checkout the option the customer picked in the calculator.', 'hubgo' ) ),
+                            self::toggle( 'shipping_preference_apply_postcode', __( 'Apply the postcode at the checkout', 'hubgo' ), __( 'Fills in the shipping postcode when the customer has not entered an address yet.', 'hubgo' ) ),
+                            self::select( 'shipping_preference_fallback', __( 'When the option is unavailable', 'hubgo' ), __( 'What to do when the preferred method is not available for the checkout address.', 'hubgo' ), array(
+                                array( 'value' => 'same_method', 'label' => __( 'Use the same carrier, if available', 'hubgo' ) ),
+                                array( 'value' => 'exact', 'label' => __( 'Let WooCommerce choose', 'hubgo' ) ),
                             ) ),
-                            self::number( 'shipping_preference_ttl', esc_html__( 'Validade da preferência', 'hubgo' ), esc_html__( 'Por quantos dias a escolha do cliente é lembrada no navegador dele.', 'hubgo' ), array(
+                            self::number( 'shipping_preference_ttl', __( 'Preference lifetime', 'hubgo' ), __( 'How many days the customer choice is remembered in their browser.', 'hubgo' ), array(
                                 'min'  => 1,
                                 'max'  => 365,
                                 'step' => 1,
-                                'unit' => esc_html__( 'dias', 'hubgo' ),
+                                'unit' => __( 'days', 'hubgo' ),
                             ) ),
                         ),
                     ),
                     array(
                         'id'          => 'general-address',
-                        'title'       => esc_html__( 'Busca de endereço', 'hubgo' ),
-                        'description' => esc_html__( 'Alimenta o "Não sei meu CEP" exibido abaixo do campo de CEP.', 'hubgo' ),
+                        'title'       => __( 'Address lookup', 'hubgo' ),
+                        'description' => __( 'Powers the "I do not know my postcode" link shown below the postcode field.', 'hubgo' ),
                         'fields'      => array(
-                            self::select( 'address_lookup_provider', esc_html__( 'Serviço de busca', 'hubgo' ), esc_html__( 'O ViaCEP é gratuito e não exige cadastro. O Google Places aceita busca por texto livre, mas consome a cota da sua chave.', 'hubgo' ), array(
-                                array( 'value' => 'viacep', 'label' => esc_html__( 'ViaCEP (gratuito)', 'hubgo' ) ),
-                                array( 'value' => 'google', 'label' => esc_html__( 'Google Places (requer chave de API)', 'hubgo' ) ),
-                                array( 'value' => 'off', 'label' => esc_html__( 'Desativado', 'hubgo' ) ),
+                            self::select( 'address_lookup_provider', __( 'Lookup service', 'hubgo' ), __( 'ViaCEP is free and requires no sign-up. Google Places accepts free-text search but consumes your API key quota.', 'hubgo' ), array(
+                                array( 'value' => 'viacep', 'label' => __( 'ViaCEP (free)', 'hubgo' ) ),
+                                array( 'value' => 'google', 'label' => __( 'Google Places (requires an API key)', 'hubgo' ) ),
+                                array( 'value' => 'off', 'label' => __( 'Disabled', 'hubgo' ) ),
                             ) ),
-                            self::password( 'google_places_api_key', esc_html__( 'Chave da API do Google', 'hubgo' ), esc_html__( 'Requer a "Places API (New)" ativada no projeto. A chave fica no servidor e nunca é enviada ao navegador.', 'hubgo' ), array(
+                            self::password( 'google_places_api_key', __( 'Google API key', 'hubgo' ), __( 'Requires the "Places API (New)" enabled on the project. The key stays on the server and is never sent to the browser.', 'hubgo' ), array(
                                 'placeholder' => 'AIza...',
                             ) ),
                         ),
@@ -117,98 +117,100 @@ class Registry {
             ),
             array(
                 'id'          => 'appearance',
-                'title'       => esc_html__( 'Aparência', 'hubgo' ),
-                'description' => esc_html__( 'Cores e formato da tabela de fretes exibida na loja.', 'hubgo' ),
+                'title'       => __( 'Appearance', 'hubgo' ),
+                'description' => __( 'Colors and layout of the shipping table displayed in the store.', 'hubgo' ),
                 'icon'        => 'palette',
                 'layout'      => 'fields',
                 'cards'       => array(
                     array(
                         'id'          => 'appearance-colors',
-                        'title'       => esc_html__( 'Cores e tipografia', 'hubgo' ),
-                        'description' => esc_html__( 'Deixe um campo vazio para manter o padrão do HubGo.', 'hubgo' ),
+                        'title'       => __( 'Colors and typography', 'hubgo' ),
+                        'description' => __( 'Leave a field empty to keep the HubGo default.', 'hubgo' ),
                         'fields'      => array(
-                            self::color( 'primary_main_color', esc_html__( 'Cor principal', 'hubgo' ), esc_html__( 'Cor de destaque usada em links, ícones e na opção selecionada.', 'hubgo' ), array( 'default' => '#008aff' ) ),
-                            self::color( 'calc_text_color', esc_html__( 'Cor do texto', 'hubgo' ), esc_html__( 'Cor dos títulos e dos valores.', 'hubgo' ), array( 'default' => '#102033' ) ),
-                            self::color( 'calc_muted_color', esc_html__( 'Cor do texto secundário', 'hubgo' ), esc_html__( 'Cor das descrições e observações.', 'hubgo' ), array( 'default' => '#6b7280' ) ),
-                            self::number( 'calc_font_size', esc_html__( 'Tamanho da fonte', 'hubgo' ), esc_html__( 'Tamanho base do texto da calculadora.', 'hubgo' ), array(
-                                'min'         => 10,
-                                'max'         => 24,
-                                'step'        => 1,
-                                'unit'        => 'px',
+                            self::color( 'primary_main_color', __( 'Primary color', 'hubgo' ), __( 'Accent color used on links, icons and the selected option.', 'hubgo' ), array( 'default' => '#008aff' ) ),
+                            self::color( 'calc_text_color', __( 'Text color', 'hubgo' ), __( 'Color of the titles and the amounts.', 'hubgo' ), array( 'default' => '#102033' ) ),
+                            self::color( 'calc_muted_color', __( 'Secondary text color', 'hubgo' ), __( 'Color of the descriptions and notes.', 'hubgo' ), array( 'default' => '#6b7280' ) ),
+                            self::dimension( 'calc_font_size', __( 'Font size', 'hubgo' ), __( 'Base text size of the calculator.', 'hubgo' ), array(
+                                'max'         => 72,
                                 'placeholder' => '14',
                             ) ),
                         ),
                     ),
                     array(
                         'id'          => 'appearance-surface',
-                        'title'       => esc_html__( 'Container', 'hubgo' ),
-                        'description' => esc_html__( 'Caixa que envolve toda a calculadora.', 'hubgo' ),
+                        'title'       => __( 'Container', 'hubgo' ),
+                        'description' => __( 'Box that wraps the whole calculator.', 'hubgo' ),
                         'fields'      => array(
-                            self::color( 'calc_surface_bg', esc_html__( 'Cor de fundo', 'hubgo' ), '', array( 'default' => '#ffffff' ) ),
-                            self::color( 'calc_surface_border', esc_html__( 'Cor da borda', 'hubgo' ), '', array( 'default' => '#e5e8ec' ) ),
-                            self::range( 'calc_surface_radius', esc_html__( 'Arredondamento', 'hubgo' ), '', array( 'max' => 32 ) ),
-                            self::range( 'calc_surface_padding', esc_html__( 'Espaçamento interno', 'hubgo' ), '', array( 'max' => 48 ) ),
+                            self::color( 'calc_surface_bg', __( 'Background color', 'hubgo' ), '', array( 'default' => '#ffffff' ) ),
+                            self::color( 'calc_surface_border', __( 'Border color', 'hubgo' ), '', array( 'default' => '#e5e8ec' ) ),
+                            self::dimension( 'calc_surface_radius', __( 'Corner radius', 'hubgo' ), '', array( 'max' => 100, 'placeholder' => '12' ) ),
+                            self::dimension( 'calc_surface_padding', __( 'Inner spacing', 'hubgo' ), '', array( 'max' => 200, 'placeholder' => '20' ) ),
                         ),
                     ),
                     array(
                         'id'          => 'appearance-badge',
-                        'title'       => esc_html__( 'Selo de frete grátis', 'hubgo' ),
-                        'description' => esc_html__( 'Etiqueta exibida no topo do card.', 'hubgo' ),
+                        'title'       => __( 'Free shipping badge', 'hubgo' ),
+                        'description' => __( 'Label displayed at the top of the card.', 'hubgo' ),
                         'fields'      => array(
-                            self::color( 'calc_badge_bg', esc_html__( 'Cor de fundo', 'hubgo' ), '', array( 'default' => '#059669' ) ),
-                            self::color( 'calc_badge_text_color', esc_html__( 'Cor do texto', 'hubgo' ), '', array( 'default' => '#ffffff' ) ),
+                            self::color( 'calc_badge_bg', __( 'Background color', 'hubgo' ), '', array( 'default' => '#059669' ) ),
+                            self::color( 'calc_badge_text_color', __( 'Text color', 'hubgo' ), '', array( 'default' => '#ffffff' ) ),
                         ),
                     ),
                     array(
                         'id'          => 'appearance-input',
-                        'title'       => esc_html__( 'Campo de CEP', 'hubgo' ),
-                        'description' => esc_html__( 'Entrada onde o cliente digita o CEP.', 'hubgo' ),
+                        'title'       => __( 'Postcode field', 'hubgo' ),
+                        'description' => __( 'Input where the customer types the postcode.', 'hubgo' ),
                         'fields'      => array(
-                            self::color( 'calc_input_bg', esc_html__( 'Cor de fundo', 'hubgo' ), '', array( 'default' => '#ffffff' ) ),
-                            self::color( 'calc_input_border', esc_html__( 'Cor da borda', 'hubgo' ), '', array( 'default' => '#d5dae1' ) ),
-                            self::range( 'calc_input_radius', esc_html__( 'Arredondamento', 'hubgo' ), '', array( 'max' => 32 ) ),
-                            self::range( 'calc_input_height', esc_html__( 'Altura', 'hubgo' ), '', array( 'min' => 32, 'max' => 72 ) ),
+                            self::color( 'calc_input_bg', __( 'Background color', 'hubgo' ), '', array( 'default' => '#ffffff' ) ),
+                            self::color( 'calc_input_border', __( 'Border color', 'hubgo' ), '', array( 'default' => '#d5dae1' ) ),
+                            self::dimension( 'calc_input_radius', __( 'Corner radius', 'hubgo' ), '', array( 'max' => 100, 'placeholder' => '10' ) ),
+                            self::dimension( 'calc_input_height', __( 'Height', 'hubgo' ), '', array( 'max' => 200, 'placeholder' => '48' ) ),
                         ),
                     ),
                     array(
                         'id'          => 'appearance-button',
-                        'title'       => esc_html__( 'Botão calcular', 'hubgo' ),
-                        'description' => esc_html__( 'Deixe vazio para usar a cor principal.', 'hubgo' ),
+                        'title'       => __( 'Calculate button', 'hubgo' ),
+                        'description' => __( 'Leave empty to use the primary color.', 'hubgo' ),
                         'fields'      => array(
-                            self::color( 'calc_button_bg', esc_html__( 'Cor de fundo', 'hubgo' ), '', array( 'default' => '#008aff' ) ),
-                            self::color( 'calc_button_hover_bg', esc_html__( 'Cor de fundo (hover)', 'hubgo' ), '', array( 'default' => '#0069c2' ) ),
-                            self::color( 'calc_button_text_color', esc_html__( 'Cor do texto', 'hubgo' ), '', array( 'default' => '#ffffff' ) ),
-                            self::range( 'calc_button_radius', esc_html__( 'Arredondamento', 'hubgo' ), '', array( 'max' => 32 ) ),
+                            self::color( 'calc_button_bg', __( 'Background color', 'hubgo' ), '', array( 'default' => '#008aff' ) ),
+                            self::color( 'calc_button_hover_bg', __( 'Background color (hover)', 'hubgo' ), '', array( 'default' => '#0069c2' ) ),
+                            self::color( 'calc_button_text_color', __( 'Text color', 'hubgo' ), '', array( 'default' => '#ffffff' ) ),
+                            self::dimension( 'calc_button_radius', __( 'Corner radius', 'hubgo' ), '', array( 'max' => 100, 'placeholder' => '10' ) ),
                         ),
                     ),
                     array(
                         'id'          => 'appearance-options',
-                        'title'       => esc_html__( 'Opções de entrega', 'hubgo' ),
-                        'description' => esc_html__( 'Lista de métodos exibida na janela de detalhes.', 'hubgo' ),
+                        'title'       => __( 'Delivery options', 'hubgo' ),
+                        'description' => __( 'List of methods displayed in the details window.', 'hubgo' ),
                         'fields'      => array(
-                            self::color( 'calc_option_border', esc_html__( 'Cor da borda', 'hubgo' ), '', array( 'default' => '#e5e8ec' ) ),
-                            self::color( 'calc_option_selected_bg', esc_html__( 'Fundo da opção escolhida', 'hubgo' ), '', array( 'default' => '#f4f9ff' ) ),
-                            self::range( 'calc_option_radius', esc_html__( 'Arredondamento', 'hubgo' ), '', array( 'max' => 32 ) ),
+                            self::color( 'calc_option_border', __( 'Border color', 'hubgo' ), '', array( 'default' => '#e5e8ec' ) ),
+                            self::color( 'calc_option_selected_bg', __( 'Selected option background', 'hubgo' ), '', array( 'default' => '#f4f9ff' ) ),
+                            self::dimension( 'calc_option_radius', __( 'Corner radius', 'hubgo' ), '', array( 'max' => 100, 'placeholder' => '10' ) ),
                         ),
                     ),
                     array(
                         'id'          => 'appearance-modal',
-                        'title'       => esc_html__( 'Janela de detalhes', 'hubgo' ),
-                        'description' => esc_html__( 'Modal aberto por "Mais detalhes e formas de entrega".', 'hubgo' ),
+                        'title'       => __( 'Details window', 'hubgo' ),
+                        'description' => __( 'Modal opened by "More details and delivery methods".', 'hubgo' ),
                         'fields'      => array(
-                            self::color( 'calc_modal_bg', esc_html__( 'Cor de fundo', 'hubgo' ), '', array( 'default' => '#ffffff' ) ),
-                            self::range( 'calc_modal_radius', esc_html__( 'Arredondamento', 'hubgo' ), '', array( 'max' => 32 ) ),
-                            self::range( 'calc_modal_blur', esc_html__( 'Desfoque do fundo', 'hubgo' ), esc_html__( 'Quanto a página atrás da janela é desfocada. Zero desativa o efeito.', 'hubgo' ), array( 'max' => 24, 'default' => 8 ) ),
+                            self::color( 'calc_modal_bg', __( 'Background color', 'hubgo' ), '', array( 'default' => '#ffffff' ) ),
+                            self::dimension( 'calc_modal_radius', __( 'Corner radius', 'hubgo' ), '', array( 'max' => 100, 'placeholder' => '14' ) ),
+                            self::dimension( 'calc_modal_blur', __( 'Backdrop blur', 'hubgo' ), __( 'How much the page behind the window is blurred. Zero disables the effect.', 'hubgo' ), array(
+                                'max'         => 100,
+                                'placeholder' => '8',
+                                // A percentage is not a valid blur() radius.
+                                'units'       => array( 'rem', 'em', 'px' ),
+                            ) ),
                         ),
                     ),
                     array(
                         'id'          => 'appearance-layout',
-                        'title'       => esc_html__( 'Layout', 'hubgo' ),
-                        'description' => esc_html__( 'Como os métodos de entrega são apresentados ao cliente.', 'hubgo' ),
+                        'title'       => __( 'Layout', 'hubgo' ),
+                        'description' => __( 'How the delivery methods are presented to the customer.', 'hubgo' ),
                         'fields'      => array(
-                            self::select( 'shipping_methods_display', esc_html__( 'Exibição dos métodos', 'hubgo' ), esc_html__( 'Formato usado para listar os métodos de entrega retornados.', 'hubgo' ), array(
-                                array( 'value' => 'table', 'label' => esc_html__( 'Tabela', 'hubgo' ) ),
-                                array( 'value' => 'list', 'label' => esc_html__( 'Lista', 'hubgo' ) ),
+                            self::select( 'shipping_methods_display', __( 'Methods display', 'hubgo' ), __( 'Format used to list the returned delivery methods.', 'hubgo' ), array(
+                                array( 'value' => 'table', 'label' => __( 'Table', 'hubgo' ) ),
+                                array( 'value' => 'list', 'label' => __( 'List', 'hubgo' ) ),
                             ) ),
                         ),
                     ),
@@ -216,82 +218,82 @@ class Registry {
             ),
             array(
                 'id'          => 'texts',
-                'title'       => esc_html__( 'Textos', 'hubgo' ),
-                'description' => esc_html__( 'Todos os textos exibidos pela calculadora e pela tabela de fretes.', 'hubgo' ),
+                'title'       => __( 'Texts', 'hubgo' ),
+                'description' => __( 'Every text displayed by the calculator and by the shipping table.', 'hubgo' ),
                 'icon'        => 'align-left',
                 'layout'      => 'fields',
                 'cards'       => array(
                     array(
                         'id'          => 'texts-calculator',
-                        'title'       => esc_html__( 'Calculadora', 'hubgo' ),
-                        'description' => esc_html__( 'Textos do formulário de consulta de frete.', 'hubgo' ),
+                        'title'       => __( 'Calculator', 'hubgo' ),
+                        'description' => __( 'Texts of the shipping lookup form.', 'hubgo' ),
                         'fields'      => array(
-                            self::text( 'text_calculator_title', esc_html__( 'Título do card', 'hubgo' ), esc_html__( 'Deixe vazio para ocultar o título.', 'hubgo' ) ),
-                            self::text( 'text_info_before_input_shipping_calc', esc_html__( 'Texto de informação', 'hubgo' ), esc_html__( 'Texto exibido acima do campo de CEP.', 'hubgo' ) ),
-                            self::text( 'text_placeholder_input_shipping_calc', esc_html__( 'Placeholder do campo', 'hubgo' ), esc_html__( 'Texto de exemplo dentro do campo de CEP.', 'hubgo' ) ),
-                            self::text( 'text_button_shipping_calc', esc_html__( 'Texto do botão', 'hubgo' ), esc_html__( 'Rótulo do botão de calcular.', 'hubgo' ) ),
-                            self::text( 'text_cep_finder_link', esc_html__( 'Link "Não sei meu CEP"', 'hubgo' ), esc_html__( 'Deixe vazio para ocultar a busca de endereço.', 'hubgo' ) ),
+                            self::text( 'text_calculator_title', __( 'Card title', 'hubgo' ), __( 'Leave empty to hide the title.', 'hubgo' ) ),
+                            self::text( 'text_info_before_input_shipping_calc', __( 'Information text', 'hubgo' ), __( 'Text displayed above the postcode field.', 'hubgo' ) ),
+                            self::text( 'text_placeholder_input_shipping_calc', __( 'Field placeholder', 'hubgo' ), __( 'Example text inside the postcode field.', 'hubgo' ) ),
+                            self::text( 'text_button_shipping_calc', __( 'Button text', 'hubgo' ), __( 'Label of the calculate button.', 'hubgo' ) ),
+                            self::text( 'text_cep_finder_link', __( '"I do not know my postcode" link', 'hubgo' ), __( 'Leave empty to hide the address lookup.', 'hubgo' ) ),
                         ),
                     ),
                     array(
                         'id'          => 'texts-results',
-                        'title'       => esc_html__( 'Resultado do frete', 'hubgo' ),
-                        'description' => esc_html__( 'Cabeçalhos e observações exibidos no resultado da consulta.', 'hubgo' ),
+                        'title'       => __( 'Shipping result', 'hubgo' ),
+                        'description' => __( 'Headers and notes displayed in the lookup result.', 'hubgo' ),
                         'fields'      => array(
-                            self::text( 'text_header_ship', esc_html__( 'Cabeçalho "Entrega"', 'hubgo' ), esc_html__( 'Título da coluna de método de entrega.', 'hubgo' ) ),
-                            self::text( 'text_header_value', esc_html__( 'Cabeçalho "Valor"', 'hubgo' ), esc_html__( 'Título da coluna de valor.', 'hubgo' ) ),
-                            self::text( 'text_more_options', esc_html__( 'Link de mais opções', 'hubgo' ), esc_html__( 'Abre a janela com todas as formas de entrega.', 'hubgo' ) ),
-                            self::textarea( 'note_text_bottom_shipping_calc', esc_html__( 'Nota de rodapé', 'hubgo' ), esc_html__( 'Observação exibida abaixo do resultado.', 'hubgo' ) ),
+                            self::text( 'text_header_ship', __( '"Delivery" header', 'hubgo' ), __( 'Title of the delivery method column.', 'hubgo' ) ),
+                            self::text( 'text_header_value', __( '"Price" header', 'hubgo' ), __( 'Title of the price column.', 'hubgo' ) ),
+                            self::text( 'text_more_options', __( 'More options link', 'hubgo' ), __( 'Opens the window with every delivery method.', 'hubgo' ) ),
+                            self::textarea( 'note_text_bottom_shipping_calc', __( 'Footer note', 'hubgo' ), __( 'Note displayed below the result.', 'hubgo' ) ),
                         ),
                     ),
                     array(
                         'id'          => 'texts-free-shipping',
-                        'title'       => esc_html__( 'Frete grátis', 'hubgo' ),
-                        'description' => esc_html__( 'Selo exibido no topo do card. Deixe ambos vazios para ocultá-lo.', 'hubgo' ),
+                        'title'       => __( 'Free shipping', 'hubgo' ),
+                        'description' => __( 'Badge displayed at the top of the card. Leave both empty to hide it.', 'hubgo' ),
                         'fields'      => array(
-                            self::text( 'text_free_shipping_badge', esc_html__( 'Selo antes de atingir', 'hubgo' ), esc_html__( 'Use %s onde o valor mínimo deve aparecer.', 'hubgo' ) ),
-                            self::text( 'text_free_shipping_active', esc_html__( 'Selo ao atingir', 'hubgo' ), esc_html__( 'Exibido quando o produto já garante frete grátis.', 'hubgo' ) ),
+                            self::text( 'text_free_shipping_badge', __( 'Badge before the threshold', 'hubgo' ), __( 'Use %s where the minimum amount should appear.', 'hubgo' ) ),
+                            self::text( 'text_free_shipping_active', __( 'Badge once reached', 'hubgo' ), __( 'Displayed when the product already qualifies for free shipping.', 'hubgo' ) ),
                         ),
                     ),
                     array(
                         'id'          => 'texts-preference',
-                        'title'       => esc_html__( 'Método preferido', 'hubgo' ),
-                        'description' => esc_html__( 'Textos da escolha que é levada ao checkout.', 'hubgo' ),
+                        'title'       => __( 'Preferred method', 'hubgo' ),
+                        'description' => __( 'Texts of the choice carried into the checkout.', 'hubgo' ),
                         'fields'      => array(
-                            self::text( 'text_preference_hint', esc_html__( 'Aviso na lista de opções', 'hubgo' ), esc_html__( 'Exibido abaixo das formas de entrega.', 'hubgo' ) ),
-                            self::text( 'text_preference_saved', esc_html__( 'Confirmação da escolha', 'hubgo' ), esc_html__( 'Exibido depois que o cliente escolhe uma opção.', 'hubgo' ) ),
-                            self::text( 'text_clear_preference', esc_html__( 'Link para remover', 'hubgo' ), esc_html__( 'Deixe vazio para não permitir remover a preferência.', 'hubgo' ) ),
+                            self::text( 'text_preference_hint', __( 'Hint on the options list', 'hubgo' ), __( 'Displayed below the delivery methods.', 'hubgo' ) ),
+                            self::text( 'text_preference_saved', __( 'Choice confirmation', 'hubgo' ), __( 'Displayed after the customer picks an option.', 'hubgo' ) ),
+                            self::text( 'text_clear_preference', __( 'Clear link', 'hubgo' ), __( 'Leave empty to not allow clearing the preference.', 'hubgo' ) ),
                         ),
                     ),
                 ),
             ),
             array(
                 'id'          => 'about',
-                'title'       => esc_html__( 'Sobre', 'hubgo' ),
-                'description' => esc_html__( 'Manutenção, atualizações e informações do ambiente.', 'hubgo' ),
+                'title'       => __( 'About', 'hubgo' ),
+                'description' => __( 'Maintenance, updates and environment information.', 'hubgo' ),
                 'icon'        => 'info-circle',
                 'layout'      => 'mixed',
                 'cards'       => array(
                     array(
                         'id'          => 'about-maintenance',
-                        'title'       => esc_html__( 'Manutenção e preferências', 'hubgo' ),
-                        'description' => esc_html__( 'Comportamento operacional do plugin.', 'hubgo' ),
+                        'title'       => __( 'Maintenance and preferences', 'hubgo' ),
+                        'description' => __( 'Operational behaviour of the plugin.', 'hubgo' ),
                         'fields'      => array(
-                            self::toggle( 'enable_auto_updates', esc_html__( 'Atualizações automáticas', 'hubgo' ), esc_html__( 'Permite que o HubGo se atualize sozinho sempre que possível.', 'hubgo' ) ),
-                            self::toggle( 'enable_update_notice', esc_html__( 'Avisos de atualização', 'hubgo' ), esc_html__( 'Exibe notificações quando uma nova versão está disponível.', 'hubgo' ) ),
-                            self::toggle( 'enable_debug_mode', esc_html__( 'Modo de depuração', 'hubgo' ), esc_html__( 'Registra detalhes adicionais de erros e processos no log do WordPress.', 'hubgo' ) ),
+                            self::toggle( 'enable_auto_updates', __( 'Automatic updates', 'hubgo' ), __( 'Lets HubGo update itself whenever possible.', 'hubgo' ) ),
+                            self::toggle( 'enable_update_notice', __( 'Update notices', 'hubgo' ), __( 'Displays notifications when a new version is available.', 'hubgo' ) ),
+                            self::toggle( 'enable_debug_mode', __( 'Debug mode', 'hubgo' ), __( 'Records extra error and process details in the WordPress log.', 'hubgo' ) ),
                         ),
                     ),
                     array(
                         'id'          => 'about-system',
-                        'title'       => esc_html__( 'Status do sistema', 'hubgo' ),
-                        'description' => esc_html__( 'Visão rápida do ambiente WordPress, PHP e WooCommerce.', 'hubgo' ),
+                        'title'       => __( 'System status', 'hubgo' ),
+                        'description' => __( 'Quick view of the WordPress, PHP and WooCommerce environment.', 'hubgo' ),
                         'component'   => 'system-status',
                     ),
                     array(
                         'id'          => 'about-danger',
-                        'title'       => esc_html__( 'Zona de perigo', 'hubgo' ),
-                        'description' => esc_html__( 'Ações irreversíveis sobre a configuração do plugin.', 'hubgo' ),
+                        'title'       => __( 'Danger zone', 'hubgo' ),
+                        'description' => __( 'Irreversible actions on the plugin configuration.', 'hubgo' ),
                         'component'   => 'danger-zone',
                     ),
                 ),
@@ -480,15 +482,15 @@ class Registry {
      */
     private static function get_integration_disabled_message( $item, $requires_plugin, $plugin_active, $locked ) {
         if ( ! empty( $item['coming_soon'] ) ) {
-            return esc_html__( 'Esta integração estará disponível em breve.', 'hubgo' );
+            return __( 'This integration will be available soon.', 'hubgo' );
         }
 
         if ( $requires_plugin && ! $plugin_active ) {
-            return esc_html__( 'O plugin correspondente precisa estar instalado e ativo para usar esta integração.', 'hubgo' );
+            return __( 'The matching plugin must be installed and active to use this integration.', 'hubgo' );
         }
 
         if ( $locked ) {
-            return esc_html__( 'Ative sua licença do HubGo para usar esta integração.', 'hubgo' );
+            return __( 'Activate your HubGo license to use this integration.', 'hubgo' );
         }
 
         return '';
@@ -537,7 +539,12 @@ class Registry {
     /**
      * Slider field, for style values that read better as a continuum.
      *
+     * The calculator's lengths moved to {@see self::dimension()} in 3.0.1, but
+     * `range` stays a registered field type — the schema is filterable and the
+     * field registry is public, so an integration may still build one.
+     *
      * @since 3.0.0
+     * @version 3.0.1
      * @param string $key Setting key.
      * @param string $label Field label.
      * @param string $description Field description.
@@ -554,6 +561,37 @@ class Registry {
             'max'         => 40,
             'step'        => 1,
             'unit'        => 'px',
+        ), $extra );
+    }
+
+
+    /**
+     * CSS length field: an amount plus a unit picker.
+     *
+     * The stored value is the CSS value itself ("12px", "1.5rem"), so the token
+     * map can drop it straight into a custom property. A value saved before the
+     * unit picker existed is a bare number and keeps working: {@see
+     * \MeuMouse\Hubgo\Views\Calculator_Styles} appends the unit declared there.
+     *
+     * @since 3.0.1
+     * @param string $key Setting key.
+     * @param string $label Field label.
+     * @param string $description Field description.
+     * @param array $extra Extra attributes (min, max, step, unit, units, placeholder).
+     * @return array<string,mixed>
+     */
+    private static function dimension( $key, $label, $description = '', $extra = array() ) {
+        return array_merge( array(
+            'key'         => $key,
+            'type'        => 'dimension',
+            'label'       => $label,
+            'description' => $description,
+            'min'         => 0,
+            'max'         => 200,
+            // Unit a bare number is read with — px, matching both the values
+            // stored before 3.0.1 and the stylesheet's built-in defaults.
+            'unit'        => 'px',
+            'units'       => array( 'rem', 'em', 'px', '%' ),
         ), $extra );
     }
 

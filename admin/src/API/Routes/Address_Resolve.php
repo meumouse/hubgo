@@ -49,12 +49,12 @@ class Address_Resolve extends Abstract_Route {
         $provider = Address_Lookup::get_active_provider();
 
         if ( ! $provider ) {
-            return $this->error_response( esc_html__( 'Address lookup is disabled.', 'hubgo' ), 404 );
+            return $this->error_response( __( 'Address lookup is disabled.', 'hubgo' ), 404 );
         }
 
         if ( ! Address_Lookup::consume_rate_limit() ) {
             return $this->error_response(
-                esc_html__( 'Too many lookups in a short time. Wait a moment and try again.', 'hubgo' ),
+                __( 'Too many lookups in a short time. Wait a moment and try again.', 'hubgo' ),
                 429
             );
         }

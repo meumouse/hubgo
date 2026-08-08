@@ -32,7 +32,7 @@ class License_Activate extends Abstract_Route {
         $key = trim( (string) $request->get_param( 'license_key' ) );
 
         if ( '' === $key ) {
-            return $this->error_response( esc_html__( 'Enter the license key.', 'hubgo' ) );
+            return $this->error_response( __( 'Enter the license key.', 'hubgo' ) );
         }
 
         $status = License::activate( $key );
@@ -47,14 +47,14 @@ class License_Activate extends Abstract_Route {
             $message = $status->message();
 
             return $this->error_response(
-                '' !== $message ? $message : esc_html__( 'Could not activate this license.', 'hubgo' ),
+                '' !== $message ? $message : __( 'Could not activate this license.', 'hubgo' ),
                 400,
                 array( 'license' => $payload )
             );
         }
 
         return $this->success_response( array(
-            'message' => esc_html__( 'License activated successfully!', 'hubgo' ),
+            'message' => __( 'License activated successfully!', 'hubgo' ),
             'license' => $payload,
         ) );
     }

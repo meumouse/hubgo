@@ -131,7 +131,7 @@ abstract class Abstract_Migration {
         if ( ! $this->is_available() ) {
             return new WP_Error(
                 'hubgo_migration_unavailable',
-                esc_html__( 'The source data for this migration is not available.', 'hubgo' )
+                __( 'The source data for this migration is not available.', 'hubgo' )
             );
         }
 

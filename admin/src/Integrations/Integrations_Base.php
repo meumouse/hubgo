@@ -59,25 +59,25 @@ abstract class Integrations_Base {
         $categories = array(
             array(
                 'id'       => 'shipping',
-                'label'    => esc_html__( 'Fretes e transportadoras', 'hubgo' ),
+                'label'    => __( 'Shipping and carriers', 'hubgo' ),
                 'icon'     => 'package',
                 'priority' => 10,
             ),
             array(
                 'id'       => 'notifications',
-                'label'    => esc_html__( 'Notificações', 'hubgo' ),
+                'label'    => __( 'Notifications', 'hubgo' ),
                 'icon'     => 'bell',
                 'priority' => 20,
             ),
             array(
                 'id'       => 'ecommerce',
-                'label'    => esc_html__( 'E-commerce', 'hubgo' ),
+                'label'    => __( 'E-commerce', 'hubgo' ),
                 'icon'     => 'cart',
                 'priority' => 30,
             ),
             array(
                 'id'       => 'others',
-                'label'    => esc_html__( 'Outros', 'hubgo' ),
+                'label'    => __( 'Other', 'hubgo' ),
                 'icon'     => 'grid',
                 'priority' => 100,
             ),
@@ -329,7 +329,7 @@ abstract class Integrations_Base {
         $install['label'] = (string) $install['label'];
 
         if ( '' === $install['label'] ) {
-            $install['label'] = esc_html__( 'Instalar plugin', 'hubgo' );
+            $install['label'] = __( 'Install plugin', 'hubgo' );
         }
 
         return $install;
@@ -350,7 +350,7 @@ abstract class Integrations_Base {
         $modal = wp_parse_args( $modal, array(
             'title'        => isset( $item['title'] ) ? (string) $item['title'] : '',
             'description'  => isset( $item['description'] ) ? (string) $item['description'] : '',
-            'button_label' => esc_html__( 'Configurar', 'hubgo' ),
+            'button_label' => __( 'Configure', 'hubgo' ),
             'size'         => 'medium',
             'blocks'       => array(),
         ) );
@@ -546,8 +546,6 @@ abstract class Integrations_Base {
 
         return false;
     }
-
-
     /**
      * Inline SVG shipped under `assets/admin/img/`.
      *

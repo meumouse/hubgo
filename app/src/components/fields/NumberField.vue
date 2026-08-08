@@ -6,7 +6,11 @@
  * several calculator settings read "" as "use the built-in default", and a
  * silent 0 would mean something very different.
  *
+ * A declared `unit` renders as a suffix inside the control shell, so the number
+ * and its unit read as one control instead of two loose elements on the row.
+ *
  * @since 3.0.0
+ * @version 3.0.1
  */
 defineProps({
     modelValue: { type: [ String, Number ], default: '' },
@@ -29,7 +33,7 @@ function commit( value ) {
 </script>
 
 <template>
-    <div class="flex items-center gap-2">
+    <div class="hubgo-control inline-flex w-40 items-stretch overflow-hidden bg-white">
         <input
             :id="inputId || undefined"
             :name="name"
@@ -40,10 +44,15 @@ function commit( value ) {
             :step="field.step || 1"
             type="number"
             inputmode="decimal"
-            class="w-32 rounded-[8px] border border-slate-200 bg-white px-4 py-3 text-[14px] text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-primary-700 focus:ring-4 focus:ring-primary-100"
+            class="hubgo-control__inner w-full min-w-0 flex-1 px-3.5 text-[14px] text-slate-700"
             @input="commit( $event.target.value )"
         >
 
-        <span v-if="field.unit" class="text-[13px] text-slate-400">{{ field.unit }}</span>
+        <span
+            v-if="field.unit"
+            class="flex shrink-0 items-center border-l border-slate-100 px-3 text-[13px] font-medium text-slate-400"
+        >
+            {{ field.unit }}
+        </span>
     </div>
 </template>

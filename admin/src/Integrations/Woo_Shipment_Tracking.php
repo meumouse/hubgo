@@ -107,8 +107,8 @@ class Woo_Shipment_Tracking extends Integrations_Base {
         }
 
         $integrations[ self::CARD_SLUG ] = array(
-            'title'       => esc_html__( 'WooCommerce Shipment Tracking', 'hubgo' ),
-            'description' => esc_html__( 'Displays Shipment Tracking codes inside HubGo and migrates the order data into native tracking.', 'hubgo' ),
+            'title'       => __( 'WooCommerce Shipment Tracking', 'hubgo' ),
+            'description' => __( 'Displays Shipment Tracking codes inside HubGo and migrates the order data into native tracking.', 'hubgo' ),
             'icon'        => $this->get_icon_svg(),
             'category'    => 'shipping',
             'setting_key' => self::SETTING_KEY,
@@ -119,13 +119,13 @@ class Woo_Shipment_Tracking extends Integrations_Base {
             'settings'    => array(
                 self::field_toggle(
                     self::SYNC_SETTING_KEY,
-                    esc_html__( 'Display Shipment Tracking codes', 'hubgo' ),
-                    esc_html__( 'Shows the codes stored by the other plugin on the HubGo screens, read-only, until the migration is run.', 'hubgo' )
+                    __( 'Display Shipment Tracking codes', 'hubgo' ),
+                    __( 'Shows the codes stored by the other plugin on the HubGo screens, read-only, until the migration is run.', 'hubgo' )
                 ),
             ),
             'modal'       => array(
-                'title'       => esc_html__( 'WooCommerce Shipment Tracking', 'hubgo' ),
-                'description' => esc_html__( 'Bring the tracking codes already registered in Shipment Tracking into HubGo.', 'hubgo' ),
+                'title'       => __( 'WooCommerce Shipment Tracking', 'hubgo' ),
+                'description' => __( 'Bring the tracking codes already registered in Shipment Tracking into HubGo.', 'hubgo' ),
                 'size'        => 'medium',
                 'blocks'      => $this->get_modal_blocks(),
             ),
@@ -144,7 +144,7 @@ class Woo_Shipment_Tracking extends Integrations_Base {
     protected function get_modal_blocks() {
         $blocks = array(
             self::modal_notice_block(
-                esc_html__( 'The migration copies the data: nothing is deleted from Shipment Tracking. Once you have migrated and checked the orders, you can safely deactivate the other plugin.', 'hubgo' ),
+                __( 'The migration copies the data: nothing is deleted from Shipment Tracking. Once you have migrated and checked the orders, you can safely deactivate the other plugin.', 'hubgo' ),
                 'info'
             ),
         );
@@ -207,7 +207,7 @@ class Woo_Shipment_Tracking extends Integrations_Base {
 
             $source_item['tracking_id'] = 'wcst_' . md5( $source_item['source_tracking_id'] . $number );
             $source_item['read_only'] = true;
-            $source_item['source_label'] = esc_html__( 'Shipment Tracking', 'hubgo' );
+            $source_item['source_label'] = __( 'Shipment Tracking', 'hubgo' );
 
             $items[] = $source_item;
         }

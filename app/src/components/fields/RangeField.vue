@@ -50,12 +50,12 @@ const sliderValue = computed( () => {
             :max="max"
             :step="step"
             type="range"
-            class="h-2 w-40 cursor-pointer appearance-none rounded-full bg-slate-200 accent-primary-700"
+            class="hubgo-range w-40 cursor-pointer"
             @input="emit( 'update:modelValue', $event.target.value )"
         >
 
-        <span class="min-w-[52px] text-[13px] tabular-nums text-slate-500">
-            <template v-if="isUnset">{{ __( 'padrão' ) }}</template>
+        <span class="inline-flex h-8 min-w-[64px] items-center justify-center rounded-[8px] bg-slate-50 px-2 text-[13px] font-medium tabular-nums text-slate-600">
+            <template v-if="isUnset">{{ __( 'default' ) }}</template>
             <template v-else>{{ modelValue }}{{ field.unit || '' }}</template>
         </span>
 
@@ -65,7 +65,7 @@ const sliderValue = computed( () => {
             class="text-[12px] text-slate-400 underline-offset-2 transition hover:text-primary-700 hover:underline"
             @click="emit( 'update:modelValue', '' )"
         >
-            {{ __( 'Redefinir' ) }}
+            {{ __( 'Reset' ) }}
         </button>
     </div>
 </template>

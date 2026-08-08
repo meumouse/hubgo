@@ -29,34 +29,34 @@ class System_Status {
         global $wp_version;
 
         $rows = array(
-            self::row( 'plugin_version', esc_html__( 'HubGo version', 'hubgo' ), defined( 'HUBGO_VERSION' ) ? HUBGO_VERSION : '—' ),
-            self::row( 'wp_version', esc_html__( 'WordPress', 'hubgo' ), (string) $wp_version ),
-            self::row( 'php_version', esc_html__( 'PHP', 'hubgo' ), PHP_VERSION, version_compare( PHP_VERSION, '7.4', '>=' ) ? 'success' : 'danger' ),
+            self::row( 'plugin_version', __( 'HubGo version', 'hubgo' ), defined( 'HUBGO_VERSION' ) ? HUBGO_VERSION : '—' ),
+            self::row( 'wp_version', __( 'WordPress', 'hubgo' ), (string) $wp_version ),
+            self::row( 'php_version', __( 'PHP', 'hubgo' ), PHP_VERSION, version_compare( PHP_VERSION, '7.4', '>=' ) ? 'success' : 'danger' ),
             self::row(
                 'wc_version',
-                esc_html__( 'WooCommerce', 'hubgo' ),
-                defined( 'WC_VERSION' ) ? WC_VERSION : esc_html__( 'Not detected', 'hubgo' ),
+                __( 'WooCommerce', 'hubgo' ),
+                defined( 'WC_VERSION' ) ? WC_VERSION : __( 'Not detected', 'hubgo' ),
                 defined( 'WC_VERSION' ) ? 'success' : 'danger'
             ),
             self::row(
                 'hpos',
-                esc_html__( 'Order tables (HPOS)', 'hubgo' ),
-                self::is_hpos_enabled() ? esc_html__( 'Enabled', 'hubgo' ) : esc_html__( 'Disabled', 'hubgo' )
+                __( 'Order tables (HPOS)', 'hubgo' ),
+                self::is_hpos_enabled() ? __( 'Enabled', 'hubgo' ) : __( 'Disabled', 'hubgo' )
             ),
             self::row(
                 'ssl',
-                esc_html__( 'HTTPS', 'hubgo' ),
-                is_ssl() ? esc_html__( 'Active', 'hubgo' ) : esc_html__( 'Inactive', 'hubgo' ),
+                __( 'HTTPS', 'hubgo' ),
+                is_ssl() ? __( 'Active', 'hubgo' ) : __( 'Inactive', 'hubgo' ),
                 is_ssl() ? 'success' : 'warning'
             ),
             self::row(
                 'wp_debug',
-                esc_html__( 'WP_DEBUG', 'hubgo' ),
-                ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? esc_html__( 'Enabled', 'hubgo' ) : esc_html__( 'Disabled', 'hubgo' )
+                __( 'WP_DEBUG', 'hubgo' ),
+                ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? __( 'Enabled', 'hubgo' ) : __( 'Disabled', 'hubgo' )
             ),
-            self::row( 'memory_limit', esc_html__( 'Memory limit', 'hubgo' ), (string) ini_get( 'memory_limit' ) ),
-            self::row( 'max_execution_time', esc_html__( 'Max execution time', 'hubgo' ), (string) ini_get( 'max_execution_time' ) . 's' ),
-            self::row( 'locale', esc_html__( 'Site language', 'hubgo' ), function_exists( 'determine_locale' ) ? determine_locale() : get_locale() ),
+            self::row( 'memory_limit', __( 'Memory limit', 'hubgo' ), (string) ini_get( 'memory_limit' ) ),
+            self::row( 'max_execution_time', __( 'Max execution time', 'hubgo' ), (string) ini_get( 'max_execution_time' ) . 's' ),
+            self::row( 'locale', __( 'Site language', 'hubgo' ), function_exists( 'determine_locale' ) ? determine_locale() : get_locale() ),
         );
 
         return apply_filters( 'Hubgo/Admin/System_Status', $rows );

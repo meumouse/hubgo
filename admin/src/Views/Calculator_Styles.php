@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
  *   1. Fallbacks hardcoded in the Vue stylesheet — always present, so the widget
  *      is never unstyled.
  *   2. This class, printed on `.hubgo-shipping-calculator` in `wp_head` — the
- *      store-wide defaults set on the Aparência tab.
+ *      store-wide defaults set on the Appearance tab.
  *   3. Elementor, printed on `{{WRAPPER}} .hubgo-shipping-calculator` — higher
  *      specificity, so a widget's own controls win for that instance only.
  *
@@ -200,9 +200,15 @@ class Calculator_Styles {
      * write — but a style block is the one place where a stray `}` or `<` turns
      * a bad value into markup, so lengths and character sets are checked again.
      *
+     * A length may arrive either with its unit spelled out ("1.5rem", saved by
+     * the settings panel since 3.0.1) or as a bare number, which is how every
+     * length was stored before the unit picker existed. The bare number takes
+     * the unit declared in the token map, so old options keep rendering.
+     *
      * @since 3.0.0
+     * @version 3.0.1
      * @param mixed $value Raw setting value.
-     * @param string $unit Unit to append to a numeric value.
+     * @param string $unit Unit to append to a bare numeric value.
      * @return string Empty string when the value cannot be used.
      */
     private static function sanitize_value( $value, $unit ) {
@@ -217,7 +223,11 @@ class Calculator_Styles {
         }
 
         if ( '' !== $unit ) {
-            return is_numeric( $value ) ? ( (string) (float) $value ) . $unit : '';
+            if ( is_numeric( $value ) ) {
+                return ( (string) (float) $value ) . $unit;
+            }
+
+            return preg_match( '/^-?\d*\.?\d+(?:rem|em|px|%)$/i', $value ) ? strtolower( $value ) : '';
         }
 
         $color = sanitize_hex_color( $value );

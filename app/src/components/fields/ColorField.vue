@@ -2,11 +2,13 @@
 /**
  * ColorField.vue
  *
- * Colour control pairing a native swatch picker with a hex input. The hex input
- * is only committed once it holds a valid #RGB/#RRGGBB value, so typing does not
- * emit garbage into the settings model.
+ * Colour control pairing a square swatch picker with a hex input. The swatch is
+ * one control unit tall and wide (3rem), so it lines up with every other field
+ * on the row. The hex input is only committed once it holds a valid #RGB/#RRGGBB
+ * value, so typing does not emit garbage into the settings model.
  *
  * @since 3.0.0
+ * @version 3.0.1
  */
 import { computed, ref, watch } from 'vue';
 
@@ -34,6 +36,10 @@ const swatchValue = computed( () => {
     return /^#[0-9a-f]{6}$/i.test( value ) ? value : ( props.field.default || '#008aff' );
 } );
 
+// An empty model means "keep the built-in value": the swatch then paints the
+// fallback muted so it does not read as a deliberate choice.
+const isUnset = computed( () => '' === String( props.modelValue || '' ).trim() );
+
 /**
  * Commit the hex input when it parses as a valid colour.
  *
@@ -45,6 +51,12 @@ function commitHex( value ) {
 
     draft.value = value;
 
+    if ( '' === value.trim() ) {
+        emit( 'update:modelValue', '' );
+
+        return;
+    }
+
     if ( HEX_PATTERN.test( next ) ) {
         emit( 'update:modelValue', next.toLowerCase() );
     }
@@ -53,13 +65,17 @@ function commitHex( value ) {
 
 <template>
     <div class="flex items-center gap-3">
-        <label class="relative inline-flex h-11 w-14 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-[8px] border border-slate-200 shadow-sm">
+        <label
+            class="hubgo-control relative inline-flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center overflow-hidden p-0"
+            :class="isUnset ? 'opacity-60' : ''"
+        >
             <span class="absolute inset-0" :style="{ backgroundColor: swatchValue }" aria-hidden="true" />
             <input
                 :name="name"
                 :value="swatchValue"
                 type="color"
                 class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                :aria-label="field.label || name"
                 @input="$emit( 'update:modelValue', $event.target.value )"
             >
         </label>
@@ -68,8 +84,8 @@ function commitHex( value ) {
             :value="draft"
             type="text"
             spellcheck="false"
-            placeholder="#008aff"
-            class="w-36 rounded-[8px] border border-slate-200 bg-white px-4 py-3 font-mono text-[14px] uppercase text-slate-700 outline-none transition focus:border-primary-700 focus:ring-4 focus:ring-primary-100"
+            :placeholder="field.default || '#008aff'"
+            class="w-36 font-mono text-[14px] uppercase text-slate-700"
             @input="commitHex( $event.target.value )"
         >
     </div>

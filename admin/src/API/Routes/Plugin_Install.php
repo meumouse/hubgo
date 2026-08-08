@@ -45,20 +45,20 @@ class Plugin_Install extends Abstract_Route {
         $slug = sanitize_key( (string) $request->get_param( 'slug' ) );
 
         if ( '' === $slug ) {
-            return $this->error_response( esc_html__( 'Tell us which integration should be installed.', 'hubgo' ) );
+            return $this->error_response( __( 'Tell us which integration should be installed.', 'hubgo' ) );
         }
 
         $card = $this->find_card( $slug );
 
         if ( null === $card ) {
-            return $this->error_response( esc_html__( 'Integration not found.', 'hubgo' ), 404 );
+            return $this->error_response( __( 'Integration not found.', 'hubgo' ), 404 );
         }
 
         $plugin_file = (string) ( $card['install']['plugin_slug'] ?? '' );
         $package_url = (string) ( $card['install']['download_url'] ?? '' );
 
         if ( '' === $plugin_file || '' === $package_url ) {
-            return $this->error_response( esc_html__( 'This integration cannot be installed from the dashboard yet.', 'hubgo' ) );
+            return $this->error_response( __( 'This integration cannot be installed from the dashboard yet.', 'hubgo' ) );
         }
 
         $installed = Plugin_Installer::install_and_activate( $plugin_file, $package_url );
@@ -68,7 +68,7 @@ class Plugin_Install extends Abstract_Route {
         }
 
         return $this->success_response( array(
-            'message'    => esc_html__( 'Plugin installed and activated successfully.', 'hubgo' ),
+            'message'    => __( 'Plugin installed and activated successfully.', 'hubgo' ),
             'cards'      => Registry::get_integration_cards(),
         ) );
     }

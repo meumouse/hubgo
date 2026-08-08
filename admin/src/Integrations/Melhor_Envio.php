@@ -91,8 +91,8 @@ class Melhor_Envio extends Integrations_Base {
         $package_url = self::get_package_url();
 
         $integrations[ self::CARD_SLUG ] = array(
-            'title'            => esc_html__( 'Melhor Envio', 'hubgo' ),
-            'description'      => esc_html__( 'Cotação, etiquetas e rastreio do Melhor Envio integrados ao HubGo, com o plugin oficial da MeuMouse.com.', 'hubgo' ),
+            'title'            => __( 'Melhor Envio', 'hubgo' ),
+            'description'      => __( 'Melhor Envio quotes, labels and tracking integrated into HubGo through the official MeuMouse.com plugin.', 'hubgo' ),
             'icon'             => $this->get_icon_svg(),
             'category'         => 'shipping',
             'setting_key'      => self::SETTING_KEY,
@@ -106,23 +106,23 @@ class Melhor_Envio extends Integrations_Base {
             'install'          => array(
                 'plugin_slug'  => self::get_plugin_file(),
                 'download_url' => $package_url,
-                'label'        => esc_html__( 'Instalar Melhor Envio', 'hubgo' ),
+                'label'        => __( 'Install Melhor Envio', 'hubgo' ),
             ),
             'settings'         => array(
                 self::field_toggle(
                     'melhor_envio_sync_tracking',
-                    esc_html__( 'Sincronizar rastreio', 'hubgo' ),
-                    esc_html__( 'Importa automaticamente o código de rastreio gerado no Melhor Envio para o pedido.', 'hubgo' )
+                    __( 'Sync tracking', 'hubgo' ),
+                    __( 'Automatically imports the tracking code generated in Melhor Envio into the order.', 'hubgo' )
                 ),
                 self::field_toggle(
                     'melhor_envio_mark_as_shipped',
-                    esc_html__( 'Marcar como enviado', 'hubgo' ),
-                    esc_html__( 'Altera o pedido para o status "Pedido enviado" assim que a etiqueta é postada.', 'hubgo' )
+                    __( 'Mark as shipped', 'hubgo' ),
+                    __( 'Moves the order to the "Order shipped" status as soon as the label is posted.', 'hubgo' )
                 ),
             ),
             'modal'            => array(
-                'title'       => esc_html__( 'Melhor Envio', 'hubgo' ),
-                'description' => esc_html__( 'Comportamento da sincronização entre o Melhor Envio e o rastreio de pedidos do HubGo.', 'hubgo' ),
+                'title'       => __( 'Melhor Envio', 'hubgo' ),
+                'description' => __( 'How the synchronization between Melhor Envio and HubGo order tracking behaves.', 'hubgo' ),
                 'size'        => 'medium',
             ),
         );

@@ -199,14 +199,14 @@ abstract class Address_Provider {
      */
     private function decode_response( $response ) {
         if ( is_wp_error( $response ) ) {
-            return new WP_Error( 'hubgo_address_transport', esc_html__( 'Could not search addresses right now. Please try again.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_address_transport', __( 'Could not search addresses right now. Please try again.', 'hubgo' ) );
         }
 
         $code = (int) wp_remote_retrieve_response_code( $response );
         $body = json_decode( (string) wp_remote_retrieve_body( $response ), true );
 
         if ( $code < 200 || $code > 299 ) {
-            return new WP_Error( 'hubgo_address_http', esc_html__( 'Could not search addresses right now. Please try again.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_address_http', __( 'Could not search addresses right now. Please try again.', 'hubgo' ) );
         }
 
         return is_array( $body ) ? $body : array();

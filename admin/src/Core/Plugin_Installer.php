@@ -89,17 +89,17 @@ class Plugin_Installer {
      */
     public static function install_and_activate( $plugin_file, $package_url ) {
         if ( ! current_user_can( 'install_plugins' ) ) {
-            return new WP_Error( 'hubgo_install_forbidden', esc_html__( 'You do not have permission to install plugins.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_install_forbidden', __( 'You do not have permission to install plugins.', 'hubgo' ) );
         }
 
         $plugin_file = plugin_basename( (string) $plugin_file );
 
         if ( '' === $plugin_file ) {
-            return new WP_Error( 'hubgo_install_invalid_plugin', esc_html__( 'The requested plugin is invalid.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_install_invalid_plugin', __( 'The requested plugin is invalid.', 'hubgo' ) );
         }
 
         if ( ! self::is_allowed_package( $package_url ) ) {
-            return new WP_Error( 'hubgo_install_blocked_source', esc_html__( 'The package source is not allowed.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_install_blocked_source', __( 'The package source is not allowed.', 'hubgo' ) );
         }
 
         require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -125,11 +125,11 @@ class Plugin_Installer {
         }
 
         if ( false === $result || null === $result ) {
-            return new WP_Error( 'hubgo_install_failed', esc_html__( 'Could not install the plugin. Try installing it manually.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_install_failed', __( 'Could not install the plugin. Try installing it manually.', 'hubgo' ) );
         }
 
         if ( ! self::is_installed( $plugin_file ) ) {
-            return new WP_Error( 'hubgo_install_missing_file', esc_html__( 'The plugin was downloaded, but its main file was not found.', 'hubgo' ) );
+            return new WP_Error( 'hubgo_install_missing_file', __( 'The plugin was downloaded, but its main file was not found.', 'hubgo' ) );
         }
 
         $activated = activate_plugin( $plugin_file );

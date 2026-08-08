@@ -115,7 +115,7 @@ const allSections = computed( () => {
 } );
 
 const filterChips = computed( () => [
-    { id: ALL, label: __( 'Todas' ), icon: '', count: props.cards.length },
+    { id: ALL, label: __( 'All' ), icon: '', count: props.cards.length },
     ...allSections.value.map( ( section ) => ( {
         id: section.id,
         label: section.label,
@@ -137,8 +137,8 @@ const isGrouped = computed( () => 'grouped' === displayMode.value && ALL === act
 const activeSection = computed( () => visibleSections.value[ 0 ] || null );
 
 const displayModes = computed( () => [
-    { value: 'flat', label: __( 'Ver todas' ) },
-    { value: 'grouped', label: __( 'Agrupar por categoria' ) },
+    { value: 'flat', label: __( 'View all' ) },
+    { value: 'grouped', label: __( 'Group by category' ) },
 ] );
 </script>
 
@@ -150,7 +150,7 @@ const displayModes = computed( () => [
                     v-for="chip in filterChips"
                     :key="chip.id"
                     type="button"
-                    class="inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-50"
+                    class="inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
                     :class="chip.id === activeCategory
                         ? 'border-primary-200 bg-primary-50 text-primary-800'
                         : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'"
@@ -182,7 +182,7 @@ const displayModes = computed( () => [
             <div
                 class="inline-flex shrink-0 items-center gap-1 self-start rounded-full border border-slate-200 bg-white p-1 lg:self-auto"
                 role="group"
-                :aria-label="__( 'Modo de exibição' )"
+                :aria-label="__( 'Display mode' )"
             >
                 <button
                     v-for="mode in displayModes"
@@ -194,7 +194,7 @@ const displayModes = computed( () => [
                         : 'bg-transparent text-slate-600 hover:text-primary-800'"
                     :aria-pressed="mode.value === displayMode"
                     :disabled="activeCategory !== ALL"
-                    :title="activeCategory !== ALL ? __( 'Limpe o filtro de categoria para mudar o modo de exibição.' ) : ''"
+                    :title="activeCategory !== ALL ? __( 'Clear the category filter to change the display mode.' ) : ''"
                     @click="displayMode = mode.value"
                 >
                     {{ mode.label }}
@@ -214,7 +214,7 @@ const displayModes = computed( () => [
                         <h3 class="m-0 text-lg font-semibold text-slate-700">{{ section.label }}</h3>
                         <p class="mb-0 mt-0.5 text-[13px] text-slate-500">
                             {{ section.cards.length }}
-                            {{ section.cards.length === 1 ? __( 'integração' ) : __( 'integrações' ) }}
+                            {{ section.cards.length === 1 ? __( 'integration' ) : __( 'integrations' ) }}
                         </p>
                     </div>
                 </header>
@@ -258,7 +258,7 @@ const displayModes = computed( () => [
             </div>
 
             <p v-else class="rounded-[8px] border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
-                {{ __( 'Nenhuma integração disponível nesta categoria.' ) }}
+                {{ __( 'No integration available in this category.' ) }}
             </p>
         </div>
     </div>

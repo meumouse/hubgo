@@ -336,7 +336,7 @@ class Delivery_Estimate {
      */
     private static function format_label( $days ) {
         if ( $days <= 0 ) {
-            return esc_html__( 'Delivered today', 'hubgo' );
+            return __( 'Delivered today', 'hubgo' );
         }
 
         return sprintf(
@@ -357,7 +357,7 @@ class Delivery_Estimate {
     private static function format_date_label( DateTimeImmutable $date ) {
         return sprintf(
             /* translators: %s: localized day and month, e.g. "14 de agosto". */
-            esc_html__( 'day %s', 'hubgo' ),
+            __( 'day %s', 'hubgo' ),
             wp_date( 'j \d\e F', $date->getTimestamp() )
         );
     }
@@ -373,7 +373,7 @@ class Delivery_Estimate {
     private static function format_headline( DateTimeImmutable $date ) {
         return sprintf(
             /* translators: %s: localized delivery date, e.g. "dia 14 de agosto". */
-            esc_html__( 'Get it by %s', 'hubgo' ),
+            __( 'Get it by %s', 'hubgo' ),
             self::format_date_label( $date )
         );
     }

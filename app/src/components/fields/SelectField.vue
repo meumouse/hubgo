@@ -10,6 +10,7 @@
  * @since 3.0.0
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { Check, ChevronDown } from '@boxicons/vue';
 import { __ } from '../../utils/i18n';
 
 const props = defineProps({
@@ -62,7 +63,7 @@ const selectedOption = computed(
 );
 
 const selectedLabel = computed(
-    () => selectedOption.value?.label || props.field.placeholder || __( 'Selecione uma opção' ),
+    () => selectedOption.value?.label || props.field.placeholder || __( 'Select an option' ),
 );
 
 watch( isOpen, ( value ) => {
@@ -236,8 +237,11 @@ onBeforeUnmount( () => {
             :id="buttonId"
             :name="name"
             type="button"
-            class="flex h-full w-full min-w-0 items-center justify-between gap-3 rounded-[8px] border border-slate-200 bg-white px-4 py-3 text-left text-[14px] text-slate-700 outline-none transition focus:border-primary-700 focus:ring-4 focus:ring-primary-100"
-            :class="disabled ? 'cursor-not-allowed bg-slate-50 text-slate-400' : 'cursor-pointer hover:border-slate-300'"
+            class="hubgo-control flex h-full w-full min-w-0 items-center justify-between gap-3 px-3.5 text-left text-[14px] text-slate-700"
+            :class="[
+                disabled ? 'cursor-not-allowed bg-slate-50 text-slate-400' : 'cursor-pointer bg-white',
+                isOpen ? 'is-focused' : '',
+            ]"
             :aria-expanded="isOpen"
             aria-haspopup="listbox"
             :aria-controls="listboxId"
@@ -252,15 +256,13 @@ onBeforeUnmount( () => {
                 {{ selectedLabel }}
             </span>
 
-            <svg
-                class="h-4 w-4 shrink-0 text-slate-400 transition duration-150"
+            <ChevronDown
+                class="h-5 w-5 shrink-0 text-slate-400 transition duration-150"
                 :class="isOpen ? 'rotate-180' : ''"
-                viewBox="0 0 20 20"
-                fill="none"
+                width="20"
+                height="20"
                 aria-hidden="true"
-            >
-                <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+            />
         </button>
 
         <!--
@@ -286,7 +288,7 @@ onBeforeUnmount( () => {
                         v-if="isOpen"
                         :id="listboxId"
                         ref="dropdownEl"
-                        class="hubgo-select-dropdown fixed flex flex-col overflow-hidden rounded-[8px] border border-slate-200 bg-white shadow-[0_20px_45px_rgba(15,23,42,0.12)]"
+                        class="hubgo-select-dropdown fixed flex flex-col overflow-hidden rounded-[12px] border border-slate-200 bg-white shadow-[0_20px_45px_rgba(15,23,42,0.12)]"
                         :style="dropdownStyle"
                     >
                     <div v-if="showSearch" class="shrink-0 border-b border-slate-100 p-2">
@@ -294,8 +296,8 @@ onBeforeUnmount( () => {
                             ref="searchEl"
                             v-model="query"
                             type="text"
-                            class="w-full rounded-[6px] border border-slate-200 bg-slate-50 px-3 py-2 text-[14px] text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-primary-700 focus:bg-white focus:ring-4 focus:ring-primary-100"
-                            :placeholder="field.search_placeholder || __( 'Pesquisar...' )"
+                            class="w-full text-[14px] text-slate-700"
+                            :placeholder="field.search_placeholder || __( 'Search...' )"
                         >
                     </div>
 
@@ -308,8 +310,8 @@ onBeforeUnmount( () => {
                         @keydown.enter.prevent="commitActive"
                         @keydown.esc.prevent="close"
                     >
-                        <li v-if="showEmpty" class="rounded-[8px] px-3 py-2 text-[14px] text-slate-400">
-                            {{ field.empty_label || __( 'Nenhuma opção disponível' ) }}
+                        <li v-if="showEmpty" class="rounded-[10px] px-3 py-2 text-[14px] text-slate-400">
+                            {{ field.empty_label || __( 'No option available' ) }}
                         </li>
 
                         <li
@@ -317,7 +319,7 @@ onBeforeUnmount( () => {
                             :key="String( option.value )"
                             role="option"
                             :aria-selected="isSelected( option )"
-                            class="flex cursor-pointer items-center justify-between gap-3 rounded-[8px] px-3 py-2 text-[14px] transition"
+                            class="flex cursor-pointer items-center justify-between gap-3 rounded-[10px] px-3 py-2 text-[14px] transition"
                             :class="optionClass( index, option )"
                             @mouseenter="activeIndex = index"
                             @click="selectOption( option )"
@@ -331,15 +333,13 @@ onBeforeUnmount( () => {
                                 </div>
                             </div>
 
-                            <svg
+                            <Check
                                 v-if="isSelected( option )"
                                 class="h-4 w-4 shrink-0 text-primary-700"
-                                viewBox="0 0 20 20"
-                                fill="none"
+                                width="16"
+                                height="16"
                                 aria-hidden="true"
-                            >
-                                <path d="M4.5 10.5L8 14L15.5 6.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
+                            />
                         </li>
                         </ul>
                     </div>
