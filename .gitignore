@@ -3,13 +3,18 @@ node_modules/
 app/node_modules
 admin/vendor
 
-# Build artifacts are committed (shipped in the plugin zip): app/dist is kept.
-# Do NOT add app/dist here — already-tracked bundles would keep working while
-# every NEW entry (a new admin page) silently stayed out of the release zip.
+# Build artifacts. Neither is committed: `npm run build` regenerates both and
+# copies them into release/hubgo-<version>.zip, which is what ships. The build
+# refuses to package when either is missing, so a new Vite entry cannot silently
+# stay out of the release the way it could when app/dist was tracked.
+app/dist
+
+# Release output
+release/
+
 # Local tooling
 .history/
 *.log
-app/dist
 
 # OS
 .DS_Store

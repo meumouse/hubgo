@@ -87,15 +87,16 @@ app/                        Vue 3 + Vite apps (admin SPA + storefront)
                             useShippingQuote.js, styles/calculator.css
   src/utils/                api.js (REST client), i18n.js, bootstrap.js (mountPage)
   src/styles/main.css       Tailwind entry + design tokens, scoped to .hubgo-app
-  dist/                     Vite build output — COMMITTED (shipped in the zip)
+  dist/                     Vite build output — generated, git-ignored
 assets/                     Non-bundled static assets
   admin/                    Order tracking metabox CSS/JS (vanilla)
   brand/                    SVG logos
 templates/                  Overridable WooCommerce templates (shipping-calculator.php,
                             email/, emails/, myaccount/)
 languages/                  .pot/.po/.mo/.l10n.php + the AI translation CLI tooling
-scripts/build.mjs           Build orchestrator (Composer + Vite + translations)
-dist/                       Release artifacts (hubgo.zip, versions/)
+scripts/build.mjs           Release pipeline (Vite + Composer + translations + zip)
+release/                    Build output — staged tree + hubgo-<version>.zip (git-ignored)
+dist/                       Legacy release artifacts kept from before 3.0.0
 ```
 
 **Rule:** all PHP lives under `admin/src/`. Do not create PHP source files at the plugin root or under `app/`.
@@ -110,7 +111,15 @@ Run from the plugin root unless stated otherwise.
 npm run build
 ```
 
-Full pipeline: Composer install (`admin/`) → Vite build (`app/`) → refresh `.pot` → compile `.mo` / `.l10n.php`.
+Full release pipeline: Vite build (`app/`) → Composer install `--no-dev` (`admin/`) → refresh `.pot` → compile `.mo` / `.l10n.php` → stage the runtime files into `release/hubgo/` → zip them into `release/hubgo-<version>.zip`.
+
+The zip is the deliverable. It carries only what WordPress needs at runtime: `hubgo.php`, `admin/src`, `admin/vendor`, `app/dist`, `assets`, `templates`, the compiled `languages` artifacts and the three top-level documents. `AGENTS.md`, `CLAUDE.md`, `package.json` and the Node tooling stay out.
+
+```bash
+npm run build:fast
+```
+
+Re-stage and re-zip from the artifacts already on disk (`--skip-app --skip-composer --skip-translations --no-install`). Use it when only the packaging changed.
 
 ```bash
 npm run dev
@@ -122,7 +131,7 @@ Vite dev server for the SPA (`app/`).
 npm run build:app
 ```
 
-Frontend only.
+Frontend only, without packaging.
 
 ```bash
 npm run build:translate
@@ -130,7 +139,9 @@ npm run build:translate
 
 Full build **plus** AI re-translation of every locale (requires API keys in `languages/.env`).
 
-Useful `scripts/build.mjs` flags: `--skip-app`, `--skip-composer`, `--skip-translations`, `--translate`, `--engine=google|openai`, `--no-install`.
+Useful `scripts/build.mjs` flags: `--skip-app`, `--skip-composer`, `--skip-translations`, `--translate`, `--engine=google|openai`, `--no-install`, `--no-zip`.
+
+`assertBuildArtifacts()` refuses to package when `app/dist/.vite/manifest.json` or `admin/vendor/autoload.php` is missing, or when the manifest lacks one of the declared Vite entries. That check is what makes the generated-not-committed model safe: without it, a `--skip-app` on a clean checkout produces a zip that installs fine and then has no UI at all. **Add a new Vite entry to the list in that function when you add one to `vite.config.js`.**
 
 Translation sub-commands (from root): `npm run pot`, `npm run translate:ai`, `npm run compile:translations`. See `languages/README.md`.
 
@@ -435,9 +446,13 @@ The registry is exposed as `window.HubgoFieldComponents` and announces `hubgo:fi
 
 ### Build output
 
-`app/dist/` is **committed** — it ships inside the plugin zip. PHP resolves it through the Vite manifest (`app/dist/.vite/manifest.json`) via `Core\Scripts`. After changing anything under `app/src/`, run `npm run build:app` (or the full build) and commit the regenerated `app/dist/`.
+`app/dist/` is **git-ignored and generated**. `npm run build` rebuilds it and copies it into `release/hubgo-<version>.zip`, which is what ships; PHP resolves it through the Vite manifest (`app/dist/.vite/manifest.json`) via `Core\Scripts`. `admin/vendor/` works the same way.
 
-Never add `app/dist` to `.gitignore`. Already-tracked bundles keep working, which hides the breakage, while every **new** entry silently stays out of the release zip.
+Nothing generated is committed, so **never commit `app/dist/` or `admin/vendor/`** — and never assume a clean checkout has them. Run the build.
+
+The risk this trades against is real and was hit once: while `app/dist` was tracked, adding it to `.gitignore` left the already-tracked bundles working (hiding the breakage) while a brand-new entry silently stayed out of the release. `assertBuildArtifacts()` in `scripts/build.mjs` is the guard against that — it fails the build when the manifest is missing an entry, so the failure is loud and at build time instead of silent and in production. Keep its entry list in step with `app/vite.config.js`.
+
+For local work, `npm run build:app` still rebuilds just the frontend without packaging.
 
 ### Storefront app
 
