@@ -2,6 +2,7 @@
 
 namespace MeuMouse\Hubgo\Integrations\Widgets;
 
+use MeuMouse\Hubgo\Admin\Settings;
 use MeuMouse\Hubgo\Core\Assets;
 use MeuMouse\Hubgo\Views\Calculator_Styles;
 use MeuMouse\Hubgo\Views\Shipping_Calculator;
@@ -26,6 +27,7 @@ defined('ABSPATH') || exit;
  * hardcoding a property name in two places.
  *
  * @since 3.0.0
+ * @version 3.0.1
  * @package MeuMouse\Hubgo\Integrations\Widgets
  * @author MeuMouse.com
  */
@@ -137,6 +139,8 @@ class Shipping_Calculator_Widget extends Widget_Base {
             'tab'   => Controls_Manager::TAB_CONTENT,
         ) );
 
+        $this->register_placement_notice();
+
         $this->add_control( 'product_source', array(
             'label'   => esc_html__( 'Product', 'hubgo' ),
             'type'    => Controls_Manager::SELECT,
@@ -199,6 +203,37 @@ class Shipping_Calculator_Widget extends Widget_Base {
         }
 
         $this->end_controls_section();
+    }
+
+
+    /**
+     * Warn when the settings also place the calculator automatically.
+     *
+     * A store that drops the widget on a product page while the display
+     * position still points at one of the add-to-cart hooks ends up with two
+     * calculators, and the second one is easy to blame on the widget. The
+     * "Elementor widget only" position is the fix, so the notice names it.
+     *
+     * The setting is read once, when the editor builds the controls — good
+     * enough for a hint, and it costs nothing on the frontend.
+     *
+     * @since 3.0.1
+     * @return void
+     */
+    private function register_placement_notice() {
+        $position = (string) Settings::get_setting( 'hook_display_shipping_calculator', '' );
+        $positions = Shipping_Calculator::get_positions();
+
+        if ( ! isset( $positions[ $position ] ) ) {
+            return;
+        }
+
+        $this->add_control( 'placement_notice', array(
+            'type' => Controls_Manager::RAW_HTML,
+            'raw'  => '<div class="elementor-control-field-description">'
+                . esc_html__( 'HubGo is also displaying the calculator automatically on product pages. Set the display position to "Elementor widget only" in HubGo → Settings → General to avoid showing it twice.', 'hubgo' )
+                . '</div>',
+        ) );
     }
 
 

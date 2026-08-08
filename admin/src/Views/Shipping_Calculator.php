@@ -24,7 +24,7 @@ defined('ABSPATH') || exit;
  * having one place build that config is what keeps the three in step.
  *
  * @since 2.0.0
- * @version 3.0.0
+ * @version 3.0.1
  * @package MeuMouse\Hubgo\Views
  * @author MeuMouse.com
  */
@@ -62,60 +62,69 @@ class Shipping_Calculator {
      * Initialize WordPress hooks
      *
      * @since 2.0.0
+     * @version 3.0.1
      * @return void
      */
     private function init_hooks() {
+        // The shortcode is registered whichever position is selected: it is the
+        // escape hatch a theme needs when none of the product-page hooks fit.
+        add_shortcode( self::SHORTCODE_TAG, array( $this, 'shortcode_render_form' ) );
+
         $hook_position = $this->get_hook_position();
 
-        if ( $this->is_shortcode_only( $hook_position ) ) {
-            add_shortcode( self::SHORTCODE_TAG, array( $this, 'shortcode_render_form' ) );
-        } else {
-            add_shortcode( self::SHORTCODE_TAG, array( $this, 'shortcode_render_form' ) );
+        if ( '' !== $hook_position ) {
             add_action( $hook_position, array( $this, 'render_form' ), 10 );
         }
     }
 
 
     /**
-     * Get hook position from settings
+     * Product-page positions the calculator can attach itself to.
      *
-     * @since 2.0.0
-     * @return string
+     * The manual placements — `shortcode` and `elementor` — are deliberately
+     * absent: they mean "hook nothing", and the store owner inserts the
+     * calculator where they want it.
+     *
+     * @since 3.0.1
+     * @return array<string,string> Setting value => WordPress hook name.
      */
-    private function get_hook_position() {
-        $selected = Settings::get_setting('hook_display_shipping_calculator');
-
-        $positions = apply_filters( 'Hubgo/Shipping_Calculator/Positions', array(
+    public static function get_positions() {
+        /**
+         * Filters the product-page positions offered by the calculator.
+         *
+         * @since 2.0.0
+         * @param array<string,string> $positions Setting value => hook name.
+         */
+        return apply_filters( 'Hubgo/Shipping_Calculator/Positions', array(
             'after_cart'    => 'woocommerce_after_add_to_cart_form',
             'before_cart'   => 'woocommerce_before_add_to_cart_form',
             'meta_end'      => 'woocommerce_product_meta_end',
         ));
-
-        // Return mapped hook if exists
-        if ( ! empty( $selected ) && isset( $positions[ $selected ] ) ) {
-            return $positions[ $selected ];
-        }
-
-        // Fallback to shortcode if nothing matches
-        return 'shortcode';
     }
 
 
     /**
-     * Check if should use shortcode only
+     * Get hook position from settings
+     *
+     * Resolves against {@see self::get_positions()} rather than a second,
+     * hardcoded list — a position added through the filter used to resolve to a
+     * hook and then be discarded as "not a valid hook" one step later.
      *
      * @since 2.0.0
-     * @param string $hook_position
-     * @return bool
+     * @version 3.0.1
+     * @return string Hook name, or an empty string for a manual placement.
      */
-    private function is_shortcode_only( $hook_position ) {
-        $valid_hooks = array(
-            'woocommerce_after_add_to_cart_form',
-            'woocommerce_before_add_to_cart_form',
-            'woocommerce_product_meta_end',
-        );
+    private function get_hook_position() {
+        $selected = Settings::get_setting('hook_display_shipping_calculator');
+        $positions = self::get_positions();
 
-        return ! in_array( $hook_position, $valid_hooks, true );
+        // Return mapped hook if exists
+        if ( ! empty( $selected ) && isset( $positions[ $selected ] ) ) {
+            return (string) $positions[ $selected ];
+        }
+
+        // Anything else (shortcode, elementor, an unknown value) places nothing.
+        return '';
     }
 
 

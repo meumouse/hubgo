@@ -60,10 +60,11 @@ class Registry {
                         'title'       => __( 'Calculator', 'hubgo' ),
                         'description' => __( 'Where and how the shipping calculator is displayed.', 'hubgo' ),
                         'fields'      => array(
-                            self::select( 'hook_display_shipping_calculator', __( 'Display position', 'hubgo' ), __( 'Where to display the calculator on the product page.', 'hubgo' ), array(
+                            self::select( 'hook_display_shipping_calculator', __( 'Display position', 'hubgo' ), __( 'Where to display the calculator on the product page. The last two options place nothing automatically, so the calculator only shows where you insert it.', 'hubgo' ), array(
                                 array( 'value' => 'after_cart', 'label' => __( 'After the add to cart button', 'hubgo' ) ),
                                 array( 'value' => 'before_cart', 'label' => __( 'Before the add to cart button', 'hubgo' ) ),
                                 array( 'value' => 'meta_end', 'label' => __( 'After the product meta', 'hubgo' ) ),
+                                array( 'value' => 'elementor', 'label' => __( 'Elementor widget only', 'hubgo' ) ),
                                 array( 'value' => 'shortcode', 'label' => __( 'Shortcode only', 'hubgo' ) ),
                             ) ),
                             self::number( 'shipping_handling_days', __( 'Handling days', 'hubgo' ), __( 'Business days added to the carrier estimate before showing the delivery date.', 'hubgo' ), array(
