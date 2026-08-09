@@ -6,7 +6,14 @@
  * hubgo/v1 license routes, which wrap the MDS SDK license manager. Nothing here
  * talks to MDS directly.
  *
+ * The screen is a single white panel that swaps its whole body with the license
+ * state: an activation form beside the "what you unlock" summary while the key
+ * is missing or refused, the detail rows beside the account status once it is
+ * active. Both halves read from the same payload — nothing is state-specific
+ * beyond the copy.
+ *
  * @since 3.0.0
+ * @version 3.1.0
  */
 import { computed, onMounted, reactive, ref } from 'vue';
 import { api } from '../../utils/api';
@@ -68,22 +75,54 @@ const activationsLabel = computed( () => {
 } );
 
 const detailRows = computed( () => [
-    { id: 'status', label: __( 'Status' ), value: statusLabel.value, badge: true },
-    { id: 'plan', label: __( 'Plan' ), value: license.value?.plan_name || __( 'Not available' ) },
+    { id: 'status', label: __( 'License status' ), value: statusLabel.value, badge: true },
+    { id: 'plan', label: __( 'Subscription' ), value: license.value?.plan_name || __( 'Not available' ) },
     { id: 'bundle', label: __( 'Bundle' ), value: license.value?.bundle?.name || __( 'Single license' ) },
-    { id: 'key', label: __( 'License key' ), value: license.value?.masked_key || __( 'Not available' ) },
-    { id: 'domain', label: __( 'Activated domain' ), value: license.value?.domain || __( 'Not available' ) },
     { id: 'expires', label: __( 'Expires on' ), value: formatDate( license.value?.expires_at ) },
     { id: 'support', label: __( 'Support until' ), value: formatDate( license.value?.support_expires_at ) },
     { id: 'activations', label: __( 'Activations' ), value: activationsLabel.value },
+    { id: 'domain', label: __( 'Activated domain' ), value: license.value?.domain || __( 'Not available' ) },
     { id: 'checked', label: __( 'Last check' ), value: formatTimestamp( license.value?.checked_at ) },
+    { id: 'key', label: __( 'Your license key' ), value: license.value?.masked_key || __( 'Not available' ) },
+] );
+
+const panelTitle = computed( () => ( isActive.value ? __( 'License details' ) : __( 'Activate license' ) ) );
+
+const panelDescription = computed( () => ( isActive.value
+    ? __( 'Check the current status of your license and update it whenever necessary.' )
+    : __( 'Enter your license key to unlock the Pro features.' ) ) );
+
+/** Short sentence shown next to the status badge on the account panel. */
+const statusHeadline = computed( () => {
+    if ( isActive.value ) {
+        return __( 'Your installation is unlocked for full use.' );
+    }
+
+    if ( license.value?.is_expired ) {
+        return __( 'Your license expired and the Pro features are locked.' );
+    }
+
+    return hasKey.value
+        ? __( 'The stored key was refused by the server.' )
+        : __( 'No license key is active on this site yet.' );
+} );
+
+/** Supporting paragraph below the status headline. */
+const statusHelp = computed( () => ( isActive.value
+    ? __( 'Your license is active. You can keep it synchronized here whenever the status changes on the server.' )
+    : __( 'Activate a key to receive automatic updates and to unlock every Pro integration.' ) ) );
+
+const unlockItems = computed( () => [
+    __( 'Automatic updates and license synchronization' ),
+    __( 'Pro integrations: Joinotify, Melhor Envio and the Elementor widget' ),
+    __( 'Support, access and subscription updates' ),
 ] );
 
 const licenseField = {
     key: 'license_key',
     type: 'text',
     label: __( 'License key' ),
-    placeholder: __( 'Paste the key you received with your purchase' ),
+    placeholder: __( 'Example: CM-0000-0000-0000' ),
 };
 
 /**
@@ -208,6 +247,7 @@ onMounted( bootstrap );
 
 <template>
     <div class="hubgo-license min-h-screen w-full">
+        <Transition name="hubgo-fade" mode="out-in">
         <PageShellSkeleton v-if="loading" />
 
         <div v-else class="w-full">
@@ -218,17 +258,15 @@ onMounted( bootstrap );
                         {{ __( 'Help Center' ) }}
                     </a>
                 </template>
-
-                <template #actions>
-                    <StatusBadge :label="statusLabel" :tone="statusTone" />
-                </template>
             </PageHeader>
 
-            <div v-if="loadError" class="mt-8 rounded-[8px] border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
-                {{ loadError }}
-            </div>
+            <Transition name="hubgo-fade">
+                <div v-if="loadError" class="mt-8 rounded-[8px] border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+                    {{ loadError }}
+                </div>
+            </Transition>
 
-            <template v-else>
+            <template v-if="! loadError">
                 <div
                     v-if="! license.configured"
                     class="mt-8 rounded-[8px] border border-amber-200 bg-amber-50 px-5 py-4 text-[13px] leading-5 text-amber-800"
@@ -236,99 +274,205 @@ onMounted( bootstrap );
                     {{ __( 'The licensing service is not configured on this installation. Please contact support.' ) }}
                 </div>
 
-                <div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
-                    <!-- Details -->
-                    <section class="rounded-[8px] bg-white p-6 shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100 lg:p-8">
-                        <h2 class="m-0 text-[17px] font-semibold text-slate-800">{{ __( 'License details' ) }}</h2>
-                        <p class="mb-0 mt-1 text-[13px] leading-5 text-slate-500">
-                            {{ __( 'Information recorded on the last check with the server.' ) }}
-                        </p>
-
-                        <dl class="mt-6 divide-y divide-slate-100">
-                            <div v-for="row in detailRows" :key="row.id" class="flex items-center justify-between gap-6 py-3">
-                                <dt class="m-0 text-[13px] font-medium text-slate-600">{{ row.label }}</dt>
-                                <dd class="m-0 text-right">
-                                    <StatusBadge v-if="row.badge" :label="row.value" :tone="statusTone" />
-                                    <span v-else class="break-all text-[13px] font-semibold text-slate-800">{{ row.value }}</span>
-                                </dd>
-                            </div>
-                        </dl>
-
-                        <p
-                            v-if="license.message"
-                            class="mb-0 mt-6 rounded-[8px] border border-slate-200 bg-slate-50 px-4 py-3 text-[13px] leading-5 text-slate-600"
-                        >
-                            {{ license.message }}
-                        </p>
-                    </section>
-
-                    <!-- Actions -->
-                    <section class="flex h-fit flex-col gap-4 rounded-[8px] bg-white p-6 shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100 lg:p-8">
-                        <div>
-                            <h2 class="m-0 text-[17px] font-semibold text-slate-800">
-                                {{ isActive ? __( 'Manage license' ) : __( 'Activate license' ) }}
-                            </h2>
-                            <p class="mb-0 mt-1 text-[13px] leading-5 text-slate-500">
-                                {{ isActive
-                                    ? __( 'Synchronize the data or release this activation to use the key on another site.' )
-                                    : __( 'Enter the key you received with your purchase to unlock the updates and the Pro features.' ) }}
-                            </p>
-                        </div>
-
-                        <form v-if="! isActive" class="space-y-4" @submit.prevent="activate">
+                <section class="mt-8 rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
+                    <div class="px-6 py-10 lg:px-10 lg:py-12">
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                             <div>
-                                <label class="mb-2 block text-[13px] font-semibold text-slate-700" for="hubgo-license-key">
-                                    {{ licenseField.label }}
-                                </label>
-                                <TextField
-                                    input-id="hubgo-license-key"
-                                    name="license_key"
-                                    :field="licenseField"
-                                    :model-value="form.license_key"
-                                    @update:model-value="form.license_key = $event"
-                                />
+                                <p class="m-0 text-xs font-semibold uppercase tracking-[0.2em] text-shell-500">
+                                    {{ __( 'License' ) }}
+                                </p>
+                                <h2 class="mb-0 mt-1 text-xl font-semibold text-ink">{{ panelTitle }}</h2>
+                                <p class="mb-0 mt-2 max-w-2xl text-[13px] leading-5 text-muted">{{ panelDescription }}</p>
                             </div>
 
                             <BaseButton
-                                :title="__( 'Activate license' )"
-                                type="submit"
-                                color="primary"
-                                size="lg"
-                                :loading="busyAction === 'activate'"
-                                :disabled="Boolean( busyAction ) || ! license.configured"
-                                @click="activate"
-                            />
-                        </form>
-
-                        <div v-else class="flex flex-wrap gap-3">
-                            <BaseButton
-                                :title="__( 'Synchronize' )"
-                                color="outline"
-                                :loading="busyAction === 'sync'"
-                                :disabled="Boolean( busyAction )"
-                                @click="sync"
-                            />
-                            <BaseButton
-                                :title="__( 'Deactivate on this site' )"
-                                color="danger"
-                                :loading="busyAction === 'deactivate'"
-                                :disabled="Boolean( busyAction )"
-                                @click="confirmOpen = true"
+                                v-if="! isActive"
+                                :title="__( 'Buy a license' )"
+                                :href="purchaseUrl"
+                                color="white"
+                                class="shrink-0"
+                                target="_blank"
+                                rel="noreferrer"
                             />
                         </div>
 
-                        <div class="mt-2 flex flex-col gap-2 border-t border-slate-100 pt-4 text-[13px]">
-                            <a v-if="renewUrl" class="font-semibold text-primary-700 no-underline hover:underline" :href="renewUrl" target="_blank" rel="noreferrer">
-                                {{ __( 'Renew subscription' ) }}
-                            </a>
-                            <a class="font-semibold text-primary-700 no-underline hover:underline" :href="purchaseUrl" target="_blank" rel="noreferrer">
-                                {{ __( 'Buy a license' ) }}
-                            </a>
+                        <!--
+                            Activating swaps the whole body — form and upsell out,
+                            details and account status in. `mode="out-in"` keeps the
+                            two layouts from overlapping mid-swap.
+                        -->
+                        <Transition name="hubgo-panel" mode="out-in">
+                        <div
+                            v-if="isActive"
+                            key="details"
+                            class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]"
+                        >
+                            <!-- Details -->
+                            <section class="rounded-[8px] border border-slate-200 p-6">
+                                <h3 class="m-0 text-[17px] font-semibold text-slate-800">{{ __( 'License information' ) }}</h3>
+
+                                <dl class="mt-4 divide-y divide-slate-100">
+                                    <div v-for="row in detailRows" :key="row.id" class="flex items-center justify-between gap-6 py-3">
+                                        <dt class="m-0 text-[13px] font-medium text-slate-600">{{ row.label }}</dt>
+                                        <dd class="m-0 text-right">
+                                            <StatusBadge v-if="row.badge" :label="row.value" :tone="statusTone" />
+                                            <span v-else class="break-all text-[13px] font-semibold text-slate-800">{{ row.value }}</span>
+                                        </dd>
+                                    </div>
+                                </dl>
+
+                                <div class="mt-6 flex flex-wrap gap-3">
+                                    <BaseButton
+                                        :title="__( 'Deactivate license' )"
+                                        color="danger"
+                                        :loading="busyAction === 'deactivate'"
+                                        :disabled="Boolean( busyAction )"
+                                        @click="confirmOpen = true"
+                                    />
+                                    <BaseButton
+                                        :title="__( 'Synchronize license' )"
+                                        color="white"
+                                        :loading="busyAction === 'sync'"
+                                        :disabled="Boolean( busyAction )"
+                                        @click="sync"
+                                    />
+                                </div>
+
+                                <Transition name="hubgo-fade">
+                                    <p
+                                        v-if="license.message"
+                                        class="mb-0 mt-6 rounded-[8px] border border-slate-200 bg-slate-50 px-4 py-3 text-[13px] leading-5 text-slate-600"
+                                    >
+                                        {{ license.message }}
+                                    </p>
+                                </Transition>
+                            </section>
+
+                            <!-- Account status -->
+                            <aside class="h-fit rounded-[8px] border border-slate-200 p-6">
+                                <p class="m-0 text-xs font-semibold uppercase tracking-[0.2em] text-shell-500">
+                                    {{ __( 'Account status' ) }}
+                                </p>
+
+                                <div class="mt-3 flex flex-wrap items-center gap-3">
+                                    <StatusBadge :label="statusLabel" :tone="statusTone" />
+                                    <span class="text-[13px] leading-5 text-slate-700">{{ statusHeadline }}</span>
+                                </div>
+
+                                <p class="mb-0 mt-4 text-[13px] leading-5 text-slate-500">{{ statusHelp }}</p>
+
+                                <div class="mt-5 rounded-[8px] bg-slate-50 p-4">
+                                    <h4 class="m-0 text-[14px] font-semibold text-slate-800">{{ __( 'Quick help' ) }}</h4>
+                                    <p class="mb-0 mt-2 text-[13px] leading-5 text-slate-500">
+                                        {{ __( 'If the license does not update right away, click Synchronize to fetch the latest status from the server.' ) }}
+                                    </p>
+
+                                    <div class="mt-3 flex flex-col gap-2 text-[13px]">
+                                        <a
+                                            class="font-semibold text-primary-700 no-underline hover:underline"
+                                            :href="docsUrl"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            {{ __( 'Open the Help Center' ) }}
+                                        </a>
+                                        <a
+                                            v-if="renewUrl"
+                                            class="font-semibold text-primary-700 no-underline hover:underline"
+                                            :href="renewUrl"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            {{ __( 'Renew subscription' ) }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </aside>
                         </div>
-                    </section>
-                </div>
+
+                        <div
+                            v-else
+                            key="activate"
+                            class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]"
+                        >
+                            <!-- Activation -->
+                            <section class="rounded-[8px] border border-slate-200 p-6">
+                                <div class="flex flex-wrap items-start justify-between gap-3">
+                                    <h3 class="m-0 text-[17px] font-semibold text-slate-800">{{ __( 'Activate license' ) }}</h3>
+                                    <StatusBadge :label="statusLabel" :tone="statusTone" />
+                                </div>
+
+                                <p class="mb-0 mt-2 text-[13px] leading-5 text-slate-500">
+                                    {{ __( 'Paste the license key you received with your purchase and click Activate to unlock every feature.' ) }}
+                                </p>
+
+                                <form class="mt-5 space-y-4" @submit.prevent="activate">
+                                    <div>
+                                        <label class="sr-only" for="hubgo-license-key">{{ licenseField.label }}</label>
+                                        <TextField
+                                            input-id="hubgo-license-key"
+                                            name="license_key"
+                                            :field="licenseField"
+                                            :model-value="form.license_key"
+                                            @update:model-value="form.license_key = $event"
+                                        />
+                                    </div>
+
+                                    <div class="flex flex-wrap gap-3">
+                                        <BaseButton
+                                            :title="__( 'Activate license' )"
+                                            type="submit"
+                                            color="primary"
+                                            :loading="busyAction === 'activate'"
+                                            :disabled="Boolean( busyAction ) || ! license.configured"
+                                            @click="activate"
+                                        />
+                                        <BaseButton
+                                            :title="__( 'Buy a license' )"
+                                            :href="purchaseUrl"
+                                            color="success"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        />
+                                    </div>
+                                </form>
+
+                                <Transition name="hubgo-fade">
+                                    <p
+                                        v-if="license.message"
+                                        class="mb-0 mt-5 rounded-[8px] border border-slate-200 bg-slate-50 px-4 py-3 text-[13px] leading-5 text-slate-600"
+                                    >
+                                        {{ license.message }}
+                                    </p>
+                                </Transition>
+                            </section>
+
+                            <!-- What the license unlocks -->
+                            <aside class="h-fit rounded-[8px] border border-dashed border-slate-300 p-6">
+                                <p class="m-0 text-xs font-semibold uppercase tracking-[0.2em] text-shell-500">
+                                    {{ __( 'What you unlock' ) }}
+                                </p>
+
+                                <h3 class="mb-0 mt-2 text-[17px] font-semibold text-slate-800">
+                                    {{ __( 'Activate the license to unlock the HubGo Pro features.' ) }}
+                                </h3>
+
+                                <ul class="m-0 mt-4 list-none space-y-3 p-0">
+                                    <li v-for="item in unlockItems" :key="item" class="flex items-start gap-3 text-[13px] leading-5 text-slate-600">
+                                        <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-700" aria-hidden="true" />
+                                        <span>{{ item }}</span>
+                                    </li>
+                                </ul>
+
+                                <p class="mb-0 mt-5 text-[13px] leading-5 text-slate-500">{{ statusHelp }}</p>
+                            </aside>
+                        </div>
+                        </Transition>
+                    </div>
+                </section>
             </template>
         </div>
+        </Transition>
 
         <ConfirmDialog
             :open="confirmOpen"
