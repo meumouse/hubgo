@@ -161,20 +161,7 @@ class Delivery_Estimate {
         }
 
         $meta = (array) $rate->get_meta_data();
-        $days = null;
-
-        foreach ( self::get_meta_keys() as $key ) {
-            if ( ! isset( $meta[ $key ] ) ) {
-                continue;
-            }
-
-            $parsed = self::parse_days( $meta[ $key ] );
-
-            if ( null !== $parsed ) {
-                $days = $parsed;
-                break;
-            }
-        }
+        $days = self::get_days_from_meta( $meta );
 
         /**
          * Filters the raw carrier forecast read from a rate.
@@ -192,13 +179,48 @@ class Delivery_Estimate {
 
 
     /**
+     * Scan a meta map for the first key carrying a delivery forecast.
+     *
+     * Public because a forecast outlives the rate it came from: WooCommerce
+     * copies rate meta onto the order's shipping line item, which is where
+     * {@see Delivery_Promise} reads it back after the checkout. Unlike
+     * {@see self::get_days_from_rate()} this runs no filter — there is no rate
+     * to hand to one.
+     *
+     * @since 3.1.0
+     * @param array $meta Meta map keyed by meta key.
+     * @return int|null Business days, or null when no key carried one.
+     */
+    public static function get_days_from_meta( $meta ) {
+        if ( ! is_array( $meta ) ) {
+            return null;
+        }
+
+        foreach ( self::get_meta_keys() as $key ) {
+            if ( ! isset( $meta[ $key ] ) ) {
+                continue;
+            }
+
+            $parsed = self::parse_days( $meta[ $key ] );
+
+            if ( null !== $parsed ) {
+                return $parsed;
+            }
+        }
+
+        return null;
+    }
+
+
+    /**
      * Coerce a meta value into a number of business days.
      *
      * @since 3.0.0
+     * @version 3.1.0
      * @param mixed $value Raw meta value.
      * @return int|null
      */
-    private static function parse_days( $value ) {
+    public static function parse_days( $value ) {
         if ( is_bool( $value ) || null === $value ) {
             return null;
         }

@@ -3,6 +3,7 @@
 namespace MeuMouse\Hubgo\Integrations;
 
 use MeuMouse\Hubgo\Admin\Settings;
+use MeuMouse\Hubgo\Core\Delivery_Promise;
 use MeuMouse\Hubgo\Core\Tracking_Manager;
 
 use MeuMouse\Joinotify\Integrations\Woocommerce;
@@ -20,10 +21,13 @@ defined('ABSPATH') || exit;
  *
  * Tracking data is always resolved through {@see Tracking_Manager} so the
  * carrier name and tracking link a notification carries are byte-for-byte the
- * ones the order screen and the customer account page show.
+ * ones the order screen and the customer account page show. The delivery tokens
+ * follow the same rule against {@see Delivery_Promise}: a message quotes the
+ * date the shopper was actually promised at the checkout, never a fresh quote
+ * that may have drifted since.
  *
  * @since 2.1.0
- * @version 3.0.0
+ * @version 3.1.0
  * @package MeuMouse\Hubgo\Integrations
  * @author MeuMouse.com
  */
@@ -47,8 +51,9 @@ class Joinotify extends Integrations_Base {
     /**
      * Trigger identifiers.
      */
-    const TRIGGER_ORDER_SHIPPED = 'Hubgo/Tracking/Order_Shipped';
-    const TRIGGER_ITEM_SAVED    = 'Hubgo/Tracking/Item_Saved';
+    const TRIGGER_ORDER_SHIPPED    = 'Hubgo/Tracking/Order_Shipped';
+    const TRIGGER_ITEM_SAVED       = 'Hubgo/Tracking/Item_Saved';
+    const TRIGGER_DELIVERY_OVERDUE = 'Hubgo/Delivery/Overdue';
 
     /**
      * Option key toggling the integration in Joinotify's settings.
@@ -103,6 +108,7 @@ class Joinotify extends Integrations_Base {
         // Runtime dispatch listeners (HubGo -> Joinotify).
         add_action( self::TRIGGER_ORDER_SHIPPED, array( $this, 'handle_order_shipped' ), 10, 2 );
         add_action( self::TRIGGER_ITEM_SAVED, array( $this, 'handle_tracking_saved' ), 10, 3 );
+        add_action( self::TRIGGER_DELIVERY_OVERDUE, array( $this, 'handle_delivery_overdue' ), 10, 2 );
 
         // Give the builder's trigger cards the HubGo brand icon instead of the
         // generic fallback used for unregistered contexts.
@@ -124,7 +130,7 @@ class Joinotify extends Integrations_Base {
     public function add_integration_item( $integrations ) {
         $integrations[ self::CARD_SLUG ] = array(
             'title'            => __( 'Joinotify', 'hubgo' ),
-            'description'      => __( 'Send automatic WhatsApp messages when an order is shipped or a tracking code is saved.', 'hubgo' ),
+            'description'      => __( 'Send automatic WhatsApp messages when an order is shipped, a tracking code is saved or a delivery is running late.', 'hubgo' ),
             'icon'             => $this->get_card_icon_svg(),
             'category'         => 'notifications',
             'setting_key'      => self::HUBGO_SETTING_KEY,
@@ -235,6 +241,14 @@ class Joinotify extends Integrations_Base {
             'icon'             => $this->get_icon_svg(),
         ) );
 
+        joinotify_register_trigger( self::SLUG, array(
+            'data_trigger'     => self::TRIGGER_DELIVERY_OVERDUE,
+            'title'            => __( 'Delivery is late', 'hubgo' ),
+            'description'      => __( 'Fired once a day for each shipped order whose promised delivery date has passed.', 'hubgo' ),
+            'require_settings' => false,
+            'icon'             => $this->get_icon_svg(),
+        ) );
+
         if ( function_exists( 'joinotify_register_placeholders' ) ) {
             joinotify_register_placeholders( self::SLUG, $this->get_placeholders() );
         }
@@ -274,7 +288,7 @@ class Joinotify extends Integrations_Base {
      * @return array
      */
     private function get_placeholders() {
-        $triggers = array( self::TRIGGER_ORDER_SHIPPED, self::TRIGGER_ITEM_SAVED );
+        $triggers = array( self::TRIGGER_ORDER_SHIPPED, self::TRIGGER_ITEM_SAVED, self::TRIGGER_DELIVERY_OVERDUE );
 
         $order_from = function( $payload ) {
             $order_id = isset( $payload['order_id'] ) ? absint( $payload['order_id'] ) : 0;
@@ -288,14 +302,61 @@ class Joinotify extends Integrations_Base {
             return isset( $data[ $key ] ) ? (string) $data[ $key ] : '';
         };
 
+        // The delivery promise is read off the order rather than the payload, so
+        // the tokens resolve the same on every trigger — including the two that
+        // predate it and know nothing about a delivery date.
+        $promise_from = function( $payload, $key ) {
+            $order_id = isset( $payload['order_id'] ) ? absint( $payload['order_id'] ) : 0;
+            $promise = $order_id ? Delivery_Promise::get( $order_id ) : array();
+
+            return isset( $promise[ $key ] ) ? (string) $promise[ $key ] : '';
+        };
+
         return array(
             '{{ hubgo_carrier_name }}' => array(
                 'triggers'    => $triggers,
                 'description' => __( 'Carrier name', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => __( 'Express Delivery', 'hubgo' ),
-                    'production' => function( $payload ) use ( $tracking_from ) {
-                        return $tracking_from( $payload, 'carrier_name' );
+                    'production' => function( $payload ) use ( $tracking_from, $promise_from ) {
+                        $carrier = $tracking_from( $payload, 'carrier_name' );
+
+                        // No carrier typed on the tracking code yet: fall back to
+                        // the one quoted at the checkout, which is the same name
+                        // the customer saw on the product page.
+                        return '' !== $carrier ? $carrier : $promise_from( $payload, 'carrier' );
+                    },
+                ),
+            ),
+            '{{ hubgo_delivery_date }}' => array(
+                'triggers'    => $triggers,
+                'description' => __( 'Delivery date promised at the checkout', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => wp_date( get_option('date_format') ),
+                    'production' => function( $payload ) use ( $promise_from ) {
+                        return $promise_from( $payload, 'date_label' );
+                    },
+                ),
+            ),
+            '{{ hubgo_delivery_days }}' => array(
+                'triggers'    => $triggers,
+                'description' => __( 'Business days promised at the checkout', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => '5',
+                    'production' => function( $payload ) use ( $promise_from ) {
+                        $days = $promise_from( $payload, 'days' );
+
+                        return '0' !== $days ? $days : '';
+                    },
+                ),
+            ),
+            '{{ hubgo_shipping_method }}' => array(
+                'triggers'    => $triggers,
+                'description' => __( 'Shipping method chosen at the checkout', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => __( 'Express Delivery', 'hubgo' ),
+                    'production' => function( $payload ) use ( $promise_from ) {
+                        return $promise_from( $payload, 'method' );
                     },
                 ),
             ),
@@ -548,17 +609,48 @@ class Joinotify extends Integrations_Base {
 
 
     /**
+     * Handle a late delivery -> dispatch Joinotify trigger.
+     *
+     * The order's tracking codes travel on the payload as well, so a "your
+     * parcel is running late" message can still carry the tracking link the
+     * customer needs to check it themselves.
+     *
+     * @since 3.1.0
+     * @param int $order_id Order ID.
+     * @param array $promise Delivery promise stored on the order.
+     * @return void
+     */
+    public function handle_delivery_overdue( $order_id, $promise = array() ) {
+        $order_id = absint( $order_id );
+        $items = $order_id ? $this->tracking()->get_items( $order_id ) : array();
+        $items = is_array( $items ) ? array_values( array_filter( $items, 'is_array' ) ) : array();
+        $latest = ! empty( $items ) ? end( $items ) : array();
+
+        $this->dispatch(
+            self::TRIGGER_DELIVERY_OVERDUE,
+            $order_id,
+            is_array( $latest ) ? $latest : array(),
+            $items,
+            __( 'Delivery is late', 'hubgo' ),
+            array( 'delivery_promise' => is_array( $promise ) ? $promise : array() )
+        );
+    }
+
+
+    /**
      * Dispatch a HubGo trigger to Joinotify workflows.
      *
      * @since 3.0.0
+     * @version 3.1.0
      * @param string $hook Trigger identifier.
      * @param int $order_id Order ID.
      * @param array $tracking_item Primary tracking item.
      * @param array $all_items Every tracking item on the order.
      * @param string $description Human description.
+     * @param array $extra Extra payload entries merged into the dispatch.
      * @return void
      */
-    protected function dispatch( $hook, $order_id, $tracking_item, $all_items, $description ) {
+    protected function dispatch( $hook, $order_id, $tracking_item, $all_items, $description, $extra = array() ) {
         if ( ! function_exists( 'joinotify_dispatch_trigger' ) ) {
             return;
         }
@@ -571,12 +663,12 @@ class Joinotify extends Integrations_Base {
             return;
         }
 
-        $payload = array(
+        $payload = array_merge( is_array( $extra ) ? $extra : array(), array(
             'order_id'       => $order_id,
             'tracking_data'  => $this->build_tracking_data( $order_id, $tracking_item ),
             'tracking_items' => $this->build_tracking_items( $order_id, $all_items ),
             'description'    => $description,
-        );
+        ) );
 
         /**
          * Filter the HubGo payload before dispatching to Joinotify.

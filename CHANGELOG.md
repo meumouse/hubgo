@@ -1,3 +1,22 @@
+Versão 3.1.0 (08/08/2026)
+* Compatibilidade com o plugin Frenet (Frenet Shipping Gateway) — tudo resolvido pelo lado do HubGo, sem alterar o plugin de terceiros:
+    - Correção: a calculadora do HubGo cotava com valor de nota R$ 0,00. O plugin da Frenet lê o valor do carrinho, que está vazio na página de produto, e serviços cotados por valor declarado simplesmente não apareciam. A cotação por produto passa a ser ativada apenas nos pacotes do HubGo.
+    - Novo: o prazo de entrega e a transportadora (Correios, Jadlog, Loggi) passam a ser lidos da resposta da API da Frenet e gravados como meta padrão da forma de entrega (delivery_time e carrier), o que devolve a data prometida ("Receba até dia X") na calculadora. Em lojas sem token (modo SOAP), o prazo é lido do rótulo da forma de entrega.
+    - Correção: a página de produto exibia duas calculadoras. O simulador do plugin da Frenet passa a ser removido quando a calculadora do HubGo está ativa, com nova opção "Ocultar simulador da Frenet" no cartão da integração.
+    - A opção "Importar rastreio" passa a ter efeito real: em pedidos enviados pela Frenet, códigos de rastreio sem transportadora definida recebem a Frenet como provedor (para o link) e a transportadora cotada como nome exibido. Nada é gravado no banco — o preenchimento acontece só na exibição.
+* Novo: a data de entrega prometida no checkout passa a ser gravada no pedido (MeuMouse\Hubgo\Core\Delivery_Promise)
+    - Grava prazo em dias úteis, data prometida, transportadora e forma de entrega, a partir da meta que o WooCommerce copia da forma de entrega para o item do pedido
+    - Funciona no checkout clássico e no checkout em blocos (Store API)
+    - Novos filtros: Hubgo/Delivery/Promise_Days, Hubgo/Delivery/Carrier_Meta_Keys. Nova ação: Hubgo/Delivery/Promise_Saved
+* Novo: verificação diária de entregas atrasadas (MeuMouse\Hubgo\Core\Delivery_Watcher)
+    - Pedidos com status "Pedido enviado" cuja data prometida passou disparam a ação Hubgo/Delivery/Overdue, uma única vez por pedido
+    - Processamento em lotes de 50 pedidos por execução, com tolerância de 1 dia
+    - Novos filtros: Hubgo/Delivery/Overdue_Enabled, Hubgo/Delivery/Overdue_Grace_Days, Hubgo/Delivery/Overdue_Query
+* Joinotify: novo gatilho "Entrega atrasada" e novos marcadores
+    - {{ hubgo_delivery_date }}, {{ hubgo_delivery_days }} e {{ hubgo_shipping_method }}, disponíveis em todos os gatilhos do HubGo
+    - {{ hubgo_carrier_name }} passa a usar a transportadora cotada no checkout quando o código de rastreio ainda não tem transportadora definida
+* Novo método público MeuMouse\Hubgo\Core\Delivery_Estimate::get_days_from_meta()
+
 Versão 3.0.1 (07/08/2026)
 * Correção de bugs:
     - Calculadora de frete não respeitava a prioridade das zonas de entrega de acordo com o CEP informado. O estado do destino era lido da sessão do cliente (ou do endereço base da loja) em vez de ser derivado do CEP, fazendo uma zona por estado com ordem menor vencer zonas que o CEP realmente atendia.

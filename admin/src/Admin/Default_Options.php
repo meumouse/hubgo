@@ -122,6 +122,10 @@ class Default_Options {
             'enable_elementor_integration'         => 'no',
             'enable_frenet_integration'            => 'no',
             'frenet_sync_tracking'                 => 'yes',
+            // The Frenet plugin prints its own simulator on the product page,
+            // which duplicates HubGo's calculator. Only applied while HubGo's
+            // calculator is on — see Integrations\Frenet.
+            'frenet_disable_simulator'             => 'yes',
             'frenet_tracking_url'                  => '',
             'enable_shipment_tracking_integration' => 'no',
             'shipment_tracking_show_items'         => 'yes',

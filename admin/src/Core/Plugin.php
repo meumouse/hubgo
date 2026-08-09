@@ -251,6 +251,10 @@ final class Plugin {
                 // Hooks into the cart/checkout rate selection, which runs well
                 // after init but must be wired before the first calculation.
                 'MeuMouse\Hubgo\Core\Shipping_Preference',
+                // Captures the promised delivery date while the order is being
+                // created, so it must be listening before any checkout runs.
+                'MeuMouse\Hubgo\Core\Delivery_Promise',
+                'MeuMouse\Hubgo\Core\Delivery_Watcher',
             ),
             'wp_loaded' => array(
                 'MeuMouse\Hubgo\Views\Shipping_Calculator',
