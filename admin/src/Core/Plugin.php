@@ -248,6 +248,10 @@ final class Plugin {
                 'MeuMouse\Hubgo\Admin\Menu',
                 'MeuMouse\Hubgo\Core\Order_Status',
                 'MeuMouse\Hubgo\API\Rest_Controller',
+                // Adds the "Check for updates" link to the plugins list. Sits
+                // with the other admin wiring: its own REST route lives in the
+                // controller above, so both appear (or not) together.
+                'MeuMouse\Hubgo\Core\Update_Checker',
                 // Hooks into the cart/checkout rate selection, which runs well
                 // after init but must be wired before the first calculation.
                 'MeuMouse\Hubgo\Core\Shipping_Preference',

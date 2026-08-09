@@ -6,6 +6,7 @@ use MeuMouse\Hubgo\Admin\Menu;
 use MeuMouse\Hubgo\Admin\Settings;
 use MeuMouse\Hubgo\Core\Address_Lookup;
 use MeuMouse\Hubgo\Core\Shipping_Preference;
+use MeuMouse\Hubgo\Core\Update_Checker;
 use MeuMouse\Hubgo\Views\Shipping_Calculator;
 
 defined('ABSPATH') || exit;
@@ -159,7 +160,7 @@ class Assets {
      * Enqueue admin assets.
      *
      * @since 2.0.0
-     * @version 3.0.0
+     * @version 3.1.0
      * @param string $hook Current admin page hook.
      * @return void
      */
@@ -172,6 +173,10 @@ class Assets {
 
         if ( $this->is_order_screen() ) {
             $this->enqueue_order_tracking_assets();
+        }
+
+        if ( in_array( $hook, array( 'plugins.php', 'plugins-network.php' ), true ) ) {
+            $this->enqueue_update_check_assets();
         }
     }
 
@@ -363,6 +368,52 @@ class Assets {
                 'save_error'     => __( 'Could not save the tracking code. Please try again.', 'hubgo' ),
                 'track'          => __( 'Track', 'hubgo' ),
                 'remove'         => __( 'Remove', 'hubgo' ),
+            ),
+        ) );
+    }
+
+
+    /**
+     * Enqueue the plugins-list "Check for updates" behaviour.
+     *
+     * Plain, unbundled CSS/JS like the tracking metabox: the plugins screen is
+     * a core table, not a HubGo page, so it never loads the SPA.
+     *
+     * @since 3.1.0
+     * @return void
+     */
+    private function enqueue_update_check_assets() {
+        if ( ! Update_Checker::can_check() ) {
+            return;
+        }
+
+        $version = $this->get_asset_version();
+
+        wp_enqueue_style(
+            'hubgo-plugin-update-check',
+            $this->get_asset_url( 'admin/css/plugin-update-check.css' ),
+            array(),
+            $version
+        );
+
+        wp_enqueue_script(
+            'hubgo-plugin-update-check',
+            $this->get_asset_url( 'admin/js/plugin-update-check.js' ),
+            array(),
+            $version,
+            true
+        );
+
+        wp_localize_script( 'hubgo-plugin-update-check', 'hubgoUpdateCheckParams', array(
+            'rest_url' => $this->rest_root(),
+            'nonce'    => wp_create_nonce( 'wp_rest' ),
+            // Same reason as the tracking metabox: this script is unbundled and
+            // cannot reach wp.i18n the way the Vue entries do, so every string
+            // it renders is passed in from here.
+            'i18n'     => array(
+                'checking'   => __( 'Checking for updates…', 'hubgo' ),
+                'update_now' => __( 'Update now', 'hubgo' ),
+                'error'      => __( 'Could not check for updates. Please try again.', 'hubgo' ),
             ),
         ) );
     }

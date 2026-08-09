@@ -56,6 +56,7 @@ admin/                      All PHP backend code + Composer
     Core/                   Plugin bootstrap, assets, licensing, domain services
       Plugin.php                Singleton, constants, dependency gate, lazy class loading
       License.php               MDS SDK registration (licensing + signed updates)
+      Update_Checker.php        "Check for updates" link on the plugins list (forced MDS check)
       Assets.php                Enqueues storefront + admin assets (page -> entry map)
       Scripts.php               Resolves the Vite manifest into URLs/versions
       Plugin_Installer.php      One-click install/activate for integration plugins
@@ -89,7 +90,7 @@ app/                        Vue 3 + Vite apps (admin SPA + storefront)
   src/styles/main.css       Tailwind entry + design tokens, scoped to .hubgo-app
   dist/                     Vite build output — generated, git-ignored
 assets/                     Non-bundled static assets
-  admin/                    Order tracking metabox CSS/JS (vanilla)
+  admin/                    Order tracking metabox + plugins-list update check CSS/JS (vanilla)
   brand/                    SVG logos
 templates/                  Overridable WooCommerce templates (shipping-calculator.php,
                             email/, emails/, myaccount/)
@@ -295,7 +296,7 @@ Overridable templates live in `templates/` and are loaded with `HUBGO_PATH . 'te
 
 Naming convention: **`Hubgo/Namespace/Thing`** — slash-separated, PascalCase segments mirroring the class path.
 
-Existing hooks include `Hubgo/Before_Init`, `Hubgo/After_Init`, `Hubgo/API/Routes`, `Hubgo/Admin/Menu/Registered`, `Hubgo/Admin/Settings/Schema`, `Hubgo/Admin/Settings/Field_Definitions`, `Hubgo/Admin/Settings/Bootstrap_Data`, `Hubgo/Admin/Settings/Reset`, `Hubgo/Admin/Settings_Capability`, `Hubgo/Admin/System_Status`, `Hubgo/Admin/Integrations/Bootstrap_Data`, `Hubgo/Admin/Integrations/Cards`, `Hubgo/Core/Assets/Admin_Pages`, `Hubgo/Core/Assets/FrontParams`, `Hubgo/Core/License/Payload`, `Hubgo/Core/Plugin_Installer/Allowed_Hosts`, `Hubgo/Migrations/Registered`, `Hubgo/Migrations/Batch_Processed`, `Hubgo/Tracking/Items_Imported`, `Hubgo/Integrations/Registered`, `Hubgo/Integrations/Loaded`, `Hubgo/Integrations/Cards`, `Hubgo/Integrations/Card`, `Hubgo/Integrations/Categories`, `Hubgo/Shipping_Calculator/Package`, `Hubgo/Shipping_Calculator/Rates`, `Hubgo/Shipping_Calculator/Positions`, `Hubgo/Shipping_Calculator/Postcode_Helper`, `Hubgo/Shipping_Calculator/Postcode_State_Map`, `Hubgo/Shipping_Calculator/Resolved_State`, `Hubgo/Shipping_Calculator/Country`, `Hubgo/Shipping_Calculator/Destination`, `Hubgo/Shipping_Calculator/Zone`, `Hubgo/Shipping_Calculator/Config`, `Hubgo/Shipping_Calculator/Free_Shipping`, `Hubgo/Shipping_Calculator/Delivery_Estimate`, `Hubgo/Shipping_Calculator/Delivery_Days`, `Hubgo/Shipping_Calculator/Delivery_Meta_Keys`, `Hubgo/Shipping_Calculator/Holidays`, `Hubgo/Shipping_Calculator/Non_Business_Days`, `Hubgo/Shipping_Preference/Chosen_Method`, `Hubgo/Shipping_Preference/Postcode_Applied`, `Hubgo/Core/Address_Lookup/Providers`, `Hubgo/Core/Address_Lookup/Rate_Limit`, `Hubgo/Core/Address_Lookup/Client_Ip`, `Hubgo/Core/Address_Lookup/Region_Code`, `Hubgo/Views/Calculator_Styles/Token_Map`, `Hubgo/Tracking/Get_Items`, `Hubgo/Tracking/Item_Saved`, `Hubgo/Tracking/Order_Shipped`, `Hubgo/Delivery/Promise_Saved`, `Hubgo/Delivery/Promise_Days`, `Hubgo/Delivery/Carrier_Meta_Keys`, `Hubgo/Delivery/Overdue`, `Hubgo/Delivery/Overdue_Enabled`, `Hubgo/Delivery/Overdue_Grace_Days`, `Hubgo/Delivery/Overdue_Query`.
+Existing hooks include `Hubgo/Before_Init`, `Hubgo/After_Init`, `Hubgo/API/Routes`, `Hubgo/Admin/Menu/Registered`, `Hubgo/Admin/Settings/Schema`, `Hubgo/Admin/Settings/Field_Definitions`, `Hubgo/Admin/Settings/Bootstrap_Data`, `Hubgo/Admin/Settings/Reset`, `Hubgo/Admin/Settings_Capability`, `Hubgo/Admin/System_Status`, `Hubgo/Admin/Integrations/Bootstrap_Data`, `Hubgo/Admin/Integrations/Cards`, `Hubgo/Core/Assets/Admin_Pages`, `Hubgo/Core/Assets/FrontParams`, `Hubgo/Core/License/Payload`, `Hubgo/Core/Update_Checker/Payload`, `Hubgo/Core/Plugin_Installer/Allowed_Hosts`, `Hubgo/Migrations/Registered`, `Hubgo/Migrations/Batch_Processed`, `Hubgo/Tracking/Items_Imported`, `Hubgo/Integrations/Registered`, `Hubgo/Integrations/Loaded`, `Hubgo/Integrations/Cards`, `Hubgo/Integrations/Card`, `Hubgo/Integrations/Categories`, `Hubgo/Shipping_Calculator/Package`, `Hubgo/Shipping_Calculator/Rates`, `Hubgo/Shipping_Calculator/Positions`, `Hubgo/Shipping_Calculator/Postcode_Helper`, `Hubgo/Shipping_Calculator/Postcode_State_Map`, `Hubgo/Shipping_Calculator/Resolved_State`, `Hubgo/Shipping_Calculator/Country`, `Hubgo/Shipping_Calculator/Destination`, `Hubgo/Shipping_Calculator/Zone`, `Hubgo/Shipping_Calculator/Config`, `Hubgo/Shipping_Calculator/Free_Shipping`, `Hubgo/Shipping_Calculator/Delivery_Estimate`, `Hubgo/Shipping_Calculator/Delivery_Days`, `Hubgo/Shipping_Calculator/Delivery_Meta_Keys`, `Hubgo/Shipping_Calculator/Holidays`, `Hubgo/Shipping_Calculator/Non_Business_Days`, `Hubgo/Shipping_Preference/Chosen_Method`, `Hubgo/Shipping_Preference/Postcode_Applied`, `Hubgo/Core/Address_Lookup/Providers`, `Hubgo/Core/Address_Lookup/Rate_Limit`, `Hubgo/Core/Address_Lookup/Client_Ip`, `Hubgo/Core/Address_Lookup/Region_Code`, `Hubgo/Views/Calculator_Styles/Token_Map`, `Hubgo/Tracking/Get_Items`, `Hubgo/Tracking/Item_Saved`, `Hubgo/Tracking/Order_Shipped`, `Hubgo/Delivery/Promise_Saved`, `Hubgo/Delivery/Promise_Days`, `Hubgo/Delivery/Carrier_Meta_Keys`, `Hubgo/Delivery/Overdue`, `Hubgo/Delivery/Overdue_Enabled`, `Hubgo/Delivery/Overdue_Grace_Days`, `Hubgo/Delivery/Overdue_Query`.
 
 **The delivery promise.** `Core\Delivery_Promise` stores what the shopper was told at the checkout (`_hubgo_delivery_date`, `_hubgo_delivery_days`, `_hubgo_delivery_carrier`, `_hubgo_delivery_method`) and every downstream consumer reads *that*, never a fresh quote. This is what makes a notification, a late-delivery check or an order screen able to state the promise months later, and it is why the capture is idempotent: an order that already carries a date keeps it, because a customer may already have been told. The forecast reaches the order for free — WooCommerce copies rate meta onto the shipping line item — so an integration only has to publish the carrier's days under one of the keys in `Delivery_Estimate::get_meta_keys()`.
 
@@ -433,6 +434,17 @@ Use `__()` from `app/src/utils/i18n.js`, which proxies `window.wp.i18n` at call 
 
 Focus is a **2px solid primary border and nothing else**. The idle border is already 2px, so the focused state only recolours it and never resizes the box. Never reintroduce a `ring-*`/`box-shadow` glow; where a border cannot express focus (buttons, the toggle), use `outline-2 outline-offset-2 outline-primary-700`. A control whose focus lives elsewhere (an open dropdown teleported to `<body>`) keeps its border by carrying `is-focused`.
 
+### Motion
+
+Every transition is built from one token set, declared on `.hubgo-app` in `main.css` and mirrored on `.hubgo-shipping-calculator` / `.hubgo-calc-modal` in `calculator.css` (separate bundle, and the modal is teleported out of the widget): `--hubgo-motion-fast|base|slow`, `--hubgo-motion-shift`, `--hubgo-motion-scale`, `--hubgo-ease-out|in`. Four rules follow from that:
+
+1. **A named `<Transition>` is backed by plain CSS, never by Tailwind utilities bound to the `enter-*`/`leave-*` props.** Those sets share tokens, and Vue's class bookkeeping then leaves both the "from" and the "to" utility on the node: the leave never resolves and the element stays in the DOM, visible. This has already happened once — see the comment on `hubgo-select-pop`. It also means a transitioned element must not carry an `opacity-*`, `translate-*` or `transition-*` utility of its own; under `important: '.hubgo-app'` those compile with `!important` and win outright.
+2. **Only `opacity` and `transform` are animated.** Never `height`, `width` or an offset — those are a reflow per frame. Where two states have different heights, crossfade with `mode="out-in"` and let the height change once.
+3. **Displacement goes through `--hubgo-motion-shift` / `--hubgo-motion-scale`, never a literal.** That is the whole `prefers-reduced-motion` switch: collapsing the two tokens to `0` and `1` turns every transition into a plain fade without a rule being restated. Spinners keep spinning under reduced motion — they report that work is still running; decorative shimmer stops.
+4. **The leave is faster than the enter.** The enter is the user waiting for something; the leave is the user already moving on.
+
+A `TransitionGroup` that needs its `-move` to work gives the leaving item `position: absolute` with **every offset left at `auto`**, so it is painted at its static position while the rest close the gap, and its container `position: relative` so `width: 100%` resolves. Do not reach for this inside a CSS grid: an absolutely positioned grid child escapes its track. Crossfade the whole grid on a key instead — that is what `IntegrationsGrid` does.
+
 ### Field system
 
 Settings controls are resolved at runtime by `app/src/components/fields/fieldRegistry.js`. To add a field type:
@@ -473,7 +485,7 @@ Rendering is uniform across all three entry points — the product-page hook, th
 
 The published DOM events `hubgo:shipping_calculated` and `hubgo:shipping_error` are part of the contract and survived the rewrite; `hubgo:shipping_preference_changed` was added.
 
-`assets/admin/` (the order tracking metabox) remains **plain, unbundled** CSS/JS enqueued directly. Do not migrate it into the Vite build.
+`assets/admin/` (the order tracking metabox and the plugins-list update check) remains **plain, unbundled** CSS/JS enqueued directly. Do not migrate it into the Vite build — those surfaces are core admin screens that never load the SPA, so their strings are passed in through `wp_localize_script()` instead of `wp.i18n`.
 
 ---
 

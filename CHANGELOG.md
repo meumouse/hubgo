@@ -1,4 +1,10 @@
 Versão 3.1.0 (08/08/2026)
+* Novo: link "Verificar atualizações" na linha do HubGo em Plugins (MeuMouse\Hubgo\Core\Update_Checker)
+    - A consulta é assíncrona (POST hubgo/v1/updates/check) e o resultado aparece ao lado do link, sem recarregar a página
+    - Força uma nova consulta ao MDS: limpa o cache de 12h de atualização, a lista de versões do rollback e revalida a licença antes de responder
+    - Quando há versão nova, o link "Atualizar agora" leva direto para a atualização do WordPress
+    - Sem JavaScript, o próprio link executa a verificação no servidor e devolve o resultado como aviso
+    - Novo filtro: Hubgo/Core/Update_Checker/Payload
 * Compatibilidade com o plugin Frenet (Frenet Shipping Gateway) — tudo resolvido pelo lado do HubGo, sem alterar o plugin de terceiros:
     - Correção: a calculadora do HubGo cotava com valor de nota R$ 0,00. O plugin da Frenet lê o valor do carrinho, que está vazio na página de produto, e serviços cotados por valor declarado simplesmente não apareciam. A cotação por produto passa a ser ativada apenas nos pacotes do HubGo.
     - Novo: o prazo de entrega e a transportadora (Correios, Jadlog, Loggi) passam a ser lidos da resposta da API da Frenet e gravados como meta padrão da forma de entrega (delivery_time e carrier), o que devolve a data prometida ("Receba até dia X") na calculadora. Em lojas sem token (modo SOAP), o prazo é lido do rótulo da forma de entrega.
@@ -16,6 +22,17 @@ Versão 3.1.0 (08/08/2026)
     - {{ hubgo_delivery_date }}, {{ hubgo_delivery_days }} e {{ hubgo_shipping_method }}, disponíveis em todos os gatilhos do HubGo
     - {{ hubgo_carrier_name }} passa a usar a transportadora cotada no checkout quando o código de rastreio ainda não tem transportadora definida
 * Novo método público MeuMouse\Hubgo\Core\Delivery_Estimate::get_days_from_meta()
+* Calculadora: o campo "Estado" do buscador de CEP passa a usar o seletor moderno do HubGo, com busca por nome ou sigla, navegação por teclado e a mesma aparência dos demais campos
+    - Os estados continuam vindo da lista do WooCommerce (WC()->countries->get_states()), agora exibindo o nome do estado com a sigla ao lado, em vez de apenas a sigla
+* Novo: transições suaves em toda a interface, no painel e na loja
+    - Modais abrem e fecham com fade e um leve deslocamento, em vez de aparecerem de uma vez
+    - A rolagem da página atrás do modal fica travada enquanto ele está aberto, sem deslocar o conteúdo do wp-admin
+    - Correção: os avisos (toasts) não tinham animação de entrada e a pilha "pulava" quando um deles sumia. Agora entram pela direita, saem sem empurrar os demais e os que ficam deslizam para o lugar
+    - Correção: a barra de progresso do aviso tinha a duração escrita em dois lugares, que podiam divergir
+    - O esqueleto de carregamento das três telas dá lugar ao conteúdo em transição, em vez de trocar de uma vez
+    - Troca de aba nas configurações, filtro de categoria nas integrações e ativação da licença passam a trocar o painel em transição
+    - Na calculadora da loja: troca entre o formulário de CEP e a cotação, entrada em cascata das formas de entrega, seleção da opção e busca de endereço
+    - Tudo respeita a preferência "reduzir movimento" do sistema operacional: as animações viram um fade curto, e os indicadores de carregamento continuam girando
 
 Versão 3.0.1 (07/08/2026)
 * Correção de bugs:

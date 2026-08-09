@@ -1,0 +1,63 @@
+/*
+ * "Check for updates" link on the plugins list.
+ *
+ * Scoped to the HubGo row meta classes - nothing here leaks into the rest of
+ * wp-admin. Colours follow the wp-admin notice palette rather than the HubGo
+ * tokens: this text sits inside a core table, next to core copy.
+ *
+ * @since 3.1.0
+ */
+.hubgo-check-updates.is-busy {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.hubgo-check-updates-status {
+    display: none;
+}
+
+.hubgo-check-updates-status.is-visible {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 8px;
+}
+
+.hubgo-check-updates-status.is-loading::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: hubgo-check-updates-spin 0.7s linear infinite;
+}
+
+.hubgo-check-updates-status.is-update {
+    color: #996800;
+    font-weight: 600;
+}
+
+.hubgo-check-updates-status.is-uptodate {
+    color: #007017;
+}
+
+.hubgo-check-updates-status.is-error {
+    color: #b32d2e;
+}
+
+.hubgo-check-updates-action {
+    font-weight: 600;
+}
+
+@keyframes hubgo-check-updates-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hubgo-check-updates-status.is-loading::before {
+        animation-duration: 3s;
+    }
+}
