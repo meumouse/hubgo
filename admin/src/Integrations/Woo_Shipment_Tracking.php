@@ -110,6 +110,8 @@ class Woo_Shipment_Tracking extends Integrations_Base {
             'title'       => __( 'WooCommerce Shipment Tracking', 'hubgo' ),
             'description' => __( 'Displays Shipment Tracking codes inside HubGo and migrates the order data into native tracking.', 'hubgo' ),
             'icon'        => $this->get_icon_svg(),
+            'author'      => 'WooCommerce',
+            'author_url'  => 'https://woocommerce.com',
             'category'    => 'shipping',
             'setting_key' => self::SETTING_KEY,
             // No plugin dependency on purpose: the migration has to stay

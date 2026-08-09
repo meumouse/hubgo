@@ -132,6 +132,8 @@ class Joinotify extends Integrations_Base {
             'title'            => __( 'Joinotify', 'hubgo' ),
             'description'      => __( 'Send automatic WhatsApp messages when an order is shipped, a tracking code is saved or a delivery is running late.', 'hubgo' ),
             'icon'             => $this->get_card_icon_svg(),
+            'author'           => 'MeuMouse.com',
+            'author_url'       => 'https://meumouse.com',
             'category'         => 'notifications',
             'setting_key'      => self::HUBGO_SETTING_KEY,
             'is_plugin'        => true,

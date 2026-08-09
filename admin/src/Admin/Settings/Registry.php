@@ -412,8 +412,22 @@ class Registry {
             $locked = ! empty( $item['requires_license'] ) && ! $licensed;
             $installable = $requires_plugin && ! $plugin_active && ! empty( $item['install']['download_url'] );
 
+            $author = array(
+                'name' => (string) ( $item['author'] ?? '' ),
+                'url'  => (string) ( $item['author_url'] ?? '' ),
+            );
+
+            // A card that names no vendor borrows the one from its dependency's
+            // plugin header, so third-party integrations get credited without
+            // having to declare anything.
+            if ( '' === $author['name'] && $requires_plugin ) {
+                $author = Integrations_Base::get_plugin_author( $item['plugin_active'] );
+            }
+
             $card = array_merge( $item, array(
                 'slug'             => $slug,
+                'author'           => $author['name'],
+                'author_url'       => $author['url'],
                 'enabled'          => '' !== $setting_key && 'yes' === ( $settings[ $setting_key ] ?? 'no' ),
                 'requires_plugin'  => $requires_plugin,
                 'plugin_active'    => $plugin_active,

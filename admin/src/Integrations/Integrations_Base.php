@@ -175,6 +175,8 @@ abstract class Integrations_Base {
             'title'            => '',
             'description'      => '',
             'icon'             => '',
+            'author'           => '',
+            'author_url'       => '',
             'category'         => 'others',
             'setting_key'      => '',
             'action_hook'      => self::get_integration_action_hook( $slug ),
@@ -197,6 +199,8 @@ abstract class Integrations_Base {
         }
 
         $normalized['setting_key'] = sanitize_key( (string) $normalized['setting_key'] );
+        $normalized['author'] = sanitize_text_field( (string) $normalized['author'] );
+        $normalized['author_url'] = esc_url_raw( (string) $normalized['author_url'] );
         $normalized['is_plugin'] = ! empty( $normalized['is_plugin'] );
         $normalized['requires_license'] = ! empty( $normalized['requires_license'] );
         $normalized['coming_soon'] = ! empty( $normalized['coming_soon'] );
@@ -546,6 +550,56 @@ abstract class Integrations_Base {
 
         return false;
     }
+
+
+    /**
+     * Vendor declared in the header of the plugin an integration depends on.
+     *
+     * The fallback for cards that do not declare an `author` of their own —
+     * notably third-party integrations registered through
+     * `Hubgo/Integrations/Registered`, which get the credit right for free.
+     * Only installed plugins have a header to read, so a missing dependency
+     * simply yields no vendor and the card renders without the line.
+     *
+     * @since 3.0.0
+     * @param array $plugin_files Plugin basenames, in preference order.
+     * @return array{name:string,url:string} Empty strings when unknown.
+     */
+    public static function get_plugin_author( $plugin_files ) {
+        $author = array( 'name' => '', 'url' => '' );
+
+        if ( ! is_array( $plugin_files ) || empty( $plugin_files ) ) {
+            return $author;
+        }
+
+        if ( ! function_exists( 'get_plugins' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        // get_plugins() caches its scan for the whole request, so listing every
+        // card costs a single pass over the plugin headers.
+        $installed = get_plugins();
+
+        foreach ( $plugin_files as $plugin_file ) {
+            $plugin_file = (string) $plugin_file;
+
+            if ( empty( $installed[ $plugin_file ]['Author'] ) ) {
+                continue;
+            }
+
+            // The header ships the author as linked markup ("<a href=…>Name</a>")
+            // whenever Author URI is set: keep the name and the URL apart so the
+            // card decides how to present them.
+            $author['name'] = sanitize_text_field( wp_strip_all_tags( (string) $installed[ $plugin_file ]['Author'] ) );
+            $author['url'] = esc_url_raw( (string) ( $installed[ $plugin_file ]['AuthorURI'] ?? '' ) );
+
+            break;
+        }
+
+        return $author;
+    }
+
+
     /**
      * Inline SVG shipped under `assets/admin/img/`.
      *

@@ -94,6 +94,8 @@ class Melhor_Envio extends Integrations_Base {
             'title'            => __( 'Melhor Envio', 'hubgo' ),
             'description'      => __( 'Melhor Envio quotes, labels and tracking integrated into HubGo through the official MeuMouse.com plugin.', 'hubgo' ),
             'icon'             => $this->get_icon_svg(),
+            'author'           => 'MeuMouse.com',
+            'author_url'       => 'https://meumouse.com',
             'category'         => 'shipping',
             'setting_key'      => self::SETTING_KEY,
             'is_plugin'        => true,

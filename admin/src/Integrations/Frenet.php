@@ -179,6 +179,8 @@ class Frenet extends Integrations_Base {
             'title'         => __( 'Frenet', 'hubgo' ),
             'description'   => __( 'Use Frenet quotes in the shipping calculation and bring the tracking code into the HubGo order screen.', 'hubgo' ),
             'icon'          => $this->get_icon_svg(),
+            'author'        => 'Frenet',
+            'author_url'    => 'https://www.frenet.com.br',
             'category'      => 'shipping',
             'setting_key'   => self::SETTING_KEY,
             'is_plugin'     => true,

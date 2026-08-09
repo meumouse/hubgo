@@ -111,6 +111,8 @@ class Elementor extends Integrations_Base {
             'title'            => __( 'Elementor', 'hubgo' ),
             'description'      => __( 'Adds the shipping calculator as an Elementor widget, with its own color, spacing and typography controls.', 'hubgo' ),
             'icon'             => $this->get_icon_svg(),
+            'author'           => 'Elementor.com',
+            'author_url'       => 'https://elementor.com',
             'category'         => 'ecommerce',
             'setting_key'      => self::SETTING_KEY,
             'is_plugin'        => true,
