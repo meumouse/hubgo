@@ -328,9 +328,24 @@
 }
 
 /*
- * Modal. Two layers moving at different rates: the whole overlay fades, and the
- * panel additionally lifts into place. Only the panel is displaced, because a
- * backdrop that slides reads as the page itself moving.
+ * Modal. Two layers moving at different rates: the backdrop fades, and the panel
+ * additionally lifts into place. Only the panel is displaced, because a backdrop
+ * that slides reads as the page itself moving.
+ *
+ * The backdrop and the panel fade themselves — the root does NOT. This is not a
+ * stylistic choice: an `opacity` below 1 makes an element a *backdrop root* for
+ * its descendants, so while the root was the one fading, the backdrop's
+ * `backdrop-filter` had nothing behind it to sample and the blur was absent for
+ * the whole transition, snapping on at the last frame when the opacity reached
+ * exactly 1. On the backdrop's own box the filter samples the real page first
+ * and the result is then composited at that opacity, which is what makes the
+ * blur ramp in instead of popping.
+ *
+ * The root therefore only carries the timing. Vue reads the duration off the
+ * transitioned element to know how long to keep the node alive; without a
+ * declaration here the leave would resolve on the first frame and the dialog
+ * would vanish without animating. Keep it even though the root's opacity never
+ * changes.
  *
  * The leave is faster than the enter and drops the scale — an element that
  * shrinks on the way out reads as a rejected action rather than a dismissal.
@@ -343,24 +358,36 @@
     transition: opacity var(--hubgo-motion-fast) var(--hubgo-ease-in);
 }
 
-.hubgo-modal-enter-from,
-.hubgo-modal-leave-to {
+.hubgo-modal-enter-active .hubgo-modal__backdrop {
+    transition: opacity var(--hubgo-motion-base) var(--hubgo-ease-out);
+}
+
+.hubgo-modal-leave-active .hubgo-modal__backdrop {
+    transition: opacity var(--hubgo-motion-fast) var(--hubgo-ease-in);
+}
+
+.hubgo-modal-enter-from .hubgo-modal__backdrop,
+.hubgo-modal-leave-to .hubgo-modal__backdrop {
     opacity: 0;
 }
 
 .hubgo-modal-enter-active .hubgo-modal__panel {
-    transition: transform var(--hubgo-motion-base) var(--hubgo-ease-out);
+    transition: opacity var(--hubgo-motion-base) var(--hubgo-ease-out),
+                transform var(--hubgo-motion-base) var(--hubgo-ease-out);
 }
 
 .hubgo-modal-leave-active .hubgo-modal__panel {
-    transition: transform var(--hubgo-motion-fast) var(--hubgo-ease-in);
+    transition: opacity var(--hubgo-motion-fast) var(--hubgo-ease-in),
+                transform var(--hubgo-motion-fast) var(--hubgo-ease-in);
 }
 
 .hubgo-modal-enter-from .hubgo-modal__panel {
+    opacity: 0;
     transform: translateY(var(--hubgo-motion-shift)) scale(var(--hubgo-motion-scale));
 }
 
 .hubgo-modal-leave-to .hubgo-modal__panel {
+    opacity: 0;
     transform: translateY(calc(var(--hubgo-motion-shift) / 2));
 }
 

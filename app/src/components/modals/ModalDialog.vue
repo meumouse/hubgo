@@ -123,9 +123,15 @@ onBeforeUnmount( () => {
             v-if="open"
             class="hubgo-modal fixed inset-0 z-[160000] flex items-center justify-center overflow-y-auto px-4 py-4 sm:py-6"
         >
+            <!--
+                The backdrop fades itself rather than being faded by the root:
+                it carries `backdrop-filter`, and an opacity below 1 on an
+                ancestor would leave the filter with nothing to sample. See the
+                `hubgo-modal` block in main.css.
+            -->
             <button
                 type="button"
-                class="absolute inset-0 cursor-default border-0 bg-slate-950/60 p-0 backdrop-blur-sm"
+                class="hubgo-modal__backdrop absolute inset-0 cursor-default border-0 bg-slate-950/60 p-0 backdrop-blur-sm"
                 :aria-label="__( 'Close' )"
                 @click="$emit( 'close' )"
             />

@@ -991,9 +991,23 @@ button.hubgo-calc__select-trigger.is-open .hubgo-calc__select-caret {
     transform: translateY(calc(var(--hubgo-calc-motion-shift) / -2));
 }
 
-/* Modal: the whole overlay fades, the dialog additionally lifts. The blur is
-   never animated — only the opacity carrying it — because interpolating a
-   backdrop-filter re-blurs the page behind it on every frame. */
+/* Modal: the overlay fades, the dialog additionally lifts.
+
+   The overlay and the dialog fade themselves — the root does NOT. An `opacity`
+   below 1 makes an element a *backdrop root* for its descendants, so while the
+   root was the one fading, the overlay's `backdrop-filter` had nothing behind it
+   to sample: the blur was absent for the whole transition and snapped on at the
+   last frame, when the opacity reached exactly 1. On the overlay's own box the
+   filter samples the page first and the result is composited at that opacity,
+   which is what makes the blur ramp in instead of popping.
+
+   The blur radius itself is never interpolated — that would re-blur the page on
+   every frame. Only the opacity carrying it moves.
+
+   The root therefore only carries the timing: Vue reads the duration off the
+   transitioned element to know how long to keep the node alive, and without a
+   declaration here the leave would resolve on the first frame. Keep it even
+   though the root's opacity never changes. */
 .hubgo-calc-modal-enter-active {
     transition: opacity var(--hubgo-calc-motion-base) var(--hubgo-calc-ease-out);
 }
@@ -1002,24 +1016,36 @@ button.hubgo-calc__select-trigger.is-open .hubgo-calc__select-caret {
     transition: opacity var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-in);
 }
 
-.hubgo-calc-modal-enter-from,
-.hubgo-calc-modal-leave-to {
+.hubgo-calc-modal-enter-active .hubgo-calc-modal__overlay {
+    transition: opacity var(--hubgo-calc-motion-base) var(--hubgo-calc-ease-out);
+}
+
+.hubgo-calc-modal-leave-active .hubgo-calc-modal__overlay {
+    transition: opacity var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-in);
+}
+
+.hubgo-calc-modal-enter-from .hubgo-calc-modal__overlay,
+.hubgo-calc-modal-leave-to .hubgo-calc-modal__overlay {
     opacity: 0;
 }
 
 .hubgo-calc-modal-enter-active .hubgo-calc-modal__dialog {
-    transition: transform var(--hubgo-calc-motion-base) var(--hubgo-calc-ease-out);
+    transition: opacity var(--hubgo-calc-motion-base) var(--hubgo-calc-ease-out),
+                transform var(--hubgo-calc-motion-base) var(--hubgo-calc-ease-out);
 }
 
 .hubgo-calc-modal-leave-active .hubgo-calc-modal__dialog {
-    transition: transform var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-in);
+    transition: opacity var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-in),
+                transform var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-in);
 }
 
 .hubgo-calc-modal-enter-from .hubgo-calc-modal__dialog {
+    opacity: 0;
     transform: translateY(var(--hubgo-calc-motion-shift)) scale(var(--hubgo-calc-motion-scale));
 }
 
 .hubgo-calc-modal-leave-to .hubgo-calc-modal__dialog {
+    opacity: 0;
     transform: translateY(calc(var(--hubgo-calc-motion-shift) / 2));
 }
 
