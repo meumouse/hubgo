@@ -567,6 +567,13 @@
     min-height: 0;
     flex: 1 1 auto;
     overflow-y: auto;
+    /* `overflow-y: auto` makes this a scroll container, and a scroll container
+       clips on BOTH axes. The selected option is marked with an outer
+       box-shadow ring, which sits outside its border box and was being sliced
+       flush against these edges. The padding gives the ring room; the matching
+       negative margin keeps the content aligned with the header above it. */
+    padding: 3px;
+    margin: -3px;
 }
 
 .hubgo-calc-modal__section + .hubgo-calc-modal__section {
