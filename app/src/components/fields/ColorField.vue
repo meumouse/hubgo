@@ -7,10 +7,16 @@
  * on the row. The hex input is only committed once it holds a valid #RGB/#RRGGBB
  * value, so typing does not emit garbage into the settings model.
  *
+ * Resetting emits an empty string rather than the declared default: empty is how
+ * every calculator style key spells "use the built-in value", so the colour then
+ * follows the stylesheet instead of being pinned to a copy of it.
+ *
  * @since 3.0.0
  * @version 3.0.1
  */
 import { computed, ref, watch } from 'vue';
+import { Undo } from '@boxicons/vue';
+import { __ } from '../../utils/i18n';
 
 const props = defineProps({
     modelValue: { type: String, default: '#008aff' },
@@ -88,5 +94,16 @@ function commitHex( value ) {
             class="w-36 font-mono text-[14px] uppercase text-slate-700"
             @input="commitHex( $event.target.value )"
         >
+
+        <button
+            v-if="! isUnset"
+            type="button"
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] text-slate-400 transition hover:bg-slate-100 hover:text-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
+            :title="__( 'Reset' )"
+            :aria-label="__( 'Reset' )"
+            @click="emit( 'update:modelValue', '' )"
+        >
+            <Undo class="h-[18px] w-[18px]" width="18" height="18" aria-hidden="true" />
+        </button>
     </div>
 </template>

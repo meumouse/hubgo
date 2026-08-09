@@ -53,7 +53,7 @@ Versão 3.0.1 (07/08/2026)
     - O valor é gravado com a unidade ("1.5rem"); valores gravados antes continuam válidos e são lidos em px
     - O widget do Elementor passa a oferecer as mesmas unidades nos controles equivalentes
 * Padronização visual dos campos do painel: mesma altura (3rem), mesmo raio e mesma borda em campos, seletores, senha e cor
-    - O seletor de cor passa a ter amostra quadrada de 3rem ao lado do campo de código hexadecimal
+    - O seletor de cor passa a ter amostra quadrada de 3rem ao lado do campo de código hexadecimal, com botão de redefinir para a cor padrão
     - Foco passa a ser borda de 2px na cor primária, sem sombra
     - Correção: botões sem estilo próprio herdavam a aparência nativa do sistema, porque o preflight do Tailwind está desativado
 * Correção de bugs:
