@@ -7,6 +7,7 @@ use MeuMouse\Hubgo\Admin\Settings;
 
 use MeuMouse\MDS\SDK\SDK;
 use MeuMouse\MDS\SDK\Integration;
+use MeuMouse\MDS\SDK\Admin\Notices;
 use MeuMouse\MDS\SDK\License\LicenseStatus;
 
 use Exception;
@@ -124,6 +125,10 @@ final class License {
             return;
         }
 
+        // Taken before the SDK boots so its own admin notice can be told apart
+        // from the ones other MDS products already hooked.
+        $notices_before = self::admin_notice_ids();
+
         try {
             self::$integration = SDK::register( array(
                 'product_slug'    => self::PRODUCT_SLUG,
@@ -149,6 +154,8 @@ final class License {
             return;
         }
 
+        self::remove_sdk_license_notice( $notices_before );
+
         // Link to the license screen from the plugins list. Safe to wire now
         // that get_license_url() resolves to the HubGo license subpage instead
         // of the SDK's own (no longer registered) screen.
@@ -156,6 +163,67 @@ final class License {
 
         // Opt this plugin into WordPress background updates when enabled.
         add_filter( 'auto_update_plugin', array( __CLASS__, 'enable_auto_update' ), 10, 2 );
+    }
+
+
+    /**
+     * Map of callback ids currently hooked onto `admin_notices`, per priority.
+     *
+     * @since 3.0.0
+     * @return array<int,array<string,bool>>
+     */
+    private static function admin_notice_ids() {
+        global $wp_filter;
+
+        if ( empty( $wp_filter['admin_notices'] ) ) {
+            return array();
+        }
+
+        $ids = array();
+
+        foreach ( $wp_filter['admin_notices']->callbacks as $priority => $callbacks ) {
+            $ids[ $priority ] = array_fill_keys( array_keys( $callbacks ), true );
+        }
+
+        return $ids;
+    }
+
+
+    /**
+     * Drop the license nag the SDK renders on the dashboard, plugins and
+     * updates screens ("Enter your license key to enable updates and
+     * support.", and its expired/invalid variants).
+     *
+     * HubGo already surfaces the license state on its own screen — the same
+     * reason `settings_parent` is null above — so the extra notice only
+     * duplicates it. The SDK keeps the Notices instance to itself, so the
+     * callback is found on the hook: any Notices added while SDK::register()
+     * ran is ours, which leaves the notices of other MDS products alone.
+     *
+     * @since 3.0.0
+     * @param array<int,array<string,bool>> $before Callback ids seen before the SDK booted.
+     * @return void
+     */
+    private static function remove_sdk_license_notice( $before ) {
+        global $wp_filter;
+
+        if ( empty( $wp_filter['admin_notices'] ) ) {
+            return;
+        }
+
+        foreach ( $wp_filter['admin_notices']->callbacks as $priority => $callbacks ) {
+            foreach ( $callbacks as $id => $callback ) {
+                if ( isset( $before[ $priority ][ $id ] ) ) {
+                    continue;
+                }
+
+                $function = isset( $callback['function'] ) ? $callback['function'] : null;
+
+                if ( is_array( $function ) && isset( $function[0] ) && $function[0] instanceof Notices ) {
+                    remove_action( 'admin_notices', $function, $priority );
+                }
+            }
+        }
     }
 
 
