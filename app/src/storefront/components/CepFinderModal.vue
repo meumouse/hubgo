@@ -13,9 +13,11 @@
  *     so picking a suggestion resolves without a second round-trip.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 import { computed, ref, watch } from 'vue';
 import BaseModal from './BaseModal.vue';
+import CalcSelect from './CalcSelect.vue';
 import { storefrontApi } from '../api';
 import { getAddressLookup } from '../params';
 import { __ } from '../../utils/i18n';
@@ -31,6 +33,26 @@ const DEBOUNCE_MS = 350;
 
 const lookup = getAddressLookup();
 const isFreetext = computed( () => lookup.mode === 'freetext' );
+
+/**
+ * The WooCommerce state list, shaped for the custom select.
+ *
+ * `Core\Address_Lookup::get_states()` mirrors `WC()->countries->get_states()`,
+ * so the label is the state name and the value is the code the provider wants.
+ * Only the name is rendered: `CalcSelect` matches the value as well as the
+ * label, so typing either "sao" or "sp" still finds São Paulo without spending
+ * a row on a two-letter code.
+ *
+ * @return {Array<object>}
+ */
+const stateOptions = computed( () => ( Array.isArray( lookup.states ) ? lookup.states : [] ).map( ( state ) => {
+    const value = String( state.value ?? '' );
+
+    return {
+        value,
+        label: String( state.label ?? '' ) || value,
+    };
+} ) );
 
 const query = ref( '' );
 const uf = ref( '' );
@@ -228,12 +250,15 @@ async function pick( suggestion ) {
         </form>
 
         <form v-else class="hubgo-calc__finder-grid" @submit.prevent="submitStructured">
-            <select v-model="uf" class="hubgo-calc__finder-field" :aria-label="__( 'State' )">
-                <option value="">{{ __( 'State' ) }}</option>
-                <option v-for="state in lookup.states" :key="state.value" :value="state.value">
-                    {{ state.value }}
-                </option>
-            </select>
+            <CalcSelect
+                v-model="uf"
+                :options="stateOptions"
+                :placeholder="__( 'State' )"
+                :search-placeholder="__( 'Search state…' )"
+                :empty-label="__( 'No state found' )"
+                :aria-label="__( 'State' )"
+                :token-source="tokenSource"
+            />
 
             <input
                 v-model="city"
@@ -257,33 +282,44 @@ async function pick( suggestion ) {
             </button>
         </form>
 
-        <p v-if="error" class="hubgo-calc__error">{{ error }}</p>
+        <Transition name="hubgo-calc-fade">
+            <p v-if="error" class="hubgo-calc__error">{{ error }}</p>
+        </Transition>
 
-        <div v-if="searching && isFreetext" class="hubgo-calc__loading" style="margin-top: 10px">
-            <span class="hubgo-calc__spinner" aria-hidden="true" />
-            {{ __( 'Searching addresses…' ) }}
-        </div>
+        <Transition name="hubgo-calc-fade">
+            <div v-if="searching && isFreetext" class="hubgo-calc__loading" style="margin-top: 10px">
+                <span class="hubgo-calc__spinner" aria-hidden="true" />
+                {{ __( 'Searching addresses…' ) }}
+            </div>
+        </Transition>
 
-        <div v-if="suggestions.length" class="hubgo-calc__suggestions">
-            <button
-                v-for="suggestion in suggestions"
-                :key="suggestion.id"
-                type="button"
-                class="hubgo-calc__suggestion"
-                :disabled="resolvingId !== ''"
-                @click="pick( suggestion )"
-            >
-                <span class="hubgo-calc__suggestion-primary">
-                    {{ suggestion.primary || suggestion.postcode }}
-                </span>
-                <span v-if="suggestion.secondary" class="hubgo-calc__suggestion-secondary">
-                    {{ suggestion.secondary }}
-                </span>
-            </button>
-        </div>
+        <!--
+            The result panel is faded as one block rather than row by row: in
+            free-text mode it is rebuilt on every debounced keystroke, and
+            animating each suggestion would turn a steady list into a flicker.
+        -->
+        <Transition name="hubgo-calc-fade" mode="out-in">
+            <div v-if="suggestions.length" key="suggestions" class="hubgo-calc__suggestions">
+                <button
+                    v-for="suggestion in suggestions"
+                    :key="suggestion.id"
+                    type="button"
+                    class="hubgo-calc__suggestion"
+                    :disabled="resolvingId !== ''"
+                    @click="pick( suggestion )"
+                >
+                    <span class="hubgo-calc__suggestion-primary">
+                        {{ suggestion.primary || suggestion.postcode }}
+                    </span>
+                    <span v-if="suggestion.secondary" class="hubgo-calc__suggestion-secondary">
+                        {{ suggestion.secondary }}
+                    </span>
+                </button>
+            </div>
 
-        <p v-else-if="searched && ! searching && ! error" class="hubgo-calc__hint">
-            {{ __( 'No address found. Try being more specific.' ) }}
-        </p>
+            <p v-else-if="searched && ! searching && ! error" key="none" class="hubgo-calc__hint">
+                {{ __( 'No address found. Try being more specific.' ) }}
+            </p>
+        </Transition>
     </BaseModal>
 </template>

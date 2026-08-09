@@ -11,6 +11,7 @@
  * renderer.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 import { computed } from 'vue';
 import { Package } from '@boxicons/vue';
@@ -35,8 +36,11 @@ const isLocked = computed( () => Boolean( props.card.is_locked ) );
 const toggleDisabled = computed( () => isComingSoon.value || missingPlugin.value || isLocked.value );
 const showConfigButton = computed( () => hasSettings.value && props.enabled && ! toggleDisabled.value );
 const showInstallButton = computed( () => Boolean( props.card.can_install ) && ! isComingSoon.value );
-const configLabel = computed( () => props.card?.modal?.button_label || __( 'Configurar' ) );
-const installLabel = computed( () => props.card?.install?.label || __( 'Instalar plugin' ) );
+// Resolved server-side too: declared by the integration, or read from the
+// header of the plugin it depends on. Empty when the vendor is unknown.
+const authorLabel = computed( () => sprintf( __( 'By %s' ), props.card.author || '' ) );
+const configLabel = computed( () => props.card?.modal?.button_label || __( 'Configure' ) );
+const installLabel = computed( () => props.card?.install?.label || __( 'Install plugin' ) );
 
 const enabledProxy = computed( {
     get: () => props.enabled,
@@ -71,58 +75,86 @@ const enabledProxy = computed( {
                 <ProBadge v-if="card.requires_license" :locked="isLocked" size="sm" />
             </div>
 
+            <p v-if="card.author" class="mb-0 mt-1 text-[12px] leading-5 text-slate-400">
+                <a
+                    v-if="card.author_url"
+                    class="text-slate-400 no-underline hover:text-slate-600 hover:underline"
+                    :href="card.author_url"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    {{ authorLabel }}
+                </a>
+
+                <template v-else>{{ authorLabel }}</template>
+            </p>
+
             <p v-if="card.description" class="mb-0 mt-4 text-[13px] leading-6 text-slate-500">
                 {{ card.description }}
             </p>
 
+            <!--
+                The three notices are mutually exclusive and the toggle swaps
+                between them live, so they are keyed and crossfaded instead of
+                being replaced under the pointer.
+            -->
             <div class="mt-5 space-y-3 text-left">
-                <div
-                    v-if="isComingSoon"
-                    class="rounded-[8px] border border-primary-100 bg-primary-50 px-4 py-3 text-[13px] font-medium text-primary-800"
-                >
-                    {{ __( 'Em breve' ) }}
-                </div>
+                <Transition name="hubgo-fade" mode="out-in">
+                    <div
+                        v-if="isComingSoon"
+                        key="coming-soon"
+                        class="rounded-[8px] border border-primary-100 bg-primary-50 px-4 py-3 text-[13px] font-medium text-primary-800"
+                    >
+                        {{ __( 'Coming soon' ) }}
+                    </div>
 
-                <div
-                    v-else-if="card.disabled_message"
-                    class="rounded-[8px] border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] leading-5 text-amber-800"
-                >
-                    {{ card.disabled_message }}
-                </div>
+                    <div
+                        v-else-if="card.disabled_message"
+                        key="disabled"
+                        class="rounded-[8px] border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] leading-5 text-amber-800"
+                    >
+                        {{ card.disabled_message }}
+                    </div>
 
-                <div
-                    v-else-if="hasSettings && ! enabled"
-                    class="rounded-[8px] border border-slate-200 bg-slate-50 px-4 py-3 text-[13px] leading-5 text-slate-600"
-                >
-                    {{ __( 'Ative a integração para acessar as configurações.' ) }}
-                </div>
+                    <div
+                        v-else-if="hasSettings && ! enabled"
+                        key="hint"
+                        class="rounded-[8px] border border-slate-200 bg-slate-50 px-4 py-3 text-[13px] leading-5 text-slate-600"
+                    >
+                        {{ __( 'Enable the integration to access its settings.' ) }}
+                    </div>
+                </Transition>
             </div>
 
             <div class="mt-6 flex flex-1 flex-col items-center justify-end gap-4">
                 <ToggleSwitch
                     :id="`hubgo-integration-${card.slug}`"
-                    :aria-label="sprintf( __( 'Ativar %s' ), card.title || '' )"
+                    :aria-label="sprintf( __( 'Enable %s' ), card.title || '' )"
                     size="md"
                     :disabled="toggleDisabled"
                     v-model="enabledProxy"
                 />
 
-                <BaseButton
-                    v-if="showInstallButton"
-                    :title="installLabel"
-                    color="outline"
-                    size="sm"
-                    :loading="installing"
-                    @click="$emit( 'install', card.slug )"
-                />
+                <Transition name="hubgo-fade" mode="out-in">
+                    <BaseButton
+                        v-if="showInstallButton"
+                        key="install"
+                        :title="installLabel"
+                        color="outline"
+                        size="sm"
+                        :loading="installing"
+                        @click="$emit( 'install', card.slug )"
+                    />
 
-                <BaseButton
-                    v-else-if="showConfigButton"
-                    :title="configLabel"
-                    color="outline"
-                    size="sm"
-                    @click="$emit( 'configure', card.slug )"
-                />
+                    <BaseButton
+                        v-else-if="showConfigButton"
+                        key="configure"
+                        :title="configLabel"
+                        color="outline"
+                        size="sm"
+                        @click="$emit( 'configure', card.slug )"
+                    />
+                </Transition>
 
                 <a
                     v-if="card.doc_url"
@@ -131,7 +163,7 @@ const enabledProxy = computed( {
                     target="_blank"
                     rel="noreferrer"
                 >
-                    {{ __( 'Saiba mais' ) }}
+                    {{ __( 'Learn more' ) }}
                 </a>
             </div>
         </div>

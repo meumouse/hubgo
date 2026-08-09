@@ -12,8 +12,10 @@
  * any knowledge of either.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 import { computed, onMounted, ref } from 'vue';
+import { ChevronRight, Truck } from '@boxicons/vue';
 import CepForm from './CepForm.vue';
 import CepFinderModal from './CepFinderModal.vue';
 import ShippingOptionsModal from './ShippingOptionsModal.vue';
@@ -101,11 +103,11 @@ const headline = computed( () => {
 
     if ( rate.is_free ) {
         return delivery.date_label
-            ? interpolate( __( 'Chegará grátis até %s' ), delivery.date_label )
-            : __( 'Chegará grátis' );
+            ? interpolate( __( 'Arrives free by %s' ), delivery.date_label )
+            : __( 'Arrives free' );
     }
 
-    return delivery.headline || interpolate( __( 'Entrega via %s' ), rate.label );
+    return delivery.headline || interpolate( __( 'Delivery via %s' ), rate.label );
 } );
 
 const metaLine = computed( () => {
@@ -115,8 +117,8 @@ const metaLine = computed( () => {
         return '';
     }
 
-    const price = rate.is_free ? __( 'Grátis' ) : rate.cost_formatted;
-    const destination = interpolate( __( 'para o CEP %s' ), formatCep( postcode.value ) );
+    const price = rate.is_free ? __( 'Free' ) : rate.cost_formatted;
+    const destination = interpolate( __( 'to postcode %s' ), formatCep( postcode.value ) );
 
     return [ rate.label, price, destination ].join( ' · ' );
 } );
@@ -145,61 +147,68 @@ function handleCepFound( digits ) {
 <template>
     <div ref="rootEl">
         <div v-if="badgeText" class="hubgo-calc__badge">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M3 6h11v9H3zm12 3h3.5l2.5 3v3h-6zM6.5 20a1.8 1.8 0 1 1 0-3.6 1.8 1.8 0 0 1 0 3.6m11 0a1.8 1.8 0 1 1 0-3.6 1.8 1.8 0 0 1 0 3.6" />
-            </svg>
+            <Truck aria-hidden="true" />
             {{ badgeText }}
         </div>
 
         <div v-if="texts.title" class="hubgo-calc__title">{{ texts.title }}</div>
         <div v-if="texts.info" class="hubgo-calc__info">{{ texts.info }}</div>
 
-        <!-- Empty state: no postcode known yet. -->
-        <template v-if="! postcode">
-            <CepForm
-                :model-value="''"
-                :loading="loading"
-                :placeholder="texts.placeholder || ''"
-                :button-label="texts.button || __( 'Calcular' )"
-                :auto="Boolean( features.auto )"
-                @submit="calculate"
-            />
+        <!--
+            The two states are wrapped in a real element rather than a <template>
+            because a fragment has no node for a transition to act on. Nothing in
+            calculator.css selects these by position, so the extra div is inert.
+        -->
+        <Transition name="hubgo-calc-fade" mode="out-in">
+            <!-- Empty state: no postcode known yet. -->
+            <div v-if="! postcode" key="empty">
+                <CepForm
+                    :model-value="''"
+                    :loading="loading"
+                    :placeholder="texts.placeholder || ''"
+                    :button-label="texts.button || __( 'Calculate' )"
+                    :auto="Boolean( features.auto )"
+                    @submit="calculate"
+                />
 
-            <p v-if="error" class="hubgo-calc__error">{{ error }}</p>
-        </template>
-
-        <!-- Quoted state. -->
-        <template v-else>
-            <div class="hubgo-calc__result">
-                <div v-if="loading && ! preferredRate" class="hubgo-calc__loading">
-                    <span class="hubgo-calc__spinner" aria-hidden="true" />
-                    {{ interpolate( __( 'Calculando entrega para %s…' ), formatCep( postcode ) ) }}
-                </div>
-
-                <template v-else-if="preferredRate">
-                    <div class="hubgo-calc__headline">{{ headline }}</div>
-                    <div class="hubgo-calc__meta">{{ metaLine }}</div>
-                </template>
-
-                <p v-else-if="error" class="hubgo-calc__error">{{ error }}</p>
-
-                <p v-else class="hubgo-calc__empty">
-                    {{ interpolate( __( 'Nenhuma opção de entrega disponível para o CEP %s.' ), formatCep( postcode ) ) }}
-                </p>
+                <p v-if="error" class="hubgo-calc__error">{{ error }}</p>
             </div>
 
-            <button
-                v-if="features.options && texts.moreOptions"
-                type="button"
-                class="hubgo-calc__more"
-                @click="optionsOpen = true"
-            >
-                {{ texts.moreOptions }}
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
-            </button>
+            <!-- Quoted state. -->
+            <div v-else key="quoted">
+                <div class="hubgo-calc__result">
+                    <Transition name="hubgo-calc-fade" mode="out-in">
+                        <div v-if="loading && ! preferredRate" key="loading" class="hubgo-calc__loading">
+                            <span class="hubgo-calc__spinner" aria-hidden="true" />
+                            {{ interpolate( __( 'Calculating delivery for %s…' ), formatCep( postcode ) ) }}
+                        </div>
 
-            <span v-if="texts.note && ! features.options" class="hubgo-calc__note">{{ texts.note }}</span>
-        </template>
+                        <div v-else-if="preferredRate" key="rate">
+                            <div class="hubgo-calc__headline">{{ headline }}</div>
+                            <div class="hubgo-calc__meta">{{ metaLine }}</div>
+                        </div>
+
+                        <p v-else-if="error" key="error" class="hubgo-calc__error">{{ error }}</p>
+
+                        <p v-else key="none" class="hubgo-calc__empty">
+                            {{ interpolate( __( 'No delivery option available for postcode %s.' ), formatCep( postcode ) ) }}
+                        </p>
+                    </Transition>
+                </div>
+
+                <button
+                    v-if="features.options && texts.moreOptions"
+                    type="button"
+                    class="hubgo-calc__more"
+                    @click="optionsOpen = true"
+                >
+                    {{ texts.moreOptions }}
+                    <ChevronRight aria-hidden="true" />
+                </button>
+
+                <span v-if="texts.note && ! features.options" class="hubgo-calc__note">{{ texts.note }}</span>
+            </div>
+        </Transition>
 
         <button
             v-if="showFinder"

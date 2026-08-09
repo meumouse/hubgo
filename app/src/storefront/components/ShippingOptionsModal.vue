@@ -9,8 +9,10 @@
  * The compact card owns the fetch and the state; this component is a renderer.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 import { computed, ref, watch } from 'vue';
+import { Location, Pencil } from '@boxicons/vue';
 import BaseModal from './BaseModal.vue';
 import CepForm from './CepForm.vue';
 import { formatCep } from '../format';
@@ -80,60 +82,60 @@ function submitCep( value ) {
     <BaseModal
         :open="open"
         :token-source="tokenSource"
-        :title="__( 'Opções de entrega' )"
+        :title="__( 'Delivery options' )"
         @close="emit( 'close' )"
     >
         <div class="hubgo-calc-modal__section">
             <div class="hubgo-calc-modal__section-title">
-                {{ __( 'Calculamos os custos e prazos para este endereço:' ) }}
+                {{ __( 'We calculated the costs and delivery times for this address:' ) }}
             </div>
 
-            <CepForm
-                v-if="editingCep"
-                :model-value="postcode"
-                :loading="loading"
-                :placeholder="texts.placeholder || ''"
-                :button-label="texts.button || __( 'Calcular' )"
-                @submit="submitCep"
-            />
+            <Transition name="hubgo-calc-fade" mode="out-in">
+                <CepForm
+                    v-if="editingCep"
+                    key="form"
+                    :model-value="postcode"
+                    :loading="loading"
+                    :placeholder="texts.placeholder || ''"
+                    :button-label="texts.button || __( 'Calculate' )"
+                    @submit="submitCep"
+                />
 
-            <div v-else class="hubgo-calc__destination">
-                <svg class="hubgo-calc__pin" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                    <circle cx="12" cy="10" r="3" />
-                </svg>
+                <div v-else key="chip" class="hubgo-calc__destination">
+                    <Location class="hubgo-calc__pin" aria-hidden="true" />
 
-                <div class="hubgo-calc__destination-body">
-                    <div>
-                        {{ __( 'CEP:' ) }} <strong>{{ formatCep( postcode ) }}</strong>
-                        <template v-if="destination"> &middot; {{ destination }}</template>
+                    <div class="hubgo-calc__destination-body">
+                        <div>
+                            {{ __( 'Postcode:' ) }} <strong>{{ formatCep( postcode ) }}</strong>
+                            <template v-if="destination"> &middot; {{ destination }}</template>
+                        </div>
+
+                        <button type="button" class="hubgo-calc__destination-edit" @click="editingCep = true">
+                            <Pencil aria-hidden="true" />
+                            {{ __( 'Choose another address' ) }}
+                        </button>
                     </div>
-
-                    <button type="button" class="hubgo-calc__destination-edit" @click="editingCep = true">
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M12 20h9" />
-                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                        </svg>
-                        {{ __( 'Escolher outro endereço' ) }}
-                    </button>
                 </div>
-            </div>
+            </Transition>
 
-            <p v-if="error" class="hubgo-calc__error">{{ error }}</p>
+            <Transition name="hubgo-calc-fade">
+                <p v-if="error" class="hubgo-calc__error">{{ error }}</p>
+            </Transition>
         </div>
 
         <div class="hubgo-calc-modal__section">
-            <div v-if="loading && ! rates.length" class="hubgo-calc__loading">
+            <Transition name="hubgo-calc-fade" mode="out-in">
+            <div v-if="loading && ! rates.length" key="loading" class="hubgo-calc__loading">
                 <span class="hubgo-calc__spinner" aria-hidden="true" />
-                {{ __( 'Calculando opções de entrega…' ) }}
+                {{ __( 'Calculating delivery options…' ) }}
             </div>
 
-            <p v-else-if="! rates.length && ! error" class="hubgo-calc__empty">
-                {{ __( 'Nenhuma forma de entrega disponível para este CEP.' ) }}
+            <p v-else-if="! rates.length && ! error" key="empty" class="hubgo-calc__empty">
+                {{ __( 'No delivery method available for this postcode.' ) }}
             </p>
 
-            <template v-else-if="rates.length">
-                <div class="hubgo-calc-modal__section-title">{{ __( 'Receber compra' ) }}</div>
+            <div v-else-if="rates.length" key="rates">
+                <div class="hubgo-calc-modal__section-title">{{ __( 'Receive the order' ) }}</div>
 
                 <table v-if="isTable" class="hubgo-calc__table">
                     <tbody>
@@ -155,18 +157,25 @@ function submitCep( value ) {
                                     {{ rate.delivery.headline }}
                                 </span>
                             </td>
-                            <td>{{ rate.is_free ? __( 'Grátis' ) : rate.cost_formatted }}</td>
+                            <td>{{ rate.is_free ? __( 'Free' ) : rate.cost_formatted }}</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <div v-else class="hubgo-calc__options">
+                <!--
+                    The rows land one after the other. The delay is a custom
+                    property, not an inline `transition-delay`: the latter would
+                    survive the entry and postpone every later hover and
+                    selection change on that row by the same amount.
+                -->
+                <TransitionGroup v-else tag="div" name="hubgo-calc-option" class="hubgo-calc__options">
                     <button
-                        v-for="rate in rates"
+                        v-for="( rate, index ) in rates"
                         :key="rate.id"
                         type="button"
                         class="hubgo-calc__option"
                         :class="{ 'is-selected': rate.id === preferredId }"
+                        :style="{ '--hubgo-calc-stagger': `${ index * 40 }ms` }"
                         :aria-pressed="rate.id === preferredId"
                         @click="choose( rate )"
                     >
@@ -180,30 +189,41 @@ function submitCep( value ) {
                         </span>
 
                         <span class="hubgo-calc__option-price">
-                            {{ rate.is_free ? __( 'Grátis' ) : rate.cost_formatted }}
+                            {{ rate.is_free ? __( 'Free' ) : rate.cost_formatted }}
                         </span>
                     </button>
-                </div>
+                </TransitionGroup>
 
-                <p v-if="preferenceEnabled && hasPreference && texts.preferenceSaved" class="hubgo-calc__pref-saved">
-                    {{ texts.preferenceSaved }}
-
-                    <button
-                        v-if="texts.clearPreference"
-                        type="button"
-                        class="hubgo-calc__clear-pref"
-                        @click="emit( 'clear-preference' )"
+                <Transition name="hubgo-calc-fade" mode="out-in">
+                    <p
+                        v-if="preferenceEnabled && hasPreference && texts.preferenceSaved"
+                        key="saved"
+                        class="hubgo-calc__pref-saved"
                     >
-                        {{ texts.clearPreference }}
-                    </button>
-                </p>
+                        {{ texts.preferenceSaved }}
 
-                <p v-else-if="preferenceEnabled && texts.preferenceHint" class="hubgo-calc__pref-hint">
-                    {{ texts.preferenceHint }}
-                </p>
+                        <button
+                            v-if="texts.clearPreference"
+                            type="button"
+                            class="hubgo-calc__clear-pref"
+                            @click="emit( 'clear-preference' )"
+                        >
+                            {{ texts.clearPreference }}
+                        </button>
+                    </p>
+
+                    <p
+                        v-else-if="preferenceEnabled && texts.preferenceHint"
+                        key="hint"
+                        class="hubgo-calc__pref-hint"
+                    >
+                        {{ texts.preferenceHint }}
+                    </p>
+                </Transition>
 
                 <span v-if="texts.note" class="hubgo-calc__note">{{ texts.note }}</span>
-            </template>
+            </div>
+            </Transition>
         </div>
     </BaseModal>
 </template>

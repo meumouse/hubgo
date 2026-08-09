@@ -21,7 +21,8 @@
  */
 
 /*
- * Tokens and the inherited text context, shared by the card and the modal.
+ * Tokens and the inherited text context, shared by the card, the modal and the
+ * select dropdown.
  *
  * The modal is teleported to <body>, so it needs its own copy of the defaults —
  * but it must NOT pick up the card's surface (background, border, padding,
@@ -29,9 +30,13 @@
  * an opaque white layer at `inset: 0` covering the page, which is also what
  * left `backdrop-filter` with nothing but flat white to blur. Store-wide and
  * Elementor overrides still reach the modal, copied across by bridgeTokens().
+ *
+ * `.hubgo-calc-select` is teleported for the same reason and gets the same
+ * treatment: defaults here, overrides bridged in when it opens.
  */
 .hubgo-shipping-calculator,
-.hubgo-calc-modal {
+.hubgo-calc-modal,
+.hubgo-calc-select {
     /* Layout */
     --hubgo-calc-font-family: inherit;
     --hubgo-calc-radius: 12px;
@@ -82,6 +87,25 @@
     --hubgo-calc-modal-overlay: rgba(16, 32, 51, 0.25);
     --hubgo-calc-modal-blur: 8px;
 
+    /*
+     * Motion. Mirrors the admin token set, declared here as well because this is
+     * a separate bundle and because the modal is teleported out of the widget —
+     * it has to carry its own copy or it would inherit the theme's, i.e. none.
+     *
+     * These are deliberately NOT in `tokens.js`: bridgeTokens copies the values a
+     * store can override, and timing is not one of them. Both selectors above
+     * declare them, so the modal already has them at its first painted frame.
+     *
+     * `shift` and `scale` are what every transition displaces by, which is the
+     * whole reduced-motion switch at the bottom of this file.
+     */
+    --hubgo-calc-motion-fast: 120ms;
+    --hubgo-calc-motion-base: 200ms;
+    --hubgo-calc-motion-shift: 8px;
+    --hubgo-calc-motion-scale: 0.98;
+    --hubgo-calc-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --hubgo-calc-ease-in: cubic-bezier(0.4, 0, 1, 1);
+
     box-sizing: border-box;
     font-family: var(--hubgo-calc-font-family);
     font-size: var(--hubgo-calc-body-size);
@@ -109,7 +133,10 @@
 .hubgo-shipping-calculator *::after,
 .hubgo-calc-modal *,
 .hubgo-calc-modal *::before,
-.hubgo-calc-modal *::after {
+.hubgo-calc-modal *::after,
+.hubgo-calc-select *,
+.hubgo-calc-select *::before,
+.hubgo-calc-select *::after {
     box-sizing: border-box;
 }
 
@@ -122,7 +149,9 @@
 .hubgo-calc-modal ul,
 .hubgo-calc-modal li,
 .hubgo-calc-modal h3,
-.hubgo-calc-modal h4 {
+.hubgo-calc-modal h4,
+.hubgo-calc-select ul,
+.hubgo-calc-select li {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -144,7 +173,8 @@
 .hubgo-shipping-calculator input,
 .hubgo-shipping-calculator select,
 .hubgo-calc-modal input,
-.hubgo-calc-modal select {
+.hubgo-calc-modal select,
+.hubgo-calc-select input {
     margin: 0;
     font: inherit;
     line-height: inherit;
@@ -176,8 +206,8 @@
 }
 
 .hubgo-calc__badge svg {
-    width: 15px;
-    height: 15px;
+    width: 16px;
+    height: 16px;
     flex: 0 0 auto;
     fill: currentColor;
 }
@@ -271,16 +301,22 @@
     font-size: var(--hubgo-calc-body-size);
 }
 
-.hubgo-calc__more svg,
+/* Boxicons glyphs are solid shapes, not stroked paths, and each fills a
+   different share of its 24x24 box — the chevron a third of it, the pencil
+   nearly all of it. Sizing them separately is what keeps both reading at the
+   same optical weight next to their label. */
+.hubgo-calc__more svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    fill: currentColor;
+}
+
 .hubgo-calc__destination-edit svg {
     width: 14px;
     height: 14px;
     flex: 0 0 auto;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    fill: currentColor;
 }
 
 .hubgo-calc__error {
@@ -343,7 +379,27 @@
     to { transform: rotate(360deg); }
 }
 
+/*
+ * Reduced motion.
+ *
+ * Collapsing the two displacement tokens is the whole switch: every transition
+ * in this file displaces by `shift`/`scale`, so zeroing them leaves a plain fade
+ * behind without a single rule being restated. Durations only shorten rather
+ * than drop to zero — a crossfade is not the kind of motion the setting is
+ * about, and an instant swap is harder to follow, not easier.
+ *
+ * The spinner keeps turning, only slower: it is the feedback that a quote is
+ * still being fetched, and freezing it would say the opposite.
+ */
 @media (prefers-reduced-motion: reduce) {
+    .hubgo-shipping-calculator,
+    .hubgo-calc-modal {
+        --hubgo-calc-motion-fast: 60ms;
+        --hubgo-calc-motion-base: 80ms;
+        --hubgo-calc-motion-shift: 0px;
+        --hubgo-calc-motion-scale: 1;
+    }
+
     .hubgo-calc__spinner {
         animation-duration: 2s;
     }
@@ -353,7 +409,11 @@
    Delivery options
    -------------------------------------------------------------------------- */
 
+/* `position: relative` is here for the leave transition: an option on its way
+   out is taken out of flow so the rows below can slide up, and it needs this
+   element as its containing block to keep its width. */
 .hubgo-calc__options {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -369,7 +429,8 @@
     border-radius: var(--hubgo-calc-option-radius);
     background: var(--hubgo-calc-option-bg);
     text-align: left;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: border-color var(--hubgo-calc-motion-fast) ease-in-out,
+                box-shadow var(--hubgo-calc-motion-fast) ease-in-out;
 }
 
 .hubgo-calc__option:hover {
@@ -391,14 +452,18 @@
     margin-top: 2px;
     border: 2px solid var(--hubgo-calc-option-border);
     border-radius: 50%;
-    transition: border-color 0.15s ease-in-out;
+    transition: border-color var(--hubgo-calc-motion-fast) ease-in-out;
 }
 
 .hubgo-calc__option.is-selected .hubgo-calc__option-radio {
     border-color: var(--hubgo-calc-accent);
 }
 
-.hubgo-calc__option.is-selected .hubgo-calc__option-radio::after {
+/* The dot is always in the DOM, scaled to nothing while unselected: a
+   pseudo-element that only exists on `.is-selected` is created and destroyed
+   rather than changed, and there is nothing for a transition to interpolate
+   between. */
+.hubgo-calc__option-radio::after {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -406,8 +471,13 @@
     height: 8px;
     border-radius: 50%;
     background: var(--hubgo-calc-accent);
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-out);
     content: "";
+}
+
+.hubgo-calc__option.is-selected .hubgo-calc__option-radio::after {
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .hubgo-calc__option-body {
@@ -549,13 +619,21 @@
 }
 
 .hubgo-calc-modal__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     flex: 0 0 auto;
     width: 30px;
     height: 30px;
     border-radius: 8px;
     color: var(--hubgo-calc-text-muted);
-    font-size: 20px;
     line-height: 1;
+}
+
+.hubgo-calc-modal__close svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
 }
 
 .hubgo-calc-modal__close:hover {
@@ -602,11 +680,7 @@
     height: 16px;
     flex: 0 0 auto;
     margin-top: 2px;
-    fill: none;
-    stroke: var(--hubgo-calc-accent);
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    fill: var(--hubgo-calc-accent);
 }
 
 .hubgo-calc__destination-body {
@@ -632,9 +706,13 @@
    CEP finder
    -------------------------------------------------------------------------- */
 
+/* The state column used to be 90px because the select only ever showed the UF
+   code. It now shows the WooCommerce state name, and the dropdown is flush with
+   the trigger, so the column is sized to fit the longest one without eating the
+   city field. */
 .hubgo-calc__finder-grid {
     display: grid;
-    grid-template-columns: 90px 1fr;
+    grid-template-columns: minmax(0, 180px) minmax(0, 1fr);
     gap: 8px;
 }
 
@@ -659,6 +737,189 @@
 
 .hubgo-calc__finder-field:focus {
     border-color: var(--hubgo-calc-accent);
+}
+
+/* --------------------------------------------------------------------------
+   Custom select (CalcSelect.vue)
+
+   The trigger reuses the `.hubgo-calc__finder-field` skin so the state control
+   is indistinguishable from the inputs beside it. It is written as
+   `button.hubgo-calc__select-trigger` on purpose: the scoped reset strips
+   `border` from every button with `.hubgo-calc-modal button`, which outranks a
+   lone class, so the chrome has to be restated at matching specificity.
+   -------------------------------------------------------------------------- */
+
+.hubgo-calc__select {
+    display: block;
+    min-width: 0;
+}
+
+button.hubgo-calc__select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+    height: var(--hubgo-calc-input-height);
+    padding: 0 10px 0 12px;
+    border: 1px solid var(--hubgo-calc-input-border);
+    border-radius: var(--hubgo-calc-input-radius);
+    background: var(--hubgo-calc-input-bg);
+    color: var(--hubgo-calc-input-text);
+    font-size: var(--hubgo-calc-body-size);
+    text-align: left;
+    transition: border-color var(--hubgo-calc-motion-fast) ease-in-out;
+}
+
+button.hubgo-calc__select-trigger:focus-visible,
+button.hubgo-calc__select-trigger.is-open {
+    border-color: var(--hubgo-calc-accent);
+    outline: none;
+}
+
+button.hubgo-calc__select-trigger.is-placeholder {
+    color: var(--hubgo-calc-text-muted);
+}
+
+button.hubgo-calc__select-trigger:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.hubgo-calc__select-value {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hubgo-calc__select-caret {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+    fill: var(--hubgo-calc-text-muted);
+    transition: transform var(--hubgo-calc-motion-fast) ease-in-out;
+}
+
+button.hubgo-calc__select-trigger.is-open .hubgo-calc__select-caret {
+    transform: rotate(180deg);
+}
+
+/*
+ * The list mirrors the admin `SelectField` panel one-for-one — 12px radius, the
+ * same lifted shadow, 8px of breathing room around the rows, and rows that are
+ * 10px-rounded tinted blocks rather than flush strips. Those numbers are
+ * literals rather than the surface tokens on purpose: a store restyling its
+ * calculator card is not asking for a differently shaped dropdown, and the
+ * settings screen it has to match is not restylable.
+ *
+ * Teleported to <body>, so it sits above the modal shell (z-index 999999)
+ * rather than inside it.
+ */
+.hubgo-calc-select {
+    position: fixed;
+    z-index: 1000000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+}
+
+.hubgo-calc-select__search {
+    flex: 0 0 auto;
+    padding: 8px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* 2px idle border recoloured on focus, matching the admin control chrome:
+   the border is the entire focus state, never a glow on top of it. */
+.hubgo-calc-select__search input {
+    display: block;
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    border: 2px solid #e6ebf2;
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--hubgo-calc-input-text);
+    font-size: var(--hubgo-calc-body-size);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.hubgo-calc-select__search input:focus {
+    border-color: var(--hubgo-calc-accent);
+}
+
+.hubgo-calc-select__list {
+    min-height: 0;
+    flex: 1 1 auto;
+    padding: 8px;
+    overflow-y: auto;
+    outline: none;
+}
+
+.hubgo-calc-select__option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: var(--hubgo-calc-body-size);
+    font-weight: 500;
+    color: var(--hubgo-calc-text);
+    transition: background-color var(--hubgo-calc-motion-fast) ease-in-out;
+}
+
+.hubgo-calc-select__option.is-active,
+.hubgo-calc-select__option.is-selected {
+    background: var(--hubgo-calc-option-selected-bg);
+}
+
+.hubgo-calc-select__option.is-selected {
+    color: var(--hubgo-calc-accent);
+}
+
+.hubgo-calc-select__option-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.hubgo-calc-select__option-label {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hubgo-calc-select__option-meta {
+    display: block;
+    overflow: hidden;
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-small-size);
+    font-weight: 400;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hubgo-calc-select__check {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    fill: var(--hubgo-calc-accent);
+}
+
+.hubgo-calc-select__empty {
+    padding: 8px 12px;
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-body-size);
 }
 
 .hubgo-calc__suggestions {
@@ -706,6 +967,122 @@
 }
 
 /* --------------------------------------------------------------------------
+   Transitions
+
+   Named to match the Vue <Transition> components that drive them. Written here
+   rather than inline for the same reason the rest of this file is: the widget
+   has no utility framework, and a transition split between markup and stylesheet
+   is a transition that silently stops working when one half moves.
+   -------------------------------------------------------------------------- */
+
+/* Select dropdown pop-in. It opens below its trigger, so it enters from above.
+   Restated in terms of the motion tokens rather than its original literals so it
+   answers the reduced-motion switch with everything else, instead of carrying a
+   `transition: none` override of its own. */
+.hubgo-calc-select-pop-enter-active,
+.hubgo-calc-select-pop-leave-active {
+    transition: opacity var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-out),
+                transform var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-out);
+}
+
+.hubgo-calc-select-pop-enter-from,
+.hubgo-calc-select-pop-leave-to {
+    opacity: 0;
+    transform: translateY(calc(var(--hubgo-calc-motion-shift) / -2));
+}
+
+/* Modal: the whole overlay fades, the dialog additionally lifts. The blur is
+   never animated — only the opacity carrying it — because interpolating a
+   backdrop-filter re-blurs the page behind it on every frame. */
+.hubgo-calc-modal-enter-active {
+    transition: opacity var(--hubgo-calc-motion-base) var(--hubgo-calc-ease-out);
+}
+
+.hubgo-calc-modal-leave-active {
+    transition: opacity var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-in);
+}
+
+.hubgo-calc-modal-enter-from,
+.hubgo-calc-modal-leave-to {
+    opacity: 0;
+}
+
+.hubgo-calc-modal-enter-active .hubgo-calc-modal__dialog {
+    transition: transform var(--hubgo-calc-motion-base) var(--hubgo-calc-ease-out);
+}
+
+.hubgo-calc-modal-leave-active .hubgo-calc-modal__dialog {
+    transition: transform var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-in);
+}
+
+.hubgo-calc-modal-enter-from .hubgo-calc-modal__dialog {
+    transform: translateY(var(--hubgo-calc-motion-shift)) scale(var(--hubgo-calc-motion-scale));
+}
+
+.hubgo-calc-modal-leave-to .hubgo-calc-modal__dialog {
+    transform: translateY(calc(var(--hubgo-calc-motion-shift) / 2));
+}
+
+/* Crossfade between the states of the card and of the modal — the postcode form
+   handing over to the quote, the spinner to the price. Always paired with
+   `mode="out-in"`: the two states have different heights, and overlapping them
+   would make the card jump twice instead of once. */
+.hubgo-calc-fade-enter-active {
+    transition: opacity var(--hubgo-calc-motion-base) var(--hubgo-calc-ease-out),
+                transform var(--hubgo-calc-motion-base) var(--hubgo-calc-ease-out);
+}
+
+.hubgo-calc-fade-leave-active {
+    transition: opacity var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-in),
+                transform var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-in);
+}
+
+.hubgo-calc-fade-enter-from {
+    opacity: 0;
+    transform: translateY(calc(var(--hubgo-calc-motion-shift) / 2));
+}
+
+.hubgo-calc-fade-leave-to {
+    opacity: 0;
+    transform: translateY(calc(var(--hubgo-calc-motion-shift) / -2));
+}
+
+/* Delivery options, entering one after the other.
+
+   The delay is read from a custom property the component sets per row instead of
+   from an inline `transition-delay`, which would still be on the element after
+   the entry and would postpone every hover and selection change by the same
+   amount for the rest of the session. */
+.hubgo-calc-option-enter-active {
+    transition: opacity var(--hubgo-calc-motion-base) var(--hubgo-calc-ease-out),
+                transform var(--hubgo-calc-motion-base) var(--hubgo-calc-ease-out);
+    transition-delay: var(--hubgo-calc-stagger, 0ms);
+}
+
+.hubgo-calc-option-enter-from {
+    opacity: 0;
+    transform: translateY(var(--hubgo-calc-motion-shift));
+}
+
+/* Out of flow, every offset left at `auto` so the browser paints it at its
+   static position: the row stays exactly where it was while the ones below
+   close the gap. Without this the replaced list and the incoming one would
+   stack and the modal would double in height mid-swap. */
+.hubgo-calc-option-leave-active {
+    position: absolute;
+    width: 100%;
+    transition: opacity var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-in);
+}
+
+.hubgo-calc-option-leave-to {
+    opacity: 0;
+}
+
+.hubgo-calc-option-move {
+    transition: transform var(--hubgo-calc-motion-base) var(--hubgo-calc-ease-out);
+}
+
+/* --------------------------------------------------------------------------
    Narrow viewports
    -------------------------------------------------------------------------- */
 
@@ -717,5 +1094,11 @@
     .hubgo-calc__input,
     .hubgo-calc__button {
         flex: 1 1 100%;
+    }
+
+    /* Two columns leave the city field unusably narrow once the state control
+       is wide enough to spell the state out. */
+    .hubgo-calc__finder-grid {
+        grid-template-columns: minmax(0, 1fr);
     }
 }

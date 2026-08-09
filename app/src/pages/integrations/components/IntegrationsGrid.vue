@@ -8,6 +8,7 @@
  * is disabled while a filter is active.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 import { computed, ref } from 'vue';
 import { Grid, isMarkup, resolveIcon } from '../../../utils/icons';
@@ -140,6 +141,19 @@ const displayModes = computed( () => [
     { value: 'flat', label: __( 'View all' ) },
     { value: 'grouped', label: __( 'Group by category' ) },
 ] );
+
+/**
+ * Identity of the current view, used as the transition key.
+ *
+ * The catalog is crossfaded as one block rather than card by card: a
+ * `TransitionGroup` would have to take the leaving cards out of flow to let the
+ * remaining ones slide, and an absolutely positioned child of a CSS grid escapes
+ * its track entirely. Swapping the whole grid costs one fade and never lands a
+ * card in the wrong column.
+ *
+ * @return {string}
+ */
+const viewKey = computed( () => `${ displayMode.value }:${ activeCategory.value }` );
 </script>
 
 <template>
@@ -202,8 +216,9 @@ const displayModes = computed( () => [
             </div>
         </div>
 
+        <Transition name="hubgo-panel" mode="out-in">
         <!-- Grouped view: one stacked section per category -->
-        <div v-if="isGrouped" class="space-y-12">
+        <div v-if="isGrouped" :key="viewKey" class="space-y-12">
             <section v-for="section in visibleSections" :key="section.id">
                 <header class="mb-6 flex items-center gap-3">
                     <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-primary-50 text-primary-700 [&_svg]:h-[22px] [&_svg]:w-[22px]">
@@ -235,7 +250,7 @@ const displayModes = computed( () => [
         </div>
 
         <!-- Flat view: every visible card in a single grid -->
-        <div v-else>
+        <div v-else :key="viewKey">
             <header v-if="activeCategory !== ALL && activeSection" class="mb-6 flex items-center gap-3">
                 <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-primary-50 text-primary-700 [&_svg]:h-[22px] [&_svg]:w-[22px]">
                     <span v-if="isMarkup( activeSection.icon )" v-html="activeSection.icon" />
@@ -261,5 +276,6 @@ const displayModes = computed( () => [
                 {{ __( 'No integration available in this category.' ) }}
             </p>
         </div>
+        </Transition>
     </div>
 </template>

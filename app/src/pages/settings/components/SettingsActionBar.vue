@@ -3,6 +3,7 @@
  * SettingsActionBar.vue — sticky footer holding the save action.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 import { computed } from 'vue';
 import { Save } from '@boxicons/vue';
@@ -33,8 +34,10 @@ const buttonTitle = computed( () => ( props.saving ? __( 'Saving…' ) : __( 'Sa
             @click="$emit( 'save' )"
         />
 
-        <span v-if="hasUnsavedChanges && ! saving" class="text-[13px] font-medium text-amber-600">
-            {{ __( 'There are unsaved changes.' ) }}
-        </span>
+        <Transition name="hubgo-fade">
+            <span v-if="hasUnsavedChanges && ! saving" class="text-[13px] font-medium text-amber-600">
+                {{ __( 'There are unsaved changes.' ) }}
+            </span>
+        </Transition>
     </div>
 </template>

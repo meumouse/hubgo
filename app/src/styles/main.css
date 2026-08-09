@@ -69,6 +69,23 @@
     --hubgo-control-radius: 10px;
     --hubgo-control-border: #e6ebf2;
 
+    /*
+     * Motion. Every named transition below is built from these five values, so
+     * the whole app speeds up, slows down or stops moving from one place.
+     *
+     * `shift` and `scale` are what the enter/leave states displace by, and they
+     * are tokens rather than literals for the reduced-motion block at the end of
+     * this file: collapsing them to 0 and 1 turns every transition into a plain
+     * fade without touching a single transition rule.
+     */
+    --hubgo-motion-fast: 120ms;
+    --hubgo-motion-base: 200ms;
+    --hubgo-motion-slow: 320ms;
+    --hubgo-motion-shift: 8px;
+    --hubgo-motion-scale: 0.98;
+    --hubgo-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --hubgo-ease-in: cubic-bezier(0.4, 0, 1, 1);
+
     color: var(--hubgo-ink);
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 14px;
@@ -260,9 +277,16 @@
     fill: #ffffff;
 }
 
+/*
+ * The properties are listed one by one rather than with `all`: a tab also
+ * carries Tailwind utilities for its active state, and `all` was animating
+ * every one of them — including the box-shadow the active tab paints — which
+ * made the segmented control smear on each switch.
+ */
 .hubgo-app nav button.hubgo-tab {
     border-left: 1px solid #dbdee1;
-    transition: all 0.2s ease-in-out;
+    transition: background-color var(--hubgo-motion-fast) ease-in-out,
+                color var(--hubgo-motion-fast) ease-in-out;
 }
 
 .hubgo-app nav button.hubgo-tab:hover:not(.active) {
@@ -282,17 +306,19 @@
  * removed from the DOM.
  */
 .hubgo-select-pop-enter-active {
-    transition: opacity .15s ease-out, transform .15s ease-out;
+    transition: opacity var(--hubgo-motion-fast) var(--hubgo-ease-out),
+                transform var(--hubgo-motion-fast) var(--hubgo-ease-out);
 }
 
 .hubgo-select-pop-leave-active {
-    transition: opacity .1s ease-in, transform .1s ease-in;
+    transition: opacity var(--hubgo-motion-fast) var(--hubgo-ease-in),
+                transform var(--hubgo-motion-fast) var(--hubgo-ease-in);
 }
 
 .hubgo-select-pop-enter-from,
 .hubgo-select-pop-leave-to {
     opacity: 0;
-    transform: translateY(4px) scale(.95);
+    transform: translateY(calc(var(--hubgo-motion-shift) / 2)) scale(var(--hubgo-motion-scale));
 }
 
 .hubgo-select-pop-enter-to,
@@ -301,9 +327,134 @@
     transform: translateY(0) scale(1);
 }
 
+/*
+ * Modal. Two layers moving at different rates: the whole overlay fades, and the
+ * panel additionally lifts into place. Only the panel is displaced, because a
+ * backdrop that slides reads as the page itself moving.
+ *
+ * The leave is faster than the enter and drops the scale — an element that
+ * shrinks on the way out reads as a rejected action rather than a dismissal.
+ */
+.hubgo-modal-enter-active {
+    transition: opacity var(--hubgo-motion-base) var(--hubgo-ease-out);
+}
+
+.hubgo-modal-leave-active {
+    transition: opacity var(--hubgo-motion-fast) var(--hubgo-ease-in);
+}
+
+.hubgo-modal-enter-from,
+.hubgo-modal-leave-to {
+    opacity: 0;
+}
+
+.hubgo-modal-enter-active .hubgo-modal__panel {
+    transition: transform var(--hubgo-motion-base) var(--hubgo-ease-out);
+}
+
+.hubgo-modal-leave-active .hubgo-modal__panel {
+    transition: transform var(--hubgo-motion-fast) var(--hubgo-ease-in);
+}
+
+.hubgo-modal-enter-from .hubgo-modal__panel {
+    transform: translateY(var(--hubgo-motion-shift)) scale(var(--hubgo-motion-scale));
+}
+
+.hubgo-modal-leave-to .hubgo-modal__panel {
+    transform: translateY(calc(var(--hubgo-motion-shift) / 2));
+}
+
+/*
+ * Toasts. The stack is right-anchored, so the entry comes in from the right
+ * rather than from the top: the movement then points away from the content the
+ * user is reading instead of across it.
+ *
+ * `position: absolute` on the leaving toast is what makes `-move` work. With
+ * every offset left at `auto` the browser paints it at its static position, so
+ * it stays exactly where it was while the toasts below slide up to close the
+ * gap — no jump, and no coordinates to keep in sync.
+ */
+.hubgo-toast-enter-active {
+    transition: opacity var(--hubgo-motion-base) var(--hubgo-ease-out),
+                transform var(--hubgo-motion-base) var(--hubgo-ease-out);
+}
+
+.hubgo-toast-leave-active {
+    position: absolute;
+    width: 100%;
+    transition: opacity var(--hubgo-motion-fast) var(--hubgo-ease-in),
+                transform var(--hubgo-motion-fast) var(--hubgo-ease-in);
+}
+
+.hubgo-toast-move {
+    transition: transform var(--hubgo-motion-base) var(--hubgo-ease-out);
+}
+
+.hubgo-toast-enter-from {
+    opacity: 0;
+    transform: translateX(calc(var(--hubgo-motion-shift) * 3));
+}
+
+.hubgo-toast-leave-to {
+    opacity: 0;
+    transform: translateX(calc(var(--hubgo-motion-shift) * 2)) scale(var(--hubgo-motion-scale));
+}
+
+/*
+ * Plain crossfade, used wherever one block replaces another with no directional
+ * meaning — the skeleton handing over to the hydrated page, a notice appearing.
+ * Always paired with `mode="out-in"` when the two states overlap in the layout.
+ */
+.hubgo-fade-enter-active {
+    transition: opacity var(--hubgo-motion-slow) var(--hubgo-ease-out);
+}
+
+.hubgo-fade-leave-active {
+    transition: opacity var(--hubgo-motion-fast) var(--hubgo-ease-in);
+}
+
+.hubgo-fade-enter-from,
+.hubgo-fade-leave-to {
+    opacity: 0;
+}
+
+/*
+ * Panel swap: a settings tab, a filtered card grid. Faster than the crossfade
+ * because it answers a click — the user is waiting for it — and it lifts from
+ * below so the new panel reads as arriving rather than as the old one changing.
+ */
+.hubgo-panel-enter-active {
+    transition: opacity var(--hubgo-motion-fast) var(--hubgo-ease-out),
+                transform var(--hubgo-motion-fast) var(--hubgo-ease-out);
+}
+
+.hubgo-panel-leave-active {
+    transition: opacity var(--hubgo-motion-fast) var(--hubgo-ease-in),
+                transform var(--hubgo-motion-fast) var(--hubgo-ease-in);
+}
+
+.hubgo-panel-enter-from {
+    opacity: 0;
+    transform: translateY(var(--hubgo-motion-shift));
+}
+
+.hubgo-panel-leave-to {
+    opacity: 0;
+    transform: translateY(calc(var(--hubgo-motion-shift) * -0.5));
+}
+
 @keyframes hubgo-toast-progress {
     from { transform: scaleX(1); }
     to { transform: scaleX(0); }
+}
+
+/*
+ * The bar runs for exactly as long as the toast does. The duration is published
+ * by `useToasts` and arrives as a custom property, so the timer and the bar can
+ * never drift apart — they were a `3000` constant and a hard-coded `3s` before.
+ */
+.hubgo-toast__progress {
+    animation: hubgo-toast-progress var(--hubgo-toast-duration, 3000ms) linear forwards;
 }
 
 @keyframes hubgo-skeleton-wave {
@@ -337,4 +488,31 @@
 @keyframes hubgo-skeleton-animation {
     0% { background-position: -650px 0; }
     100% { background-position: 650px 0; }
+}
+
+/*
+ * Reduced motion.
+ *
+ * Collapsing the two displacement tokens is the whole switch: every transition
+ * in this file displaces by `shift`/`scale`, so zeroing them turns each one
+ * into a plain fade without a single rule being restated. The durations only
+ * shorten rather than drop to zero — a crossfade is not the kind of motion the
+ * setting is about, and an instant swap is harder to follow, not easier.
+ *
+ * The decorative shimmer stops; the spinners do not. A spinner is the feedback
+ * that an action is still running, and freezing it says the opposite.
+ */
+@media (prefers-reduced-motion: reduce) {
+    .hubgo-app {
+        --hubgo-motion-fast: 60ms;
+        --hubgo-motion-base: 80ms;
+        --hubgo-motion-slow: 80ms;
+        --hubgo-motion-shift: 0px;
+        --hubgo-motion-scale: 1;
+    }
+
+    .hubgo-skeleton,
+    .hubgo-skeleton-content {
+        animation: none;
+    }
 }

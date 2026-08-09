@@ -9,6 +9,7 @@
  * on a single long request.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 import { computed, ref, watch } from 'vue';
 import { api } from '../../utils/api';
@@ -147,18 +148,22 @@ async function run() {
             {{ __( 'No Shipment Tracking data was found on the orders of this store.' ) }}
         </p>
 
-        <p
-            v-if="completed"
-            class="mb-0 mt-3 rounded-[8px] border border-emerald-200 bg-emerald-50 px-3 py-2 text-[13px] leading-5 text-emerald-800"
-        >
-            {{ __( 'Every order has been migrated. You can now deactivate the Shipment Tracking plugin.' ) }}
-        </p>
+        <Transition name="hubgo-fade">
+            <p
+                v-if="completed"
+                class="mb-0 mt-3 rounded-[8px] border border-emerald-200 bg-emerald-50 px-3 py-2 text-[13px] leading-5 text-emerald-800"
+            >
+                {{ __( 'Every order has been migrated. You can now deactivate the Shipment Tracking plugin.' ) }}
+            </p>
+        </Transition>
 
-        <p
-            v-if="error"
-            class="mb-0 mt-3 rounded-[8px] border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] leading-5 text-rose-700"
-        >
-            {{ error }}
-        </p>
+        <Transition name="hubgo-fade">
+            <p
+                v-if="error"
+                class="mb-0 mt-3 rounded-[8px] border border-rose-200 bg-rose-50 px-3 py-2 text-[13px] leading-5 text-rose-700"
+            >
+                {{ error }}
+            </p>
+        </Transition>
     </div>
 </template>

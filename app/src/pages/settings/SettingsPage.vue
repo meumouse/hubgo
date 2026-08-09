@@ -12,7 +12,7 @@
  * the danger zone without breaking the schema-driven contract.
  *
  * @since 3.0.0
- * @version 3.0.0
+ * @version 3.1.0
  */
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { api, getBootstrapConfig } from '../../utils/api';
@@ -193,6 +193,12 @@ onMounted( bootstrap );
 
 <template>
     <div class="hubgo-settings min-h-screen w-full">
+        <!--
+            `mode="out-in"` rather than a straight crossfade: the skeleton mirrors
+            the real shell, so the two overlapping would read as a double image
+            of the same page rather than as a handover.
+        -->
+        <Transition name="hubgo-fade" mode="out-in">
         <PageShellSkeleton v-if="loading" />
 
         <div v-else class="w-full">
@@ -214,11 +220,13 @@ onMounted( bootstrap );
                 </template>
             </PageHeader>
 
-            <div v-if="loadError" class="mt-8 rounded-[8px] border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
-                {{ loadError }}
-            </div>
+            <Transition name="hubgo-fade">
+                <div v-if="loadError" class="mt-8 rounded-[8px] border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+                    {{ loadError }}
+                </div>
+            </Transition>
 
-            <template v-else>
+            <template v-if="! loadError">
                 <SectionTabs
                     :sections="schema"
                     :active-section-id="activeSectionId"
@@ -226,7 +234,13 @@ onMounted( bootstrap );
                 />
 
                 <section class="mt-8 rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
-                    <div v-if="activeSection" class="space-y-10 px-6 py-10 lg:px-10 lg:py-12">
+                    <!--
+                        Keyed on the section id so switching tabs is a swap, not a
+                        re-render in place: without the key Vue patches the same
+                        node and the transition never fires.
+                    -->
+                    <Transition name="hubgo-panel" mode="out-in">
+                    <div v-if="activeSection" :key="activeSection.id" class="space-y-10 px-6 py-10 lg:px-10 lg:py-12">
                         <div v-for="card in ( activeSection.cards || [] )" :key="card.id">
                             <div class="border-b border-slate-100 pb-4">
                                 <h2 class="m-0 text-[17px] font-semibold text-slate-800">{{ card.title }}</h2>
@@ -253,6 +267,7 @@ onMounted( bootstrap );
                             </div>
                         </div>
                     </div>
+                    </Transition>
 
                     <SettingsActionBar
                         :saving="saving"
@@ -262,6 +277,7 @@ onMounted( bootstrap );
                 </section>
             </template>
         </div>
+        </Transition>
 
         <ToastStack :toasts="toasts" @dismiss="dismissToast" />
     </div>

@@ -8,6 +8,7 @@
  * one save path and one sanitizer for everything.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 import { computed, onMounted, reactive, ref } from 'vue';
 import { api, getBootstrapConfig } from '../../utils/api';
@@ -200,6 +201,7 @@ onMounted( bootstrap );
 
 <template>
     <div class="hubgo-integrations min-h-screen w-full">
+        <Transition name="hubgo-fade" mode="out-in">
         <PageShellSkeleton v-if="loading" />
 
         <div v-else class="w-full">
@@ -221,24 +223,32 @@ onMounted( bootstrap );
                 </template>
             </PageHeader>
 
-            <div v-if="loadError" class="mt-8 rounded-[8px] border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
-                {{ loadError }}
-            </div>
-
-            <template v-else>
-                <div
-                    v-if="showLicenseNotice"
-                    class="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-[8px] border border-amber-200 bg-amber-50 px-5 py-4 text-[13px] leading-5 text-amber-800"
-                >
-                    <span>{{ __( 'Integrations marked as Pro require an active HubGo license.' ) }}</span>
-                    <a
-                        v-if="licenseUrl"
-                        class="font-semibold text-amber-900 underline underline-offset-4"
-                        :href="licenseUrl"
-                    >
-                        {{ __( 'Activate license' ) }}
-                    </a>
+            <Transition name="hubgo-fade">
+                <div v-if="loadError" class="mt-8 rounded-[8px] border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+                    {{ loadError }}
                 </div>
+            </Transition>
+
+            <template v-if="! loadError">
+                <!--
+                    The notice comes and goes with the license state, which is
+                    refreshed after every save — it must not blink in and out.
+                -->
+                <Transition name="hubgo-fade">
+                    <div
+                        v-if="showLicenseNotice"
+                        class="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-[8px] border border-amber-200 bg-amber-50 px-5 py-4 text-[13px] leading-5 text-amber-800"
+                    >
+                        <span>{{ __( 'Integrations marked as Pro require an active HubGo license.' ) }}</span>
+                        <a
+                            v-if="licenseUrl"
+                            class="font-semibold text-amber-900 underline underline-offset-4"
+                            :href="licenseUrl"
+                        >
+                            {{ __( 'Activate license' ) }}
+                        </a>
+                    </div>
+                </Transition>
 
                 <section class="mt-8 rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
                     <div class="px-6 py-10 lg:px-10 lg:py-12">
@@ -261,6 +271,7 @@ onMounted( bootstrap );
                 </section>
             </template>
         </div>
+        </Transition>
 
         <IntegrationSettingsModal
             :open="modalOpen && !! selectedIntegration"

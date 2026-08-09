@@ -2,16 +2,25 @@
  * useToasts.js
  *
  * Toast stack shared by every admin screen: pushes an entry, schedules its
- * fade-out and removal, and clears the pending timers when the owning
- * component unmounts.
+ * removal, and clears the pending timers when the owning component unmounts.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 import { onBeforeUnmount, ref } from 'vue';
 import { __ } from '../utils/i18n';
 
-const HIDE_DELAY = 3000;
-const REMOVE_DELAY = 3500;
+/**
+ * How long a toast stays on screen.
+ *
+ * Published rather than kept private because the progress bar has to run for
+ * exactly this long — `ToastStack` hands it to the CSS as a custom property.
+ * The two used to be a `3000` here and a hard-coded `3s` in the markup, which
+ * agreed only for as long as nobody touched either one.
+ *
+ * @type {number}
+ */
+export const TOAST_DURATION = 3000;
 
 /**
  * Create a toast stack bound to the calling component's lifecycle.
@@ -24,21 +33,23 @@ export function useToasts() {
     let seed = 0;
 
     /**
-     * Cancel and forget the timers scheduled for one toast.
+     * Drop a toast from the stack. The fade-out belongs to the TransitionGroup
+     * in `ToastStack`, so this only has to stop tracking it — the two-step
+     * "flag it as closing, remove it half a second later" dance this replaced
+     * was a hand-rolled leave transition running next to a real one.
      *
      * @param {number} id Toast id.
      * @return {void}
      */
-    function clearTimers( id ) {
-        const entry = timers.get( id );
+    function remove( id ) {
+        const handle = timers.get( id );
 
-        if ( ! entry ) {
-            return;
+        if ( undefined !== handle ) {
+            window.clearTimeout( handle );
+            timers.delete( id );
         }
 
-        window.clearTimeout( entry.hide );
-        window.clearTimeout( entry.remove );
-        timers.delete( id );
+        toasts.value = toasts.value.filter( ( entry ) => entry.id !== id );
     }
 
     /**
@@ -52,22 +63,8 @@ export function useToasts() {
     function toast( message, tone = 'info', title = __( 'HubGo' ) ) {
         const id = ++seed;
 
-        toasts.value.push( { id, title, message, tone, closing: false } );
-
-        const hide = window.setTimeout( () => {
-            const item = toasts.value.find( ( entry ) => entry.id === id );
-
-            if ( item ) {
-                item.closing = true;
-            }
-        }, HIDE_DELAY );
-
-        const remove = window.setTimeout( () => {
-            toasts.value = toasts.value.filter( ( entry ) => entry.id !== id );
-            timers.delete( id );
-        }, REMOVE_DELAY );
-
-        timers.set( id, { hide, remove } );
+        toasts.value.push( { id, title, message, tone } );
+        timers.set( id, window.setTimeout( () => remove( id ), TOAST_DURATION ) );
     }
 
     /**
@@ -77,15 +74,11 @@ export function useToasts() {
      * @return {void}
      */
     function dismissToast( id ) {
-        clearTimers( id );
-        toasts.value = toasts.value.filter( ( entry ) => entry.id !== id );
+        remove( id );
     }
 
     onBeforeUnmount( () => {
-        timers.forEach( ( entry ) => {
-            window.clearTimeout( entry.hide );
-            window.clearTimeout( entry.remove );
-        } );
+        timers.forEach( ( handle ) => window.clearTimeout( handle ) );
         timers.clear();
     } );
 

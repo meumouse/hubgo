@@ -15,6 +15,7 @@
  * @since 3.0.0
  */
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import { X } from '@boxicons/vue';
 import { bridgeTokens } from '../tokens';
 import { __ } from '../../utils/i18n';
 
@@ -66,6 +67,13 @@ function handleKeydown( event ) {
 
 <template>
     <Teleport to="body">
+        <!--
+            Named transition backed by plain CSS in calculator.css. `bridgeTokens`
+            still runs on the nextTick after `open` flips: the node is mounted
+            before the enter transition plays, so the dialog never paints a frame
+            with the stylesheet defaults before the store's own colours land.
+        -->
+        <Transition name="hubgo-calc-modal">
         <div
             v-if="open"
             ref="rootEl"
@@ -85,10 +93,10 @@ function handleKeydown( event ) {
                     <button
                         type="button"
                         class="hubgo-calc-modal__close"
-                        :aria-label="__( 'Fechar' )"
+                        :aria-label="__( 'Close' )"
                         @click="emit( 'close' )"
                     >
-                        &times;
+                        <X aria-hidden="true" />
                     </button>
                 </div>
 
@@ -97,5 +105,6 @@ function handleKeydown( event ) {
                 </div>
             </div>
         </div>
+        </Transition>
     </Teleport>
 </template>
