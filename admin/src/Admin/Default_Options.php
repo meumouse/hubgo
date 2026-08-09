@@ -119,6 +119,10 @@ class Default_Options {
             'enable_melhor_envio_integration'      => 'no',
             'melhor_envio_sync_tracking'           => 'yes',
             'melhor_envio_mark_as_shipped'         => 'no',
+            // Same story as Frenet below: the Melhor Envio plugin prints its own
+            // simulator on the product page — see Integrations\Melhor_Envio.
+            'melhor_envio_disable_simulator'       => 'yes',
+            'melhor_envio_tracking_url'            => '',
             'enable_elementor_integration'         => 'no',
             'enable_frenet_integration'            => 'no',
             'frenet_sync_tracking'                 => 'yes',
