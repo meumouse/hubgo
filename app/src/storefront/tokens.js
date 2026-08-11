@@ -14,6 +14,7 @@
  * `Calculator_Styles::get_token_map()`.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 
 export const CALCULATOR_TOKENS = [
@@ -24,6 +25,7 @@ export const CALCULATOR_TOKENS = [
     '--hubgo-calc-surface-border',
     '--hubgo-calc-surface-padding',
     '--hubgo-calc-surface-shadow',
+    '--hubgo-calc-muted-bg',
     '--hubgo-calc-text',
     '--hubgo-calc-text-muted',
     '--hubgo-calc-accent',

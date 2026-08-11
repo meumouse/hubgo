@@ -32,7 +32,7 @@ class Registry {
      * Build the full settings schema.
      *
      * @since 3.0.0
-     * @version 3.0.0
+     * @version 3.1.0
      * @return array
      */
     public static function get_schema() {
@@ -99,21 +99,6 @@ class Registry {
                             ) ),
                         ),
                     ),
-                    array(
-                        'id'          => 'general-address',
-                        'title'       => __( 'Address lookup', 'hubgo' ),
-                        'description' => __( 'Powers the "I do not know my postcode" link shown below the postcode field.', 'hubgo' ),
-                        'fields'      => array(
-                            self::select( 'address_lookup_provider', __( 'Lookup service', 'hubgo' ), __( 'ViaCEP is free and requires no sign-up. Google Places accepts free-text search but consumes your API key quota.', 'hubgo' ), array(
-                                array( 'value' => 'viacep', 'label' => __( 'ViaCEP (free)', 'hubgo' ) ),
-                                array( 'value' => 'google', 'label' => __( 'Google Places (requires an API key)', 'hubgo' ) ),
-                                array( 'value' => 'off', 'label' => __( 'Disabled', 'hubgo' ) ),
-                            ) ),
-                            self::password( 'google_places_api_key', __( 'Google API key', 'hubgo' ), __( 'Requires the "Places API (New)" enabled on the project. The key stays on the server and is never sent to the browser.', 'hubgo' ), array(
-                                'placeholder' => 'AIza...',
-                            ) ),
-                        ),
-                    ),
                 ),
             ),
             array(
@@ -155,6 +140,7 @@ class Registry {
                         'fields'      => array(
                             self::color( 'calc_badge_bg', __( 'Background color', 'hubgo' ), '', array( 'default' => '#059669' ) ),
                             self::color( 'calc_badge_text_color', __( 'Text color', 'hubgo' ), '', array( 'default' => '#ffffff' ) ),
+                            self::dimension( 'calc_badge_radius', __( 'Corner radius', 'hubgo' ), __( 'Use a high value for a pill-shaped badge.', 'hubgo' ), array( 'max' => 100, 'placeholder' => '6' ) ),
                         ),
                     ),
                     array(
@@ -195,6 +181,7 @@ class Registry {
                         'description' => __( 'Modal opened by "More details and delivery methods".', 'hubgo' ),
                         'fields'      => array(
                             self::color( 'calc_modal_bg', __( 'Background color', 'hubgo' ), '', array( 'default' => '#ffffff' ) ),
+                            self::color( 'calc_muted_bg', __( 'Address box background', 'hubgo' ), __( 'Neutral fill behind the postcode shown at the top of the window.', 'hubgo' ), array( 'default' => '#f7f8f9' ) ),
                             self::dimension( 'calc_modal_radius', __( 'Corner radius', 'hubgo' ), '', array( 'max' => 100, 'placeholder' => '14' ) ),
                             self::dimension( 'calc_modal_blur', __( 'Backdrop blur', 'hubgo' ), __( 'How much the page behind the window is blurred. Zero disables the effect.', 'hubgo' ), array(
                                 'max'         => 100,
@@ -233,7 +220,6 @@ class Registry {
                             self::text( 'text_info_before_input_shipping_calc', __( 'Information text', 'hubgo' ), __( 'Text displayed above the postcode field.', 'hubgo' ) ),
                             self::text( 'text_placeholder_input_shipping_calc', __( 'Field placeholder', 'hubgo' ), __( 'Example text inside the postcode field.', 'hubgo' ) ),
                             self::text( 'text_button_shipping_calc', __( 'Button text', 'hubgo' ), __( 'Label of the calculate button.', 'hubgo' ) ),
-                            self::text( 'text_cep_finder_link', __( '"I do not know my postcode" link', 'hubgo' ), __( 'Leave empty to hide the address lookup.', 'hubgo' ) ),
                         ),
                     ),
                     array(

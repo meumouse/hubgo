@@ -179,9 +179,10 @@ class Shipping_Calculator {
      *
      * Empty text values are meaningful: the Vue side hides the element a text
      * belongs to when it is blank, which is how a store owner removes the
-     * title, the note or the address finder without a dedicated toggle.
+     * title or the note without a dedicated toggle.
      *
      * @since 3.0.0
+     * @version 3.1.0
      * @param array $overrides Values replacing the settings-derived defaults.
      * @return array<string,mixed>
      */
@@ -195,7 +196,6 @@ class Shipping_Calculator {
             'freeShippingHint' => self::get_free_shipping_hint(),
             'features'         => array(
                 'badge'      => true,
-                'finder'     => true,
                 'options'    => true,
                 'preference' => Shipping_Preference::is_enabled(),
                 'auto'       => 'yes' === Settings::get_setting( 'enable_auto_shipping_calculator', 'no' ),
@@ -205,7 +205,6 @@ class Shipping_Calculator {
                 'info'                => (string) Settings::get_setting( 'text_info_before_input_shipping_calc', '' ),
                 'placeholder'         => (string) Settings::get_setting( 'text_placeholder_input_shipping_calc', '' ),
                 'button'              => (string) Settings::get_setting( 'text_button_shipping_calc', '' ),
-                'finderLink'          => (string) Settings::get_setting( 'text_cep_finder_link', '' ),
                 'moreOptions'         => (string) Settings::get_setting( 'text_more_options', '' ),
                 'note'                => (string) Settings::get_setting( 'note_text_bottom_shipping_calc', '' ),
                 'headerShip'          => (string) Settings::get_setting( 'text_header_ship', '' ),

@@ -6,21 +6,15 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "x-domain: hubgo\n"
 
-#: admin/src/Admin/Settings/Registry.php:244
+#: admin/src/Admin/Settings/Registry.php:230
 msgid "\"Delivery\" header"
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:236
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:188
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:265
-msgid "\"I do not know my postcode\" link"
 msgstr ""
 
 #: admin/src/Admin/Settings/Registry.php:54
 msgid "\"Order shipped\" status"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:245
+#: admin/src/Admin/Settings/Registry.php:231
 msgid "\"Price\" header"
 msgstr ""
 
@@ -58,11 +52,11 @@ msgstr ""
 msgid "450 Daisy Street - Curitiba/PR - Brazil (postcode: 80000-100)"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:273
+#: admin/src/Admin/Settings/Registry.php:259
 msgid "About"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:131
+#: admin/src/Admin/Settings/Registry.php:116
 msgid "Accent color used on links, icons and the selected option."
 msgstr ""
 
@@ -92,7 +86,7 @@ msgstr ""
 msgid "Activate WooCommerce"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:508
+#: admin/src/Admin/Settings/Registry.php:494
 msgid "Activate your HubGo license to use this integration."
 msgstr ""
 
@@ -123,22 +117,9 @@ msgstr ""
 msgid "Add tracking code"
 msgstr ""
 
-#: app/src/storefront/components/CepFinderModal.vue:248
-msgid "Address"
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:104
-msgid "Address lookup"
-msgstr ""
-
-#: admin/src/API/Routes/Address_Autocomplete.php:64
-#: admin/src/API/Routes/Address_Resolve.php:52
-msgid "Address lookup is disabled."
-msgstr ""
-
-#: admin/src/Core/Address/Google_Places_Provider.php:127
-#: admin/src/Core/Address/Google_Places_Provider.php:166
-msgid "Address lookup is not configured."
+#: admin/src/Admin/Settings/Registry.php:184
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:444
+msgid "Address box background"
 msgstr ""
 
 #: admin/src/Integrations/Frenet.php:208
@@ -168,7 +149,7 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:121
+#: admin/src/Admin/Settings/Registry.php:106
 msgid "Appearance"
 msgstr ""
 
@@ -176,15 +157,15 @@ msgstr ""
 msgid "Apply the postcode at the checkout"
 msgstr ""
 
-#: admin/src/Core/Assets.php:366
+#: admin/src/Core/Assets.php:362
 msgid "Are you sure you want to remove this tracking code?"
 msgstr ""
 
-#: app/src/storefront/components/ShippingCalculator.vue:107
+#: app/src/storefront/components/ShippingCalculator.vue:99
 msgid "Arrives free"
 msgstr ""
 
-#: app/src/storefront/components/ShippingCalculator.vue:106
+#: app/src/storefront/components/ShippingCalculator.vue:98
 msgid "Arrives free by %s"
 msgstr ""
 
@@ -204,7 +185,7 @@ msgstr ""
 msgid "Automatic calculation"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:283
+#: admin/src/Admin/Settings/Registry.php:269
 msgid "Automatic updates"
 msgstr ""
 
@@ -212,38 +193,38 @@ msgstr ""
 msgid "Automatic updates and license synchronization"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:199
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:450
+#: admin/src/Admin/Settings/Registry.php:186
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:452
 msgid "Backdrop blur"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:145
-#: admin/src/Admin/Settings/Registry.php:156
-#: admin/src/Admin/Settings/Registry.php:165
-#: admin/src/Admin/Settings/Registry.php:176
-#: admin/src/Admin/Settings/Registry.php:197
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:300
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:352
+#: admin/src/Admin/Settings/Registry.php:130
+#: admin/src/Admin/Settings/Registry.php:141
+#: admin/src/Admin/Settings/Registry.php:151
+#: admin/src/Admin/Settings/Registry.php:162
+#: admin/src/Admin/Settings/Registry.php:183
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:298
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:351
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:371
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:392
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:442
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:443
 msgid "Background color"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:177
+#: admin/src/Admin/Settings/Registry.php:163
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:393
 msgid "Background color (hover)"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:255
+#: admin/src/Admin/Settings/Registry.php:241
 msgid "Badge before the threshold"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:253
+#: admin/src/Admin/Settings/Registry.php:239
 msgid "Badge displayed at the top of the card. Leave both empty to hide it."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:256
+#: admin/src/Admin/Settings/Registry.php:242
 msgid "Badge once reached"
 msgstr ""
 
@@ -251,7 +232,7 @@ msgstr ""
 msgid "Base quantity"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:134
+#: admin/src/Admin/Settings/Registry.php:119
 msgid "Base text size of the calculator."
 msgstr ""
 
@@ -269,16 +250,16 @@ msgid ""
 "Joinotify Applications tab."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:146
-#: admin/src/Admin/Settings/Registry.php:166
-#: admin/src/Admin/Settings/Registry.php:187
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:301
+#: admin/src/Admin/Settings/Registry.php:131
+#: admin/src/Admin/Settings/Registry.php:152
+#: admin/src/Admin/Settings/Registry.php:173
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:299
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:372
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:414
 msgid "Border color"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:143
+#: admin/src/Admin/Settings/Registry.php:128
 msgid "Box that wraps the whole calculator."
 msgstr ""
 
@@ -310,8 +291,8 @@ msgstr ""
 msgid "Business days promised at the checkout"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:235
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:263
+#: admin/src/Admin/Settings/Registry.php:222
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:262
 msgid "Button text"
 msgstr ""
 
@@ -325,16 +306,16 @@ msgid "By %s"
 msgstr ""
 
 #: admin/src/Admin/Default_Options.php:44
-#: app/src/storefront/components/ShippingCalculator.vue:169
-#: app/src/storefront/components/ShippingOptionsModal.vue:100
+#: app/src/storefront/components/ShippingCalculator.vue:155
+#: app/src/storefront/components/ShippingOptionsModal.vue:98
 msgid "Calculate"
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:191
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:190
 msgid "Calculate automatically"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:173
+#: admin/src/Admin/Settings/Registry.php:159
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:388
 msgid "Calculate button"
 msgstr ""
@@ -347,16 +328,16 @@ msgstr ""
 msgid "Calculates shipping automatically using the customer saved postcode."
 msgstr ""
 
-#: app/src/storefront/components/ShippingCalculator.vue:183
+#: app/src/storefront/components/ShippingCalculator.vue:169
 msgid "Calculating delivery for %s…"
 msgstr ""
 
-#: app/src/storefront/components/ShippingOptionsModal.vue:130
+#: app/src/storefront/components/ShippingOptionsModal.vue:127
 msgid "Calculating delivery options…"
 msgstr ""
 
 #: admin/src/Admin/Settings/Registry.php:60
-#: admin/src/Admin/Settings/Registry.php:229
+#: admin/src/Admin/Settings/Registry.php:216
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:138
 msgid "Calculator"
 msgstr ""
@@ -369,8 +350,8 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:232
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:260
+#: admin/src/Admin/Settings/Registry.php:219
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:259
 msgid "Card title"
 msgstr ""
 
@@ -424,28 +405,23 @@ msgstr ""
 msgid "Check the delivery time and price"
 msgstr ""
 
-#: admin/src/Core/Assets.php:414
+#: admin/src/Core/Assets.php:410
 msgid "Checking for updates…"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:265
+#: admin/src/Admin/Settings/Registry.php:251
 msgid "Choice confirmation"
 msgstr ""
 
-#: app/src/storefront/components/ShippingOptionsModal.vue:115
+#: app/src/storefront/components/ShippingOptionsModal.vue:112
 msgid "Choose another address"
 msgstr ""
 
-#: app/src/storefront/components/CepFinderModal.vue:267
-#: app/src/storefront/components/CepFinderModal.vue:268
-msgid "City"
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:266
+#: admin/src/Admin/Settings/Registry.php:252
 msgid "Clear link"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:59
+#: admin/src/Admin/Default_Options.php:58
 msgid "Clear preference"
 msgstr ""
 
@@ -472,20 +448,20 @@ msgstr ""
 msgid "Code:"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:133
+#: admin/src/Admin/Settings/Registry.php:118
 msgid "Color of the descriptions and notes."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:132
+#: admin/src/Admin/Settings/Registry.php:117
 msgid "Color of the titles and the amounts."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:122
+#: admin/src/Admin/Settings/Registry.php:107
 msgid "Colors and layout of the shipping table displayed in the store."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:128
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:317
+#: admin/src/Admin/Settings/Registry.php:113
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:315
 msgid "Colors and typography"
 msgstr ""
 
@@ -512,8 +488,8 @@ msgid ""
 "visit our"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:142
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:296
+#: admin/src/Admin/Settings/Registry.php:127
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:294
 msgid "Container"
 msgstr ""
 
@@ -523,16 +499,18 @@ msgid ""
 "The original data is kept, so nothing is lost if you need to roll back."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:147
-#: admin/src/Admin/Settings/Registry.php:167
-#: admin/src/Admin/Settings/Registry.php:179
-#: admin/src/Admin/Settings/Registry.php:189
-#: admin/src/Admin/Settings/Registry.php:198
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:302
+#: admin/src/Admin/Settings/Registry.php:132
+#: admin/src/Admin/Settings/Registry.php:143
+#: admin/src/Admin/Settings/Registry.php:153
+#: admin/src/Admin/Settings/Registry.php:165
+#: admin/src/Admin/Settings/Registry.php:175
+#: admin/src/Admin/Settings/Registry.php:185
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:300
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:353
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:373
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:395
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:416
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:443
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:445
 msgid "Corner radius"
 msgstr ""
 
@@ -540,14 +518,14 @@ msgstr ""
 msgid "Could not activate this license."
 msgstr ""
 
-#: admin/src/Core/Assets.php:147
-#: app/src/storefront/api.js:27
-#: app/src/storefront/api.js:82
+#: admin/src/Core/Assets.php:143
+#: app/src/storefront/api.js:28
+#: app/src/storefront/api.js:83
 #: app/src/storefront/useShippingQuote.js:194
 msgid "Could not calculate shipping. Please try again."
 msgstr ""
 
-#: admin/src/Core/Assets.php:416
+#: admin/src/Core/Assets.php:412
 msgid "Could not check for updates. Please try again."
 msgstr ""
 
@@ -584,16 +562,8 @@ msgstr ""
 msgid "Could not read the environment information."
 msgstr ""
 
-#: admin/src/Core/Assets.php:367
+#: admin/src/Core/Assets.php:363
 msgid "Could not remove the tracking code. Please try again."
-msgstr ""
-
-#: admin/src/Core/Address/ViaCep_Provider.php:175
-msgid "Could not resolve the postcode for that address."
-msgstr ""
-
-#: app/src/storefront/components/CepFinderModal.vue:225
-msgid "Could not resolve the postcode."
 msgstr ""
 
 #: app/src/pages/settings/SettingsPage.vue:185
@@ -604,17 +574,8 @@ msgstr ""
 msgid "Could not run the migration."
 msgstr ""
 
-#: admin/src/Core/Assets.php:368
+#: admin/src/Core/Assets.php:364
 msgid "Could not save the tracking code. Please try again."
-msgstr ""
-
-#: admin/src/Core/Address/Address_Provider.php:202
-#: admin/src/Core/Address/Address_Provider.php:209
-msgid "Could not search addresses right now. Please try again."
-msgstr ""
-
-#: app/src/storefront/components/CepFinderModal.vue:168
-msgid "Could not search addresses."
 msgstr ""
 
 #: admin/src/Admin/Order_Tracking_Meta_Box.php:129
@@ -645,7 +606,7 @@ msgstr ""
 msgid "Czech Republic"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:296
+#: admin/src/Admin/Settings/Registry.php:282
 msgid "Danger zone"
 msgstr ""
 
@@ -670,7 +631,7 @@ msgstr ""
 msgid "Deactivate the license on this site?"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:285
+#: admin/src/Admin/Settings/Registry.php:271
 msgid "Debug mode"
 msgstr ""
 
@@ -695,22 +656,21 @@ msgstr ""
 msgid "Delivery is late"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:184
+#: admin/src/Admin/Settings/Registry.php:170
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:409
-#: app/src/storefront/components/ShippingOptionsModal.vue:85
+#: app/src/storefront/components/ShippingOptionsModal.vue:83
 msgid "Delivery options"
 msgstr ""
 
-#: app/src/storefront/components/ShippingCalculator.vue:110
+#: app/src/storefront/components/ShippingCalculator.vue:102
 msgid "Delivery via %s"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:194
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:430
+#: admin/src/Admin/Settings/Registry.php:180
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:431
 msgid "Details window"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:110
 #: admin/src/Admin/System_Status.php:44
 #: admin/src/Admin/System_Status.php:55
 msgid "Disabled"
@@ -732,11 +692,11 @@ msgstr ""
 msgid "Display Shipment Tracking codes"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:265
+#: admin/src/Admin/Settings/Registry.php:251
 msgid "Displayed after the customer picks an option."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:264
+#: admin/src/Admin/Settings/Registry.php:250
 msgid "Displayed below the delivery methods."
 msgstr ""
 
@@ -744,11 +704,11 @@ msgstr ""
 msgid "Displayed elements"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:256
+#: admin/src/Admin/Settings/Registry.php:242
 msgid "Displayed when the product already qualifies for free shipping."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:284
+#: admin/src/Admin/Settings/Registry.php:270
 msgid "Displays notifications when a new version is available."
 msgstr ""
 
@@ -805,18 +765,9 @@ msgstr ""
 msgid "Enter a valid postcode"
 msgstr ""
 
-#: admin/src/Core/Address/ViaCep_Provider.php:125
-#: app/src/storefront/components/CepFinderModal.vue:182
-msgid "Enter at least 3 letters of the city and of the street."
-msgstr ""
-
 #: admin/src/API/Routes/License_Activate.php:35
 #: app/src/pages/license/LicensePage.vue:223
 msgid "Enter the license key."
-msgstr ""
-
-#: app/src/storefront/components/CepFinderModal.vue:239
-msgid "Enter the state, the city and the street to find the postcode."
 msgstr ""
 
 #: admin/src/API/Routes/Tracking_Create.php:38
@@ -859,7 +810,7 @@ msgid ""
 "plugin."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:223
+#: admin/src/Admin/Settings/Registry.php:210
 msgid "Every text displayed by the calculator and by the shipping table."
 msgstr ""
 
@@ -869,7 +820,7 @@ msgid ""
 "can also be used as the source of a loop action."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:234
+#: admin/src/Admin/Settings/Registry.php:221
 msgid "Example text inside the postcode field."
 msgstr ""
 
@@ -898,7 +849,7 @@ msgstr ""
 msgid "Features"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:234
+#: admin/src/Admin/Settings/Registry.php:221
 msgid "Field placeholder"
 msgstr ""
 
@@ -912,10 +863,6 @@ msgstr ""
 msgid ""
 "Fills the carrier on tracking codes added to orders shipped with Frenet, "
 "using the carrier Frenet quoted."
-msgstr ""
-
-#: app/src/storefront/components/CepFinderModal.vue:236
-msgid "Find my postcode"
 msgstr ""
 
 #: admin/src/Core/Providers_Registry.php:194
@@ -936,21 +883,21 @@ msgstr ""
 msgid "Fired when the order status changes to Order shipped."
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:322
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:320
 msgid "Font"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:134
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:333
+#: admin/src/Admin/Settings/Registry.php:119
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:331
 msgid "Font size"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:247
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:278
+#: admin/src/Admin/Settings/Registry.php:233
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:276
 msgid "Footer note"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:212
+#: admin/src/Admin/Settings/Registry.php:199
 msgid "Format used to list the returned delivery methods."
 msgstr ""
 
@@ -958,13 +905,13 @@ msgstr ""
 msgid "France"
 msgstr ""
 
-#: app/src/storefront/components/ShippingCalculator.vue:120
-#: app/src/storefront/components/ShippingOptionsModal.vue:160
-#: app/src/storefront/components/ShippingOptionsModal.vue:192
+#: app/src/storefront/components/ShippingCalculator.vue:112
+#: app/src/storefront/components/ShippingOptionsModal.vue:157
+#: app/src/storefront/components/ShippingOptionsModal.vue:189
 msgid "Free"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:252
+#: admin/src/Admin/Settings/Registry.php:238
 msgid "Free shipping"
 msgstr ""
 
@@ -972,9 +919,9 @@ msgstr ""
 msgid "Free shipping amount"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:153
+#: admin/src/Admin/Settings/Registry.php:138
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:187
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:347
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:346
 msgid "Free shipping badge"
 msgstr ""
 
@@ -1008,15 +955,6 @@ msgstr ""
 msgid "Global"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:112
-msgid "Google API key"
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:109
-#: admin/src/Core/Address/Google_Places_Provider.php:112
-msgid "Google Places (requires an API key)"
-msgstr ""
-
 #: app/src/pages/integrations/components/IntegrationsGrid.vue:142
 msgid "Group by category"
 msgstr ""
@@ -1025,11 +963,11 @@ msgstr ""
 msgid "Handling days"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:242
+#: admin/src/Admin/Settings/Registry.php:228
 msgid "Headers and notes displayed in the lookup result."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:168
+#: admin/src/Admin/Settings/Registry.php:154
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:374
 msgid "Height"
 msgstr ""
@@ -1057,7 +995,7 @@ msgstr ""
 msgid "Hide the Melhor Envio simulator"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:264
+#: admin/src/Admin/Settings/Registry.php:250
 msgid "Hint on the options list"
 msgstr ""
 
@@ -1073,11 +1011,11 @@ msgstr ""
 msgid "How many days the customer choice is remembered in their browser."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:199
+#: admin/src/Admin/Settings/Registry.php:186
 msgid "How much the page behind the window is blurred. Zero disables the effect."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:210
+#: admin/src/Admin/Settings/Registry.php:197
 msgid "How the delivery methods are presented to the customer."
 msgstr ""
 
@@ -1118,7 +1056,7 @@ msgstr ""
 msgid "HubGo - Shipping Management"
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:234
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:233
 msgid ""
 "HubGo is also displaying the calculator automatically on product pages. Set "
 "the display position to \"Elementor widget only\" in HubGo → Settings → "
@@ -1147,12 +1085,8 @@ msgstr ""
 msgid "HubGo version"
 msgstr ""
 
-#: admin/src/Core/Assets.php:204
+#: admin/src/Core/Assets.php:200
 msgid "HubGo: interface build not found. Run \"npm run build\" in the plugin."
-msgstr ""
-
-#: admin/src/Admin/Default_Options.php:56
-msgid "I do not know my postcode"
 msgstr ""
 
 #: app/src/pages/license/LicensePage.vue:367
@@ -1181,8 +1115,8 @@ msgstr ""
 msgid "India"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:233
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:261
+#: admin/src/Admin/Settings/Registry.php:220
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:260
 msgid "Information text"
 msgstr ""
 
@@ -1190,12 +1124,12 @@ msgstr ""
 msgid "Inherit from the settings"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:148
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:303
+#: admin/src/Admin/Settings/Registry.php:133
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:301
 msgid "Inner spacing"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:163
+#: admin/src/Admin/Settings/Registry.php:149
 msgid "Input where the customer types the postcode."
 msgstr ""
 
@@ -1258,10 +1192,6 @@ msgstr ""
 msgid "Invalid"
 msgstr ""
 
-#: admin/src/Core/Address/Google_Places_Provider.php:162
-msgid "Invalid address. Select one of the suggestions."
-msgstr ""
-
 #: admin/src/API/Routes/Tracking_Create.php:34
 #: admin/src/API/Routes/Tracking_Get.php:35
 msgid "Invalid order."
@@ -1279,11 +1209,11 @@ msgstr ""
 msgid "Ireland"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:297
+#: admin/src/Admin/Settings/Registry.php:283
 msgid "Irreversible actions on the plugin configuration."
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:57
+#: admin/src/Admin/Default_Options.php:56
 msgid "It will be pre-selected at the checkout"
 msgstr ""
 
@@ -1300,11 +1230,11 @@ msgstr ""
 msgid "Joinotify"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:154
+#: admin/src/Admin/Settings/Registry.php:139
 msgid "Label displayed at the top of the card."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:235
+#: admin/src/Admin/Settings/Registry.php:222
 msgid "Label of the calculate button."
 msgstr ""
 
@@ -1312,7 +1242,7 @@ msgstr ""
 msgid "Last check"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:209
+#: admin/src/Admin/Settings/Registry.php:196
 msgid "Layout"
 msgstr ""
 
@@ -1320,19 +1250,15 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:129
+#: admin/src/Admin/Settings/Registry.php:114
 msgid "Leave a field empty to keep the HubGo default."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:236
-msgid "Leave empty to hide the address lookup."
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:232
+#: admin/src/Admin/Settings/Registry.php:219
 msgid "Leave empty to hide the title."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:266
+#: admin/src/Admin/Settings/Registry.php:252
 msgid "Leave empty to not allow clearing the preference."
 msgstr ""
 
@@ -1340,11 +1266,11 @@ msgstr ""
 msgid "Leave empty to read it automatically from the WooCommerce shipping zone."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:174
+#: admin/src/Admin/Settings/Registry.php:160
 msgid "Leave empty to use the primary color."
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:255
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:254
 msgid "Leave empty to use the text defined in HubGo → Settings → Texts."
 msgstr ""
 
@@ -1352,7 +1278,7 @@ msgstr ""
 msgid "Let WooCommerce choose"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:283
+#: admin/src/Admin/Settings/Registry.php:269
 msgid "Lets HubGo update itself whenever possible."
 msgstr ""
 
@@ -1407,12 +1333,12 @@ msgstr ""
 msgid "Link"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:214
+#: admin/src/Admin/Settings/Registry.php:201
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:175
 msgid "List"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:185
+#: admin/src/Admin/Settings/Registry.php:171
 msgid "List of methods displayed in the details window."
 msgstr ""
 
@@ -1420,15 +1346,11 @@ msgstr ""
 msgid "Logistics triggers available in the Joinotify flow builder."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:107
-msgid "Lookup service"
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:280
+#: admin/src/Admin/Settings/Registry.php:266
 msgid "Maintenance and preferences"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:274
+#: admin/src/Admin/Settings/Registry.php:260
 msgid "Maintenance, updates and environment information."
 msgstr ""
 
@@ -1450,7 +1372,7 @@ msgstr ""
 msgid "Memory limit"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:212
+#: admin/src/Admin/Settings/Registry.php:199
 msgid "Methods display"
 msgstr ""
 
@@ -1482,7 +1404,7 @@ msgstr ""
 msgid "Migration not found."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:195
+#: admin/src/Admin/Settings/Registry.php:181
 msgid "Modal opened by \"More details and delivery methods\"."
 msgstr ""
 
@@ -1490,12 +1412,12 @@ msgstr ""
 msgid "More details and delivery methods"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:246
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:264
+#: admin/src/Admin/Settings/Registry.php:232
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:263
 msgid "More options link"
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:189
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:188
 msgid "More options window"
 msgstr ""
 
@@ -1509,27 +1431,27 @@ msgstr ""
 msgid "Netherlands"
 msgstr ""
 
+#: admin/src/Admin/Settings/Registry.php:184
+msgid "Neutral fill behind the postcode shown at the top of the window."
+msgstr ""
+
 #: admin/src/Core/Providers_Registry.php:201
 msgid "New Zealand"
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:199
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:198
 msgid "No"
 msgstr ""
 
-#: app/src/storefront/components/CepFinderModal.vue:321
-msgid "No address found. Try being more specific."
-msgstr ""
-
-#: app/src/storefront/components/ShippingOptionsModal.vue:134
+#: app/src/storefront/components/ShippingOptionsModal.vue:131
 msgid "No delivery method available for this postcode."
 msgstr ""
 
-#: admin/src/Core/Assets.php:146
+#: admin/src/Core/Assets.php:142
 msgid "No delivery method available."
 msgstr ""
 
-#: app/src/storefront/components/ShippingCalculator.vue:194
+#: app/src/storefront/components/ShippingCalculator.vue:180
 msgid "No delivery option available for postcode %s."
 msgstr ""
 
@@ -1542,11 +1464,10 @@ msgid "No license key is active on this site yet."
 msgstr ""
 
 #: app/src/components/fields/SelectField.vue:314
-#: app/src/storefront/components/CalcSelect.vue:409
 msgid "No option available"
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:585
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:586
 msgid "No product found. Choose \"Specific product\" to preview it here."
 msgstr ""
 
@@ -1556,10 +1477,6 @@ msgstr ""
 
 #: admin/src/Core/Tracking_Manager.php:520
 msgid "No shipping date"
-msgstr ""
-
-#: app/src/storefront/components/CepFinderModal.vue:258
-msgid "No state found"
 msgstr ""
 
 #: app/src/pages/license/LicensePage.vue:63
@@ -1578,7 +1495,7 @@ msgstr ""
 msgid "Not detected"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:247
+#: admin/src/Admin/Settings/Registry.php:233
 msgid "Note displayed below the result."
 msgstr ""
 
@@ -1594,15 +1511,15 @@ msgstr ""
 msgid "Open the Help Center"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:246
+#: admin/src/Admin/Settings/Registry.php:232
 msgid "Opens the window with every delivery method."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:281
+#: admin/src/Admin/Settings/Registry.php:267
 msgid "Operational behaviour of the plugin."
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:58
+#: admin/src/Admin/Default_Options.php:57
 msgid "Option saved as your preference"
 msgstr ""
 
@@ -1658,7 +1575,7 @@ msgstr ""
 msgid "Other"
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:448
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:450
 msgid "Overlay color"
 msgstr ""
 
@@ -1688,23 +1605,17 @@ msgstr ""
 msgid "Postcode"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:162
+#: admin/src/Admin/Settings/Registry.php:148
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:367
 msgid "Postcode field"
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:262
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:261
 msgid "Postcode placeholder"
 msgstr ""
 
-#: app/src/storefront/components/ShippingOptionsModal.vue:109
+#: app/src/storefront/components/ShippingOptionsModal.vue:107
 msgid "Postcode:"
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:105
-msgid ""
-"Powers the \"I do not know my postcode\" link shown below the postcode "
-"field."
 msgstr ""
 
 #: admin/src/Admin/Settings/Registry.php:88
@@ -1718,11 +1629,11 @@ msgid "Preference lifetime"
 msgstr ""
 
 #: admin/src/Admin/Settings/Registry.php:85
-#: admin/src/Admin/Settings/Registry.php:261
+#: admin/src/Admin/Settings/Registry.php:247
 msgid "Preferred method"
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:190
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:189
 msgid "Preferred method choice"
 msgstr ""
 
@@ -1734,8 +1645,8 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:131
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:330
+#: admin/src/Admin/Settings/Registry.php:116
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:328
 msgid "Primary color"
 msgstr ""
 
@@ -1771,7 +1682,7 @@ msgstr ""
 msgid "Quick help"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:291
+#: admin/src/Admin/Settings/Registry.php:277
 msgid "Quick view of the WordPress, PHP and WooCommerce environment."
 msgstr ""
 
@@ -1779,16 +1690,16 @@ msgstr ""
 msgid "Read only"
 msgstr ""
 
-#: app/src/storefront/components/ShippingOptionsModal.vue:138
+#: app/src/storefront/components/ShippingOptionsModal.vue:135
 msgid "Receive the order"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:285
+#: admin/src/Admin/Settings/Registry.php:271
 msgid "Records extra error and process details in the WordPress log."
 msgstr ""
 
 #: admin/src/Admin/Order_Tracking_Meta_Box.php:272
-#: admin/src/Core/Assets.php:370
+#: admin/src/Core/Assets.php:366
 msgid "Remove"
 msgstr ""
 
@@ -1810,12 +1721,6 @@ msgstr ""
 
 #: admin/src/Core/Plugin.php:363
 msgid "requires PHP 7.4 or higher."
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:112
-msgid ""
-"Requires the \"Places API (New)\" enabled on the project. The key stays on "
-"the server and is never sent to the browser."
 msgstr ""
 
 #: admin/src/Core/Plugin.php:365
@@ -1873,42 +1778,20 @@ msgstr ""
 msgid "Saving…"
 msgstr ""
 
-#: app/src/storefront/components/CepFinderModal.vue:281
-msgid "Search address"
-msgstr ""
-
-#: app/src/storefront/components/CepFinderModal.vue:257
-msgid "Search state…"
-msgstr ""
-
 #: app/src/components/fields/SelectField.vue:300
 msgid "Search..."
 msgstr ""
 
-#: app/src/storefront/components/CalcSelect.vue:396
-#: app/src/storefront/components/CalcSelect.vue:397
-msgid "Search…"
-msgstr ""
-
-#: app/src/storefront/components/CepFinderModal.vue:292
-msgid "Searching addresses…"
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:133
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:332
+#: admin/src/Admin/Settings/Registry.php:118
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:330
 msgid "Secondary text color"
 msgstr ""
 
 #: app/src/components/fields/SelectField.vue:66
-#: app/src/storefront/components/CalcSelect.vue:81
 msgid "Select an option"
 msgstr ""
 
-#: admin/src/Core/Address/ViaCep_Provider.php:119
-msgid "Select the state."
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:188
+#: admin/src/Admin/Settings/Registry.php:174
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:415
 msgid "Selected option background"
 msgstr ""
@@ -1986,7 +1869,7 @@ msgstr ""
 msgid "Shipping method chosen at the checkout"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:241
+#: admin/src/Admin/Settings/Registry.php:227
 msgid "Shipping result"
 msgstr ""
 
@@ -2021,25 +1904,8 @@ msgstr ""
 msgid "Specific product"
 msgstr ""
 
-#: app/src/storefront/components/CepFinderModal.vue:256
-#: app/src/storefront/components/CepFinderModal.vue:259
-msgid "State"
-msgstr ""
-
 #: admin/src/Core/Order_Status.php:327
 msgid "Status changed in bulk to Order shipped."
-msgstr ""
-
-#: app/src/storefront/components/CepFinderModal.vue:276
-msgid "Street"
-msgstr ""
-
-#: app/src/storefront/components/CepFinderModal.vue:275
-msgid "Street or avenue"
-msgstr ""
-
-#: app/src/storefront/components/CepFinderModal.vue:247
-msgid "Street, number, city…"
 msgstr ""
 
 #: app/src/pages/license/LicensePage.vue:79
@@ -2062,11 +1928,11 @@ msgstr ""
 msgid "Synchronize license"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:290
+#: admin/src/Admin/Settings/Registry.php:276
 msgid "System status"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:213
+#: admin/src/Admin/Settings/Registry.php:200
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:176
 msgid "Table"
 msgstr ""
@@ -2079,35 +1945,30 @@ msgstr ""
 msgid "Tell us which migration should run."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:132
-#: admin/src/Admin/Settings/Registry.php:157
-#: admin/src/Admin/Settings/Registry.php:178
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:331
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:353
+#: admin/src/Admin/Settings/Registry.php:117
+#: admin/src/Admin/Settings/Registry.php:142
+#: admin/src/Admin/Settings/Registry.php:164
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:329
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:352
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:394
 msgid "Text color"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:233
+#: admin/src/Admin/Settings/Registry.php:220
 msgid "Text displayed above the postcode field."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:222
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:248
+#: admin/src/Admin/Settings/Registry.php:209
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:247
 msgid "Texts"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:262
+#: admin/src/Admin/Settings/Registry.php:248
 msgid "Texts of the choice carried into the checkout."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:230
+#: admin/src/Admin/Settings/Registry.php:217
 msgid "Texts of the shipping lookup form."
-msgstr ""
-
-#: admin/src/Core/Address/Google_Places_Provider.php:197
-#: app/src/storefront/components/CepFinderModal.vue:214
-msgid "That address has no exact postcode. Try including the street and the number."
 msgstr ""
 
 #: admin/src/Integrations/Elementor.php:197
@@ -2131,7 +1992,7 @@ msgid ""
 "contact support."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:504
+#: admin/src/Admin/Settings/Registry.php:490
 msgid "The matching plugin must be installed and active to use this integration."
 msgstr ""
 
@@ -2160,7 +2021,7 @@ msgstr ""
 msgid "The requested plugin is invalid."
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:549
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:551
 msgid "The shipping calculator is disabled in the HubGo settings."
 msgstr ""
 
@@ -2189,7 +2050,7 @@ msgid ""
 "displayed automatically on the product page keeps working."
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:438
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:439
 msgid "The window opens outside the widget but inherits these values automatically."
 msgstr ""
 
@@ -2211,15 +2072,15 @@ msgstr ""
 msgid "This integration has no additional settings."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:500
+#: admin/src/Admin/Settings/Registry.php:486
 msgid "This integration will be available soon."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:244
+#: admin/src/Admin/Settings/Registry.php:230
 msgid "Title of the delivery method column."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:245
+#: admin/src/Admin/Settings/Registry.php:231
 msgid "Title of the price column."
 msgstr ""
 
@@ -2230,17 +2091,12 @@ msgid ""
 "pages also show the automatic one."
 msgstr ""
 
-#: app/src/storefront/components/ShippingCalculator.vue:121
+#: app/src/storefront/components/ShippingCalculator.vue:113
 msgid "to postcode %s"
 msgstr ""
 
-#: admin/src/API/Routes/Address_Autocomplete.php:69
-#: admin/src/API/Routes/Address_Resolve.php:57
-msgid "Too many lookups in a short time. Wait a moment and try again."
-msgstr ""
-
 #: admin/src/Admin/Order_Tracking_Meta_Box.php:256
-#: admin/src/Core/Assets.php:369
+#: admin/src/Core/Assets.php:365
 msgid "Track"
 msgstr ""
 
@@ -2298,10 +2154,6 @@ msgstr ""
 msgid "Turn the HubGo modules on or off."
 msgstr ""
 
-#: app/src/storefront/components/CepFinderModal.vue:238
-msgid "Type your address and pick the right option."
-msgstr ""
-
 #: admin/src/Core/Providers_Registry.php:206
 msgid "United Kingdom"
 msgstr ""
@@ -2310,16 +2162,20 @@ msgstr ""
 msgid "United States"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:284
+#: admin/src/Admin/Settings/Registry.php:270
 msgid "Update notices"
 msgstr ""
 
-#: admin/src/Core/Assets.php:415
+#: admin/src/Core/Assets.php:411
 msgid "Update now"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:255
+#: admin/src/Admin/Settings/Registry.php:241
 msgid "Use %s where the minimum amount should appear."
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:143
+msgid "Use a high value for a pill-shaped badge."
 msgstr ""
 
 #: admin/src/Integrations/Frenet.php:180
@@ -2351,22 +2207,11 @@ msgstr ""
 msgid "Version %s is available."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:108
-#: admin/src/Core/Address/ViaCep_Provider.php:106
-msgid "ViaCEP (free)"
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:107
-msgid ""
-"ViaCEP is free and requires no sign-up. Google Places accepts free-text "
-"search but consumes your API key quota."
-msgstr ""
-
 #: app/src/pages/integrations/components/IntegrationsGrid.vue:141
 msgid "View all"
 msgstr ""
 
-#: app/src/storefront/components/ShippingOptionsModal.vue:90
+#: app/src/storefront/components/ShippingOptionsModal.vue:88
 msgid "We calculated the costs and delivery times for this address:"
 msgstr ""
 
@@ -2423,7 +2268,7 @@ msgstr ""
 msgid "WP_DEBUG"
 msgstr ""
 
-#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:198
+#: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:197
 msgid "Yes"
 msgstr ""
 

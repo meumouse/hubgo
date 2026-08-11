@@ -185,7 +185,6 @@ class Shipping_Calculator_Widget extends Widget_Base {
 
         $features = array(
             'show_badge'      => esc_html__( 'Free shipping badge', 'hubgo' ),
-            'show_finder'     => esc_html__( '"I do not know my postcode" link', 'hubgo' ),
             'show_options'    => esc_html__( 'More options window', 'hubgo' ),
             'show_preference' => esc_html__( 'Preferred method choice', 'hubgo' ),
             'auto_calculate'  => esc_html__( 'Calculate automatically', 'hubgo' ),
@@ -262,7 +261,6 @@ class Shipping_Calculator_Widget extends Widget_Base {
             'text_placeholder'  => esc_html__( 'Postcode placeholder', 'hubgo' ),
             'text_button'       => esc_html__( 'Button text', 'hubgo' ),
             'text_more_options' => esc_html__( 'More options link', 'hubgo' ),
-            'text_finder_link'  => esc_html__( '"I do not know my postcode" link', 'hubgo' ),
         );
 
         foreach ( $texts as $key => $label ) {
@@ -340,6 +338,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
      * Style: free shipping badge.
      *
      * @since 3.0.0
+     * @version 3.1.0
      * @return void
      */
     private function register_badge_controls() {
@@ -351,6 +350,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
 
         $this->add_color_control( 'style_badge_bg', esc_html__( 'Background color', 'hubgo' ), 'calc_badge_bg' );
         $this->add_color_control( 'style_badge_text', esc_html__( 'Text color', 'hubgo' ), 'calc_badge_text_color' );
+        $this->add_slider_control( 'style_badge_radius', esc_html__( 'Corner radius', 'hubgo' ), 'calc_badge_radius', 0, 40 );
 
         $this->end_controls_section();
     }
@@ -423,6 +423,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
      * Style: modal shell.
      *
      * @since 3.0.0
+     * @version 3.1.0
      * @return void
      */
     private function register_modal_controls() {
@@ -440,6 +441,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
         ) );
 
         $this->add_color_control( 'style_modal_bg', esc_html__( 'Background color', 'hubgo' ), 'calc_modal_bg' );
+        $this->add_color_control( 'style_muted_bg', esc_html__( 'Address box background', 'hubgo' ), 'calc_muted_bg' );
         $this->add_slider_control( 'style_modal_radius', esc_html__( 'Corner radius', 'hubgo' ), 'calc_modal_radius', 0, 40 );
 
         // Elementor's colour control emits rgba(), so the overlay is editable
@@ -555,7 +557,6 @@ class Shipping_Calculator_Widget extends Widget_Base {
             'quantity' => max( 1, absint( $settings['quantity'] ?? 1 ) ),
             'features' => array(
                 'badge'      => 'yes' === ( $settings['show_badge'] ?? 'yes' ),
-                'finder'     => 'yes' === ( $settings['show_finder'] ?? 'yes' ),
                 'options'    => 'yes' === ( $settings['show_options'] ?? 'yes' ),
                 'auto'       => 'yes' === ( $settings['auto_calculate'] ?? '' ),
             ),
@@ -608,7 +609,6 @@ class Shipping_Calculator_Widget extends Widget_Base {
             'text_placeholder'  => 'placeholder',
             'text_button'       => 'button',
             'text_more_options' => 'moreOptions',
-            'text_finder_link'  => 'finderLink',
             'text_note'         => 'note',
         );
 

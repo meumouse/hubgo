@@ -17,11 +17,9 @@
 import { computed, onMounted, ref } from 'vue';
 import { ChevronRight, Truck } from '@boxicons/vue';
 import CepForm from './CepForm.vue';
-import CepFinderModal from './CepFinderModal.vue';
 import ShippingOptionsModal from './ShippingOptionsModal.vue';
 import { useShippingQuote } from '../useShippingQuote';
 import { formatCep, interpolate } from '../format';
-import { getAddressLookup } from '../params';
 import { __ } from '../../utils/i18n';
 
 const props = defineProps({
@@ -30,7 +28,6 @@ const props = defineProps({
 
 const rootEl = ref( null );
 const optionsOpen = ref( false );
-const finderOpen = ref( false );
 
 const {
     postcode,
@@ -38,7 +35,6 @@ const {
     preferredRate,
     rates,
     freeShipping,
-    context,
     loading,
     error,
     hasQuoted,
@@ -50,10 +46,6 @@ const {
 
 const texts = computed( () => props.config.texts || {} );
 const features = computed( () => props.config.features || {} );
-
-const showFinder = computed(
-    () => Boolean( features.value.finder ) && Boolean( texts.value.finderLink ) && Boolean( getAddressLookup().enabled ),
-);
 
 /**
  * Badge copy: the "already free" variant wins over the threshold pitch.
@@ -123,8 +115,6 @@ const metaLine = computed( () => {
     return [ rate.label, price, destination ].join( ' · ' );
 } );
 
-const destination = computed( () => ( context.value && context.value.state ) ? String( context.value.state ) : '' );
-
 onMounted( () => {
     // A returning shopper already has a postcode in the cookie: quote it up
     // front so the card lands populated instead of asking again.
@@ -132,16 +122,6 @@ onMounted( () => {
         calculate( postcode.value );
     }
 } );
-
-/**
- * Fill the field from the address finder and quote it immediately.
- *
- * @param {string} digits Eight-digit postcode.
- * @return {void}
- */
-function handleCepFound( digits ) {
-    calculate( digits );
-}
 </script>
 
 <template>
@@ -151,17 +131,23 @@ function handleCepFound( digits ) {
             {{ badgeText }}
         </div>
 
-        <div v-if="texts.title" class="hubgo-calc__title">{{ texts.title }}</div>
-        <div v-if="texts.info" class="hubgo-calc__info">{{ texts.info }}</div>
-
         <!--
             The two states are wrapped in a real element rather than a <template>
             because a fragment has no node for a transition to act on. Nothing in
             calculator.css selects these by position, so the extra div is inert.
+
+            The title and the intro live inside the empty state on purpose: both
+            invite the shopper to type a postcode, and repeating the invitation
+            above an answer they already have pushes that answer down the card.
+            Being inside the transition is also what makes them leave with the
+            form instead of vanishing on their own.
         -->
         <Transition name="hubgo-calc-fade" mode="out-in">
             <!-- Empty state: no postcode known yet. -->
             <div v-if="! postcode" key="empty">
+                <div v-if="texts.title" class="hubgo-calc__title">{{ texts.title }}</div>
+                <div v-if="texts.info" class="hubgo-calc__info">{{ texts.info }}</div>
+
                 <CepForm
                     :model-value="''"
                     :loading="loading"
@@ -210,20 +196,10 @@ function handleCepFound( digits ) {
             </div>
         </Transition>
 
-        <button
-            v-if="showFinder"
-            type="button"
-            class="hubgo-calc__finder-link"
-            @click="finderOpen = true"
-        >
-            {{ texts.finderLink }}
-        </button>
-
         <ShippingOptionsModal
             :open="optionsOpen"
             :token-source="rootEl"
             :postcode="postcode"
-            :destination="destination"
             :rates="rates"
             :preferred-id="preferredId"
             :loading="loading"
@@ -235,13 +211,6 @@ function handleCepFound( digits ) {
             @submit-cep="calculate"
             @select="selectMethod"
             @clear-preference="clearPreference"
-        />
-
-        <CepFinderModal
-            :open="finderOpen"
-            :token-source="rootEl"
-            @close="finderOpen = false"
-            @found="handleCepFound"
         />
     </div>
 </template>

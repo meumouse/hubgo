@@ -68,6 +68,7 @@ class Calculator_Styles {
      * Setting key => CSS custom property (and the unit its value takes).
      *
      * @since 3.0.0
+     * @version 3.1.0
      * @return array<string,array<string,string>>
      */
     public static function get_token_map() {
@@ -77,6 +78,7 @@ class Calculator_Styles {
             'calc_surface_border'     => array( 'token' => '--hubgo-calc-surface-border', 'unit' => '' ),
             'calc_surface_radius'     => array( 'token' => '--hubgo-calc-radius', 'unit' => 'px' ),
             'calc_surface_padding'    => array( 'token' => '--hubgo-calc-surface-padding', 'unit' => 'px' ),
+            'calc_muted_bg'           => array( 'token' => '--hubgo-calc-muted-bg', 'unit' => '' ),
 
             // Typography and accent.
             'primary_main_color'      => array( 'token' => '--hubgo-calc-accent', 'unit' => '' ),
@@ -87,6 +89,7 @@ class Calculator_Styles {
             // Free shipping badge.
             'calc_badge_bg'           => array( 'token' => '--hubgo-calc-badge-bg', 'unit' => '' ),
             'calc_badge_text_color'   => array( 'token' => '--hubgo-calc-badge-text', 'unit' => '' ),
+            'calc_badge_radius'       => array( 'token' => '--hubgo-calc-badge-radius', 'unit' => 'px' ),
 
             // Postcode field.
             'calc_input_bg'           => array( 'token' => '--hubgo-calc-input-bg', 'unit' => '' ),

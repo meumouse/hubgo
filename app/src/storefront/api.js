@@ -8,6 +8,7 @@
  * public, so the nonce is sent when present but never required.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 import { getNonce, getRestUrl } from './params';
 import { __ } from '../utils/i18n';
@@ -103,21 +104,4 @@ export const storefrontApi = {
         body: payload,
         signal,
     } ),
-
-    /**
-     * Suggest addresses for the CEP finder.
-     *
-     * @param {object} query q or uf/city/street, plus session.
-     * @param {AbortSignal|null} signal Abort signal.
-     * @return {Promise<object>}
-     */
-    searchAddress: ( query, signal = null ) => request( '/address/autocomplete', { query, signal } ),
-
-    /**
-     * Resolve a suggestion into a postcode.
-     *
-     * @param {object} query id and session.
-     * @return {Promise<object>}
-     */
-    resolveAddress: ( query ) => request( '/address/resolve', { query } ),
 };

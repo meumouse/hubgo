@@ -22,8 +22,6 @@ const props = defineProps({
     open: { type: Boolean, default: false },
     tokenSource: { type: [ Object, null ], default: null },
     postcode: { type: String, default: '' },
-    /** Human-readable destination hint (the state resolved from the postcode). */
-    destination: { type: String, default: '' },
     rates: { type: Array, default: () => [] },
     preferredId: { type: String, default: '' },
     loading: { type: Boolean, default: false },
@@ -107,7 +105,6 @@ function submitCep( value ) {
                     <div class="hubgo-calc__destination-body">
                         <div>
                             {{ __( 'Postcode:' ) }} <strong>{{ formatCep( postcode ) }}</strong>
-                            <template v-if="destination"> &middot; {{ destination }}</template>
                         </div>
 
                         <button type="button" class="hubgo-calc__destination-edit" @click="editingCep = true">

@@ -24,7 +24,7 @@ class Default_Options {
      * Can be filtered via 'Hubgo/Admin/Default_Options' filter.
      *
      * @since 2.0.0
-     * @version 3.0.0
+     * @version 3.1.0
      * @return array Default options
      */
     public static function get_defaults() {
@@ -53,7 +53,6 @@ class Default_Options {
             'text_free_shipping_badge'             => __( 'Free shipping over %s', 'hubgo' ),
             'text_free_shipping_active'            => __( 'Free shipping on this product', 'hubgo' ),
             'text_more_options'                    => __( 'More details and delivery methods', 'hubgo' ),
-            'text_cep_finder_link'                 => __( 'I do not know my postcode', 'hubgo' ),
             'text_preference_hint'                 => __( 'It will be pre-selected at the checkout', 'hubgo' ),
             'text_preference_saved'                => __( 'Option saved as your preference', 'hubgo' ),
             'text_clear_preference'                => __( 'Clear preference', 'hubgo' ),
@@ -62,11 +61,6 @@ class Default_Options {
             // means "read it from the shipping zone" — see Free_Shipping_Context.
             'shipping_handling_days'               => '0',
             'free_shipping_threshold'              => '',
-
-            // Address lookup ("I do not know my postcode"). ViaCEP needs no
-            // credential, so the feature works on a fresh install without setup.
-            'address_lookup_provider'              => 'viacep',
-            'google_places_api_key'                => '',
 
             // Preferred shipping method carried into the checkout.
             'enable_shipping_preference'           => 'yes',
@@ -89,6 +83,8 @@ class Default_Options {
             'calc_font_size'                       => '',
             'calc_badge_bg'                        => '',
             'calc_badge_text_color'                => '',
+            'calc_badge_radius'                    => '',
+            'calc_muted_bg'                        => '',
             'calc_input_bg'                        => '',
             'calc_input_border'                    => '',
             'calc_input_radius'                    => '',

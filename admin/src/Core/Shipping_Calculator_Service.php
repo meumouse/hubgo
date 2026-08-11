@@ -279,7 +279,7 @@ class Shipping_Calculator_Service {
      * as the shopper's preferred method (see {@see Shipping_Preference}).
      *
      * @since 3.0.0
-     * @version 3.0.0
+     * @version 3.1.0
      * @param array $rates Rate objects.
      * @return array<int,array<string,mixed>>
      */
@@ -308,7 +308,50 @@ class Shipping_Calculator_Service {
             );
         }
 
-        return $rows;
+        return $this->sort_rows( $rows );
+    }
+
+
+    /**
+     * Order the rows the way the storefront reads them: cheapest first.
+     *
+     * WooCommerce hands the rates back in the order their shipping methods were
+     * registered, which puts whatever the store happened to add first at the top
+     * of the list. The compact card already headlines the cheapest option
+     * (see `resolvePreferredRate` on the JS side), so an unordered modal
+     * contradicts the very card that opened it — and a free rate, which is the
+     * one the shopper is looking for, could sit anywhere in the list.
+     *
+     * Ties fall back to the label so two identical quotes never reshuffle:
+     * `usort` is not stable before PHP 8.0, and this plugin still supports 7.4.
+     *
+     * @since 3.1.0
+     * @param array<int,array<string,mixed>> $rows Normalized rows.
+     * @return array<int,array<string,mixed>>
+     */
+    private function sort_rows( $rows ) {
+        usort( $rows, function( $a, $b ) {
+            $cost_a = (float) $a['cost'];
+            $cost_b = (float) $b['cost'];
+
+            if ( $cost_a === $cost_b ) {
+                return strcmp( (string) $a['label'], (string) $b['label'] );
+            }
+
+            return ( $cost_a < $cost_b ) ? -1 : 1;
+        } );
+
+        /**
+         * Filters the ordered rate rows before they reach the storefront.
+         *
+         * Runs after the default cheapest-first ordering, so a store that
+         * promises a carrier the top slot can restore its own order here
+         * without having to re-normalize the rows.
+         *
+         * @since 3.1.0
+         * @param array<int,array<string,mixed>> $rows Rows, cheapest first.
+         */
+        return array_values( (array) apply_filters( 'Hubgo/Shipping_Calculator/Rates_Order', $rows ) );
     }
 
 

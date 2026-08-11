@@ -18,11 +18,11 @@
  * nothing outside `.hubgo-shipping-calculator` is touched.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 
 /*
- * Tokens and the inherited text context, shared by the card, the modal and the
- * select dropdown.
+ * Tokens and the inherited text context, shared by the card and the modal.
  *
  * The modal is teleported to <body>, so it needs its own copy of the defaults —
  * but it must NOT pick up the card's surface (background, border, padding,
@@ -30,13 +30,9 @@
  * an opaque white layer at `inset: 0` covering the page, which is also what
  * left `backdrop-filter` with nothing but flat white to blur. Store-wide and
  * Elementor overrides still reach the modal, copied across by bridgeTokens().
- *
- * `.hubgo-calc-select` is teleported for the same reason and gets the same
- * treatment: defaults here, overrides bridged in when it opens.
  */
 .hubgo-shipping-calculator,
-.hubgo-calc-modal,
-.hubgo-calc-select {
+.hubgo-calc-modal {
     /* Layout */
     --hubgo-calc-font-family: inherit;
     --hubgo-calc-radius: 12px;
@@ -45,20 +41,34 @@
     --hubgo-calc-surface-border: #e5e8ec;
     --hubgo-calc-surface-padding: 20px;
     --hubgo-calc-surface-shadow: none;
+    /* Neutral fill for the surfaces that only carry information — today the
+       address box at the top of the details window. Deliberately NOT
+       `option-selected-bg`: that one is a tint of the accent, and reusing it
+       painted the address the shopper cannot act on in the same colour as the
+       row they had just picked. */
+    --hubgo-calc-muted-bg: #f7f8f9;
 
-    /* Typography */
+    /* Typography.
+
+       The title and the small text are derived from the body size instead of
+       being fixed, so the single "Font size" control on the settings panel (and
+       its Elementor counterpart) rescales the whole card rather than only its
+       middle step. Both stay plain custom properties, so a store that wants a
+       different ratio can still override either one on its own. */
     --hubgo-calc-text: #102033;
     --hubgo-calc-text-muted: #6b7280;
     --hubgo-calc-accent: #008aff;
     --hubgo-calc-accent-contrast: #ffffff;
-    --hubgo-calc-title-size: 15px;
+    --hubgo-calc-title-size: calc(var(--hubgo-calc-body-size) + 2px);
     --hubgo-calc-body-size: 14px;
-    --hubgo-calc-small-size: 12px;
+    --hubgo-calc-small-size: calc(var(--hubgo-calc-body-size) - 1px);
 
-    /* Free shipping badge */
+    /* Free shipping badge. A rounded rectangle rather than a pill: at this
+       size a pill reads as a status chip, and the badge is a claim about the
+       product. The radius is a setting, so a store can still ask for one. */
     --hubgo-calc-badge-bg: #059669;
     --hubgo-calc-badge-text: #ffffff;
-    --hubgo-calc-badge-radius: 999px;
+    --hubgo-calc-badge-radius: 6px;
 
     /* Postcode field */
     --hubgo-calc-input-bg: #ffffff;
@@ -133,10 +143,7 @@
 .hubgo-shipping-calculator *::after,
 .hubgo-calc-modal *,
 .hubgo-calc-modal *::before,
-.hubgo-calc-modal *::after,
-.hubgo-calc-select *,
-.hubgo-calc-select *::before,
-.hubgo-calc-select *::after {
+.hubgo-calc-modal *::after {
     box-sizing: border-box;
 }
 
@@ -149,9 +156,7 @@
 .hubgo-calc-modal ul,
 .hubgo-calc-modal li,
 .hubgo-calc-modal h3,
-.hubgo-calc-modal h4,
-.hubgo-calc-select ul,
-.hubgo-calc-select li {
+.hubgo-calc-modal h4 {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -173,8 +178,7 @@
 .hubgo-shipping-calculator input,
 .hubgo-shipping-calculator select,
 .hubgo-calc-modal input,
-.hubgo-calc-modal select,
-.hubgo-calc-select input {
+.hubgo-calc-modal select {
     margin: 0;
     font: inherit;
     line-height: inherit;
@@ -194,7 +198,7 @@
     align-items: center;
     gap: 7px;
     margin-bottom: 14px;
-    padding: 5px 12px;
+    padding: 6px 12px;
     border-radius: var(--hubgo-calc-badge-radius);
     background: var(--hubgo-calc-badge-bg);
     color: var(--hubgo-calc-badge-text);
@@ -277,28 +281,27 @@
     cursor: default;
 }
 
-.hubgo-calc__finder-link,
-.hubgo-calc__more {
+/* Once a quote is on screen this is the only thing left to act on, so it takes
+   the accent and body size rather than reading as a footnote.
+
+   Written as `button.hubgo-calc__more`, like the other link-shaped buttons in
+   this file: the scoped reset sets `color: inherit` on every button through
+   `.hubgo-shipping-calculator button`, which outranks a lone class no matter
+   where it sits in the file. A bare `.hubgo-calc__more` here silently rendered
+   in the text colour instead of the accent. */
+button.hubgo-calc__more {
     display: inline-flex;
     align-items: center;
     gap: 5px;
     margin-top: 12px;
     background: none;
     color: var(--hubgo-calc-accent);
-    font-size: var(--hubgo-calc-small-size);
+    font-size: var(--hubgo-calc-body-size);
     text-decoration: none;
 }
 
-.hubgo-calc__finder-link:hover,
-.hubgo-calc__more:hover {
+button.hubgo-calc__more:hover {
     text-decoration: underline;
-}
-
-/* The "more options" link is a navigational affordance, not a call to action:
-   it reads as body text with a chevron rather than competing with the button. */
-.hubgo-calc__more {
-    color: var(--hubgo-calc-text);
-    font-size: var(--hubgo-calc-body-size);
 }
 
 /* Boxicons glyphs are solid shapes, not stroked paths, and each fills a
@@ -332,8 +335,10 @@
     font-size: var(--hubgo-calc-small-size);
 }
 
+/* The badge above already carries the spacing, and the title and the intro are
+   gone by the time this is on screen — see ShippingCalculator.vue. */
 .hubgo-calc__result {
-    margin-top: 4px;
+    margin-top: 0;
 }
 
 .hubgo-calc__headline {
@@ -343,7 +348,7 @@
 }
 
 .hubgo-calc__meta {
-    margin-top: 2px;
+    margin-top: 4px;
     color: var(--hubgo-calc-text-muted);
     font-size: var(--hubgo-calc-small-size);
 }
@@ -416,7 +421,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
 .hubgo-calc__option {
@@ -438,10 +443,13 @@
 }
 
 /* The selected row is marked by its outline, not by a fill. A tinted row plus a
-   filled radio says the same thing twice and makes the price harder to read. */
+   filled radio says the same thing twice and makes the price harder to read.
+   The ring is drawn INSIDE the border box: an outer one sits beyond the
+   element and was being sliced flush against the edges of the modal body,
+   which is a scroll container and therefore clips on both axes. */
 .hubgo-calc__option.is-selected {
     border-color: var(--hubgo-calc-accent);
-    box-shadow: 0 0 0 1px var(--hubgo-calc-accent);
+    box-shadow: inset 0 0 0 1px var(--hubgo-calc-accent);
 }
 
 .hubgo-calc__option-radio {
@@ -492,7 +500,7 @@
 
 .hubgo-calc__option-delivery {
     display: block;
-    margin-top: 3px;
+    margin-top: 4px;
     color: var(--hubgo-calc-text-muted);
     font-size: var(--hubgo-calc-small-size);
 }
@@ -516,7 +524,7 @@
     color: var(--hubgo-calc-accent);
 }
 
-.hubgo-calc__clear-pref {
+button.hubgo-calc__clear-pref {
     margin-left: 6px;
     color: var(--hubgo-calc-text-muted);
     font-size: var(--hubgo-calc-small-size);
@@ -592,7 +600,7 @@
     max-width: 520px;
     max-height: calc(100vh - 32px);
     flex-direction: column;
-    padding: 20px;
+    padding: 24px;
     border-radius: var(--hubgo-calc-modal-radius);
     background: var(--hubgo-calc-modal-bg);
     box-shadow: 0 24px 60px rgba(16, 32, 51, 0.25);
@@ -603,11 +611,13 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
 }
 
+/* Derived from the card's title size so the store's font-size setting carries
+   into the dialog instead of leaving it on a scale of its own. */
 .hubgo-calc-modal__title {
-    font-size: 18px;
+    font-size: calc(var(--hubgo-calc-title-size) + 4px);
     font-weight: 700;
     color: var(--hubgo-calc-text);
 }
@@ -637,7 +647,7 @@
 }
 
 .hubgo-calc-modal__close:hover {
-    background: var(--hubgo-calc-option-selected-bg);
+    background: var(--hubgo-calc-muted-bg);
     color: var(--hubgo-calc-text);
 }
 
@@ -645,21 +655,14 @@
     min-height: 0;
     flex: 1 1 auto;
     overflow-y: auto;
-    /* `overflow-y: auto` makes this a scroll container, and a scroll container
-       clips on BOTH axes. The selected option is marked with an outer
-       box-shadow ring, which sits outside its border box and was being sliced
-       flush against these edges. The padding gives the ring room; the matching
-       negative margin keeps the content aligned with the header above it. */
-    padding: 3px;
-    margin: -3px;
 }
 
 .hubgo-calc-modal__section + .hubgo-calc-modal__section {
-    margin-top: 18px;
+    margin-top: 20px;
 }
 
 .hubgo-calc-modal__section-title {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     font-size: var(--hubgo-calc-body-size);
     font-weight: 600;
     color: var(--hubgo-calc-text);
@@ -669,10 +672,10 @@
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    padding: 12px 14px;
+    padding: 14px 16px;
     border: 1px solid var(--hubgo-calc-option-border);
     border-radius: var(--hubgo-calc-option-radius);
-    background: var(--hubgo-calc-option-selected-bg);
+    background: var(--hubgo-calc-muted-bg);
 }
 
 .hubgo-calc__destination svg.hubgo-calc__pin {
@@ -688,282 +691,20 @@
     min-width: 0;
 }
 
-.hubgo-calc__destination-edit {
+/* `button.` for the same reason as `.hubgo-calc__more` above — the scoped
+   reset's `color: inherit` outranks a lone class. */
+button.hubgo-calc__destination-edit {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    margin-top: 3px;
+    margin-top: 5px;
     background: none;
     color: var(--hubgo-calc-accent);
     font-size: var(--hubgo-calc-small-size);
 }
 
-.hubgo-calc__destination-edit:hover {
+button.hubgo-calc__destination-edit:hover {
     text-decoration: underline;
-}
-
-/* --------------------------------------------------------------------------
-   CEP finder
-   -------------------------------------------------------------------------- */
-
-/* The state column used to be 90px because the select only ever showed the UF
-   code. It now shows the WooCommerce state name, and the dropdown is flush with
-   the trigger, so the column is sized to fit the longest one without eating the
-   city field. */
-.hubgo-calc__finder-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 180px) minmax(0, 1fr);
-    gap: 8px;
-}
-
-.hubgo-calc__finder-grid .hubgo-calc__input--full {
-    grid-column: 1 / -1;
-}
-
-.hubgo-calc__finder-field {
-    display: block;
-    width: 100%;
-    height: var(--hubgo-calc-input-height);
-    padding: 0 12px;
-    border: 1px solid var(--hubgo-calc-input-border);
-    border-radius: var(--hubgo-calc-input-radius);
-    background: var(--hubgo-calc-input-bg);
-    color: var(--hubgo-calc-input-text);
-    font-size: var(--hubgo-calc-body-size);
-    outline: none;
-    -webkit-appearance: none;
-    appearance: none;
-}
-
-.hubgo-calc__finder-field:focus {
-    border-color: var(--hubgo-calc-accent);
-}
-
-/* --------------------------------------------------------------------------
-   Custom select (CalcSelect.vue)
-
-   The trigger reuses the `.hubgo-calc__finder-field` skin so the state control
-   is indistinguishable from the inputs beside it. It is written as
-   `button.hubgo-calc__select-trigger` on purpose: the scoped reset strips
-   `border` from every button with `.hubgo-calc-modal button`, which outranks a
-   lone class, so the chrome has to be restated at matching specificity.
-   -------------------------------------------------------------------------- */
-
-.hubgo-calc__select {
-    display: block;
-    min-width: 0;
-}
-
-button.hubgo-calc__select-trigger {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-    width: 100%;
-    height: var(--hubgo-calc-input-height);
-    padding: 0 10px 0 12px;
-    border: 1px solid var(--hubgo-calc-input-border);
-    border-radius: var(--hubgo-calc-input-radius);
-    background: var(--hubgo-calc-input-bg);
-    color: var(--hubgo-calc-input-text);
-    font-size: var(--hubgo-calc-body-size);
-    text-align: left;
-    transition: border-color var(--hubgo-calc-motion-fast) ease-in-out;
-}
-
-button.hubgo-calc__select-trigger:focus-visible,
-button.hubgo-calc__select-trigger.is-open {
-    border-color: var(--hubgo-calc-accent);
-    outline: none;
-}
-
-button.hubgo-calc__select-trigger.is-placeholder {
-    color: var(--hubgo-calc-text-muted);
-}
-
-button.hubgo-calc__select-trigger:disabled {
-    opacity: 0.6;
-    cursor: default;
-}
-
-.hubgo-calc__select-value {
-    flex: 1 1 auto;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.hubgo-calc__select-caret {
-    width: 20px;
-    height: 20px;
-    flex: 0 0 auto;
-    fill: var(--hubgo-calc-text-muted);
-    transition: transform var(--hubgo-calc-motion-fast) ease-in-out;
-}
-
-button.hubgo-calc__select-trigger.is-open .hubgo-calc__select-caret {
-    transform: rotate(180deg);
-}
-
-/*
- * The list mirrors the admin `SelectField` panel one-for-one — 12px radius, the
- * same lifted shadow, 8px of breathing room around the rows, and rows that are
- * 10px-rounded tinted blocks rather than flush strips. Those numbers are
- * literals rather than the surface tokens on purpose: a store restyling its
- * calculator card is not asking for a differently shaped dropdown, and the
- * settings screen it has to match is not restylable.
- *
- * Teleported to <body>, so it sits above the modal shell (z-index 999999)
- * rather than inside it.
- */
-.hubgo-calc-select {
-    position: fixed;
-    z-index: 1000000;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    background: #ffffff;
-    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
-}
-
-.hubgo-calc-select__search {
-    flex: 0 0 auto;
-    padding: 8px;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-/* 2px idle border recoloured on focus, matching the admin control chrome:
-   the border is the entire focus state, never a glow on top of it. */
-.hubgo-calc-select__search input {
-    display: block;
-    width: 100%;
-    height: 40px;
-    padding: 0 12px;
-    border: 2px solid #e6ebf2;
-    border-radius: 10px;
-    background: #ffffff;
-    color: var(--hubgo-calc-input-text);
-    font-size: var(--hubgo-calc-body-size);
-    outline: none;
-    -webkit-appearance: none;
-    appearance: none;
-}
-
-.hubgo-calc-select__search input:focus {
-    border-color: var(--hubgo-calc-accent);
-}
-
-.hubgo-calc-select__list {
-    min-height: 0;
-    flex: 1 1 auto;
-    padding: 8px;
-    overflow-y: auto;
-    outline: none;
-}
-
-.hubgo-calc-select__option {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: var(--hubgo-calc-body-size);
-    font-weight: 500;
-    color: var(--hubgo-calc-text);
-    transition: background-color var(--hubgo-calc-motion-fast) ease-in-out;
-}
-
-.hubgo-calc-select__option.is-active,
-.hubgo-calc-select__option.is-selected {
-    background: var(--hubgo-calc-option-selected-bg);
-}
-
-.hubgo-calc-select__option.is-selected {
-    color: var(--hubgo-calc-accent);
-}
-
-.hubgo-calc-select__option-body {
-    flex: 1 1 auto;
-    min-width: 0;
-}
-
-.hubgo-calc-select__option-label {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.hubgo-calc-select__option-meta {
-    display: block;
-    overflow: hidden;
-    color: var(--hubgo-calc-text-muted);
-    font-size: var(--hubgo-calc-small-size);
-    font-weight: 400;
-    line-height: 1.4;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.hubgo-calc-select__check {
-    width: 16px;
-    height: 16px;
-    flex: 0 0 auto;
-    fill: var(--hubgo-calc-accent);
-}
-
-.hubgo-calc-select__empty {
-    padding: 8px 12px;
-    color: var(--hubgo-calc-text-muted);
-    font-size: var(--hubgo-calc-body-size);
-}
-
-.hubgo-calc__suggestions {
-    max-height: 300px;
-    margin-top: 12px;
-    overflow-y: auto;
-    border: 1px solid var(--hubgo-calc-option-border);
-    border-radius: var(--hubgo-calc-option-radius);
-}
-
-.hubgo-calc__suggestion {
-    display: block;
-    width: 100%;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--hubgo-calc-option-border);
-    text-align: left;
-}
-
-.hubgo-calc__suggestion:last-child {
-    border-bottom: 0;
-}
-
-.hubgo-calc__suggestion:hover:not(:disabled) {
-    background: var(--hubgo-calc-option-selected-bg);
-}
-
-.hubgo-calc__suggestion:disabled {
-    opacity: 0.6;
-}
-
-.hubgo-calc__suggestion-primary {
-    font-weight: 600;
-    color: var(--hubgo-calc-text);
-}
-
-.hubgo-calc__suggestion-secondary {
-    color: var(--hubgo-calc-text-muted);
-    font-size: var(--hubgo-calc-small-size);
-}
-
-.hubgo-calc__hint {
-    margin-top: 10px;
-    color: var(--hubgo-calc-text-muted);
-    font-size: var(--hubgo-calc-small-size);
 }
 
 /* --------------------------------------------------------------------------
@@ -974,22 +715,6 @@ button.hubgo-calc__select-trigger.is-open .hubgo-calc__select-caret {
    has no utility framework, and a transition split between markup and stylesheet
    is a transition that silently stops working when one half moves.
    -------------------------------------------------------------------------- */
-
-/* Select dropdown pop-in. It opens below its trigger, so it enters from above.
-   Restated in terms of the motion tokens rather than its original literals so it
-   answers the reduced-motion switch with everything else, instead of carrying a
-   `transition: none` override of its own. */
-.hubgo-calc-select-pop-enter-active,
-.hubgo-calc-select-pop-leave-active {
-    transition: opacity var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-out),
-                transform var(--hubgo-calc-motion-fast) var(--hubgo-calc-ease-out);
-}
-
-.hubgo-calc-select-pop-enter-from,
-.hubgo-calc-select-pop-leave-to {
-    opacity: 0;
-    transform: translateY(calc(var(--hubgo-calc-motion-shift) / -2));
-}
 
 /* Modal: the overlay fades, the dialog additionally lifts.
 
@@ -1122,9 +847,9 @@ button.hubgo-calc__select-trigger.is-open .hubgo-calc__select-caret {
         flex: 1 1 100%;
     }
 
-    /* Two columns leave the city field unusably narrow once the state control
-       is wide enough to spell the state out. */
-    .hubgo-calc__finder-grid {
-        grid-template-columns: minmax(0, 1fr);
+    /* The dialog's own padding plus the shell's leaves a phone with barely
+       enough room for a two-line option label. */
+    .hubgo-calc-modal__dialog {
+        padding: 18px;
     }
 }
