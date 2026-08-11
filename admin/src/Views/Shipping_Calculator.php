@@ -3,6 +3,7 @@
 namespace MeuMouse\Hubgo\Views;
 
 use MeuMouse\Hubgo\Admin\Settings;
+use MeuMouse\Hubgo\Core\Address\Address_Service;
 use MeuMouse\Hubgo\Core\Shipping_Calculator_Service;
 use MeuMouse\Hubgo\Core\Shipping_Preference;
 
@@ -199,6 +200,10 @@ class Shipping_Calculator {
                 'options'    => true,
                 'preference' => Shipping_Preference::is_enabled(),
                 'auto'       => 'yes' === Settings::get_setting( 'enable_auto_shipping_calculator', 'no' ),
+                // Gated on the provider, not on the copy: an empty link text is
+                // how a store hides the finder it *could* offer, and the two
+                // reasons to hide it must stay tellable apart.
+                'cepFinder'  => Address_Service::is_finder_enabled(),
             ),
             'texts'            => array(
                 'title'               => (string) Settings::get_setting( 'text_calculator_title', '' ),
@@ -206,6 +211,7 @@ class Shipping_Calculator {
                 'placeholder'         => (string) Settings::get_setting( 'text_placeholder_input_shipping_calc', '' ),
                 'button'              => (string) Settings::get_setting( 'text_button_shipping_calc', '' ),
                 'moreOptions'         => (string) Settings::get_setting( 'text_more_options', '' ),
+                'cepFinder'           => (string) Settings::get_setting( 'text_cep_finder_link', '' ),
                 'note'                => (string) Settings::get_setting( 'note_text_bottom_shipping_calc', '' ),
                 'headerShip'          => (string) Settings::get_setting( 'text_header_ship', '' ),
                 'headerValue'         => (string) Settings::get_setting( 'text_header_value', '' ),

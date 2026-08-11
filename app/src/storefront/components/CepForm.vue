@@ -3,11 +3,15 @@
  * CepForm.vue — masked postcode input plus the submit button.
  *
  * Shared by the compact card and the options modal so the two can never drift
- * apart in validation or masking behaviour.
+ * apart in validation or masking behaviour — including the way out for the
+ * shopper who does not know their postcode, which is offered right where they
+ * get stuck rather than only on the first screen.
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 import { ref, watch } from 'vue';
+import { Search } from '@boxicons/vue';
 import { formatCep, isCompleteCep } from '../format';
 import { __ } from '../../utils/i18n';
 
@@ -18,9 +22,13 @@ const props = defineProps({
     buttonLabel: { type: String, default: '' },
     /** Recalculate as soon as the eight digits are complete. */
     auto: { type: Boolean, default: false },
+    /** Whether an address provider is available to power the finder. */
+    finder: { type: Boolean, default: false },
+    /** Link copy. Empty hides the link even when a provider is available. */
+    finderLabel: { type: String, default: '' },
 });
 
-const emit = defineEmits([ 'submit' ]);
+const emit = defineEmits([ 'submit', 'open-finder' ]);
 
 const value = ref( formatCep( props.modelValue ) );
 const localError = ref( '' );
@@ -83,5 +91,15 @@ function submit() {
         </form>
 
         <p v-if="localError" class="hubgo-calc__error">{{ localError }}</p>
+
+        <button
+            v-if="finder && finderLabel"
+            type="button"
+            class="hubgo-calc__finder-link"
+            @click="emit( 'open-finder' )"
+        >
+            <Search aria-hidden="true" />
+            {{ finderLabel }}
+        </button>
     </div>
 </template>

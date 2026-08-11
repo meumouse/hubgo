@@ -124,6 +124,24 @@ export function useShippingQuote( config ) {
 
     const preferredRate = computed( () => resolvePreferredRate( rates.value, preferredId.value ) );
 
+    /**
+     * The destination address the server resolved for the current postcode.
+     *
+     * Always an object with every key present, so a consumer can read
+     * `address.summary` without guarding: the lookup is optional (it needs an
+     * address integration, and it gives up rather than delaying a quote), and a
+     * quote that predates it carries no `address` block at all.
+     */
+    const address = computed( () => ( {
+        street: '',
+        neighborhood: '',
+        city: '',
+        state: '',
+        summary: '',
+        formatted: '',
+        ...( context.value.address || {} ),
+    } ) );
+
     const isPreferenceEnabled = computed(
         () => Boolean( config.features?.preference ) && Boolean( getPreferenceConfig().enabled ),
     );
@@ -190,6 +208,10 @@ export function useShippingQuote( config ) {
             }
 
             rates.value = [];
+            // The previous destination has to go with the rates it described,
+            // or a failed re-quote leaves the old street next to the new
+            // postcode.
+            context.value = {};
             hasQuoted.value = true;
             error.value = requestError.message || __( 'Could not calculate shipping. Please try again.' );
 
@@ -248,6 +270,7 @@ export function useShippingQuote( config ) {
         postcode.value = '';
         rates.value = [];
         freeShipping.value = {};
+        context.value = {};
         hasQuoted.value = false;
         error.value = '';
     }
@@ -274,6 +297,7 @@ export function useShippingQuote( config ) {
         rates,
         freeShipping,
         context,
+        address,
         loading,
         error,
         hasQuoted,

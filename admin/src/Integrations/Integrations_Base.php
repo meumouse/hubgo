@@ -463,6 +463,29 @@ abstract class Integrations_Base {
 
 
     /**
+     * Field helper: masked single-line text.
+     *
+     * For credentials. The value is stored and sanitized like any other string;
+     * the type only tells the field registry to mask it on screen.
+     *
+     * @since 3.0.0
+     * @param string $key Setting key.
+     * @param string $label Field label.
+     * @param string $description Field description.
+     * @param array $extra Extra field attributes.
+     * @return array<string,mixed>
+     */
+    public static function field_password( $key, $label, $description = '', $extra = array() ) {
+        return array_merge( array(
+            'key'         => $key,
+            'type'        => 'password',
+            'label'       => $label,
+            'description' => $description,
+        ), $extra );
+    }
+
+
+    /**
      * Field helper: multi-line text.
      *
      * @since 3.0.0

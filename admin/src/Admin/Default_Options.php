@@ -53,6 +53,7 @@ class Default_Options {
             'text_free_shipping_badge'             => __( 'Free shipping over %s', 'hubgo' ),
             'text_free_shipping_active'            => __( 'Free shipping on this product', 'hubgo' ),
             'text_more_options'                    => __( 'More details and delivery methods', 'hubgo' ),
+            'text_cep_finder_link'                 => __( 'I do not know my postcode', 'hubgo' ),
             'text_preference_hint'                 => __( 'It will be pre-selected at the checkout', 'hubgo' ),
             'text_preference_saved'                => __( 'Option saved as your preference', 'hubgo' ),
             'text_clear_preference'                => __( 'Clear preference', 'hubgo' ),
@@ -129,6 +130,14 @@ class Default_Options {
             'frenet_tracking_url'                  => '',
             'enable_shipment_tracking_integration' => 'no',
             'shipment_tracking_show_items'         => 'yes',
+            // Google Maps. Both sub-toggles default to "yes" so switching the
+            // card on delivers what the card advertises; they exist to turn one
+            // of the two billed APIs back off, not to be found before the
+            // feature works at all.
+            'enable_google_maps_integration'       => 'no',
+            'google_maps_api_key'                  => '',
+            'google_maps_enable_finder'            => 'yes',
+            'google_maps_enable_address_lookup'    => 'yes',
         ));
     }
 }

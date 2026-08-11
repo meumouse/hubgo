@@ -17,9 +17,11 @@
 import { computed, onMounted, ref } from 'vue';
 import { ChevronRight, Truck } from '@boxicons/vue';
 import CepForm from './CepForm.vue';
+import CepFinderModal from './CepFinderModal.vue';
 import ShippingOptionsModal from './ShippingOptionsModal.vue';
 import { useShippingQuote } from '../useShippingQuote';
 import { formatCep, interpolate } from '../format';
+import { getAddressLookup } from '../params';
 import { __ } from '../../utils/i18n';
 
 const props = defineProps({
@@ -28,6 +30,7 @@ const props = defineProps({
 
 const rootEl = ref( null );
 const optionsOpen = ref( false );
+const finderOpen = ref( false );
 
 const {
     postcode,
@@ -35,6 +38,7 @@ const {
     preferredRate,
     rates,
     freeShipping,
+    address,
     loading,
     error,
     hasQuoted,
@@ -46,6 +50,18 @@ const {
 
 const texts = computed( () => props.config.texts || {} );
 const features = computed( () => props.config.features || {} );
+
+/**
+ * Whether the "I do not know my postcode" flow can be offered.
+ *
+ * Both halves have to agree: the widget config carries the store's decision,
+ * and the bootstrap carries whether a provider actually answered. An Elementor
+ * instance rendered from a stale config would otherwise open a finder with
+ * nothing behind it.
+ */
+const isFinderEnabled = computed(
+    () => Boolean( features.value.cepFinder ) && Boolean( getAddressLookup().enabled ),
+);
 
 /**
  * Badge copy: the "already free" variant wins over the threshold pitch.
@@ -102,6 +118,23 @@ const headline = computed( () => {
     return delivery.headline || interpolate( __( 'Delivery via %s' ), rate.label );
 } );
 
+/**
+ * The destination fragment of the meta line.
+ *
+ * Named when the server could resolve the street, digits-only otherwise. Two
+ * separate strings rather than one with an optional half: a translator needs to
+ * reorder "to %1$s (postcode %2$s)" in their own language, which is impossible
+ * once the sentence is assembled from fragments in JS.
+ */
+const destinationLine = computed( () => {
+    const cep = formatCep( postcode.value );
+    const summary = address.value.summary || '';
+
+    return summary
+        ? interpolate( __( 'to %1$s (postcode %2$s)' ), summary, cep )
+        : interpolate( __( 'to postcode %s' ), cep );
+} );
+
 const metaLine = computed( () => {
     const rate = preferredRate.value;
 
@@ -110,10 +143,33 @@ const metaLine = computed( () => {
     }
 
     const price = rate.is_free ? __( 'Free' ) : rate.cost_formatted;
-    const destination = interpolate( __( 'to postcode %s' ), formatCep( postcode.value ) );
 
-    return [ rate.label, price, destination ].join( ' · ' );
+    return [ rate.label, price, destinationLine.value ].join( ' · ' );
 } );
+
+/**
+ * Quote the postcode the finder came back with.
+ *
+ * @param {string} value Eight-digit postcode.
+ * @return {void}
+ */
+function handleFinderResult( value ) {
+    finderOpen.value = false;
+    calculate( value );
+}
+
+/**
+ * Open the finder, closing the options window it may have been opened from.
+ *
+ * Both are teleported to <body>, so stacking them would leave the shopper
+ * dismissing two dialogs to get back to a quote that has already changed.
+ *
+ * @return {void}
+ */
+function openFinder() {
+    optionsOpen.value = false;
+    finderOpen.value = true;
+}
 
 onMounted( () => {
     // A returning shopper already has a postcode in the cookie: quote it up
@@ -154,7 +210,10 @@ onMounted( () => {
                     :placeholder="texts.placeholder || ''"
                     :button-label="texts.button || __( 'Calculate' )"
                     :auto="Boolean( features.auto )"
+                    :finder="isFinderEnabled"
+                    :finder-label="texts.cepFinder || ''"
                     @submit="calculate"
+                    @open-finder="openFinder"
                 />
 
                 <p v-if="error" class="hubgo-calc__error">{{ error }}</p>
@@ -200,6 +259,7 @@ onMounted( () => {
             :open="optionsOpen"
             :token-source="rootEl"
             :postcode="postcode"
+            :address="address"
             :rates="rates"
             :preferred-id="preferredId"
             :loading="loading"
@@ -207,10 +267,20 @@ onMounted( () => {
             :texts="texts"
             :display="config.display || 'list'"
             :preference-enabled="isPreferenceEnabled"
+            :finder-enabled="isFinderEnabled"
             @close="optionsOpen = false"
             @submit-cep="calculate"
             @select="selectMethod"
             @clear-preference="clearPreference"
+            @open-finder="openFinder"
+        />
+
+        <CepFinderModal
+            v-if="isFinderEnabled"
+            :open="finderOpen"
+            :token-source="rootEl"
+            @close="finderOpen = false"
+            @found="handleFinderResult"
         />
     </div>
 </template>

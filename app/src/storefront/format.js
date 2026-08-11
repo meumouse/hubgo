@@ -45,20 +45,34 @@ export function isCompleteCep( value ) {
 }
 
 /**
- * Replace the first `%s` in a template.
+ * Fill the placeholders of a template string.
  *
  * The free-shipping badge is authored by the store owner as
  * "Free shipping over %s", so the placeholder has to survive translation and
  * be filled at render time.
  *
+ * Both sprintf spellings are accepted: `%s` consumes the arguments in order,
+ * and `%1$s` picks one by position. The numbered form is what a translator
+ * needs the moment a string carries two values — "to %1$s (postcode %2$s)"
+ * reads with the street last in some languages, and only a numbered
+ * placeholder survives that reordering.
+ *
  * @param {string} template Template string.
- * @param {string} value Replacement.
+ * @param {...string} values Replacements, in argument order.
  * @return {string}
  */
-export function interpolate( template, value ) {
-    const text = String( template || '' );
+export function interpolate( template, ...values ) {
+    let cursor = 0;
 
-    return text.includes( '%s' ) ? text.replace( '%s', value ) : text;
+    // One pass over both spellings. Two passes would let a value that happens
+    // to contain "%s" — a street name can be anything — be substituted again by
+    // the second one.
+    return String( template || '' ).replace( /%(?:(\d+)\$)?s/g, ( match, position ) => {
+        const index = position ? Number( position ) - 1 : cursor++;
+        const value = values[ index ];
+
+        return value === undefined ? match : String( value );
+    } );
 }
 
 /**

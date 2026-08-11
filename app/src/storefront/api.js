@@ -104,4 +104,21 @@ export const storefrontApi = {
         body: payload,
         signal,
     } ),
+
+    /**
+     * Suggest addresses for the CEP finder.
+     *
+     * @param {object} query q plus the billing session token.
+     * @param {AbortSignal|null} signal Abort signal.
+     * @return {Promise<object>}
+     */
+    searchAddress: ( query, signal = null ) => request( '/address/autocomplete', { query, signal } ),
+
+    /**
+     * Resolve a suggestion into a postcode.
+     *
+     * @param {object} query id and session.
+     * @return {Promise<object>}
+     */
+    resolveAddress: ( query ) => request( '/address/resolve', { query } ),
 };

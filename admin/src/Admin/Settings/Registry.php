@@ -220,6 +220,7 @@ class Registry {
                             self::text( 'text_info_before_input_shipping_calc', __( 'Information text', 'hubgo' ), __( 'Text displayed above the postcode field.', 'hubgo' ) ),
                             self::text( 'text_placeholder_input_shipping_calc', __( 'Field placeholder', 'hubgo' ), __( 'Example text inside the postcode field.', 'hubgo' ) ),
                             self::text( 'text_button_shipping_calc', __( 'Button text', 'hubgo' ), __( 'Label of the calculate button.', 'hubgo' ) ),
+                            self::text( 'text_cep_finder_link', __( '"I do not know my postcode" link', 'hubgo' ), __( 'Only shown while the Google Maps integration is active. Leave empty to hide the link.', 'hubgo' ) ),
                         ),
                     ),
                     array(

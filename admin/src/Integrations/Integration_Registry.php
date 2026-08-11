@@ -36,6 +36,7 @@ class Integration_Registry {
             Melhor_Envio::class,
             Frenet::class,
             Woo_Shipment_Tracking::class,
+            Google_Maps::class,
             Elementor::class,
         ) );
 

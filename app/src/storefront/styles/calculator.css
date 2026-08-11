@@ -304,6 +304,31 @@ button.hubgo-calc__more:hover {
     text-decoration: underline;
 }
 
+/* The finder link sits under the postcode field, where the shopper is already
+   stuck — so it reads as a way out rather than as a second call to action, at
+   the smaller size and without the accent competing with the button. */
+button.hubgo-calc__finder-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    background: none;
+    color: var(--hubgo-calc-accent);
+    font-size: var(--hubgo-calc-small-size);
+    text-decoration: none;
+}
+
+button.hubgo-calc__finder-link:hover {
+    text-decoration: underline;
+}
+
+.hubgo-calc__finder-link svg {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 auto;
+    fill: currentColor;
+}
+
 /* Boxicons glyphs are solid shapes, not stroked paths, and each fills a
    different share of its 24x24 box — the chevron a third of it, the pencil
    nearly all of it. Sizing them separately is what keeps both reading at the
@@ -705,6 +730,92 @@ button.hubgo-calc__destination-edit {
 
 button.hubgo-calc__destination-edit:hover {
     text-decoration: underline;
+}
+
+/* The resolved street headlines the box and the postcode drops to the muted
+   line under it: by the time this is on screen the shopper has already typed
+   the digits, and what they are checking is whether we understood them. */
+.hubgo-calc__destination-address {
+    font-weight: 600;
+    color: var(--hubgo-calc-text);
+}
+
+.hubgo-calc__destination-meta {
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-small-size);
+}
+
+/* --------------------------------------------------------------------------
+   CEP finder (CepFinderModal.vue)
+   -------------------------------------------------------------------------- */
+
+.hubgo-calc__finder-field {
+    display: block;
+    width: 100%;
+    height: var(--hubgo-calc-input-height);
+    padding: 0 12px;
+    border: 1px solid var(--hubgo-calc-input-border);
+    border-radius: var(--hubgo-calc-input-radius);
+    background: var(--hubgo-calc-input-bg);
+    color: var(--hubgo-calc-input-text);
+    font-size: var(--hubgo-calc-body-size);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.hubgo-calc__finder-field:focus {
+    border-color: var(--hubgo-calc-accent);
+}
+
+.hubgo-calc__suggestions {
+    max-height: 300px;
+    margin-top: 12px;
+    overflow-y: auto;
+    border: 1px solid var(--hubgo-calc-option-border);
+    border-radius: var(--hubgo-calc-option-radius);
+}
+
+.hubgo-calc__suggestion {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--hubgo-calc-option-border);
+    text-align: left;
+}
+
+.hubgo-calc__suggestion:last-child {
+    border-bottom: 0;
+}
+
+.hubgo-calc__suggestion:hover:not(:disabled) {
+    background: var(--hubgo-calc-option-selected-bg);
+}
+
+.hubgo-calc__suggestion:disabled {
+    opacity: 0.6;
+}
+
+.hubgo-calc__suggestion-primary {
+    display: block;
+    font-weight: 600;
+    color: var(--hubgo-calc-text);
+}
+
+.hubgo-calc__suggestion-secondary {
+    display: block;
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-small-size);
+}
+
+.hubgo-calc__hint {
+    margin-top: 10px;
+    color: var(--hubgo-calc-text-muted);
+    font-size: var(--hubgo-calc-small-size);
+}
+
+.hubgo-calc__finder-loading {
+    margin-top: 10px;
 }
 
 /* --------------------------------------------------------------------------

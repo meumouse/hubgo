@@ -261,6 +261,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
             'text_placeholder'  => esc_html__( 'Postcode placeholder', 'hubgo' ),
             'text_button'       => esc_html__( 'Button text', 'hubgo' ),
             'text_more_options' => esc_html__( 'More options link', 'hubgo' ),
+            'text_cep_finder'   => esc_html__( '"I do not know my postcode" link', 'hubgo' ),
         );
 
         foreach ( $texts as $key => $label ) {
@@ -609,6 +610,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
             'text_placeholder'  => 'placeholder',
             'text_button'       => 'button',
             'text_more_options' => 'moreOptions',
+            'text_cep_finder'   => 'cepFinder',
             'text_note'         => 'note',
         );
 

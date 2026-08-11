@@ -3,8 +3,8 @@
  *
  * Accessors for the storefront bootstrap injected by `wp_localize_script()` as
  * `hubgo_front_params`. Everything the calculator needs that is not per-widget
- * lives here: the REST root and the preference cookie contract PHP reads back
- * at checkout.
+ * lives here: the REST root, the address lookup descriptor and the preference
+ * cookie contract PHP reads back at checkout.
  *
  * @since 3.0.0
  * @version 3.1.0
@@ -44,6 +44,19 @@ export function getNonce() {
  */
 export function getPreferenceConfig() {
     return getParams().preference || { name: 'hubgo_ship_pref', days: 30, secure: false, enabled: false };
+}
+
+/**
+ * Address lookup descriptor: { enabled, provider, mode }.
+ *
+ * `mode` is what decides which form the finder renders. An unknown mode means
+ * the active provider ships a form this bundle does not have, so the finder
+ * stays hidden rather than posting a query the provider will reject.
+ *
+ * @return {object}
+ */
+export function getAddressLookup() {
+    return getParams().address_lookup || { enabled: false, provider: '', mode: '' };
 }
 
 /**

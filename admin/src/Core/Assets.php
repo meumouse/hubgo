@@ -4,6 +4,7 @@ namespace MeuMouse\Hubgo\Core;
 
 use MeuMouse\Hubgo\Admin\Menu;
 use MeuMouse\Hubgo\Admin\Settings;
+use MeuMouse\Hubgo\Core\Address\Address_Service;
 use MeuMouse\Hubgo\Core\Shipping_Preference;
 use MeuMouse\Hubgo\Core\Update_Checker;
 use MeuMouse\Hubgo\Views\Shipping_Calculator;
@@ -132,6 +133,9 @@ class Assets {
             'nonce'              => wp_create_nonce( 'wp_rest' ),
             'auto_shipping'      => Settings::get_setting( 'enable_auto_shipping_calculator', 'no' ),
             'current_product_id' => $this->get_current_product_id(),
+            // Tells the storefront whether the CEP finder can be offered at all,
+            // and which form the active provider expects.
+            'address_lookup'     => Address_Service::get_bootstrap(),
             // Cookie contract shared with Core\Shipping_Preference, which reads
             // it back at the cart and the checkout.
             'preference'         => Shipping_Preference::get_cookie_config(),

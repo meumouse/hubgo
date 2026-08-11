@@ -15,13 +15,15 @@ import { computed, ref, watch } from 'vue';
 import { Location, Pencil } from '@boxicons/vue';
 import BaseModal from './BaseModal.vue';
 import CepForm from './CepForm.vue';
-import { formatCep } from '../format';
+import { formatCep, interpolate } from '../format';
 import { __ } from '../../utils/i18n';
 
 const props = defineProps({
     open: { type: Boolean, default: false },
     tokenSource: { type: [ Object, null ], default: null },
     postcode: { type: String, default: '' },
+    /** Destination address resolved for the postcode; every key may be empty. */
+    address: { type: Object, default: () => ({}) },
     rates: { type: Array, default: () => [] },
     preferredId: { type: String, default: '' },
     loading: { type: Boolean, default: false },
@@ -29,9 +31,10 @@ const props = defineProps({
     texts: { type: Object, default: () => ({}) },
     display: { type: String, default: 'list' },
     preferenceEnabled: { type: Boolean, default: true },
+    finderEnabled: { type: Boolean, default: false },
 });
 
-const emit = defineEmits([ 'close', 'submit-cep', 'select', 'clear-preference' ]);
+const emit = defineEmits([ 'close', 'submit-cep', 'select', 'clear-preference', 'open-finder' ]);
 
 const editingCep = ref( ! props.postcode );
 
@@ -96,14 +99,30 @@ function submitCep( value ) {
                     :loading="loading"
                     :placeholder="texts.placeholder || ''"
                     :button-label="texts.button || __( 'Calculate' )"
+                    :finder="finderEnabled"
+                    :finder-label="texts.cepFinder || ''"
                     @submit="submitCep"
+                    @open-finder="emit( 'open-finder' )"
                 />
 
                 <div v-else key="chip" class="hubgo-calc__destination">
                     <Location class="hubgo-calc__pin" aria-hidden="true" />
 
                     <div class="hubgo-calc__destination-body">
-                        <div>
+                        <!--
+                            With the street resolved the postcode drops to the
+                            supporting line: the shopper typed the digits, so
+                            what they are checking here is whether we understood
+                            which address they meant.
+                        -->
+                        <template v-if="address.formatted">
+                            <div class="hubgo-calc__destination-address">{{ address.formatted }}</div>
+                            <div class="hubgo-calc__destination-meta">
+                                {{ interpolate( __( 'Postcode %s' ), formatCep( postcode ) ) }}
+                            </div>
+                        </template>
+
+                        <div v-else>
                             {{ __( 'Postcode:' ) }} <strong>{{ formatCep( postcode ) }}</strong>
                         </div>
 

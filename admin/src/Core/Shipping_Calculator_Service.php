@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Hubgo\Core;
 
+use MeuMouse\Hubgo\Core\Address\Address_Provider;
+use MeuMouse\Hubgo\Core\Address\Address_Service;
 use MeuMouse\Hubgo\Core\Delivery_Estimate;
 use MeuMouse\Hubgo\Core\Free_Shipping_Context;
 use MeuMouse\Hubgo\Core\Postcode_Locator;
@@ -213,9 +215,18 @@ class Shipping_Calculator_Service {
      * Build the destination context echoed back to the storefront.
      *
      * The formatted postcode and the resolved state let the client render the
-     * destination without re-deriving anything the server already knows.
+     * destination without re-deriving anything the server already knows. Since
+     * 3.0.0 it also carries the street the postcode belongs to, which is what
+     * lets the card name the destination instead of repeating the digits.
+     *
+     * The address is resolved outside the quote cache on purpose: it is keyed on
+     * the postcode alone, so one lookup serves every product, quantity and
+     * shopper, and it survives the far shorter quote TTL. {@see Address_Service}
+     * answers with empty strings whenever the feature is off, over budget or
+     * simply slow, so nothing here has to guard against it.
      *
      * @since 3.0.0
+     * @version 3.0.0
      * @param string $postcode Normalized postcode.
      * @param string $country Resolved country code.
      * @return array<string,mixed>
@@ -227,6 +238,7 @@ class Shipping_Calculator_Service {
             'state'              => Postcode_Locator::get_state( $postcode, $country ),
             'country'            => $country,
             'currency'           => get_woocommerce_currency(),
+            'address'            => Address_Service::lookup_postcode( $postcode, $country ),
         );
     }
 
@@ -235,7 +247,8 @@ class Shipping_Calculator_Service {
      * Destination context shape used before (or instead of) a calculation.
      *
      * @since 3.0.0
-     * @return array<string,string>
+     * @version 3.0.0
+     * @return array<string,mixed>
      */
     private static function get_empty_context() {
         return array(
@@ -244,6 +257,7 @@ class Shipping_Calculator_Service {
             'state'              => '',
             'country'            => '',
             'currency'           => '',
+            'address'            => Address_Provider::get_empty_address(),
         );
     }
 
