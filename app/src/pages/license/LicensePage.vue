@@ -114,7 +114,7 @@ const statusHelp = computed( () => ( isActive.value
 
 const unlockItems = computed( () => [
     __( 'Automatic updates and license synchronization' ),
-    __( 'Pro integrations: Joinotify, Melhor Envio and the Elementor widget' ),
+    __( 'Pro integrations: Joinotify and the Elementor widget' ),
     __( 'Support, access and subscription updates' ),
 ] );
 

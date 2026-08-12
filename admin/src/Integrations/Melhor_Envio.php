@@ -4,12 +4,12 @@ namespace MeuMouse\Hubgo\Integrations;
 
 use MeuMouse\Hubgo\Admin\Settings;
 use MeuMouse\Hubgo\Core\Delivery_Promise;
-use MeuMouse\Hubgo\Core\License;
 use MeuMouse\Hubgo\Core\Order_Status;
 use MeuMouse\Hubgo\Core\Tracking_Manager;
 use MeuMouse\Hubgo\Views\Shipping_Calculator;
 
 use MelhorEnvio\Factory\ProductServiceFactory;
+use MelhorEnvio\Services\Products\ProductsService;
 
 use WC_Product;
 use WC_Shipping_Rate;
@@ -22,7 +22,10 @@ defined('ABSPATH') || exit;
  *
  * The plugin is distributed on wordpress.org, so the card ships a package URL
  * and the Integrations screen can install and activate it in one click through
- * {@see \MeuMouse\Hubgo\Core\Plugin_Installer}.
+ * {@see \MeuMouse\Hubgo\Core\Plugin_Installer}. There is no MeuMouse add-on to
+ * wait for and no license to buy: the card is free, like Frenet's, because what
+ * it does is keep two plugins the store already runs from contradicting each
+ * other.
  *
  * Everything below reaches the gateway through hooks and public API only —
  * patching a plugin HubGo installs would be erased by its next update:
@@ -47,6 +50,18 @@ defined('ABSPATH') || exit;
  *   account and the Joinotify automation see the shipment.
  * - **Duplicate calculator.** The gateway prints its own shipping simulator on
  *   the product page. With HubGo's calculator on, the page rendered two.
+ * - **Bundles and composites.** The gateway refuses to quote them outside the
+ *   cart — its own simulator prints "a cotação do frete desse produto deve ser
+ *   feita no carrinho" — because the payload it builds for a single product
+ *   carries the kit's own (usually empty) dimensions and none of its parts.
+ *   Quoting one anyway is not a smaller answer, it is a wrong price, so those
+ *   rates are dropped from HubGo's calculator instead.
+ *   {@see self::has_composition_product()}
+ * - **Duplicated forecast.** The gateway bakes the delivery window into the
+ *   rate label ("Correios Pac (3 a 5 dias úteis)") on top of publishing it as
+ *   meta. HubGo's calculator already turns that meta into a promised date, and
+ *   the two disagree as soon as the store sets a handling time, so the
+ *   parenthetical is stripped from the label — in HubGo's own packages only.
  *
  * The delivery forecast needs no bridge: the gateway writes it as rate meta
  * under `delivery_time` ("(3 a 5 dias úteis)"), which is one of the keys
@@ -190,7 +205,7 @@ class Melhor_Envio extends Integrations_Base {
         // calculator to keep working.
         add_filter( 'Hubgo/Shipping_Calculator/Package', array( $this, 'prepare_package' ) );
 
-        if ( ! self::is_enabled() || ! License::is_active() ) {
+        if ( ! self::is_enabled() ) {
             return;
         }
 
@@ -200,8 +215,14 @@ class Melhor_Envio extends Integrations_Base {
         // filtering has run) before the carrier is attached to them.
         add_filter( 'woocommerce_package_rates', array( $this, 'decorate_rates' ), 20, 2 );
 
-        if ( self::syncs_tracking() ) {
+        // Both toggles are fed by the same order save, but they are independent
+        // choices on the card: a store that only wants the status moved must
+        // not have to import the code as well to get it.
+        if ( self::syncs_tracking() || self::marks_as_shipped() ) {
             add_action( 'woocommerce_update_order', array( $this, 'sync_order' ), 20 );
+        }
+
+        if ( self::syncs_tracking() ) {
             add_filter( 'Hubgo/Tracking/Get_Items', array( $this, 'merge_source_items' ), 10, 2 );
         }
 
@@ -245,7 +266,6 @@ class Melhor_Envio extends Integrations_Base {
             'setting_key'      => self::SETTING_KEY,
             'is_plugin'        => true,
             'plugin_active'    => self::get_plugin_files(),
-            'requires_license' => true,
             'coming_soon'      => '' === $package_url,
             'doc_url'          => 'https://wordpress.org/plugins/melhor-envio-cotacao/',
             'install'          => array(
@@ -333,6 +353,11 @@ class Melhor_Envio extends Integrations_Base {
      * half-converted would make the gateway read a key that is not there, which
      * is the failure this whole method exists to prevent.
      *
+     * Bundles and composites are converted like anything else — the point here
+     * is that the gateway survives the request. Their quote is unusable for a
+     * different reason and is discarded later, in
+     * {@see self::has_composition_product()}.
+     *
      * @since 3.1.0
      * @param array $package Shipping package built by the calculator.
      * @return array
@@ -387,12 +412,19 @@ class Melhor_Envio extends Integrations_Base {
 
 
     /**
-     * Attach the carrier to every Melhor Envio rate.
+     * Attach the carrier to every Melhor Envio rate, and clean up what the
+     * gateway's rates carry that HubGo's calculator renders on its own.
      *
-     * Written under `carrier` — the conventional key, not a Melhor Envio one —
-     * because WooCommerce copies rate meta onto the order line item, and
-     * {@see Delivery_Promise} then reads the data without knowing which gateway
-     * produced it.
+     * The carrier is written under `carrier` — the conventional key, not a
+     * Melhor Envio one — because WooCommerce copies rate meta onto the order
+     * line item, and {@see Delivery_Promise} then reads the data without knowing
+     * which gateway produced it. That part applies everywhere, checkout
+     * included.
+     *
+     * The other two only touch packages HubGo built: a quote for a kit is
+     * dropped rather than shown wrong, and the delivery window the gateway
+     * repeats inside the label is removed because the calculator prints the
+     * promised date next to it.
      *
      * @since 3.1.0
      * @param array $rates Rates keyed by rate ID.
@@ -404,21 +436,122 @@ class Melhor_Envio extends Integrations_Base {
             return $rates;
         }
 
-        foreach ( $rates as $rate ) {
+        $is_calculator = is_array( $package ) && ! empty( $package['hubgo_calculator'] );
+        $drop = $is_calculator && self::has_composition_product( $package );
+
+        foreach ( $rates as $rate_id => $rate ) {
             if ( ! $rate instanceof WC_Shipping_Rate || ! self::is_melhor_envio_method( $rate->get_method_id() ) ) {
+                continue;
+            }
+
+            if ( $drop ) {
+                unset( $rates[ $rate_id ] );
                 continue;
             }
 
             $meta = (array) $rate->get_meta_data();
 
-            if ( empty( $meta['company'] ) || ! is_scalar( $meta['company'] ) || isset( $meta['carrier'] ) ) {
-                continue;
+            if ( ! empty( $meta['company'] ) && is_scalar( $meta['company'] ) && ! isset( $meta['carrier'] ) ) {
+                $rate->add_meta_data( 'carrier', sanitize_text_field( (string) $meta['company'] ) );
             }
 
-            $rate->add_meta_data( 'carrier', sanitize_text_field( (string) $meta['company'] ) );
+            if ( $is_calculator ) {
+                $rate->set_label( self::strip_delivery_window( $rate->get_label() ) );
+            }
         }
 
         return $rates;
+    }
+
+
+    /**
+     * Whether a package carries a product the gateway only quotes from the cart.
+     *
+     * Bundles (WPC Product Bundles) and composites (WPC Composite Products) are
+     * normalized by the gateway from the *parent* product alone when they are
+     * quoted outside the cart, because the parts only exist as cart lines. The
+     * gateway answers that by refusing the quote; HubGo drops the rate for the
+     * same reason.
+     *
+     * @since 3.1.0
+     * @param array $package Shipping package.
+     * @return bool
+     */
+    private static function has_composition_product( $package ) {
+        if ( empty( $package['contents'] ) || ! is_array( $package['contents'] ) ) {
+            return false;
+        }
+
+        $found = false;
+
+        foreach ( $package['contents'] as $content ) {
+            $product = isset( $content['data'] ) ? $content['data'] : null;
+
+            if ( $product instanceof WC_Product && self::is_composition_product( $product ) ) {
+                $found = true;
+                break;
+            }
+        }
+
+        /**
+         * Filters whether Melhor Envio rates are dropped from a calculator quote.
+         *
+         * A store that gave its kits real dimensions — and therefore gets a
+         * usable quote out of the gateway — can return false to keep them.
+         *
+         * @since 3.1.0
+         * @param bool $found Whether the package carries a bundle or a composite.
+         * @param array $package Shipping package.
+         */
+        return (bool) apply_filters( 'Hubgo/Integrations/Melhor_Envio/Skip_Compositions', $found, $package );
+    }
+
+
+    /**
+     * Whether a product is a bundle or a composite.
+     *
+     * Asked of the gateway itself when it is new enough to answer, so a type
+     * added on its side is recognized without a HubGo release. The fallback
+     * repeats the four types it knows about today.
+     *
+     * @since 3.1.0
+     * @param WC_Product $product Product being quoted.
+     * @return bool
+     */
+    private static function is_composition_product( $product ) {
+        if ( class_exists( ProductsService::class ) && method_exists( ProductsService::class, 'hasProductComposition' ) ) {
+            return (bool) ProductsService::hasProductComposition( $product );
+        }
+
+        $types = array( 'woosb', 'product-woosb', 'composite', 'product-composite' );
+
+        return in_array( (string) $product->get_type(), $types, true );
+    }
+
+
+    /**
+     * Remove the delivery window the gateway appends to a rate label.
+     *
+     * `MelhorEnvio\Helpers\TimeHelper::label()` produces " (3 a 5 dias úteis)",
+     * " (1 dia útil)" or " (*)" and the gateway concatenates it onto the method
+     * title, on top of publishing the same value as `delivery_time` meta. HubGo
+     * reads the meta, adds the store's handling time and prints a calendar date,
+     * so leaving the parenthetical in place shows the shopper two different
+     * answers to the same question.
+     *
+     * Only the trailing group is matched, so a method a store deliberately named
+     * "Sedex (até 10kg)" keeps its title.
+     *
+     * @since 3.1.0
+     * @param string $label Rate label.
+     * @return string
+     */
+    private static function strip_delivery_window( $label ) {
+        $stripped = preg_replace( '/\s*\((?:\*|[^()]*\bdias?\b[^()]*)\)\s*$/ui', '', (string) $label );
+
+        // preg_replace() answers null on a bad subject (broken UTF-8), and an
+        // empty label would leave the row unreadable.
+        return ( is_string( $stripped ) && '' !== trim( $stripped ) ) ? $stripped : (string) $label;
     }
 
 
@@ -429,6 +562,9 @@ class Melhor_Envio extends Integrations_Base {
      * code ({@see \MelhorEnvio\Services\TrackingService::addTrackingWcOrder()}),
      * which is the only signal it publishes — the plugin fires no actions of its
      * own. Both steps below save the order again, hence the re-entrancy guard.
+     *
+     * The code is what signals the shipment, so it is read even when importing
+     * is off — "Mark as shipped" alone is a valid choice on the card.
      *
      * @since 3.1.0
      * @param int $order_id Order ID.
@@ -455,7 +591,10 @@ class Melhor_Envio extends Integrations_Base {
 
         self::$syncing[ $order_id ] = true;
 
-        $this->import_code( $order, $code );
+        if ( self::syncs_tracking() ) {
+            $this->import_code( $order, $code );
+        }
+
         $this->maybe_mark_as_shipped( $order );
 
         unset( self::$syncing[ $order_id ] );
