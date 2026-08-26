@@ -94,6 +94,41 @@ final class License {
 
 
     /**
+     * Master switch for the whole licensing layer.
+     *
+     * While this is false HubGo ships with every feature unlocked: the MDS
+     * product registration is skipped (no update checks, no license heartbeat
+     * cron, no SDK notices), the License admin screen and its Vue bundle are
+     * not registered, the hubgo/v1 license routes are not created, and
+     * is_active() always answers true so nothing gates itself behind a key.
+     *
+     * Nothing is removed — flip this to true, or define the constant below in
+     * wp-config.php, and the entire flow comes back untouched:
+     *
+     *     define( 'HUBGO_LICENSE_ENABLED', true );
+     *
+     * @since 3.0.0
+     * @var bool
+     */
+    const ENABLED = false;
+
+
+    /**
+     * Whether license enforcement is switched on.
+     *
+     * @since 3.0.0
+     * @return bool
+     */
+    public static function is_enabled() {
+        if ( defined('HUBGO_LICENSE_ENABLED') ) {
+            return (bool) HUBGO_LICENSE_ENABLED;
+        }
+
+        return self::ENABLED;
+    }
+
+
+    /**
      * Hook the product registration onto the SDK bootstrap.
      *
      * Must run before `plugins_loaded` (the SDK loader elects the newest
@@ -104,6 +139,12 @@ final class License {
      * @return void
      */
     public static function boot() {
+        // Licensing switched off: never register the product, so the SDK does
+        // not schedule the heartbeat, check for updates or render notices.
+        if ( ! self::is_enabled() ) {
+            return;
+        }
+
         add_action( 'mds_sdk_loaded', array( __CLASS__, 'register_product' ) );
     }
 
@@ -249,6 +290,10 @@ final class License {
      * @return Integration|null
      */
     public static function get_integration() {
+        if ( ! self::is_enabled() ) {
+            return null;
+        }
+
         if ( null === self::$integration && class_exists( SDK::class ) ) {
             self::$integration = SDK::get( self::PRODUCT_SLUG );
         }
@@ -268,6 +313,11 @@ final class License {
      * @return bool
      */
     public static function is_active() {
+        // Every premium feature is free while licensing is switched off.
+        if ( ! self::is_enabled() ) {
+            return true;
+        }
+
         $integration = self::get_integration();
 
         return $integration ? $integration->is_licensed() : false;
@@ -512,9 +562,10 @@ final class License {
         $status = self::get_status();
 
         return array(
+            'enabled'    => self::is_enabled(),
             'configured' => self::is_configured(),
             'is_active'  => self::is_active(),
-            'status'     => $status ? $status->status() : 'unknown',
+            'status'     => $status ? $status->status() : ( self::is_enabled() ? 'unknown' : 'disabled' ),
             'message'    => self::get_message(),
             'has_key'    => '' !== self::get_key(),
             'plan_name'  => self::get_plan_name(),
@@ -655,6 +706,12 @@ final class License {
      * @return bool
      */
     public static function is_configured() {
+        // No integration is registered while licensing is off, so anything
+        // that talks to MDS (the "Check for updates" link) stays hidden.
+        if ( ! self::is_enabled() ) {
+            return false;
+        }
+
         return '' !== self::get_api_key() && '' !== self::get_public_key();
     }
 

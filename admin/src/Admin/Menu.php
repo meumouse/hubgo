@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Hubgo\Admin;
 
+use MeuMouse\Hubgo\Core\License;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -104,14 +106,17 @@ class Menu {
             array( $this, 'render_integrations_page' )
         );
 
-        add_submenu_page(
-            self::PAGE_SLUG,
-            esc_html__( 'HubGo - License', 'hubgo' ),
-            esc_html__( 'License', 'hubgo' ),
-            $capability,
-            self::LICENSE_PAGE_SLUG,
-            array( $this, 'render_license_page' )
-        );
+        // Only listed while license enforcement is on (License::ENABLED).
+        if ( License::is_enabled() ) {
+            add_submenu_page(
+                self::PAGE_SLUG,
+                esc_html__( 'HubGo - License', 'hubgo' ),
+                esc_html__( 'License', 'hubgo' ),
+                $capability,
+                self::LICENSE_PAGE_SLUG,
+                array( $this, 'render_license_page' )
+            );
+        }
 
         do_action( 'Hubgo/Admin/Menu/Registered', self::PAGE_SLUG, $capability );
     }
@@ -135,11 +140,16 @@ class Menu {
      * @return array<int,string>
      */
     public static function get_page_slugs() {
-        return array(
+        $slugs = array(
             self::PAGE_SLUG,
             self::INTEGRATIONS_PAGE_SLUG,
-            self::LICENSE_PAGE_SLUG,
         );
+
+        if ( License::is_enabled() ) {
+            $slugs[] = self::LICENSE_PAGE_SLUG;
+        }
+
+        return $slugs;
     }
 
 

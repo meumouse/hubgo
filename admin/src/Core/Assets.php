@@ -65,7 +65,7 @@ class Assets {
      * @return array<string,array<string,string>>
      */
     public static function get_admin_pages() {
-        return apply_filters( 'Hubgo/Core/Assets/Admin_Pages', array(
+        $pages = array(
             Menu::PAGE_SLUG => array(
                 'entry'    => 'src/entries/settings.js',
                 'handle'   => 'hubgo-settings-app',
@@ -78,13 +78,20 @@ class Assets {
                 'page'     => 'integrations',
                 'endpoint' => 'integrations',
             ),
-            Menu::LICENSE_PAGE_SLUG => array(
+        );
+
+        // The license bundle is only shipped while the screen exists
+        // (License::ENABLED); the entry itself stays in the build.
+        if ( License::is_enabled() ) {
+            $pages[ Menu::LICENSE_PAGE_SLUG ] = array(
                 'entry'    => 'src/entries/license.js',
                 'handle'   => 'hubgo-license-app',
                 'page'     => 'license',
                 'endpoint' => 'license',
-            ),
-        ) );
+            );
+        }
+
+        return apply_filters( 'Hubgo/Core/Assets/Admin_Pages', $pages );
     }
 
 
@@ -232,7 +239,9 @@ class Assets {
             'pages'     => array(
                 'settings'     => Menu::get_page_url( Menu::PAGE_SLUG ),
                 'integrations' => Menu::get_page_url( Menu::INTEGRATIONS_PAGE_SLUG ),
-                'license'      => Menu::get_page_url( Menu::LICENSE_PAGE_SLUG ),
+                // Empty while licensing is off: the screen is not registered,
+                // so the SPA must not link to it.
+                'license'      => License::is_enabled() ? Menu::get_page_url( Menu::LICENSE_PAGE_SLUG ) : '',
             ),
         ) );
     }

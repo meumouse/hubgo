@@ -107,6 +107,22 @@ class Elementor extends Integrations_Base {
      * @return array
      */
     public function add_integration_item( $integrations ) {
+        $blocks = array(
+            self::modal_html_block(
+                '<p>' . esc_html__( 'With the integration enabled, drag the "Shipping calculator" widget (HubGo category) onto any page. Styles set on the widget apply to that instance only and take precedence over the Appearance tab.', 'hubgo' ) . '</p>'
+                . '<p>' . esc_html__( 'To place the calculator through the widget alone, set the display position to "Elementor widget only" in Settings → General — otherwise product pages also show the automatic one.', 'hubgo' ) . '</p>'
+            ),
+        );
+
+        // Only warn about the license while enforcement is on: with
+        // License::ENABLED off the widget is always registered.
+        if ( License::is_enabled() ) {
+            $blocks[] = self::modal_notice_block(
+                __( 'The widget requires an active license. Without one it stops being registered and disappears from the pages already using it — the calculator displayed automatically on the product page keeps working.', 'hubgo' ),
+                'warning'
+            );
+        }
+
         $integrations[ self::CARD_SLUG ] = array(
             'title'            => __( 'Elementor', 'hubgo' ),
             'description'      => __( 'Adds the shipping calculator as an Elementor widget, with its own color, spacing and typography controls.', 'hubgo' ),
@@ -128,16 +144,7 @@ class Elementor extends Integrations_Base {
                 'title'       => __( 'Elementor', 'hubgo' ),
                 'description' => __( 'How to use the shipping calculator inside Elementor.', 'hubgo' ),
                 'size'        => 'medium',
-                'blocks'      => array(
-                    self::modal_html_block(
-                        '<p>' . esc_html__( 'With the integration enabled, drag the "Shipping calculator" widget (HubGo category) onto any page. Styles set on the widget apply to that instance only and take precedence over the Appearance tab.', 'hubgo' ) . '</p>'
-                        . '<p>' . esc_html__( 'To place the calculator through the widget alone, set the display position to "Elementor widget only" in Settings → General — otherwise product pages also show the automatic one.', 'hubgo' ) . '</p>'
-                    ),
-                    self::modal_notice_block(
-                        __( 'The widget requires an active license. Without one it stops being registered and disappears from the pages already using it — the calculator displayed automatically on the product page keeps working.', 'hubgo' ),
-                        'warning'
-                    ),
-                ),
+                'blocks'      => $blocks,
             ),
         );
 

@@ -21,6 +21,8 @@ use MeuMouse\Hubgo\API\Routes\Tracking_Get;
 use MeuMouse\Hubgo\API\Routes\Tracking_Create;
 use MeuMouse\Hubgo\API\Routes\Tracking_Delete;
 
+use MeuMouse\Hubgo\Core\License;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -38,17 +40,13 @@ class Rest_Controller {
      * @since 3.0.0
      */
     public function __construct() {
-        $routes = apply_filters( 'Hubgo/API/Routes', array(
+        $routes = array(
             Settings_Bootstrap::class,
             Settings_Save::class,
             Settings_Reset::class,
             Integrations_Bootstrap::class,
             Plugin_Install::class,
             Migration_Run::class,
-            License_Bootstrap::class,
-            License_Activate::class,
-            License_Deactivate::class,
-            License_Sync::class,
             Update_Check::class,
             Shipping_Calculate::class,
             Address_Autocomplete::class,
@@ -57,7 +55,20 @@ class Rest_Controller {
             Tracking_Get::class,
             Tracking_Create::class,
             Tracking_Delete::class,
-        ) );
+        );
+
+        // The license endpoints only exist while enforcement is on
+        // (License::ENABLED); the route classes themselves stay in place.
+        if ( License::is_enabled() ) {
+            array_push( $routes,
+                License_Bootstrap::class,
+                License_Activate::class,
+                License_Deactivate::class,
+                License_Sync::class
+            );
+        }
+
+        $routes = apply_filters( 'Hubgo/API/Routes', $routes );
 
         foreach ( $routes as $route_class ) {
             if ( class_exists( $route_class ) ) {

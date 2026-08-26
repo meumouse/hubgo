@@ -389,6 +389,9 @@ class Registry {
     public static function get_integration_cards() {
         $settings = Repository::get_settings();
         $licensed = License::is_active();
+        // With licensing off the Pro badge has nothing left to mean, so the
+        // flag is dropped from the payload instead of rendering as "unlocked".
+        $license_enabled = License::is_enabled();
         $can_install = current_user_can( 'install_plugins' );
         $cards = array();
 
@@ -418,6 +421,7 @@ class Registry {
                 'enabled'          => '' !== $setting_key && 'yes' === ( $settings[ $setting_key ] ?? 'no' ),
                 'requires_plugin'  => $requires_plugin,
                 'plugin_active'    => $plugin_active,
+                'requires_license' => $license_enabled && ! empty( $item['requires_license'] ),
                 'is_locked'        => $locked,
                 'can_install'      => $installable && $can_install,
                 // A card is configurable when it has fields OR modal blocks:
