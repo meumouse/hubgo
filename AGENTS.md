@@ -22,13 +22,13 @@ The plugin owns a **top-level admin menu** with three subpages, one Vite entry e
 
 | Page | Slug | Entry | Bootstrap route |
 | --- | --- | --- | --- |
-| Configurações | `hubgo-settings` | `src/entries/settings.js` | `GET hubgo/v1/settings` |
-| Integrações | `hubgo-integrations` | `src/entries/integrations.js` | `GET hubgo/v1/integrations` |
-| Licença | `hubgo-license` | `src/entries/license.js` | `GET hubgo/v1/license` |
+| Settings | `hubgo-settings` | `src/entries/settings.js` | `GET hubgo/v1/settings` |
+| Integrations | `hubgo-integrations` | `src/entries/integrations.js` | `GET hubgo/v1/integrations` |
+| License | `hubgo-license` | `src/entries/license.js` | `GET hubgo/v1/license` |
 
 `hubgo-settings` doubles as the parent menu slug so links published before the restructure keep working. The MDS SDK is registered with `settings_parent => null`, which stops it from adding a submenu of its own — the license screen is HubGo's Vue page, driven by the `hubgo/v1/license/*` routes over the SDK's license manager.
 
-The settings screen has four tabs: **Geral**, **Aparência**, **Textos** and **Sobre**.
+The settings screen has four tabs: **General**, **Appearance**, **Texts** and **About**.
 
 **Requirements:** PHP >= 7.4, WordPress tested up to 6.9.4, WooCommerce >= 6.0 (tested up to 10.6.0). HPOS (custom order tables) compatible.
 
@@ -47,7 +47,7 @@ admin/                      All PHP backend code + Composer
       Settings.php              Thin static read/write facade (legacy-compatible)
       Default_Options.php       Default values for every setting key
       Menu.php                  Top-level HubGo menu + the three SPA subpages
-      System_Status.php         Environment snapshot for the "Sobre" tab
+      System_Status.php         Environment snapshot for the "About" tab
       Order_Tracking_Meta_Box.php
     API/                    REST layer (namespace hubgo/v1)
       Abstract_Route.php        Base class for every endpoint
@@ -282,7 +282,7 @@ class Settings_Save extends Abstract_Route {
 Settings are **schema-driven** and stored in a single option, `hubgo_settings`.
 
 - `Admin\Settings\Registry::get_schema()` defines sections → cards → fields. The Vue SPA renders whatever the schema declares; **adding a setting means editing the schema, not the UI**.
-- A card declares either `fields` (rendered by the field registry) or a `component` name resolved against the page-local `CARD_COMPONENTS` map in `SettingsPage.vue` — that is how the "Sobre" tab mixes plain settings with the system status panel and the danger zone.
+- A card declares either `fields` (rendered by the field registry) or a `component` name resolved against the page-local `CARD_COMPONENTS` map in `SettingsPage.vue` — that is how the "About" tab mixes plain settings with the system status panel and the danger zone.
 - `Admin\Default_Options::get_defaults()` must contain a default for every new key, **including integration keys**.
 - `Admin\Settings\Repository` merges defaults at read time and sanitizes by field `type` at write time. New field types need a matching `case` in `sanitize_value()`.
 - Toggles are stored as the strings `'yes'` / `'no'`, and an absent toggle in the payload means `'no'`. Every screen therefore POSTs its **full** settings map, never a partial patch.
@@ -331,7 +331,7 @@ The shopper's choice travels in one cookie, `hubgo_ship_pref` (`{ r: rate id, p:
 The calculator is styled exclusively through `--hubgo-calc-*` CSS custom properties, which is what lets the settings panel and Elementor drive the same component without either knowing about the other. The cascade resolves precedence, lowest to highest:
 
 1. `app/src/storefront/styles/calculator.css` — the default value of every property.
-2. `Views\Calculator_Styles` — a `.hubgo-shipping-calculator { … }` block in `wp_head`, from the Aparência tab. Only non-empty settings are emitted; an empty setting means "keep the built-in value", which is why the style keys in `Default_Options` are empty strings rather than copies of the stylesheet's numbers.
+2. `Views\Calculator_Styles` — a `.hubgo-shipping-calculator { … }` block in `wp_head`, from the Appearance tab. Only non-empty settings are emitted; an empty setting means "keep the built-in value", which is why the style keys in `Default_Options` are empty strings rather than copies of the stylesheet's numbers.
 3. The Elementor widget — `{{WRAPPER}} .hubgo-shipping-calculator { … }`, higher specificity, per instance.
 
 `Calculator_Styles::get_token_map()` is the single source of truth for which setting feeds which property; the Elementor widget builds its `selectors` from it via `Calculator_Styles::get_token()`. Adding a style control means one entry in that map plus one control — never a property name written in two places. `app/src/storefront/tokens.js` mirrors the property list for one reason only: modals are teleported to `<body>`, so their values have to be copied across explicitly.
@@ -503,7 +503,7 @@ The published DOM events `hubgo:shipping_calculated` and `hubgo:shipping_error` 
 ## 7. Internationalization
 
 - Text domain: **`hubgo`**, loaded from `/languages` on `init` at priority **0**.
-- **Source strings are written in en-US** (since 3.0.0) and translated outward from there, pt-BR included. Everything is English: code, comments, docblocks, commit messages, this documentation, the plugin header and every user-facing string.
+- **Source strings are written in en-US** (since 3.0.0) and translated outward from there, pt-BR included. Everything is English: code, identifiers, comments, docblocks, commit messages, `CHANGELOG.md`, this documentation, the plugin header and every user-facing string. Portuguese exists in exactly one place — the `pt_BR` / `pt_PT` catalogs under `languages/`.
 - Wrap every user-facing string: `__()`, `esc_html__()`, `_n()`, `esc_html_e()` in PHP; `__()` from `utils/i18n.js` in the SPA. This includes the storefront copy defaults in `Admin\Default_Options`, so an untouched install reads in the site language.
 - **Never call a translation function before `init`.** The text domain is not loaded yet and WordPress 6.7+ answers with *"Translation loading for the hubgo domain was triggered too early"*. In practice: nothing translatable may run at plugin-load time or on `plugins_loaded`. `Plugin::check_dependencies()` therefore yields error *codes* and `render_dependency_notices()` turns them into copy; the integrations registry and the tracking components boot on `init` (priority 5) rather than earlier.
 - Never concatenate translatable fragments — use `sprintf()` with placeholders.
@@ -526,6 +526,19 @@ Semantic versioning. Licensing, update checks, signature verification and rollba
 
 Release artifacts go to `dist/` (`hubgo.zip`, `versions/<version>/`).
 
+### Changelog
+
+`CHANGELOG.md` is **written in en-US** and follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/):
+
+- A `## [Unreleased]` section on top. Work in progress is written there as it lands and is renamed to `## [x.y.z] - YYYY-MM-DD` when the version ships.
+- One heading per release, newest first, dated in ISO format (`2026-08-08`, never `08/08/2026`).
+- Entries grouped under `### Added`, `### Changed`, `### Deprecated`, `### Removed`, `### Fixed`, `### Security` — in that order, omitting the empty ones. Do not invent section names and do not translate them.
+- One bold lead-in per entry, with the details as indented sub-bullets when an item needs them. Class names, hooks, filters, option keys, REST routes and placeholders go in `backticks`.
+- A breaking change is prefixed **BREAKING:** inside its section.
+- Compare links are defined at the bottom of the file; a version with no tag keeps a plain heading, without brackets.
+
+The changelog ships inside the zip and is read by store owners, so describe what changed for them and why — not the commits that got you there.
+
 ---
 
 ## 9. Git conventions
@@ -547,6 +560,7 @@ Release artifacts go to `dist/` (`hubgo.zip`, `versions/<version>/`).
 - Keep the SPA thin and the REST contract stable; the SPA must render whatever the schema returns.
 - Bump `@version` tags and the plugin version when behaviour changes.
 - Rebuild and commit `app/dist/` and `languages/` artifacts when their sources change.
+- Record every user-visible change in `CHANGELOG.md` under `[Unreleased]`, in en-US, as part of the change itself — see section 8.
 - Flag genuine bugs you notice in passing instead of silently fixing unrelated code.
 
 **Don't**
@@ -558,5 +572,5 @@ Release artifacts go to `dist/` (`hubgo.zip`, `versions/<version>/`).
 - Don't rename or remove published hooks, REST routes, option keys or setting keys.
 - Don't edit `admin/vendor/` or `app/node_modules/` by hand.
 - Don't introduce new build tooling, test frameworks, linters or dependencies without being asked.
-- Don't write source strings, comments or documentation in Portuguese — en-US is the source language everywhere; locale copy belongs in `languages/`.
+- Don't write source strings, identifiers, comments, changelog entries or documentation in Portuguese — en-US is the source language everywhere; locale copy belongs in `languages/`.
 - Don't call `__()` (or any sibling) before `init` — see section 7.
