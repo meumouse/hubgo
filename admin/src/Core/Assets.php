@@ -388,7 +388,7 @@ class Assets {
      * Plain, unbundled CSS/JS like the tracking metabox: the plugins screen is
      * a core table, not a HubGo page, so it never loads the SPA.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     private function enqueue_update_check_assets() {

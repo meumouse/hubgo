@@ -24,7 +24,7 @@ defined('ABSPATH') || exit;
  * out; and it stamps the order before firing, so an order can never be
  * announced twice even if the same batch is processed again.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -33,7 +33,7 @@ class Delivery_Watcher {
     /**
      * Cron hook running the daily pass.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const CRON_HOOK = 'hubgo_check_delivery_promises';
@@ -41,7 +41,7 @@ class Delivery_Watcher {
     /**
      * Order meta stamped once an order has been reported as overdue.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const NOTIFIED_META = '_hubgo_delivery_overdue_notified';
@@ -49,7 +49,7 @@ class Delivery_Watcher {
     /**
      * Orders processed per pass.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var int
      */
     const BATCH_SIZE = 50;
@@ -58,7 +58,7 @@ class Delivery_Watcher {
     /**
      * Constructor.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      */
     public function __construct() {
         add_action( self::CRON_HOOK, array( $this, 'run' ) );
@@ -70,7 +70,7 @@ class Delivery_Watcher {
     /**
      * Make sure the daily pass is scheduled.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     private function maybe_schedule() {
@@ -90,7 +90,7 @@ class Delivery_Watcher {
      * Called from the plugin deactivation hook so a disabled plugin leaves no
      * orphan cron entry behind.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     public static function unschedule() {
@@ -101,14 +101,14 @@ class Delivery_Watcher {
     /**
      * Report every shipped order past its promised delivery date.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return int Number of orders reported.
      */
     public function run() {
         /**
          * Filters whether the overdue delivery pass runs at all.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param bool $enabled Whether to run the pass.
          */
         if ( ! apply_filters( 'Hubgo/Delivery/Overdue_Enabled', true ) ) {
@@ -144,7 +144,7 @@ class Delivery_Watcher {
             /**
              * Fired once for a shipped order whose promised delivery date passed.
              *
-             * @since 3.1.0
+             * @since 3.0.0
              * @param int $order_id Order ID.
              * @param array<string,mixed> $promise Promise stored on the order.
              */
@@ -162,7 +162,7 @@ class Delivery_Watcher {
      * `Y-m-d`, which sorts lexicographically, so no CAST is needed and the query
      * behaves identically under HPOS and the legacy post storage.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param int $grace_days Days of tolerance beyond the promise.
      * @return array<int,WC_Abstract_Order>
      */
@@ -194,7 +194,7 @@ class Delivery_Watcher {
         /**
          * Filters the query used to find overdue deliveries.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param array $args Arguments passed to wc_get_orders().
          * @param string $cutoff Promise date the query compares against (Y-m-d).
          */
@@ -214,14 +214,14 @@ class Delivery_Watcher {
      * customer has checked their door creates the very support ticket it was
      * meant to prevent.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return int
      */
     public static function get_grace_days() {
         /**
          * Filters the grace period applied before reporting a late delivery.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param int $days Days of tolerance beyond the promised date.
          */
         return max( 0, (int) apply_filters( 'Hubgo/Delivery/Overdue_Grace_Days', 1 ) );

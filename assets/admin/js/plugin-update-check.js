@@ -5,7 +5,7 @@
  * plugins screen is never reloaded. The link keeps a real, nonced href: when
  * this script does not run, following it performs the same check server-side.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 ( function() {
     'use strict';

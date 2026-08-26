@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
  * Backs the "Check for updates" link on the plugins list, which runs it without
  * leaving the screen.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\API\Routes
  */
 class Update_Check extends Abstract_Route {
@@ -29,7 +29,7 @@ class Update_Check extends Abstract_Route {
      * not a WooCommerce one, so this route does not use the shared settings
      * capability.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param WP_REST_Request $request REST request instance.
      * @return bool
      */

@@ -106,7 +106,7 @@ class Melhor_Envio extends Integrations_Base {
      * The wordpress.org slug is `melhor-envio-cotacao`; a store that installed
      * the package by hand often ends up with the shorter folder name.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var array<int,string>
      */
     const PLUGIN_FILES = array(
@@ -117,7 +117,7 @@ class Melhor_Envio extends Integrations_Base {
     /**
      * Package URL served by wordpress.org.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const PACKAGE_URL = 'https://downloads.wordpress.org/plugin/melhor-envio-cotacao.zip';
@@ -126,7 +126,7 @@ class Melhor_Envio extends Integrations_Base {
      * Prefix shared by every shipping method id the gateway registers
      * (`melhorenvio_correios_pac`, `melhorenvio_jadlog_package`, …).
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const METHOD_PREFIX = 'melhorenvio_';
@@ -134,7 +134,7 @@ class Melhor_Envio extends Integrations_Base {
     /**
      * Provider name this integration publishes to the tracking registry.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const PROVIDER_NAME = 'Melhor Envio';
@@ -142,7 +142,7 @@ class Melhor_Envio extends Integrations_Base {
     /**
      * Order meta the gateway stores the tracking code under.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const SOURCE_META_KEY = 'melhorenvio_tracking';
@@ -151,7 +151,7 @@ class Melhor_Envio extends Integrations_Base {
      * Order meta flagging that the shipped status was already applied, so a
      * shop manager who moves the order back is not overruled on the next save.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const SHIPPED_META_KEY = '_hubgo_melhor_envio_shipped_at';
@@ -159,7 +159,7 @@ class Melhor_Envio extends Integrations_Base {
     /**
      * Source identifier stored on the tracking items this integration imports.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const SOURCE_ID = 'melhor_envio';
@@ -168,7 +168,7 @@ class Melhor_Envio extends Integrations_Base {
      * Tracking URL template. %1$s receives the url-encoded tracking code, the
      * same placeholder contract every entry in Providers_Registry uses.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const DEFAULT_TRACKING_URL = 'https://melhorrastreio.com.br/rastreio/%1$s';
@@ -179,7 +179,7 @@ class Melhor_Envio extends Integrations_Base {
      * The sync runs on `woocommerce_update_order` and both of its steps save
      * the order again; without this the handler would re-enter itself.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var array<int,bool>
      */
     private static $syncing = array();
@@ -323,7 +323,7 @@ class Melhor_Envio extends Integrations_Base {
      * The group keys are internal identifiers translated for display by
      * Providers_Registry::get_country_label(), so 'Brazil' is used verbatim.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $providers Current provider groups.
      * @return array
      */
@@ -358,7 +358,7 @@ class Melhor_Envio extends Integrations_Base {
      * different reason and is discarded later, in
      * {@see self::has_composition_product()}.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $package Shipping package built by the calculator.
      * @return array
      */
@@ -426,7 +426,7 @@ class Melhor_Envio extends Integrations_Base {
      * repeats inside the label is removed because the calculator prints the
      * promised date next to it.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $rates Rates keyed by rate ID.
      * @param array $package Shipping package.
      * @return array
@@ -473,7 +473,7 @@ class Melhor_Envio extends Integrations_Base {
      * gateway answers that by refusing the quote; HubGo drops the rate for the
      * same reason.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $package Shipping package.
      * @return bool
      */
@@ -499,7 +499,7 @@ class Melhor_Envio extends Integrations_Base {
          * A store that gave its kits real dimensions — and therefore gets a
          * usable quote out of the gateway — can return false to keep them.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param bool $found Whether the package carries a bundle or a composite.
          * @param array $package Shipping package.
          */
@@ -514,7 +514,7 @@ class Melhor_Envio extends Integrations_Base {
      * added on its side is recognized without a HubGo release. The fallback
      * repeats the four types it knows about today.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param WC_Product $product Product being quoted.
      * @return bool
      */
@@ -542,7 +542,7 @@ class Melhor_Envio extends Integrations_Base {
      * Only the trailing group is matched, so a method a store deliberately named
      * "Sedex (até 10kg)" keeps its title.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $label Rate label.
      * @return string
      */
@@ -566,7 +566,7 @@ class Melhor_Envio extends Integrations_Base {
      * The code is what signals the shipment, so it is read even when importing
      * is off — "Mark as shipped" alone is a valid choice on the card.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param int $order_id Order ID.
      * @return void
      */
@@ -610,7 +610,7 @@ class Melhor_Envio extends Integrations_Base {
      * read-only — HubGo has nothing of its own to delete — and skipped as soon
      * as the same code exists as a real HubGo item.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $items Tracking items resolved by HubGo.
      * @param int $order_id Order ID.
      * @return array
@@ -662,7 +662,7 @@ class Melhor_Envio extends Integrations_Base {
      * `isProductSingle` is enough to keep the markup out: the callback printing
      * it is only hooked from inside that one.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     public function unhook_native_simulator() {
@@ -685,7 +685,7 @@ class Melhor_Envio extends Integrations_Base {
      * live inside the Melhor Envio plugin — a theme owning the same handle is
      * left alone.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     public function dequeue_native_simulator_assets() {
@@ -704,7 +704,7 @@ class Melhor_Envio extends Integrations_Base {
     /**
      * Whether a registered asset is served from the Melhor Envio plugin.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param \WP_Dependencies $dependencies Script or style registry.
      * @param string $handle Asset handle.
      * @return bool
@@ -729,7 +729,7 @@ class Melhor_Envio extends Integrations_Base {
      * for a code typed by hand. Items already bridged for display are ignored
      * when looking for a duplicate — they are this same code, unimported.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param \WC_Order $order Order carrying the code.
      * @param string $code Tracking code.
      * @return bool Whether an item was added.
@@ -768,7 +768,7 @@ class Melhor_Envio extends Integrations_Base {
      * Orders that were cancelled, refunded or failed are left alone: a label
      * bought before the cancellation must not resurrect them.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param \WC_Order $order Order to transition.
      * @return bool Whether the status was changed.
      */
@@ -805,7 +805,7 @@ class Melhor_Envio extends Integrations_Base {
     /**
      * Tracking code the gateway stored on an order.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param \WC_Order $order Order to read.
      * @return string Empty string when the order carries none.
      */
@@ -819,7 +819,7 @@ class Melhor_Envio extends Integrations_Base {
     /**
      * Whether a tracking list already carries a code.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $items Tracking items.
      * @param string $code Tracking code.
      * @return bool
@@ -848,7 +848,7 @@ class Melhor_Envio extends Integrations_Base {
      * (its settings screen offers a few positions) still gets it removed. The
      * fallback repeats the gateway's default.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     private static function get_native_simulator_hook() {
@@ -865,7 +865,7 @@ class Melhor_Envio extends Integrations_Base {
      * keeps no reference to its controller. Matching on the class is the only
      * external way left to reach those callbacks.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $hook Hook name.
      * @param string $class Fully qualified class name.
      * @return void
@@ -897,7 +897,7 @@ class Melhor_Envio extends Integrations_Base {
     /**
      * Whether a shipping method id belongs to the gateway.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $method_id Shipping method id.
      * @return bool
      */
@@ -931,7 +931,7 @@ class Melhor_Envio extends Integrations_Base {
     /**
      * Whether the tracking code should be imported from the gateway.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     public static function syncs_tracking() {
@@ -942,7 +942,7 @@ class Melhor_Envio extends Integrations_Base {
     /**
      * Whether an imported code moves the order to "Order shipped".
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     public static function marks_as_shipped() {
@@ -956,7 +956,7 @@ class Melhor_Envio extends Integrations_Base {
      * Gated on HubGo's calculator being switched on: hiding the only calculator
      * a product page has would be a regression, not a fix.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     public static function disables_native_simulator() {
@@ -974,7 +974,7 @@ class Melhor_Envio extends Integrations_Base {
      * Moving an order to a status WooCommerce does not know about silently
      * lands it on "pending", so the transition is skipped instead.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     public static function shipped_status_available() {
@@ -1000,7 +1000,7 @@ class Melhor_Envio extends Integrations_Base {
         /**
          * Filters the basenames the Melhor Envio dependency accepts.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param array<int,string> $plugin_files Plugin basenames.
          */
         $plugin_files = (array) apply_filters( 'Hubgo/Integrations/Melhor_Envio/Plugin_Files', $plugin_files );

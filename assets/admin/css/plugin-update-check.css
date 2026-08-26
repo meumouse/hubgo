@@ -5,7 +5,7 @@
  * wp-admin. Colours follow the wp-admin notice palette rather than the HubGo
  * tokens: this text sits inside a core table, next to core copy.
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 .hubgo-check-updates.is-busy {
     pointer-events: none;

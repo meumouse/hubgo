@@ -25,7 +25,7 @@ defined('ABSPATH') || exit;
  * The captured map lives for one request only. It is keyed by service code,
  * which is the one identifier that also reaches the rate (as `FRENET_ID`).
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Integrations
  * @author MeuMouse.com
  */
@@ -34,7 +34,7 @@ class Frenet_Quote_Listener {
     /**
      * Host serving the Frenet quote API.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const API_HOST = 'frenet.com.br';
@@ -42,7 +42,7 @@ class Frenet_Quote_Listener {
     /**
      * Path of the quote endpoint the gateway posts to.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const QUOTE_PATH = '/shipping/quote';
@@ -50,7 +50,7 @@ class Frenet_Quote_Listener {
     /**
      * Service data captured during this request, keyed by service code.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var array<string,array<string,mixed>>
      */
     private static $services = array();
@@ -58,7 +58,7 @@ class Frenet_Quote_Listener {
     /**
      * Whether the response filter is already registered.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var bool
      */
     private static $listening = false;
@@ -71,7 +71,7 @@ class Frenet_Quote_Listener {
      * URL before touching the body, so every unrelated HTTP call costs two
      * `strpos()` and nothing else.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     public static function listen() {
@@ -90,7 +90,7 @@ class Frenet_Quote_Listener {
      *
      * Never alters the response — it is a read-only tap on the HTTP layer.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array|\WP_Error $response HTTP response.
      * @param array $args Request arguments.
      * @param string $url Requested URL.
@@ -134,7 +134,7 @@ class Frenet_Quote_Listener {
     /**
      * Data captured for a service code.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $service_code Frenet service code.
      * @return array<string,mixed> Empty array when the code was not captured.
      */
@@ -153,7 +153,7 @@ class Frenet_Quote_Listener {
      * "same-day delivery" and promise the shopper a date the carrier never
      * offered.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param object $service Service entry from the API response.
      * @return int|null Business days, or null when the service did not report one.
      */

@@ -187,7 +187,7 @@ class Delivery_Estimate {
      * {@see self::get_days_from_rate()} this runs no filter — there is no rate
      * to hand to one.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $meta Meta map keyed by meta key.
      * @return int|null Business days, or null when no key carried one.
      */

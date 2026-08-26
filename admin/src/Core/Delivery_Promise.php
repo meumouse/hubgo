@@ -29,7 +29,7 @@ defined('ABSPATH') || exit;
  * The capture is idempotent: an order that already carries a promise is left
  * alone, so a re-entrant checkout hook never re-dates a shipment.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -38,7 +38,7 @@ class Delivery_Promise {
     /**
      * Order meta: promised delivery date, as Y-m-d.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const META_DATE = '_hubgo_delivery_date';
@@ -46,7 +46,7 @@ class Delivery_Promise {
     /**
      * Order meta: business days behind the promise, handling time included.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const META_DAYS = '_hubgo_delivery_days';
@@ -58,7 +58,7 @@ class Delivery_Promise {
      * fulfilled by Correios, Jadlog or Loggi, and that is the name a customer
      * needs to hear.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const META_CARRIER = '_hubgo_delivery_carrier';
@@ -66,7 +66,7 @@ class Delivery_Promise {
     /**
      * Order meta: shipping method title chosen at the checkout.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const META_METHOD = '_hubgo_delivery_method';
@@ -74,7 +74,7 @@ class Delivery_Promise {
     /**
      * Rate meta keys that may carry the carrier name, in priority order.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var array<int,string>
      */
     const CARRIER_META_KEYS = array( 'carrier', '_carrier', 'carrier_name', 'transportadora' );
@@ -83,7 +83,7 @@ class Delivery_Promise {
     /**
      * Constructor.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      */
     public function __construct() {
         // Both checkouts are covered: the classic one and the Store API used by
@@ -96,7 +96,7 @@ class Delivery_Promise {
     /**
      * Capture the promise after the classic checkout created the order.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param int $order_id Order ID.
      * @param array $posted_data Checkout payload (unused).
      * @param mixed $order Order object, when WooCommerce passed one.
@@ -114,7 +114,7 @@ class Delivery_Promise {
     /**
      * Capture the promise after the Store API created the order.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param mixed $order Order object.
      * @return void
      */
@@ -126,7 +126,7 @@ class Delivery_Promise {
     /**
      * Resolve and store the promise for an order.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param mixed $order Order object.
      * @return array<string,mixed> The stored promise, empty when there was none.
      */
@@ -155,7 +155,7 @@ class Delivery_Promise {
         /**
          * Fired once a delivery promise has been stored on an order.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param int $order_id Order ID.
          * @param array<string,mixed> $promise Stored promise.
          */
@@ -173,7 +173,7 @@ class Delivery_Promise {
      * broken first — but announcing it would be a lie for the rest of the order,
      * so the order of the lines (the order the packages were quoted in) decides.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param WC_Abstract_Order $order Order to read.
      * @return array<string,mixed> Empty array when no line carried a forecast.
      */
@@ -193,7 +193,7 @@ class Delivery_Promise {
              * onto the rate — the same escape hatch
              * `Hubgo/Shipping_Calculator/Delivery_Days` offers at quote time.
              *
-             * @since 3.1.0
+             * @since 3.0.0
              * @param int|null $days Business days read from the line meta.
              * @param WC_Order_Item_Shipping $item Shipping line item.
              * @param WC_Abstract_Order $order Order being processed.
@@ -230,7 +230,7 @@ class Delivery_Promise {
     /**
      * Flatten a shipping line's meta into a key => value map.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param WC_Order_Item_Shipping $item Shipping line item.
      * @return array<string,mixed>
      */
@@ -254,7 +254,7 @@ class Delivery_Promise {
     /**
      * Read the carrier name out of a shipping line's meta.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array<string,mixed> $meta Line meta map.
      * @return string Empty string when the rate carried no carrier.
      */
@@ -262,7 +262,7 @@ class Delivery_Promise {
         /**
          * Filters the meta keys scanned for the carrier behind a rate.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param array<int,string> $keys Meta keys in priority order.
          */
         $keys = apply_filters( 'Hubgo/Delivery/Carrier_Meta_Keys', self::CARRIER_META_KEYS );
@@ -282,7 +282,7 @@ class Delivery_Promise {
     /**
      * Read the promise stored on an order.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param mixed $order Order object or ID.
      * @return array<string,mixed> Empty array when the order carries no promise.
      */
@@ -315,7 +315,7 @@ class Delivery_Promise {
     /**
      * Carrier promised for an order.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param mixed $order Order object or ID.
      * @return string
      */
@@ -329,7 +329,7 @@ class Delivery_Promise {
     /**
      * Whether an order's promised delivery date has already passed.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param mixed $order Order object or ID.
      * @param int $grace_days Days of tolerance beyond the promise.
      * @return bool
@@ -350,7 +350,7 @@ class Delivery_Promise {
     /**
      * Resolve an order object from an ID or object.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param mixed $order Order object or ID.
      * @return WC_Abstract_Order|false
      */

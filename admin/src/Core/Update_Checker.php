@@ -30,7 +30,7 @@ defined('ABSPATH') || exit;
  * re-saved, which replays `pre_set_site_transient_update_plugins` — the filter
  * where the SDK's PluginUpdater injects HubGo's update data.
  *
- * @since 3.1.0
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -39,7 +39,7 @@ class Update_Checker {
     /**
      * Query argument that triggers the no-JavaScript fallback check.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const QUERY_ARG = 'hubgo-check-updates';
@@ -47,7 +47,7 @@ class Update_Checker {
     /**
      * Nonce action guarding the fallback check.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const NONCE_ACTION = 'hubgo_check_updates';
@@ -56,7 +56,7 @@ class Update_Checker {
     /**
      * Constructor: wire the plugins-list link and its fallback handler.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      */
     public function __construct() {
         add_filter( 'plugin_row_meta', array( $this, 'add_row_meta_link' ), 10, 2 );
@@ -72,7 +72,7 @@ class Update_Checker {
      * items are joined with a separator, and a separate item would put a stray
      * pipe on screen while the status is still empty.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $meta Row meta items.
      * @param string $file Plugin basename of the row being rendered.
      * @return array
@@ -96,7 +96,7 @@ class Update_Checker {
     /**
      * Run the check server-side when the link is followed without JavaScript.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     public function maybe_handle_fallback() {
@@ -134,7 +134,7 @@ class Update_Checker {
      * to: the transient carries an expiry and is therefore not autoloaded, so
      * reading it on every admin screen would cost a query per page load.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     public function render_notice() {
@@ -164,7 +164,7 @@ class Update_Checker {
     /**
      * Force a fresh update check and return the resulting state.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<string,mixed>|\WP_Error Payload as described in {@see self::get_payload()}.
      */
     public static function check() {
@@ -204,7 +204,7 @@ class Update_Checker {
      * Shape: `update_available`, `current_version`, `new_version`, `is_licensed`,
      * `update_url`, `message`.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return array<string,mixed>
      */
     public static function get_payload() {
@@ -239,7 +239,7 @@ class Update_Checker {
      * who may edit every setting still cannot update a plugin, and the answer
      * would be useless to them.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     public static function can_check() {
@@ -259,7 +259,7 @@ class Update_Checker {
      * plugin list against wordpress.org for a check the user asked about one
      * plugin.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     private static function refresh_update_transient() {
@@ -277,7 +277,7 @@ class Update_Checker {
      * Version WordPress currently advertises for HubGo, when newer than the
      * installed one.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string Version number, or an empty string when up to date.
      */
     private static function get_new_version() {
@@ -303,7 +303,7 @@ class Update_Checker {
     /**
      * Nonced URL of the core one-click update for HubGo.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     private static function get_update_url() {
@@ -323,7 +323,7 @@ class Update_Checker {
     /**
      * Nonced URL that runs the check without JavaScript.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     private static function get_fallback_url() {
@@ -337,7 +337,7 @@ class Update_Checker {
     /**
      * Transient key holding the fallback notice for the current user.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     private static function notice_key() {
@@ -348,7 +348,7 @@ class Update_Checker {
     /**
      * Plugin basename ("hubgo/hubgo.php").
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return string
      */
     private static function get_plugin_file() {

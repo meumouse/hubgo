@@ -617,7 +617,7 @@ class Joinotify extends Integrations_Base {
      * parcel is running late" message can still carry the tracking link the
      * customer needs to check it themselves.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param int $order_id Order ID.
      * @param array $promise Delivery promise stored on the order.
      * @return void

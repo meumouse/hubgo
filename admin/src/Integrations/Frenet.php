@@ -72,7 +72,7 @@ class Frenet extends Integrations_Base {
     /**
      * WooCommerce shipping method id registered by the gateway.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const METHOD_ID = 'frenet';
@@ -80,7 +80,7 @@ class Frenet extends Integrations_Base {
     /**
      * Provider name this integration publishes to the tracking registry.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const PROVIDER_NAME = 'Frenet';
@@ -88,7 +88,7 @@ class Frenet extends Integrations_Base {
     /**
      * Rate meta key the gateway writes the prefixed service code under.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var string
      */
     const SERVICE_META_KEY = 'FRENET_ID';
@@ -113,7 +113,7 @@ class Frenet extends Integrations_Base {
     /**
      * Previous `quoteByProduct` value, keyed by method instance.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var array<int,bool>
      */
     private $quote_mode_backup = array();
@@ -125,7 +125,7 @@ class Frenet extends Integrations_Base {
      * codes, several times per screen; resolving the order's shipping lines
      * once per order keeps that cheap.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @var array<int,bool>
      */
     private $frenet_orders = array();
@@ -257,7 +257,7 @@ class Frenet extends Integrations_Base {
      * the same switch. Scoped to packages this plugin built, so the cart and the
      * checkout keep quoting the whole order as before.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $package Shipping package.
      * @param \WC_Shipping_Method $method Shipping method about to quote.
      * @return void
@@ -284,7 +284,7 @@ class Frenet extends Integrations_Base {
      * leaving the flag on would make an unrelated cart calculation later in the
      * same request price only its last line.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $package Shipping package.
      * @param \WC_Shipping_Method $method Shipping method that quoted.
      * @return void
@@ -315,7 +315,7 @@ class Frenet extends Integrations_Base {
      * {@see Delivery_Promise} then read the data without knowing which carrier
      * produced it.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $rates Rates keyed by rate ID.
      * @param array $package Shipping package.
      * @return array
@@ -367,7 +367,7 @@ class Frenet extends Integrations_Base {
      * the parcel — that is the pair {@see \MeuMouse\Hubgo\Core\Tracking_Manager}
      * reads to build a link and a label respectively.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $items Tracking items.
      * @param int $order_id Order ID.
      * @return array
@@ -409,7 +409,7 @@ class Frenet extends Integrations_Base {
      * Deferred to `wp` because the gateway boots on `plugins_loaded` and the
      * action would otherwise be added back after this ran.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     public function unhook_native_simulator() {
@@ -424,7 +424,7 @@ class Frenet extends Integrations_Base {
     /**
      * Drop the assets the hidden simulator would otherwise still load.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return void
      */
     public function dequeue_native_simulator_assets() {
@@ -436,7 +436,7 @@ class Frenet extends Integrations_Base {
     /**
      * Whether a shipping method instance is the Frenet gateway.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param mixed $method Shipping method instance.
      * @return bool
      */
@@ -451,7 +451,7 @@ class Frenet extends Integrations_Base {
      * The gateway stores it prefixed (`FRENET_04014`); the API answers with the
      * bare code, which is what the captured map is keyed by.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array $meta Rate meta data.
      * @return string Empty string when the rate carries no service code.
      */
@@ -473,7 +473,7 @@ class Frenet extends Integrations_Base {
      * "<service> (Delivery in N working days)" — so a service whose own name
      * contains a number ("Sedex 10") is never mistaken for a forecast.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param string $label Rate label.
      * @return int|null Business days, or null when the label carried none.
      */
@@ -495,7 +495,7 @@ class Frenet extends Integrations_Base {
     /**
      * Whether an order was shipped through the Frenet gateway.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param int $order_id Order ID.
      * @return bool
      */
@@ -553,7 +553,7 @@ class Frenet extends Integrations_Base {
     /**
      * Whether the tracking carrier should be filled in from the Frenet quote.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     public static function syncs_tracking() {
@@ -567,7 +567,7 @@ class Frenet extends Integrations_Base {
      * Gated on HubGo's calculator being switched on: hiding the only calculator
      * a product page has would be a regression, not a fix.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @return bool
      */
     public static function disables_native_simulator() {

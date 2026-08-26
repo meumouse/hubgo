@@ -339,7 +339,7 @@ class Shipping_Calculator_Service {
      * Ties fall back to the label so two identical quotes never reshuffle:
      * `usort` is not stable before PHP 8.0, and this plugin still supports 7.4.
      *
-     * @since 3.1.0
+     * @since 3.0.0
      * @param array<int,array<string,mixed>> $rows Normalized rows.
      * @return array<int,array<string,mixed>>
      */
@@ -362,7 +362,7 @@ class Shipping_Calculator_Service {
          * promises a carrier the top slot can restore its own order here
          * without having to re-normalize the rows.
          *
-         * @since 3.1.0
+         * @since 3.0.0
          * @param array<int,array<string,mixed>> $rows Rows, cheapest first.
          */
         return array_values( (array) apply_filters( 'Hubgo/Shipping_Calculator/Rates_Order', $rows ) );
