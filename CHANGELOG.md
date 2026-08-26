@@ -8,22 +8,32 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 ## [Unreleased]
 
-## [3.1.0] - 2026-08-08
+## [3.0.0] - 2026-08-26
 
 ### Added
 
+- **A modular, extensible foundation** — an integration registry and a filterable settings schema, so a setting, a card or an endpoint is added by declaring it rather than by editing the UI
+- **A HubGo menu of its own in the admin panel**, with the Settings, Integrations and License subpages
+    - The Settings page has the General, Appearance, Texts and About tabs
+    - The About tab gathers the maintenance preferences, the system status and the restore-defaults action
+    - The `hubgo-settings` slug remains valid: old links keep working
+- **Integrations page** with an application grid, a category filter and a settings modal per integration
+    - Joinotify (Pro), Melhor Envio and Frenet
+    - Install and activate the integration's plugin straight from the admin panel
+    - "Pro" badge on the integrations that depend on an active license
+- **A License screen of its own**, with the activation, sync and site deactivation forms
+- **Licensing and updates through the MDS PHP SDK** (`meumouse/mds-php-sdk` ^1.1), installed via Composer
+    - "HubGo - License" screen to activate, deactivate and revalidate the key, with a notice when the license is missing, invalid or expired
+    - Signed update check (ed25519) restricted to valid licenses, with a 12-hour cache and a daily heartbeat via WP-Cron
+    - Bundle license support: a single key covers several products (e.g. "Clube M"), with the included products available from `MeuMouse\Hubgo\Core\License::get_bundle()`
+    - Plan data, renewal URL, support expiry and the activation limit available from `License::get_data()` without a new request
+    - An "Automatic updates" toggle on the About tab lets HubGo update itself whenever the license allows
 - **"Check for updates" link on the HubGo row of the Plugins list** (`MeuMouse\Hubgo\Core\Update_Checker`)
     - The check is asynchronous (`POST hubgo/v1/updates/check`) and the result appears next to the link, without reloading the page
     - It forces a fresh check against MDS: the 12-hour update cache and the rollback version list are cleared and the license is revalidated before answering
     - When a new version is available, the "Update now" link goes straight to the WordPress update
     - Without JavaScript, the link itself runs the check on the server and returns the result as a notice
     - New filter: `Hubgo/Core/Update_Checker/Payload`
-- **Compatibility with the Frenet plugin (Frenet Shipping Gateway)** — everything solved on HubGo's side, without touching the third-party plugin
-    - The delivery time and the carrier (Correios, Jadlog, Loggi) are now read from the Frenet API response and stored as standard shipping method meta (`delivery_time` and `carrier`), which puts the promised date back on the calculator ("Get it by <date>"). On stores with no token (SOAP mode), the delivery time is read from the shipping method label
-- **Compatibility with the official Melhor Envio plugin** — everything solved on HubGo's side, without touching the third-party plugin
-    - The carrier that actually moves the parcel (Correios, Jadlog, Loggi, Azul) is now stored as standard shipping method meta (`carrier`), which makes the carrier's name — and not the intermediary's — appear in the notifications and in the tracking. The delivery time was already read from what the plugin writes to `delivery_time`
-    - New "Tracking URL" option on the integration card, defaulting to Melhor Rastreio
-    - New filters: `Hubgo/Integrations/Melhor_Envio/Plugin_Files`, `Hubgo/Integrations/Melhor_Envio/Package_Url`, `Hubgo/Integrations/Melhor_Envio/Skip_Compositions`
 - **The delivery date promised at the checkout is now stored on the order** (`MeuMouse\Hubgo\Core\Delivery_Promise`)
     - Stores the estimate in business days, the promised date, the carrier and the shipping method, from the meta WooCommerce copies from the shipping method onto the order item
     - Works on the classic checkout and on the block checkout (Store API)
@@ -35,80 +45,50 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 - **Joinotify: new "Late delivery" trigger and new placeholders**
     - `{{ hubgo_delivery_date }}`, `{{ hubgo_delivery_days }}` and `{{ hubgo_shipping_method }}`, available on every HubGo trigger
     - `{{ hubgo_carrier_name }}` now uses the carrier quoted at the checkout when the tracking code has no carrier of its own yet
-- New public method `MeuMouse\Hubgo\Core\Delivery_Estimate::get_days_from_meta()`
+- **Compatibility with the Frenet plugin (Frenet Shipping Gateway)** — everything solved on HubGo's side, without touching the third-party plugin
+    - The delivery time and the carrier (Correios, Jadlog, Loggi) are read from the Frenet API response and stored as standard shipping method meta (`delivery_time` and `carrier`), which puts the promised date back on the calculator ("Get it by <date>"). On stores with no token (SOAP mode), the delivery time is read from the shipping method label
+- **Compatibility with the official Melhor Envio plugin** — everything solved on HubGo's side, without touching the third-party plugin
+    - The integration card points to the official plugin (`melhor-envio-cotacao`), with a one-click install from the WordPress repository
+    - The carrier that actually moves the parcel (Correios, Jadlog, Loggi, Azul) is stored as standard shipping method meta (`carrier`), which makes the carrier's name — and not the intermediary's — appear in the notifications and in the tracking. The delivery time is read from what the plugin writes to `delivery_time`
+    - The integration is free rather than Pro, like Frenet's: what it does is stop two plugins the store already uses from contradicting each other, and that should not depend on a license
+    - New "Tracking URL" option on the integration card, defaulting to Melhor Rastreio
+    - New filters: `Hubgo/Integrations/Melhor_Envio/Plugin_Files`, `Hubgo/Integrations/Melhor_Envio/Package_Url`, `Hubgo/Integrations/Melhor_Envio/Skip_Compositions`
+- **State resolution from the postcode** (official Correios ranges) via `MeuMouse\Hubgo\Core\Postcode_Locator`
+- **The "State" field of the postcode finder uses HubGo's modern select**, with search by name or abbreviation, keyboard navigation and the same look as the other fields
+    - The states come from the WooCommerce list (`WC()->countries->get_states()`), showing the state name with the abbreviation next to it, instead of the abbreviation alone
+- **Measurement field (`dimension` type) in the appearance settings**, with a unit picker (rem, em, px and %)
+    - Radii, spacing, height, font size and blur are no longer sliders and now accept the chosen unit
+    - The value is stored with its unit ("1.5rem"); values stored before remain valid and are read as px
+    - The Elementor widget offers the same units on the equivalent controls
 - **Smooth transitions across the whole interface, in the admin panel and on the storefront**
     - Modals fade in and out with a slight shift, instead of appearing all at once
     - The page behind the modal is locked from scrolling while it is open, without shifting the wp-admin content
     - The loading skeleton of the three screens gives way to the content in a transition, instead of swapping all at once
-    - Switching tabs in the settings, filtering by category on the integrations screen and activating the license now swap the panel in a transition
+    - Switching tabs in the settings, filtering by category on the integrations screen and activating the license swap the panel in a transition
     - On the storefront calculator: switching between the postcode form and the quote, the cascading entrance of the shipping methods, selecting an option and the address lookup
+    - Toasts come in from the right, leave without pushing the others, and the remaining ones slide into place
     - Everything respects the operating system's "reduce motion" preference: animations become a short fade, and loading indicators keep spinning
-
-### Changed
-
-- **Compatibility with the official Melhor Envio plugin** — everything solved on HubGo's side, without touching the third-party plugin
-    - The integration card now points to the official plugin (`melhor-envio-cotacao`), with a one-click install from the WordPress repository, instead of waiting on a companion plugin from MeuMouse
-    - The integration is no longer Pro and becomes free, like Frenet's: what it does is stop two plugins the store already uses from contradicting each other, and that should not depend on a license. The Pro badge is off the card and the license is no longer required at runtime
-- **The "State" field of the postcode finder now uses HubGo's modern select**, with search by name or abbreviation, keyboard navigation and the same look as the other fields
-    - The states still come from the WooCommerce list (`WC()->countries->get_states()`), now showing the state name with the abbreviation next to it, instead of the abbreviation alone
-
-### Fixed
-
-- **Frenet (Frenet Shipping Gateway)**
-    - HubGo's calculator was quoting with a declared value of R$ 0.00. The Frenet plugin reads the cart total, which is empty on the product page, and services quoted by declared value simply did not show up. Quoting by product is now enabled on HubGo's packages only
-    - The product page showed two calculators. The Frenet plugin's simulator is now removed when HubGo's calculator is active, with a new "Hide the Frenet simulator" option on the integration card
-    - The "Import tracking" option now has a real effect: on orders shipped through Frenet, tracking codes with no carrier set get Frenet as the provider (for the link) and the quoted carrier as the displayed name. Nothing is written to the database — the fill-in happens at display time only
-- **Melhor Envio**
-    - HubGo's calculator did not work with Melhor Envio active. The plugin quotes the customer's cart unless the package identifies itself as a product-page quote; without that, either the quote came out with the wrong items (cart filled) or the request broke while reading data that did not exist in the package (empty cart). HubGo's package is now assembled in the shape the plugin expects (`product_page_calculation` and `formatted_data`), using Melhor Envio's own product factory — which keeps bundles and composite products normalized the same way. This fix applies whenever the Melhor Envio plugin is active, even with the integration switched off: it is what keeps HubGo's calculator standing, not a feature of the integration
-    - The "Import tracking" option now has a real effect: as soon as Melhor Envio writes the tracking code onto the order, it is imported into HubGo's tracking with Melhor Envio as the provider (for the link) and the quoted carrier as the displayed name, firing the e-mails and the Joinotify automations like a code typed by hand. Codes predating the integration are still displayed from the other plugin's data, read-only
-    - The "Mark as shipped" option now has a real effect: the order moves to the "Order shipped" status the first time a Melhor Envio code arrives, once per order, without touching cancelled, refunded or failed orders
-    - "Mark as shipped" did not work on its own. The option was only considered when "Import tracking" was switched on as well, because both depended on the same hook and only the first one registered it. Each now stands on its own
-    - The product page showed two calculators. The Melhor Envio plugin's simulator is now removed when HubGo's calculator is active, with a new "Hide the Melhor Envio simulator" option on the integration card
-    - Bundles and composite products (WPC Product Bundles and WPC Composite Products) got the wrong quote. Outside the cart the Melhor Envio plugin only sees the parent product's dimensions, which are usually empty — so much so that its own simulator refuses to quote and asks for the calculation to be done in the cart. Melhor Envio's shipping methods are now left out of the calculator in those cases, instead of showing a price the store will not be able to honour. New filter for stores that have filled in the bundle's dimensions: `Hubgo/Integrations/Melhor_Envio/Skip_Compositions`
-    - The delivery time appeared twice on the calculator. The plugin repeats the delivery window inside the shipping method name ("Correios Pac (3 a 5 dias úteis)") as well as storing it as meta, and HubGo already turns that meta into a promised date — which starts to disagree with the text as soon as the store sets a handling time. The part in parentheses is now removed, on HubGo calculator packages only
-- **Interface transitions**
-    - The toasts had no entrance animation and the stack "jumped" when one of them disappeared. They now come in from the right, leave without pushing the others, and the remaining ones slide into place
-    - The toast's progress bar had its duration written in two places, which could disagree
-
-## [3.0.1] - 2026-08-07
-
-### Added
-
-- **Licensing and updates through the MDS PHP SDK** (`meumouse/mds-php-sdk` ^1.1), installed via Composer
-    - "HubGo - License" screen to activate, deactivate and revalidate the key, with a notice when the license is missing, invalid or expired
-    - Signed update check (ed25519) restricted to valid licenses, with a 12-hour cache and a daily heartbeat via WP-Cron
-    - Bundle license support: a single key covers several products (e.g. "Clube M"), with the included products available from `MeuMouse\Hubgo\Core\License::get_bundle()`
-    - Plan data, renewal URL, support expiry and the activation limit available from `License::get_data()` without a new request
-- **A HubGo menu of its own in the admin panel**, with the Settings, Integrations and License subpages
-    - The Settings page now has the General, Appearance, Texts and About tabs
-    - The About tab gathers the maintenance preferences, the system status and the restore-defaults action
-    - The `hubgo-settings` slug remains valid: old links keep working
-- **Integrations page** with an application grid, a category filter and a settings modal per integration
-    - Joinotify (Pro), Melhor Envio (Pro, coming soon) and Frenet
-    - Install and activate the integration's plugin straight from the admin panel (Frenet)
-    - "Pro" badge on the integrations that depend on an active license
-- **A License screen of its own**, with the activation, sync and site deactivation forms
-- **Measurement field (`dimension` type) in the appearance settings**, with a unit picker (rem, em, px and %)
-    - Radii, spacing, height, font size and blur are no longer sliders and now accept the chosen unit
-    - The value is stored with its unit ("1.5rem"); values stored before remain valid and are read as px
-    - The Elementor widget now offers the same units on the equivalent controls
-- **State resolution from the postcode** (official Correios ranges) via `MeuMouse\Hubgo\Core\Postcode_Locator`
+- New public method `MeuMouse\Hubgo\Core\Delivery_Estimate::get_days_from_meta()`
 - Optional `country` parameter on the `POST hubgo/v1/shipping/calculate` endpoint
-- With WooCommerce's shipping debug mode on, the endpoint now returns the matched zone
-- New REST endpoints: `GET hubgo/v1/integrations`, `POST hubgo/v1/plugins/install`, `POST hubgo/v1/settings/reset`, `GET hubgo/v1/license`, `POST hubgo/v1/license/activate`, `POST hubgo/v1/license/deactivate`, `POST hubgo/v1/license/sync`
+- With WooCommerce's shipping debug mode on, the endpoint returns the matched zone
+- New REST endpoints: `GET hubgo/v1/integrations`, `POST hubgo/v1/plugins/install`, `POST hubgo/v1/settings/reset`, `GET hubgo/v1/license`, `POST hubgo/v1/license/activate`, `POST hubgo/v1/license/deactivate`, `POST hubgo/v1/license/sync`, `POST hubgo/v1/updates/check`
 - New calculator filters: `Hubgo/Shipping_Calculator/Postcode_State_Map`, `Hubgo/Shipping_Calculator/Resolved_State`, `Hubgo/Shipping_Calculator/Country`, `Hubgo/Shipping_Calculator/Destination`, `Hubgo/Shipping_Calculator/Zone`
 - New admin and integration filters: `Hubgo/Integrations/Cards`, `Hubgo/Integrations/Card`, `Hubgo/Integrations/Categories`, `Hubgo/Admin/Integrations/Cards`, `Hubgo/Admin/Integrations/Bootstrap_Data`, `Hubgo/Admin/System_Status`, `Hubgo/Core/Assets/Admin_Pages`, `Hubgo/Core/License/Payload`, `Hubgo/Core/Plugin_Installer/Allowed_Hosts`
 
 ### Changed
 
+- **BREAKING: the settings interface was rewritten in Vue 3 + Vite** (Joinotify pattern), and the server-rendered settings form is gone
+- **BREAKING: every legacy AJAX action was replaced by the REST API** (`hubgo/v1` namespace). Anything hooked to the old `admin-ajax.php` actions has to move to the REST routes
+- **Joinotify v2 compatibility** (new functional API: triggers, placeholders and workflow dispatch)
 - **Visual standardisation of the admin fields**: same height (3rem), same radius and same border on inputs, selects, password and colour
-    - The colour picker now has a 3rem square swatch next to the hex code field, with a button to reset to the default colour
-    - Focus is now a 2px border in the primary colour, with no shadow
+    - The colour picker has a 3rem square swatch next to the hex code field, with a button to reset to the default colour
+    - Focus is a 2px border in the primary colour, with no shadow
+    - Buttons declare their own appearance instead of inheriting the browser's, since Tailwind's preflight is disabled
 - The `Hubgo/Shipping_Calculator/Rates` filter now receives the matched zone as a third argument
 
 ### Removed
 
-- **The bespoke update checker** (`MeuMouse\Hubgo\API\Updater`), which polled a static JSON on packages.meumouse.com
+- **The bespoke update checker** (`MeuMouse\Hubgo\API\Updater`), which polled a static JSON on packages.meumouse.com. Licensing, update checks, signature verification and rollback are the MDS SDK's job now
 
 ### Fixed
 
@@ -119,27 +99,21 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 - The calculation wrote to the same session cache used by the checkout
 - An invalid postcode returned the "no shipping method available" message instead of a validation error
 - The plugin silently changed WooCommerce's `woocommerce_default_customer_address` option
-- Text with quotes appeared escaped in the admin panel (`&quot;`), because the strings handed to the SPA went through `esc_html__()` and Vue escapes again when rendering
-- The "Automatic updates" option was read by `MeuMouse\Hubgo\Core\License` but did not exist in the settings or in the defaults, so it never switched on
-- The "Shipping methods display" option had a default value but did not appear on the settings screen
-- `app/dist` was in `.gitignore`, which would have left the new screens' bundles out of the distribution zip
-- Buttons with no styling of their own inherited the system's native appearance, because Tailwind's preflight is disabled
-
-## [3.0.0] - 2026-07-06
-
-### Added
-
-- **A modular, extensible foundation** (integration registry and filterable settings schema)
-
-### Changed
-
-- **Architecture change: the settings interface rewritten in Vue 3 + Vite** (Joinotify pattern)
-- **API first: every legacy AJAX action replaced by the REST API** (`hubgo/v1` namespace)
-- **Joinotify v2 compatibility** (new functional API: triggers, placeholders and workflow dispatch)
+- **Frenet (Frenet Shipping Gateway)**
+    - HubGo's calculator was quoting with a declared value of R$ 0.00. The Frenet plugin reads the cart total, which is empty on the product page, and services quoted by declared value simply did not show up. Quoting by product is now enabled on HubGo's packages only
+    - The product page showed two calculators. The Frenet plugin's simulator is now removed when HubGo's calculator is active, with a new "Hide the Frenet simulator" option on the integration card
+    - The "Import tracking" option now has a real effect: on orders shipped through Frenet, tracking codes with no carrier set get Frenet as the provider (for the link) and the quoted carrier as the displayed name. Nothing is written to the database — the fill-in happens at display time only
+- **Melhor Envio**
+    - HubGo's calculator did not work with Melhor Envio active. The plugin quotes the customer's cart unless the package identifies itself as a product-page quote; without that, either the quote came out with the wrong items (cart filled) or the request broke while reading data that did not exist in the package (empty cart). HubGo's package is now assembled in the shape the plugin expects (`product_page_calculation` and `formatted_data`), using Melhor Envio's own product factory — which keeps bundles and composite products normalized the same way. This fix applies whenever the Melhor Envio plugin is active, even with the integration switched off: it is what keeps HubGo's calculator standing, not a feature of the integration
+    - The "Import tracking" option now has a real effect: as soon as Melhor Envio writes the tracking code onto the order, it is imported into HubGo's tracking with Melhor Envio as the provider (for the link) and the quoted carrier as the displayed name, firing the e-mails and the Joinotify automations like a code typed by hand. Codes predating the integration are still displayed from the other plugin's data, read-only
+    - The "Mark as shipped" option now has a real effect, and stands on its own rather than depending on "Import tracking" being switched on as well: the order moves to the "Order shipped" status the first time a Melhor Envio code arrives, once per order, without touching cancelled, refunded or failed orders
+    - The product page showed two calculators. The Melhor Envio plugin's simulator is now removed when HubGo's calculator is active, with a new "Hide the Melhor Envio simulator" option on the integration card
+    - Bundles and composite products (WPC Product Bundles and WPC Composite Products) got the wrong quote. Outside the cart the Melhor Envio plugin only sees the parent product's dimensions, which are usually empty — so much so that its own simulator refuses to quote and asks for the calculation to be done in the cart. Melhor Envio's shipping methods are now left out of the calculator in those cases, instead of showing a price the store will not be able to honour. New filter for stores that have filled in the bundle's dimensions: `Hubgo/Integrations/Melhor_Envio/Skip_Compositions`
+    - The delivery time appeared twice on the calculator. The plugin repeats the delivery window inside the shipping method name ("Correios Pac (3 a 5 dias úteis)") as well as storing it as meta, and HubGo already turns that meta into a promised date — which starts to disagree with the text as soon as the store sets a handling time. The part in parentheses is now removed, on HubGo calculator packages only
 
 ### Security
 
-- REST endpoints now require capability + nonce
+- REST endpoints now require a capability check plus the `wp_rest` nonce
 
 ## [2.2.0] - 2026-03-12
 
@@ -240,9 +214,7 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 - Initial release
 
-[Unreleased]: https://github.com/meumouse/hubgo/compare/v3.1.0...HEAD
-[3.1.0]: https://github.com/meumouse/hubgo/compare/v3.0.1...v3.1.0
-[3.0.1]: https://github.com/meumouse/hubgo/compare/v3.0.0...v3.0.1
+[Unreleased]: https://github.com/meumouse/hubgo/compare/v3.0.0...HEAD
 [3.0.0]: https://github.com/meumouse/hubgo/compare/v2.2.0...v3.0.0
 [2.2.0]: https://github.com/meumouse/hubgo/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/meumouse/hubgo/compare/v2.0.0...v2.1.0
