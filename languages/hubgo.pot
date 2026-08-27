@@ -65,25 +65,25 @@ msgstr ""
 msgid "Accent color used on links, icons and the selected option."
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:354
+#: app/src/pages/license/LicensePage.vue:373
 msgid "Account status"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:113
+#: app/src/pages/license/LicensePage.vue:132
 msgid ""
 "Activate a key to receive automatic updates and to unlock every Pro "
 "integration."
 msgstr ""
 
-#: admin/src/Integrations/Elementor.php:199
+#: admin/src/Integrations/Elementor.php:206
 #: app/src/pages/integrations/IntegrationsPage.vue:248
 #: app/src/pages/license/LicensePage.vue:89
-#: app/src/pages/license/LicensePage.vue:401
-#: app/src/pages/license/LicensePage.vue:423
+#: app/src/pages/license/LicensePage.vue:420
+#: app/src/pages/license/LicensePage.vue:442
 msgid "Activate license"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:457
+#: app/src/pages/license/LicensePage.vue:485
 msgid "Activate the license to unlock the HubGo Pro features."
 msgstr ""
 
@@ -91,17 +91,17 @@ msgstr ""
 msgid "Activate WooCommerce"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:495
+#: admin/src/Admin/Settings/Registry.php:499
 msgid "Activate your HubGo license to use this integration."
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:256
+#: app/src/pages/license/LicensePage.vue:275
 msgid ""
 "Activate your license to receive automatic updates and unlock the Pro "
 "features. Questions? Visit our"
 msgstr ""
 
-#: admin/src/Core/Update_Checker.php:219
+#: admin/src/Core/Update_Checker.php:237
 msgid "Activate your license to receive updates."
 msgstr ""
 
@@ -157,7 +157,7 @@ msgstr ""
 msgid "Adds the order shipped status to WooCommerce."
 msgstr ""
 
-#: admin/src/Integrations/Elementor.php:112
+#: admin/src/Integrations/Elementor.php:128
 msgid ""
 "Adds the shipping calculator as an Elementor widget, with its own color, "
 "spacing and typography controls."
@@ -183,7 +183,7 @@ msgstr ""
 msgid "Apply the postcode at the checkout"
 msgstr ""
 
-#: admin/src/Core/Assets.php:366
+#: admin/src/Core/Assets.php:375
 msgid "Are you sure you want to remove this tracking code?"
 msgstr ""
 
@@ -215,7 +215,7 @@ msgstr ""
 msgid "Automatic updates"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:116
+#: app/src/pages/license/LicensePage.vue:135
 msgid "Automatic updates and license synchronization"
 msgstr ""
 
@@ -329,8 +329,8 @@ msgstr ""
 msgid "Button text"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:290
-#: app/src/pages/license/LicensePage.vue:431
+#: app/src/pages/license/LicensePage.vue:309
+#: app/src/pages/license/LicensePage.vue:450
 msgid "Buy a license"
 msgstr ""
 
@@ -426,7 +426,7 @@ msgstr ""
 msgid "Check for new orders"
 msgstr ""
 
-#: admin/src/Core/Update_Checker.php:89
+#: admin/src/Core/Update_Checker.php:90
 msgid "Check for updates"
 msgstr ""
 
@@ -438,7 +438,7 @@ msgstr ""
 msgid "Check the delivery time and price"
 msgstr ""
 
-#: admin/src/Core/Assets.php:414
+#: admin/src/Core/Assets.php:423
 msgid "Checking for updates…"
 msgstr ""
 
@@ -551,18 +551,18 @@ msgstr ""
 msgid "Could not activate this license."
 msgstr ""
 
-#: admin/src/Core/Assets.php:147
+#: admin/src/Core/Assets.php:154
 #: app/src/storefront/api.js:28
 #: app/src/storefront/api.js:83
 #: app/src/storefront/useShippingQuote.js:216
 msgid "Could not calculate shipping. Please try again."
 msgstr ""
 
-#: admin/src/Core/Assets.php:416
+#: admin/src/Core/Assets.php:425
 msgid "Could not check for updates. Please try again."
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:213
+#: app/src/pages/license/LicensePage.vue:232
 msgid "Could not complete the operation."
 msgstr ""
 
@@ -578,7 +578,7 @@ msgstr ""
 msgid "Could not load the integrations."
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:181
+#: app/src/pages/license/LicensePage.vue:200
 msgid "Could not load the license data."
 msgstr ""
 
@@ -586,8 +586,8 @@ msgstr ""
 msgid "Could not load the settings."
 msgstr ""
 
-#: admin/src/Core/License.php:441
-#: admin/src/Core/License.php:484
+#: admin/src/Core/License.php:500
+#: admin/src/Core/License.php:543
 msgid "Could not reach the license server. Please try again."
 msgstr ""
 
@@ -595,7 +595,7 @@ msgstr ""
 msgid "Could not read the environment information."
 msgstr ""
 
-#: admin/src/Core/Assets.php:367
+#: admin/src/Core/Assets.php:376
 msgid "Could not remove the tracking code. Please try again."
 msgstr ""
 
@@ -615,7 +615,7 @@ msgstr ""
 msgid "Could not run the migration."
 msgstr ""
 
-#: admin/src/Core/Assets.php:368
+#: admin/src/Core/Assets.php:377
 msgid "Could not save the tracking code. Please try again."
 msgstr ""
 
@@ -680,11 +680,11 @@ msgstr ""
 msgid "days"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:326
+#: app/src/pages/license/LicensePage.vue:345
 msgid "Deactivate license"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:479
+#: app/src/pages/license/LicensePage.vue:507
 msgid "Deactivate the license on this site?"
 msgstr ""
 
@@ -791,8 +791,8 @@ msgstr ""
 msgid "E-commerce"
 msgstr ""
 
-#: admin/src/Integrations/Elementor.php:111
-#: admin/src/Integrations/Elementor.php:128
+#: admin/src/Integrations/Elementor.php:127
+#: admin/src/Integrations/Elementor.php:144
 msgid "Elementor"
 msgstr ""
 
@@ -823,7 +823,7 @@ msgid "Enter a valid postcode"
 msgstr ""
 
 #: admin/src/API/Routes/License_Activate.php:35
-#: app/src/pages/license/LicensePage.vue:223
+#: app/src/pages/license/LicensePage.vue:242
 msgid "Enter the license key."
 msgstr ""
 
@@ -841,7 +841,7 @@ msgstr ""
 
 #: app/src/pages/integrations/IntegrationsPage.vue:151
 #: app/src/pages/integrations/IntegrationsPage.vue:193
-#: app/src/pages/license/LicensePage.vue:213
+#: app/src/pages/license/LicensePage.vue:232
 #: app/src/pages/settings/SettingsPage.vue:161
 #: app/src/pages/settings/SettingsPage.vue:185
 msgid "Error"
@@ -881,7 +881,7 @@ msgstr ""
 msgid "Example text inside the postcode field."
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:125
+#: app/src/pages/license/LicensePage.vue:144
 msgid "Example: CM-0000-0000-0000"
 msgstr ""
 
@@ -1057,7 +1057,7 @@ msgid "Help center"
 msgstr ""
 
 #: app/src/pages/integrations/IntegrationsPage.vue:212
-#: app/src/pages/license/LicensePage.vue:258
+#: app/src/pages/license/LicensePage.vue:277
 #: app/src/pages/settings/SettingsPage.vue:209
 msgid "Help Center"
 msgstr ""
@@ -1099,7 +1099,7 @@ msgstr ""
 msgid "How the delivery methods are presented to the customer."
 msgstr ""
 
-#: admin/src/Integrations/Elementor.php:129
+#: admin/src/Integrations/Elementor.php:145
 msgid "How to use the shipping calculator inside Elementor."
 msgstr ""
 
@@ -1107,11 +1107,11 @@ msgstr ""
 msgid "HTTPS"
 msgstr ""
 
-#: admin/src/Admin/Menu.php:79
+#: admin/src/Admin/Menu.php:81
 #: admin/src/Core/Plugin.php:388
-#: admin/src/Core/Update_Checker.php:158
-#: admin/src/Integrations/Elementor.php:157
-#: admin/src/Integrations/Elementor.php:196
+#: admin/src/Core/Update_Checker.php:159
+#: admin/src/Integrations/Elementor.php:164
+#: admin/src/Integrations/Elementor.php:203
 #: admin/src/Integrations/Joinotify.php:220
 #: app/src/components/brand/BrandMark.vue:17
 #: app/src/components/brand/BrandMark.vue:18
@@ -1120,19 +1120,19 @@ msgstr ""
 msgid "HubGo"
 msgstr ""
 
-#: admin/src/Admin/Menu.php:100
+#: admin/src/Admin/Menu.php:102
 msgid "HubGo - Integrations"
 msgstr ""
 
-#: admin/src/Admin/Menu.php:109
+#: admin/src/Admin/Menu.php:113
 msgid "HubGo - License"
 msgstr ""
 
-#: admin/src/Admin/Menu.php:91
+#: admin/src/Admin/Menu.php:93
 msgid "HubGo - Settings"
 msgstr ""
 
-#: admin/src/Admin/Menu.php:78
+#: admin/src/Admin/Menu.php:80
 msgid "HubGo - Shipping Management"
 msgstr ""
 
@@ -1143,7 +1143,7 @@ msgid ""
 "General to avoid showing it twice."
 msgstr ""
 
-#: admin/src/Core/Update_Checker.php:221
+#: admin/src/Core/Update_Checker.php:239
 msgid "HubGo is up to date."
 msgstr ""
 
@@ -1165,7 +1165,7 @@ msgstr ""
 msgid "HubGo version"
 msgstr ""
 
-#: admin/src/Core/Assets.php:204
+#: admin/src/Core/Assets.php:211
 msgid "HubGo: interface build not found. Run \"npm run build\" in the plugin."
 msgstr ""
 
@@ -1173,7 +1173,7 @@ msgstr ""
 msgid "I do not know my postcode"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:367
+#: app/src/pages/license/LicensePage.vue:386
 msgid ""
 "If the license does not update right away, click Synchronize to fetch the "
 "latest status from the server."
@@ -1217,7 +1217,7 @@ msgstr ""
 msgid "Input where the customer types the postcode."
 msgstr ""
 
-#: admin/src/Integrations/Elementor.php:125
+#: admin/src/Integrations/Elementor.php:141
 msgid "Install Elementor"
 msgstr ""
 
@@ -1258,7 +1258,7 @@ msgstr ""
 msgid "integrations"
 msgstr ""
 
-#: admin/src/Admin/Menu.php:101
+#: admin/src/Admin/Menu.php:103
 #: app/src/components/modals/IntegrationSettingsModal.vue:43
 #: app/src/pages/integrations/IntegrationsPage.vue:208
 msgid "Integrations"
@@ -1380,22 +1380,22 @@ msgstr ""
 msgid "Lets HubGo update itself whenever possible."
 msgstr ""
 
-#: admin/src/Admin/Menu.php:110
-#: admin/src/Core/License.php:625
-#: app/src/pages/license/LicensePage.vue:210
-#: app/src/pages/license/LicensePage.vue:223
-#: app/src/pages/license/LicensePage.vue:254
-#: app/src/pages/license/LicensePage.vue:282
+#: admin/src/Admin/Menu.php:114
+#: admin/src/Core/License.php:691
+#: app/src/pages/license/LicensePage.vue:229
+#: app/src/pages/license/LicensePage.vue:242
+#: app/src/pages/license/LicensePage.vue:273
+#: app/src/pages/license/LicensePage.vue:301
 msgid "License"
 msgstr ""
 
 #: admin/src/API/Routes/License_Activate.php:57
-#: app/src/pages/license/LicensePage.vue:228
+#: app/src/pages/license/LicensePage.vue:247
 msgid "License activated successfully!"
 msgstr ""
 
 #: admin/src/API/Routes/License_Deactivate.php:35
-#: app/src/pages/license/LicensePage.vue:242
+#: app/src/pages/license/LicensePage.vue:261
 msgid "License deactivated on this site."
 msgstr ""
 
@@ -1403,11 +1403,11 @@ msgstr ""
 msgid "License details"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:312
+#: app/src/pages/license/LicensePage.vue:331
 msgid "License information"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:124
+#: app/src/pages/license/LicensePage.vue:143
 msgid "License key"
 msgstr ""
 
@@ -1419,11 +1419,11 @@ msgstr ""
 msgid "License synchronized successfully!"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:236
+#: app/src/pages/license/LicensePage.vue:255
 msgid "License synchronized!"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:136
+#: app/src/pages/license/LicensePage.vue:155
 msgid "Lifetime"
 msgstr ""
 
@@ -1555,7 +1555,7 @@ msgstr ""
 msgid "No delivery method available for this postcode."
 msgstr ""
 
-#: admin/src/Core/Assets.php:146
+#: admin/src/Core/Assets.php:153
 msgid "No delivery method available."
 msgstr ""
 
@@ -1595,7 +1595,7 @@ msgstr ""
 #: app/src/pages/license/LicensePage.vue:79
 #: app/src/pages/license/LicensePage.vue:84
 #: app/src/pages/license/LicensePage.vue:86
-#: app/src/pages/license/LicensePage.vue:154
+#: app/src/pages/license/LicensePage.vue:173
 msgid "Not available"
 msgstr ""
 
@@ -1621,7 +1621,7 @@ msgid ""
 "the link."
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:377
+#: app/src/pages/license/LicensePage.vue:396
 msgid "Open the Help Center"
 msgstr ""
 
@@ -1693,7 +1693,7 @@ msgstr ""
 msgid "Overlay color"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:406
+#: app/src/pages/license/LicensePage.vue:425
 msgid ""
 "Paste the license key you received with your purchase and click Activate to "
 "unlock every feature."
@@ -1776,7 +1776,7 @@ msgstr ""
 msgid "Pro feature unlocked"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:117
+#: app/src/pages/license/LicensePage.vue:136
 msgid "Pro integrations: Joinotify and the Elementor widget"
 msgstr ""
 
@@ -1796,7 +1796,7 @@ msgstr ""
 msgid "Products and quantities purchased on the order, one per line"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:365
+#: app/src/pages/license/LicensePage.vue:384
 msgid "Quick help"
 msgstr ""
 
@@ -1817,7 +1817,7 @@ msgid "Records extra error and process details in the WordPress log."
 msgstr ""
 
 #: admin/src/Admin/Order_Tracking_Meta_Box.php:272
-#: admin/src/Core/Assets.php:370
+#: admin/src/Core/Assets.php:379
 msgid "Remove"
 msgstr ""
 
@@ -1833,7 +1833,7 @@ msgid ""
 "product page, so only the HubGo calculator is shown."
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:386
+#: app/src/pages/license/LicensePage.vue:405
 msgid "Renew subscription"
 msgstr ""
 
@@ -1940,7 +1940,7 @@ msgid ""
 "appearance. If you need help, visit our"
 msgstr ""
 
-#: admin/src/Admin/Menu.php:92
+#: admin/src/Admin/Menu.php:94
 #: admin/src/Core/Plugin.php:582
 #: app/src/pages/settings/SettingsPage.vue:205
 msgid "Settings"
@@ -2052,7 +2052,7 @@ msgstr ""
 msgid "Support until"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:118
+#: app/src/pages/license/LicensePage.vue:137
 msgid "Support, access and subscription updates"
 msgstr ""
 
@@ -2060,7 +2060,7 @@ msgstr ""
 msgid "Sweden"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:333
+#: app/src/pages/license/LicensePage.vue:352
 msgid "Synchronize license"
 msgstr ""
 
@@ -2116,7 +2116,7 @@ msgstr ""
 msgid "The address features stay off until an API key is saved below."
 msgstr ""
 
-#: admin/src/Integrations/Elementor.php:197
+#: admin/src/Integrations/Elementor.php:204
 msgid ""
 "The Elementor shipping calculator widget requires an active license and is "
 "unavailable. Pages already using the widget stop displaying it until the "
@@ -2131,17 +2131,17 @@ msgstr ""
 msgid "The license is not valid for this site."
 msgstr ""
 
-#: admin/src/Core/License.php:582
+#: admin/src/Core/License.php:648
 msgid "The licensing service is not available."
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:274
+#: app/src/pages/license/LicensePage.vue:293
 msgid ""
 "The licensing service is not configured on this installation. Please "
 "contact support."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:491
+#: admin/src/Admin/Settings/Registry.php:495
 msgid "The matching plugin must be installed and active to use this integration."
 msgstr ""
 
@@ -2174,7 +2174,7 @@ msgstr ""
 msgid "The shipping calculator is disabled in the HubGo settings."
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:480
+#: app/src/pages/license/LicensePage.vue:508
 msgid ""
 "The site will stop receiving updates and the Pro features will be locked "
 "until a new activation."
@@ -2188,11 +2188,11 @@ msgstr ""
 msgid "The stored key was refused by the server."
 msgstr ""
 
-#: admin/src/Core/Update_Checker.php:174
+#: admin/src/Core/Update_Checker.php:175
 msgid "The update service is not available."
 msgstr ""
 
-#: admin/src/Integrations/Elementor.php:137
+#: admin/src/Integrations/Elementor.php:121
 msgid ""
 "The widget requires an active license. Without one it stops being "
 "registered and disappears from the pages already using it — the calculator "
@@ -2221,7 +2221,7 @@ msgstr ""
 msgid "This integration has no additional settings."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:487
+#: admin/src/Admin/Settings/Registry.php:491
 msgid "This integration will be available soon."
 msgstr ""
 
@@ -2237,7 +2237,7 @@ msgstr ""
 msgid "to %1$s (postcode %2$s)"
 msgstr ""
 
-#: admin/src/Integrations/Elementor.php:134
+#: admin/src/Integrations/Elementor.php:113
 msgid ""
 "To place the calculator through the widget alone, set the display position "
 "to \"Elementor widget only\" in Settings → General — otherwise product "
@@ -2254,7 +2254,7 @@ msgid "Too many lookups in a short time. Wait a moment and try again."
 msgstr ""
 
 #: admin/src/Admin/Order_Tracking_Meta_Box.php:256
-#: admin/src/Core/Assets.php:369
+#: admin/src/Core/Assets.php:378
 msgid "Track"
 msgstr ""
 
@@ -2328,7 +2328,7 @@ msgstr ""
 msgid "Update notices"
 msgstr ""
 
-#: admin/src/Core/Assets.php:415
+#: admin/src/Core/Assets.php:424
 msgid "Update now"
 msgstr ""
 
@@ -2365,7 +2365,11 @@ msgstr ""
 msgid "Version"
 msgstr ""
 
-#: admin/src/Core/Update_Checker.php:217
+#: admin/src/Core/Update_Checker.php:235
+msgid "Version %s is available, but installing it needs an active license."
+msgstr ""
+
+#: admin/src/Core/Update_Checker.php:232
 msgid "Version %s is available."
 msgstr ""
 
@@ -2383,7 +2387,7 @@ msgid ""
 "address."
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:453
+#: app/src/pages/license/LicensePage.vue:481
 msgid "What you unlock"
 msgstr ""
 
@@ -2406,7 +2410,7 @@ msgid ""
 "it."
 msgstr ""
 
-#: admin/src/Integrations/Elementor.php:133
+#: admin/src/Integrations/Elementor.php:112
 msgid ""
 "With the integration enabled, drag the \"Shipping calculator\" widget "
 "(HubGo category) onto any page. Styles set on the widget apply to that "
@@ -2434,7 +2438,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:481
+#: app/src/pages/license/LicensePage.vue:509
 msgid "Yes, deactivate"
 msgstr ""
 
@@ -2442,7 +2446,7 @@ msgstr ""
 msgid "Yes, restore"
 msgstr ""
 
-#: admin/src/Admin/Menu.php:201
+#: admin/src/Admin/Menu.php:211
 msgid "You do not have permission to access this page."
 msgstr ""
 
@@ -2458,10 +2462,22 @@ msgstr ""
 msgid "Your license expired and the Pro features are locked."
 msgstr ""
 
-#: app/src/pages/license/LicensePage.vue:112
+#: app/src/pages/license/LicensePage.vue:131
 msgid ""
 "Your license is active. You can keep it synchronized here whenever the "
 "status changes on the server."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:125
+msgid ""
+"Your license is not active, but this site is still receiving updates. Renew "
+"it to keep them coming."
+msgstr ""
+
+#: app/src/pages/license/LicensePage.vue:126
+msgid ""
+"Your license is not active. New versions are still announced here, but "
+"installing them needs an active license."
 msgstr ""
 
 #: app/src/pages/license/LicensePage.vue:86

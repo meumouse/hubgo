@@ -107,6 +107,25 @@ const statusHeadline = computed( () => {
         : __( 'No license key is active on this site yet.' );
 } );
 
+/**
+ * Note shown when MDS keeps serving a license this screen calls inactive.
+ *
+ * The server can waive the update gate for one license — how a customer who
+ * bought before HubGo required a key keeps updating — so "expired" and "still
+ * receiving updates" are both true at once, and the two gates can part ways
+ * with each other as well. Saying nothing here would send someone to support
+ * over updates that are arriving perfectly well.
+ */
+const servedNote = computed( () => {
+    if ( isActive.value || ! license.value?.allows_updates ) {
+        return '';
+    }
+
+    return license.value?.allows_downloads
+        ? __( 'Your license is not active, but this site is still receiving updates. Renew it to keep them coming.' )
+        : __( 'Your license is not active. New versions are still announced here, but installing them needs an active license.' );
+} );
+
 /** Supporting paragraph below the status headline. */
 const statusHelp = computed( () => ( isActive.value
     ? __( 'Your license is active. You can keep it synchronized here whenever the status changes on the server.' )
@@ -436,6 +455,15 @@ onMounted( bootstrap );
                                         />
                                     </div>
                                 </form>
+
+                                <Transition name="hubgo-fade">
+                                    <p
+                                        v-if="servedNote"
+                                        class="mb-0 mt-5 rounded-[8px] border border-sky-200 bg-sky-50 px-4 py-3 text-[13px] leading-5 text-sky-800"
+                                    >
+                                        {{ servedNote }}
+                                    </p>
+                                </Transition>
 
                                 <Transition name="hubgo-fade">
                                     <p

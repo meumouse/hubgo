@@ -7,7 +7,7 @@ use MeuMouse\Hubgo\Admin\Settings;
 
 use MeuMouse\MDS\SDK\SDK;
 use MeuMouse\MDS\SDK\Integration;
-use MeuMouse\MDS\SDK\Admin\Notices;
+use MeuMouse\MDS\SDK\Config\Features;
 use MeuMouse\MDS\SDK\License\LicenseStatus;
 
 use Exception;
@@ -25,11 +25,21 @@ defined('ABSPATH') || exit;
  * heartbeat. It replaces the legacy MeuMouse\Hubgo\API\Updater class, which
  * polled a static JSON file on packages.meumouse.com.
  *
- * Requires meumouse/mds-php-sdk ^1.1 (installed by Composer into admin/vendor).
- * From 1.1 the SDK sends `product_slug` on activate/deactivate, so a single
- * bundle key can license several products, and keeps every extra field the
- * validation endpoint returns — read them via get_data(), get_bundle(),
- * get_plan_name() and get_renew_url().
+ * Requires meumouse/mds-php-sdk ^1.3 (installed by Composer into admin/vendor):
+ *
+ * - 1.1 sends `product_slug` on activate/deactivate, so a single bundle key can
+ *   license several products, and keeps every extra field the validation
+ *   endpoint returns — read them via get_data(), get_bundle(), get_plan_name()
+ *   and get_renew_url().
+ * - 1.2 turns every module into a named feature. HubGo switches `notices` and
+ *   `admin_menu` off below, because it renders the license state on its own
+ *   screen (see register_product()).
+ * - 1.3 splits "may this site be told about new versions" from "may it install
+ *   them" and lets the server waive either one for a specific license. Anything
+ *   about updates must therefore ask allows_updates() / allows_downloads(), not
+ *   is_active(): a customer waived past the gate has a lapsed license and is
+ *   still entitled to the update, and gating on validity would hide it from
+ *   them before MDS ever got the chance to honour its own waiver.
  *
  * Credentials are compiled in as class constants so the shipped plugin works
  * out of the box, and every one of them can be overridden by a constant in
@@ -166,10 +176,6 @@ final class License {
             return;
         }
 
-        // Taken before the SDK boots so its own admin notice can be told apart
-        // from the ones other MDS products already hooked.
-        $notices_before = self::admin_notice_ids();
-
         try {
             self::$integration = SDK::register( array(
                 'product_slug'    => self::PRODUCT_SLUG,
@@ -188,14 +194,24 @@ final class License {
                 // admin_post handlers the SDK registers stay wired, so a legacy
                 // bookmark to them keeps working.
                 'settings_parent' => null,
+                'features'        => array(
+                    // The SDK would nag on the dashboard, plugins and updates
+                    // screens about a license HubGo already reports on its own
+                    // screen — the same reason `settings_parent` is null. Off
+                    // by flag since SDK 1.2; before that it took unhooking the
+                    // callback from `admin_notices` after the fact.
+                    Features::NOTICES    => false,
+                    // Redundant while `settings_parent` is null, and stated so
+                    // that setting a parent one day does not silently bring the
+                    // SDK's own submenu back beside HubGo's.
+                    Features::ADMIN_MENU => false,
+                ),
             ) );
         } catch ( InvalidArgumentException $e ) {
             self::log( 'MDS registration failed: ' . $e->getMessage() );
 
             return;
         }
-
-        self::remove_sdk_license_notice( $notices_before );
 
         // Link to the license screen from the plugins list. Safe to wire now
         // that get_license_url() resolves to the HubGo license subpage instead
@@ -204,67 +220,6 @@ final class License {
 
         // Opt this plugin into WordPress background updates when enabled.
         add_filter( 'auto_update_plugin', array( __CLASS__, 'enable_auto_update' ), 10, 2 );
-    }
-
-
-    /**
-     * Map of callback ids currently hooked onto `admin_notices`, per priority.
-     *
-     * @since 3.0.0
-     * @return array<int,array<string,bool>>
-     */
-    private static function admin_notice_ids() {
-        global $wp_filter;
-
-        if ( empty( $wp_filter['admin_notices'] ) ) {
-            return array();
-        }
-
-        $ids = array();
-
-        foreach ( $wp_filter['admin_notices']->callbacks as $priority => $callbacks ) {
-            $ids[ $priority ] = array_fill_keys( array_keys( $callbacks ), true );
-        }
-
-        return $ids;
-    }
-
-
-    /**
-     * Drop the license nag the SDK renders on the dashboard, plugins and
-     * updates screens ("Enter your license key to enable updates and
-     * support.", and its expired/invalid variants).
-     *
-     * HubGo already surfaces the license state on its own screen — the same
-     * reason `settings_parent` is null above — so the extra notice only
-     * duplicates it. The SDK keeps the Notices instance to itself, so the
-     * callback is found on the hook: any Notices added while SDK::register()
-     * ran is ours, which leaves the notices of other MDS products alone.
-     *
-     * @since 3.0.0
-     * @param array<int,array<string,bool>> $before Callback ids seen before the SDK booted.
-     * @return void
-     */
-    private static function remove_sdk_license_notice( $before ) {
-        global $wp_filter;
-
-        if ( empty( $wp_filter['admin_notices'] ) ) {
-            return;
-        }
-
-        foreach ( $wp_filter['admin_notices']->callbacks as $priority => $callbacks ) {
-            foreach ( $callbacks as $id => $callback ) {
-                if ( isset( $before[ $priority ][ $id ] ) ) {
-                    continue;
-                }
-
-                $function = isset( $callback['function'] ) ? $callback['function'] : null;
-
-                if ( is_array( $function ) && isset( $function[0] ) && $function[0] instanceof Notices ) {
-                    remove_action( 'admin_notices', $function, $priority );
-                }
-            }
-        }
     }
 
 
@@ -309,6 +264,10 @@ final class License {
      *
      *     if ( License::is_active() ) { ... }
      *
+     * Do NOT use it to gate anything about updates — see allows_updates() and
+     * allows_downloads(), which answer that question and can differ from this
+     * one.
+     *
      * @since 3.0.0
      * @return bool
      */
@@ -325,9 +284,59 @@ final class License {
 
 
     /**
+     * Whether MDS still tells this site about new versions.
+     *
+     * Usually the same answer as is_active(), and where the two differ this is
+     * the one the update interface must follow: MDS can waive the update gate
+     * for a single license — how a customer who bought before HubGo required a
+     * key keeps updating — and that waiver only exists on the server. Falls
+     * back to the license's own validity when the server has not answered yet
+     * (no heartbeat, or an API older than the gates).
+     *
+     * Requires MDS PHP SDK 1.3+.
+     *
+     * @since 3.0.0
+     * @return bool
+     */
+    public static function allows_updates() {
+        if ( ! self::is_enabled() ) {
+            return true;
+        }
+
+        $integration = self::get_integration();
+
+        return $integration ? $integration->allows_updates() : false;
+    }
+
+
+    /**
+     * Whether MDS still hands this site the package itself.
+     *
+     * Separate from allows_updates() because a product can announce a release
+     * to every site and give the ZIP only to licensed ones: the update shows up
+     * on the plugins list with no "Update now", and rollback is refused for the
+     * same reason — installing a version is a download.
+     *
+     * Requires MDS PHP SDK 1.3+.
+     *
+     * @since 3.0.0
+     * @return bool
+     */
+    public static function allows_downloads() {
+        if ( ! self::is_enabled() ) {
+            return true;
+        }
+
+        $integration = self::get_integration();
+
+        return $integration ? $integration->allows_downloads() : false;
+    }
+
+
+    /**
      * Last persisted license status. Never performs a network call.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return LicenseStatus|null
      */
     public static function get_status() {
@@ -346,7 +355,7 @@ final class License {
      * Requires MDS PHP SDK 1.1+; the extras persist with the status, so they
      * stay readable during a grace-period outage.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @param string $key Field name as returned by the API.
      * @param mixed $default Value when the field is absent.
      * @return mixed
@@ -361,7 +370,7 @@ final class License {
     /**
      * Every server-supplied field beyond the modelled ones.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return array
      */
     public static function get_extra() {
@@ -378,7 +387,7 @@ final class License {
      * 'name', 'slug' ) ) ). A bundle seat is shared by every product it covers,
      * so deactivating HubGo does not release the sibling products.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return array|null
      */
     public static function get_bundle() {
@@ -391,7 +400,7 @@ final class License {
     /**
      * Whether the license comes from a bundle (e.g. "Clube M").
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return bool
      */
     public static function is_bundle() {
@@ -402,7 +411,7 @@ final class License {
     /**
      * Human-readable plan name, falling back to the plan slug.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return string
      */
     public static function get_plan_name() {
@@ -419,7 +428,7 @@ final class License {
     /**
      * License expiry as an ISO-8601 string, or null for a lifetime license.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return string|null
      */
     public static function get_expires_at() {
@@ -432,7 +441,7 @@ final class License {
     /**
      * Where to send a customer whose license lapsed.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return string
      */
     public static function get_renew_url() {
@@ -445,7 +454,7 @@ final class License {
     /**
      * Last message returned by the server (including the refusal reason).
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return string
      */
     public static function get_message() {
@@ -570,6 +579,12 @@ final class License {
             'has_key'    => '' !== self::get_key(),
             'plan_name'  => self::get_plan_name(),
             'url'        => self::get_license_url(),
+            // Both gates travel with the summary so a screen never has to infer
+            // "is this site still being served?" from `is_active`: a waived
+            // license is invalid and served, and the two answers can also part
+            // ways with each other (announced release, withheld package).
+            'allows_updates'   => self::allows_updates(),
+            'allows_downloads' => self::allows_downloads(),
         );
     }
 
@@ -685,7 +700,12 @@ final class License {
     /**
      * Enable WordPress background updates for HubGo when the setting is on.
      *
+     * The download gate has the last word: MDS can announce a release to this
+     * site and keep the package, in which case cron would wake up to install
+     * something it was never given and log the failure on every pass.
+     *
      * @since 3.0.0
+     * @version 3.0.1
      * @param bool $update Whether to enable auto-update.
      * @param object $item Plugin update object.
      * @return bool
@@ -693,6 +713,10 @@ final class License {
     public static function enable_auto_update( $update, $item ) {
         if ( ! isset( $item->plugin ) || $item->plugin !== self::get_plugin_file() ) {
             return $update;
+        }
+
+        if ( ! self::allows_downloads() ) {
+            return false;
         }
 
         return 'yes' === Settings::get_setting('enable_auto_updates');

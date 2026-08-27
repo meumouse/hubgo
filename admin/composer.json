@@ -12,7 +12,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.4",
-        "meumouse/mds-php-sdk": "^1.1"
+        "meumouse/mds-php-sdk": "^1.3"
     },
     "config": {
         "preferred-install": "dist",

@@ -74,6 +74,11 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 - New REST endpoints: `GET hubgo/v1/integrations`, `POST hubgo/v1/plugins/install`, `POST hubgo/v1/settings/reset`, `GET hubgo/v1/license`, `POST hubgo/v1/license/activate`, `POST hubgo/v1/license/deactivate`, `POST hubgo/v1/license/sync`, `POST hubgo/v1/updates/check`
 - New calculator filters: `Hubgo/Shipping_Calculator/Postcode_State_Map`, `Hubgo/Shipping_Calculator/Resolved_State`, `Hubgo/Shipping_Calculator/Country`, `Hubgo/Shipping_Calculator/Destination`, `Hubgo/Shipping_Calculator/Zone`
 - New admin and integration filters: `Hubgo/Integrations/Cards`, `Hubgo/Integrations/Card`, `Hubgo/Integrations/Categories`, `Hubgo/Admin/Integrations/Cards`, `Hubgo/Admin/Integrations/Bootstrap_Data`, `Hubgo/Admin/System_Status`, `Hubgo/Core/Assets/Admin_Pages`, `Hubgo/Core/License/Payload`, `Hubgo/Core/Plugin_Installer/Allowed_Hosts`
+- `MeuMouse\Hubgo\Core\License::allows_updates()` and `::allows_downloads()`, the two permissions MDS now answers the update check with. Every update surface asks these instead of `is_active()` — the server can waive a gate for a single license, which is how a customer who bought before HubGo required a key keeps updating, and a client that decided on its own would refuse the update before MDS ever got to honour its own waiver
+- Both permissions travel in the license summary (`allows_updates`, `allows_downloads`), so a screen never has to infer "is this site still being served?" from the license status
+- `Hubgo/Core/Update_Checker/Payload` gained `allows_updates`, `allows_downloads` and `can_install`. A release MDS announces without handing over the package now reads as "Version x.y.z is available, but installing it needs an active license" and carries no update link, instead of offering a one-click update that could only end in "Update package not available"
+- The License screen tells a customer whose key is not active that this site is still receiving updates, when that is what the server says
+- `Requires at least: 6.0` in the plugin header, matching the product metadata registered on MDS (`requires` 6.0, `tested` 7.1, `requires_php` 7.4)
 
 ### Changed
 
@@ -85,6 +90,8 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
     - Focus is a 2px border in the primary colour, with no shadow
     - Buttons declare their own appearance instead of inheriting the browser's, since Tailwind's preflight is disabled
 - The `Hubgo/Shipping_Calculator/Rates` filter now receives the matched zone as a third argument
+- **MDS PHP SDK to `^1.3`** (from `^1.1`). The update check is `POST /v2/update-check` with the site `domain`, the `product_slug` and the installed `current_version`, and it is no longer barred by the license being valid — it is barred by the update gate the server answers with
+- The SDK's license notices and its auto-registered submenu are switched off through the `features` map the SDK exposes since 1.2, instead of unhooking the notice callback from `admin_notices` after registration
 
 ### Removed
 

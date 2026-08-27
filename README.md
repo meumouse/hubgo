@@ -254,8 +254,27 @@ Two rules govern this area:
 ## 7. Licensing and updates
 
 Licensing, signed updates (ed25519), rollback and the update heartbeat are
-handled by the **MDS PHP SDK** (`meumouse/mds-php-sdk`), installed with Composer
-and registered by `Core\License` — there is no bespoke updater.
+handled by the **MDS PHP SDK** (`meumouse/mds-php-sdk` `^1.3`), installed with
+Composer and registered by `Core\License` — there is no bespoke updater.
+
+The update check is `POST /v2/update-check` on the MDS API, sent by the SDK with
+the site `domain`, the `product_slug` (`hubgo`) and the installed
+`current_version`; the license key travels with it while the update gate is
+closed. What the answer may say about this site is two separate permissions,
+not one:
+
+- `License::allows_updates()` — MDS still announces new versions here.
+- `License::allows_downloads()` — MDS still hands over the package itself.
+
+They usually agree, and where they do not the update interface follows them
+rather than `License::is_active()`: MDS can waive either gate for one license
+(how a customer who bought before HubGo required a key keeps updating), and a
+release can be announced to every site with the ZIP reserved for licensed ones —
+which shows up as a new version with no "Update now".
+
+The version metadata WordPress renders (`requires`, `tested`, `requires_php`)
+comes from the same response, off the product registered on MDS; the plugin
+header carries the matching values.
 
 MDS credentials are compile-time constants, overridable from `wp-config.php`:
 

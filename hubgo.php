@@ -7,6 +7,7 @@
  * Author:                  MeuMouse.com
  * Author URI:              https://meumouse.com/?utm_source=wordpress&utm_medium=hubgo&utm_campaign=plugins_list
  * Version:                 3.0.0
+ * Requires at least:       6.0
  * WC requires at least:    9.0
  * WC tested up to:         11.0
  * Requires PHP:            7.4

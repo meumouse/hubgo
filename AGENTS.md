@@ -522,7 +522,7 @@ The version appears in **four** places and they must stay in sync:
 3. `package.json`
 4. `app/package.json`
 
-Semantic versioning. Licensing, update checks, signature verification and rollback are handled by the **MDS PHP SDK** (`admin/vendor/meumouse/mds-php-sdk`) via `Core\License` — do not reintroduce a custom updater or poll a static JSON endpoint. MDS credentials are compile-time constants overridable from `wp-config.php` (`HUBGO_MDS_API_URL`, `HUBGO_MDS_API_KEY`, `HUBGO_MDS_PUBLIC_KEY`).
+Semantic versioning. Licensing, update checks, signature verification and rollback are handled by the **MDS PHP SDK** (`admin/vendor/meumouse/mds-php-sdk`, `^1.3`) via `Core\License` — do not reintroduce a custom updater or poll a static JSON endpoint. Anything about updates asks `License::allows_updates()` / `License::allows_downloads()`, never `is_active()`: MDS answers the update check with two independent permissions and can waive either one for a single license, so a lapsed key may still be entitled to the update. MDS credentials are compile-time constants overridable from `wp-config.php` (`HUBGO_MDS_API_URL`, `HUBGO_MDS_API_KEY`, `HUBGO_MDS_PUBLIC_KEY`).
 
 Release artifacts go to `dist/` (`hubgo.zip`, `versions/<version>/`).
 

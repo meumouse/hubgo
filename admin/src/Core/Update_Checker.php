@@ -25,10 +25,11 @@ defined('ABSPATH') || exit;
  * check still runs when the script does not (JS disabled, blocked asset).
  *
  * The check itself is a forced pass through the MDS SDK: its 12h update cache
- * and the rollback version list are dropped, the license is re-validated
- * (updates are a licensed benefit) and the `update_plugins` transient is
- * re-saved, which replays `pre_set_site_transient_update_plugins` — the filter
- * where the SDK's PluginUpdater injects HubGo's update data.
+ * and the rollback version list are dropped, the license is re-validated (the
+ * server's answer is what opens the update gate) and the `update_plugins`
+ * transient is re-saved, which replays
+ * `pre_set_site_transient_update_plugins` — the filter where the SDK's
+ * PluginUpdater injects HubGo's update data.
  *
  * @since 3.0.0
  * @package MeuMouse\Hubgo\Core
@@ -181,8 +182,9 @@ class Update_Checker {
         $cache->delete( AbstractUpdater::CACHE_UPDATE );
         $integration->rollback()->clear_cache();
 
-        // Updates are gated by the license, and a refused check is cached with a
-        // short negative TTL, so the key is re-validated first: a license
+        // The update gate answers to what the server last said about this key —
+        // including a waiver the server granted — and a refused check is cached
+        // with a short negative TTL, so the key is re-validated first: a license
         // renewed minutes ago has to be visible to this very request.
         try {
             $integration->license()->validate();
@@ -202,20 +204,36 @@ class Update_Checker {
      * Current update state, read from the transient WordPress already holds.
      *
      * Shape: `update_available`, `current_version`, `new_version`, `is_licensed`,
-     * `update_url`, `message`.
+     * `allows_updates`, `allows_downloads`, `can_install`, `update_url`,
+     * `message`.
+     *
+     * Three outcomes, not two. MDS answers the update check with two separate
+     * permissions, so a release can be announced to a site that may not install
+     * it — the shape used to nudge a lapsed customer. That case carries a
+     * `new_version` with an empty `update_url`, and says why.
      *
      * @since 3.0.0
+     * @version 3.0.1
      * @return array<string,mixed>
      */
     public static function get_payload() {
-        $new_version = self::get_new_version();
+        $update = self::get_update_object();
+        $new_version = self::get_new_version( $update );
         $update_available = '' !== $new_version;
-        $is_licensed = License::is_active();
 
-        if ( $update_available ) {
+        // The package the update check handed over, if any. MDS withholds it —
+        // and only it — when the download gate is closed, so an announcement
+        // with no package URL is the server saying "renew to install this".
+        $has_package = $update && '' !== (string) ( $update->package ?? '' );
+        $can_install = $update_available && $has_package && License::allows_downloads();
+
+        if ( $update_available && $can_install ) {
             /* translators: %s: version number. */
             $message = sprintf( __( 'Version %s is available.', 'hubgo' ), $new_version );
-        } elseif ( ! $is_licensed ) {
+        } elseif ( $update_available ) {
+            /* translators: %s: version number. */
+            $message = sprintf( __( 'Version %s is available, but installing it needs an active license.', 'hubgo' ), $new_version );
+        } elseif ( ! License::allows_updates() ) {
             $message = __( 'Activate your license to receive updates.', 'hubgo' );
         } else {
             $message = __( 'HubGo is up to date.', 'hubgo' );
@@ -225,8 +243,14 @@ class Update_Checker {
             'update_available' => $update_available,
             'current_version'  => defined('HUBGO_VERSION') ? HUBGO_VERSION : '',
             'new_version'      => $new_version,
-            'is_licensed'      => $is_licensed,
-            'update_url'       => $update_available ? self::get_update_url() : '',
+            'is_licensed'      => License::is_active(),
+            'allows_updates'   => License::allows_updates(),
+            'allows_downloads' => License::allows_downloads(),
+            'can_install'      => $can_install,
+            // Empty for an announced-but-withheld release: core has no package
+            // to fetch, so offering the one-click update would only walk the
+            // user into "Update package not available".
+            'update_url'       => $can_install ? self::get_update_url() : '',
             'message'          => $message,
         ) );
     }
@@ -274,21 +298,41 @@ class Update_Checker {
 
 
     /**
-     * Version WordPress currently advertises for HubGo, when newer than the
-     * installed one.
+     * The update entry WordPress currently holds for HubGo, if any.
+     *
+     * This is what the SDK's PluginUpdater injected on the last pass through
+     * `pre_set_site_transient_update_plugins`, so it carries the MDS answer —
+     * the version and, when the download gate allows it, the package URL.
      *
      * @since 3.0.0
-     * @return string Version number, or an empty string when up to date.
+     * @return object|null
      */
-    private static function get_new_version() {
+    private static function get_update_object() {
         $updates = get_site_transient('update_plugins');
         $file = self::get_plugin_file();
 
         if ( ! is_object( $updates ) || empty( $updates->response[ $file ] ) ) {
+            return null;
+        }
+
+        return (object) $updates->response[ $file ];
+    }
+
+
+    /**
+     * Version WordPress currently advertises for HubGo, when newer than the
+     * installed one.
+     *
+     * @since 3.0.0
+     * @version 3.0.1
+     * @param object|null $update Update entry, as returned by get_update_object().
+     * @return string Version number, or an empty string when up to date.
+     */
+    private static function get_new_version( $update ) {
+        if ( ! is_object( $update ) ) {
             return '';
         }
 
-        $update = (object) $updates->response[ $file ];
         $new_version = isset( $update->new_version ) ? (string) $update->new_version : '';
         $current = defined('HUBGO_VERSION') ? HUBGO_VERSION : '';
 

@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "286ad38055bb9a96a82327288d3ac30d",
+    "content-hash": "09a0d597914a20968000ea6cc862dbb5",
     "packages": [
         {
             "name": "meumouse/mds-php-sdk",
-            "version": "v1.1.0",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/meumouse/mds-php-sdk.git",
-                "reference": "b692d64daa7c5eec0d261a5457a62b7adcde5f68"
+                "reference": "fdf8d1dd6741ee133c2d8f22fd16ca68e99e542d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/meumouse/mds-php-sdk/zipball/b692d64daa7c5eec0d261a5457a62b7adcde5f68",
-                "reference": "b692d64daa7c5eec0d261a5457a62b7adcde5f68",
+                "url": "https://api.github.com/repos/meumouse/mds-php-sdk/zipball/fdf8d1dd6741ee133c2d8f22fd16ca68e99e542d",
+                "reference": "fdf8d1dd6741ee133c2d8f22fd16ca68e99e542d",
                 "shasum": ""
             },
             "require": {
@@ -63,7 +63,7 @@
                 "issues": "https://github.com/meumouse/mds-php-sdk/issues",
                 "source": "https://github.com/meumouse/mds-php-sdk"
             },
-            "time": "2026-08-08T02:07:30+00:00"
+            "time": "2026-08-27T15:40:15+00:00"
         }
     ],
     "packages-dev": [],
