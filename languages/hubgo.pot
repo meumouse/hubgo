@@ -49,11 +49,11 @@ msgid_plural "%s orders changed to \"Order shipped\"."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/src/Integrations/Joinotify.php:528
+#: admin/src/Integrations/Joinotify.php:543
 msgid "123 Flower Street - Curitiba/PR - Brazil (postcode: 80000-000)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:540
+#: admin/src/Integrations/Joinotify.php:555
 msgid "450 Daisy Street - Curitiba/PR - Brazil (postcode: 80000-100)"
 msgstr ""
 
@@ -264,7 +264,7 @@ msgstr ""
 msgid "Belgium"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:152
+#: admin/src/Integrations/Joinotify.php:167
 msgid ""
 "Besides this switch, the \"HubGo\" card must also be enabled on the "
 "Joinotify Applications tab."
@@ -314,7 +314,7 @@ msgid ""
 "date."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:344
+#: admin/src/Integrations/Joinotify.php:359
 msgid "Business days promised at the checkout"
 msgstr ""
 
@@ -386,7 +386,7 @@ msgstr ""
 msgid "Carrier"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:319
+#: admin/src/Integrations/Joinotify.php:334
 msgid "Carrier name"
 msgstr ""
 
@@ -633,23 +633,23 @@ msgstr ""
 msgid "Custom carrier"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:445
+#: admin/src/Integrations/Joinotify.php:460
 msgid "Customer billing e-mail (WooCommerce)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:421
+#: admin/src/Integrations/Joinotify.php:436
 msgid "Customer billing first name (WooCommerce)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:433
+#: admin/src/Integrations/Joinotify.php:448
 msgid "Customer billing last name (WooCommerce)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:526
+#: admin/src/Integrations/Joinotify.php:541
 msgid "Customer full billing address (WooCommerce)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:538
+#: admin/src/Integrations/Joinotify.php:553
 msgid "Customer full shipping address (WooCommerce)"
 msgstr ""
 
@@ -698,12 +698,12 @@ msgstr ""
 msgid "Delivery"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:334
+#: admin/src/Integrations/Joinotify.php:349
 msgid "Delivery date promised at the checkout"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:247
-#: admin/src/Integrations/Joinotify.php:635
+#: admin/src/Integrations/Joinotify.php:262
+#: admin/src/Integrations/Joinotify.php:650
 msgid "Delivery is late"
 msgstr ""
 
@@ -725,10 +725,6 @@ msgstr ""
 #: admin/src/Admin/System_Status.php:44
 #: admin/src/Admin/System_Status.php:55
 msgid "Disabled"
-msgstr ""
-
-#: admin/src/Integrations/Joinotify.php:144
-msgid "Discover Joinotify"
 msgstr ""
 
 #: app/src/pages/integrations/components/IntegrationsGrid.vue:199
@@ -777,7 +773,7 @@ msgstr ""
 msgid "Displays the tracking code metabox on the order screen."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:435
+#: admin/src/Integrations/Joinotify.php:450
 msgid "Doe"
 msgstr ""
 
@@ -865,7 +861,7 @@ msgstr ""
 msgid "Every text displayed by the calculator and by the shipping table."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:411
+#: admin/src/Integrations/Joinotify.php:426
 msgid ""
 "Every tracking code on the order, one per line (carrier, code and link). It "
 "can also be used as the source of a loop action."
@@ -887,8 +883,8 @@ msgstr ""
 msgid "Expires on"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:321
-#: admin/src/Integrations/Joinotify.php:358
+#: admin/src/Integrations/Joinotify.php:336
+#: admin/src/Integrations/Joinotify.php:373
 msgid "Express Delivery"
 msgstr ""
 
@@ -924,17 +920,17 @@ msgstr ""
 msgid "Finland"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:248
+#: admin/src/Integrations/Joinotify.php:263
 msgid ""
 "Fired once a day for each shipped order whose promised delivery date has "
 "passed."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:240
+#: admin/src/Integrations/Joinotify.php:255
 msgid "Fired when a tracking code is saved on the order."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:232
+#: admin/src/Integrations/Joinotify.php:247
 msgid "Fired when the order status changes to Order shipped."
 msgstr ""
 
@@ -1101,7 +1097,7 @@ msgstr ""
 #: admin/src/Core/Plugin.php:388
 #: admin/src/Core/Update_Checker.php:159
 #: admin/src/Integrations/Elementor.php:137
-#: admin/src/Integrations/Joinotify.php:219
+#: admin/src/Integrations/Joinotify.php:234
 #: app/src/components/brand/BrandMark.vue:17
 #: app/src/components/brand/BrandMark.vue:18
 #: app/src/components/layout/PageHeader.vue:33
@@ -1214,6 +1210,10 @@ msgstr ""
 msgid "Install Frenet"
 msgstr ""
 
+#: admin/src/Integrations/Joinotify.php:159
+msgid "Install Joinotify"
+msgstr ""
+
 #: admin/src/Integrations/Melhor_Envio.php:274
 msgid "Install Melhor Envio"
 msgstr ""
@@ -1298,12 +1298,12 @@ msgstr ""
 msgid "Italy"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:423
+#: admin/src/Integrations/Joinotify.php:438
 msgid "John"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:132
-#: admin/src/Integrations/Joinotify.php:147
+#: admin/src/Integrations/Joinotify.php:146
+#: admin/src/Integrations/Joinotify.php:162
 msgid "Joinotify"
 msgstr ""
 
@@ -1425,7 +1425,7 @@ msgstr ""
 msgid "List of methods displayed in the details window."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:148
+#: admin/src/Integrations/Joinotify.php:163
 msgid "Logistics triggers available in the Joinotify flow builder."
 msgstr ""
 
@@ -1596,7 +1596,7 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:399
+#: admin/src/Integrations/Joinotify.php:414
 msgid "Number of tracking codes registered on the order"
 msgstr ""
 
@@ -1626,7 +1626,7 @@ msgstr ""
 msgid "Options format"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:457
+#: admin/src/Integrations/Joinotify.php:472
 msgid "Order billing phone (WooCommerce)"
 msgstr ""
 
@@ -1634,7 +1634,7 @@ msgstr ""
 msgid "Order not found."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:486
+#: admin/src/Integrations/Joinotify.php:501
 msgid "Order number (WooCommerce)"
 msgstr ""
 
@@ -1644,17 +1644,17 @@ msgstr ""
 #: admin/src/Core/Order_Status.php:145
 #: admin/src/Emails/Email_Shipped_Order.php:25
 #: admin/src/Emails/Email_Shipped_Order.php:60
-#: admin/src/Integrations/Joinotify.php:231
-#: admin/src/Integrations/Joinotify.php:500
-#: admin/src/Integrations/Joinotify.php:585
+#: admin/src/Integrations/Joinotify.php:246
+#: admin/src/Integrations/Joinotify.php:515
+#: admin/src/Integrations/Joinotify.php:600
 msgid "Order shipped"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:469
+#: admin/src/Integrations/Joinotify.php:484
 msgid "Order shipping phone (WooCommerce)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:498
+#: admin/src/Integrations/Joinotify.php:513
 msgid "Order status (WooCommerce)"
 msgstr ""
 
@@ -1662,7 +1662,7 @@ msgstr ""
 msgid "Order tables (HPOS)"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:510
+#: admin/src/Integrations/Joinotify.php:525
 msgid "Order total (WooCommerce)"
 msgstr ""
 
@@ -1769,7 +1769,7 @@ msgstr ""
 msgid "Product on the current page"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:550
+#: admin/src/Integrations/Joinotify.php:565
 msgid "Products and quantities purchased on the order, one per line"
 msgstr ""
 
@@ -1895,13 +1895,13 @@ msgstr ""
 msgid "Selected option background"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:220
+#: admin/src/Integrations/Joinotify.php:235
 msgid ""
 "Send automatic WhatsApp messages from logistics events such as order "
 "shipped and tracking code saved, connecting HubGo to Joinotify."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:133
+#: admin/src/Integrations/Joinotify.php:147
 msgid ""
 "Send automatic WhatsApp messages when an order is shipped, a tracking code "
 "is saved or a delivery is running late."
@@ -1953,7 +1953,7 @@ msgstr ""
 msgid "Shipping calculator"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:386
+#: admin/src/Integrations/Joinotify.php:401
 #: templates/email/hubgo-tracking-info.php:17
 msgid "Shipping date"
 msgstr ""
@@ -1964,7 +1964,7 @@ msgstr ""
 msgid "Shipping date:"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:356
+#: admin/src/Integrations/Joinotify.php:371
 msgid "Shipping method chosen at the checkout"
 msgstr ""
 
@@ -2234,7 +2234,7 @@ msgstr ""
 msgid "Tracking - HubGo"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:376
+#: admin/src/Integrations/Joinotify.php:391
 msgid "Tracking code"
 msgstr ""
 
@@ -2242,7 +2242,7 @@ msgstr ""
 msgid "Tracking code generated in Melhor Envio."
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:607
+#: admin/src/Integrations/Joinotify.php:622
 msgid "Tracking code saved on the order"
 msgstr ""
 
@@ -2257,7 +2257,7 @@ msgstr ""
 msgid "Tracking information"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:366
+#: admin/src/Integrations/Joinotify.php:381
 msgid "Tracking link"
 msgstr ""
 
@@ -2354,7 +2354,7 @@ msgstr ""
 msgid "What you unlock"
 msgstr ""
 
-#: admin/src/Integrations/Joinotify.php:239
+#: admin/src/Integrations/Joinotify.php:254
 msgid "When a tracking code is saved on the order"
 msgstr ""
 
