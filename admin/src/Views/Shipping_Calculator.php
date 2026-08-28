@@ -86,7 +86,7 @@ class Shipping_Calculator {
      * absent: they mean "hook nothing", and the store owner inserts the
      * calculator where they want it.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return array<string,string> Setting value => WordPress hook name.
      */
     public static function get_positions() {

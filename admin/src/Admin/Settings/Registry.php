@@ -567,7 +567,7 @@ class Registry {
      * unit picker existed is a bare number and keeps working: {@see
      * \MeuMouse\Hubgo\Views\Calculator_Styles} appends the unit declared there.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @param string $key Setting key.
      * @param string $label Field label.
      * @param string $description Field description.

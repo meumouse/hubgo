@@ -12,7 +12,7 @@
  * stored before the unit picker existed is a bare number; it is read with the
  * field's declared unit and re-saved with the unit spelled out.
  *
- * @since 3.0.1
+ * @since 3.0.0
  */
 import { computed, ref, watch } from 'vue';
 import UnitSelect from './UnitSelect.vue';

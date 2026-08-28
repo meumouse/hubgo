@@ -8,7 +8,7 @@
  * `overflow` clipping — but it stays deliberately small: no search, no meta
  * lines, just the handful of units a length can take.
  *
- * @since 3.0.1
+ * @since 3.0.0
  */
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { Check, ChevronDown } from '@boxicons/vue';

@@ -51,7 +51,7 @@ class Shipping_Calculator_Service {
      * The suffix is bumped whenever the cached payload shape changes, so an
      * upgrade never serves a row set the new storefront cannot read.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @version 3.0.0
      * @var string
      */
@@ -60,7 +60,7 @@ class Shipping_Calculator_Service {
     /**
      * Quote cache lifetime, in seconds.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @var int
      */
     const CACHE_TTL = 300;
@@ -68,7 +68,7 @@ class Shipping_Calculator_Service {
     /**
      * Zone matched on the last calculation: [ 'id' => int, 'name' => string ].
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @var array
      */
     private $matched_zone = array();
@@ -103,7 +103,7 @@ class Shipping_Calculator_Service {
     /**
      * Error code produced by the last calculation, empty when it succeeded.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @var string
      */
     private $last_error = '';
@@ -265,7 +265,7 @@ class Shipping_Calculator_Service {
     /**
      * Get the zone matched by the last calculation.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return array Empty array when no calculation ran, otherwise [ 'id', 'name' ].
      */
     public function get_matched_zone() {
@@ -276,7 +276,7 @@ class Shipping_Calculator_Service {
     /**
      * Get the error code produced by the last calculation.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return string Empty string when the last calculation succeeded.
      */
     public function get_last_error() {
@@ -462,7 +462,7 @@ class Shipping_Calculator_Service {
      * which makes a shopper behind a VPN fail postcode validation and get an
      * empty result with no explanation.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @param string $requested Country code sent by the client, if any.
      * @return string
      */
@@ -487,7 +487,7 @@ class Shipping_Calculator_Service {
         /**
          * Filters the destination country used by the shipping calculator.
          *
-         * @since 3.0.1
+         * @since 3.0.0
          * @param string $country Resolved country code.
          * @param string $requested Country code requested by the client.
          */
@@ -522,7 +522,7 @@ class Shipping_Calculator_Service {
         /**
          * Filters the destination used to match a shipping zone.
          *
-         * @since 3.0.1
+         * @since 3.0.0
          * @param array $destination Destination address parts.
          * @param string $postcode Postcode informed by the shopper.
          * @param string $country Resolved country code.
@@ -537,7 +537,7 @@ class Shipping_Calculator_Service {
      * Includes WooCommerce's shipping transient version so the cache is dropped
      * automatically whenever zones or methods change.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @param int $product_id Product ID.
      * @param int $variation_id Variation ID.
      * @param int $quantity Quantity.
@@ -571,7 +571,7 @@ class Shipping_Calculator_Service {
      * fatals on `WC()->cart->get_coupons()`. The objects are only read here,
      * never written to.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return void
      */
     private function ensure_wc_session() {
@@ -651,7 +651,7 @@ class Shipping_Calculator_Service {
     /**
      * Build the shipping package for a single product line.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @param \WC_Product $product Product (or variation) being quoted.
      * @param int $product_id Parent product ID.
      * @param int $variation_id Variation ID.
@@ -714,7 +714,7 @@ class Shipping_Calculator_Service {
      * cache, which lives in the same slot the checkout uses and would both
      * pollute and be polluted by it.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @param array $package Shipping package.
      * @return array<string,WC_Shipping_Rate>
      */
@@ -724,7 +724,7 @@ class Shipping_Calculator_Service {
         /**
          * Filters the shipping zone matched for a calculator package.
          *
-         * @since 3.0.1
+         * @since 3.0.0
          * @param \WC_Shipping_Zone $zone Matched zone.
          * @param array $package Shipping package.
          */
@@ -781,7 +781,7 @@ class Shipping_Calculator_Service {
      * repeats WooCommerce's own logic using the quoted line instead. Scoped to
      * packages built by this service.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @param bool $is_available Availability decided by WooCommerce.
      * @param array $package Shipping package.
      * @param \WC_Shipping_Free_Shipping $method Method instance.
@@ -844,7 +844,7 @@ class Shipping_Calculator_Service {
      * {@see Delivery_Estimate}), so appending it to the label as well would
      * print it twice on the storefront.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @version 3.0.0
      * @param array $rates Rate objects keyed by rate ID.
      * @param array $package Shipping package the rates came from.
@@ -874,7 +874,7 @@ class Shipping_Calculator_Service {
      * Returns the callback so the caller can unhook it, keeping the filter from
      * leaking into unrelated shipping calculations later in the request.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @param array $package Shipping package.
      * @return callable|null
      */

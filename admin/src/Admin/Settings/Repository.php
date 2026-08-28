@@ -184,7 +184,7 @@ class Repository {
      * Anything the field did not offer is refused rather than coerced: an
      * unexpected unit reaching a style block is how a setting turns into markup.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @param mixed $value Raw value.
      * @param array $definition Field definition (min, max, units).
      * @return string Empty string when the value cannot be used.

@@ -216,7 +216,7 @@ class Shipping_Calculator_Widget extends Widget_Base {
      * The setting is read once, when the editor builds the controls — good
      * enough for a hint, and it costs nothing on the frontend.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return void
      */
     private function register_placement_notice() {

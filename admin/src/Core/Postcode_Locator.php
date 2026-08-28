@@ -19,7 +19,7 @@ defined('ABSPATH') || exit;
  * it. The ranges below are the official Correios CEP bands, which break at
  * five-digit granularity and have been stable for decades.
  *
- * @since 3.0.1
+ * @since 3.0.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -28,7 +28,7 @@ class Postcode_Locator {
     /**
      * Country this locator knows how to resolve.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @var string
      */
     const COUNTRY = 'BR';
@@ -39,7 +39,7 @@ class Postcode_Locator {
      * Every range boundary falls on a five-digit prefix, so five digits are
      * enough to pick a band unambiguously.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @var int
      */
     const MIN_DIGITS = 5;
@@ -51,7 +51,7 @@ class Postcode_Locator {
      * Each entry is `array( <start>, <end>, <uf> )` with the bounds written as
      * zero-padded eight digit strings so they can be compared as strings.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @return array<int,array<int,string>>
      */
     public static function get_ranges() {
@@ -93,7 +93,7 @@ class Postcode_Locator {
         /**
          * Filters the CEP -> UF range table.
          *
-         * @since 3.0.1
+         * @since 3.0.0
          * @param array $ranges List of `array( start, end, uf )` entries.
          */
         return apply_filters( 'Hubgo/Shipping_Calculator/Postcode_State_Map', $ranges );
@@ -108,7 +108,7 @@ class Postcode_Locator {
      * criterion never matches, so state zones simply drop out of the dispute
      * instead of hijacking a package that belongs to another region.
      *
-     * @since 3.0.1
+     * @since 3.0.0
      * @param string $postcode Raw or formatted postcode.
      * @param string $country Destination country code.
      * @return string Two letter state code, or an empty string.
@@ -144,7 +144,7 @@ class Postcode_Locator {
          * Useful to plug an address lookup service (ViaCEP, BrasilAPI) or to
          * support countries this locator does not know about.
          *
-         * @since 3.0.1
+         * @since 3.0.0
          * @param string $state Resolved state code, empty when unknown.
          * @param string $postcode Postcode being resolved.
          * @param string $country Destination country code.
