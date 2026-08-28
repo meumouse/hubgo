@@ -13,7 +13,7 @@ HubGo is a WordPress plugin that extends WooCommerce with shipping features:
 - **Shipping calculator** on the product page: a Vue 3 storefront app (since 3.0.0) with a delivery-date forecast, a free-shipping badge, and a preferred-method choice that is carried into the checkout.
 - **Order tracking**: tracking codes per order, admin metabox, "My Account" view, and transactional e-mails.
 - **"Order shipped" status**: a custom WooCommerce order status with bulk actions and e-mail notification.
-- **Integrations**: Joinotify (WhatsApp automation), Melhor Envio, Frenet, WooCommerce Shipment Tracking (read-only bridge + data migration), Google Maps (address lookup for the calculator) and Elementor (licensed calculator widget), exposed as a card catalog on a dedicated admin screen.
+- **Integrations**: Joinotify (WhatsApp automation), Melhor Envio, Frenet, WooCommerce Shipment Tracking (read-only bridge + data migration), Google Maps (address lookup for the calculator) and Elementor (calculator widget), exposed as a card catalog on a dedicated admin screen.
 - **Licensing & updates**: handled by the MDS PHP SDK (Modular Distribution Service), not by a bespoke updater.
 
 Since **3.0.0** the plugin is **API-first**: the admin UI is a Vue 3 SPA that talks exclusively to the `hubgo/v1` REST namespace. There is no `admin-ajax.php` usage and no server-rendered settings form.
@@ -249,7 +249,7 @@ To add a component:
 
 Hook-bucket choice matters: integrations boot on `plugins_loaded` because host plugins (Joinotify) assemble their catalogs from filters early; admin/REST/asset classes boot on `init`; storefront views boot on `wp_loaded`.
 
-Classes that must work **without** WooCommerce (licensing) are wired outside the dependency gate — see `License::boot()` in `Plugin::init()`.
+Classes that must work **without** WooCommerce (the MDS registration, which carries the update check) are wired outside the dependency gate — see `License::boot()` in `Plugin::init()`.
 
 ### REST API
 
@@ -362,9 +362,9 @@ public function __construct() {
 }
 ```
 
-`add_integration_item( $integrations )` returns the catalog with the card appended under its slug. Recognized keys: `title`, `description`, `icon` (inline brand SVG), `category`, `setting_key`, `is_plugin`, `plugin_active` (list of basenames — **any** match satisfies the dependency), `requires_license` (renders the Pro badge), `coming_soon`, `doc_url`, `install` (`plugin_slug` + `download_url`), `settings` (field definitions, same shape as the schema) and `modal` (`title`, `description`, `size`, `blocks`).
+`add_integration_item( $integrations )` returns the catalog with the card appended under its slug. Recognized keys: `title`, `description`, `icon` (inline brand SVG), `category`, `setting_key`, `is_plugin`, `plugin_active` (list of basenames — **any** match satisfies the dependency), `coming_soon`, `doc_url`, `install` (`plugin_slug` + `download_url`), `settings` (field definitions, same shape as the schema) and `modal` (`title`, `description`, `size`, `blocks`).
 
-Runtime flags (`enabled`, `plugin_active`, `is_locked`, `can_install`, `has_settings`, `disabled_message`) are computed by `Registry::get_integration_cards()`. The Vue side is a pure renderer — never re-derive them in the frontend.
+Runtime flags (`enabled`, `plugin_active`, `can_install`, `has_settings`, `disabled_message`) are computed by `Registry::get_integration_cards()`. The Vue side is a pure renderer — never re-derive them in the frontend.
 
 ### Data migrations
 

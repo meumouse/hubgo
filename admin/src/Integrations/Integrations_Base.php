@@ -182,7 +182,6 @@ abstract class Integrations_Base {
             'action_hook'      => self::get_integration_action_hook( $slug ),
             'is_plugin'        => false,
             'plugin_active'    => array(),
-            'requires_license' => false,
             'coming_soon'      => false,
             'doc_url'          => '',
             'install'          => array(),
@@ -202,7 +201,6 @@ abstract class Integrations_Base {
         $normalized['author'] = sanitize_text_field( (string) $normalized['author'] );
         $normalized['author_url'] = esc_url_raw( (string) $normalized['author_url'] );
         $normalized['is_plugin'] = ! empty( $normalized['is_plugin'] );
-        $normalized['requires_license'] = ! empty( $normalized['requires_license'] );
         $normalized['coming_soon'] = ! empty( $normalized['coming_soon'] );
         $normalized['plugin_active'] = is_array( $normalized['plugin_active'] )
             ? array_values( array_filter( array_map( 'strval', $normalized['plugin_active'] ) ) )

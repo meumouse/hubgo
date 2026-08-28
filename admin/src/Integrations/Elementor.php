@@ -2,9 +2,7 @@
 
 namespace MeuMouse\Hubgo\Integrations;
 
-use MeuMouse\Hubgo\Admin\Menu;
 use MeuMouse\Hubgo\Admin\Settings;
-use MeuMouse\Hubgo\Core\License;
 use MeuMouse\Hubgo\Integrations\Widgets\Shipping_Calculator_Widget;
 
 defined('ABSPATH') || exit;
@@ -17,14 +15,6 @@ defined('ABSPATH') || exit;
  * adds is per-instance styling: every control writes a `--hubgo-calc-*` custom
  * property scoped to `{{WRAPPER}}`, which outranks the store-wide block printed
  * by {@see \MeuMouse\Hubgo\Views\Calculator_Styles} purely on specificity.
- *
- * Licensing: the widget is only registered while the site holds an active
- * licence. That is the behaviour the product asked for, and it has a sharp edge
- * worth knowing about — when a licence lapses, Elementor silently drops the
- * element from any page already using it, because an unregistered widget type
- * simply does not render. {@see self::render_license_notice()} warns in the
- * admin, and the product-page position keeps working regardless, but pages
- * built around the widget do lose the block until the licence is renewed.
  *
  * @since 3.0.0
  * @package MeuMouse\Hubgo\Integrations
@@ -87,13 +77,6 @@ class Elementor extends Integrations_Base {
             return;
         }
 
-        // Warn before the widget disappears from the editor, not after.
-        add_action( 'admin_notices', array( $this, 'render_license_notice' ) );
-
-        if ( ! License::is_active() ) {
-            return;
-        }
-
         add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
         add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
     }
@@ -114,15 +97,6 @@ class Elementor extends Integrations_Base {
             ),
         );
 
-        // Only warn about the license while enforcement is on: with
-        // License::ENABLED off the widget is always registered.
-        if ( License::is_enabled() ) {
-            $blocks[] = self::modal_notice_block(
-                __( 'The widget requires an active license. Without one it stops being registered and disappears from the pages already using it — the calculator displayed automatically on the product page keeps working.', 'hubgo' ),
-                'warning'
-            );
-        }
-
         $integrations[ self::CARD_SLUG ] = array(
             'title'            => __( 'Elementor', 'hubgo' ),
             'description'      => __( 'Adds the shipping calculator as an Elementor widget, with its own color, spacing and typography controls.', 'hubgo' ),
@@ -133,7 +107,6 @@ class Elementor extends Integrations_Base {
             'setting_key'      => self::SETTING_KEY,
             'is_plugin'        => true,
             'plugin_active'    => array( self::PLUGIN_FILE, 'elementor-pro/elementor-pro.php' ),
-            'requires_license' => true,
             'doc_url'          => 'https://ajuda.meumouse.com/docs/hubgo/overview',
             'install'          => array(
                 'plugin_slug'  => self::PLUGIN_FILE,
@@ -180,55 +153,6 @@ class Elementor extends Integrations_Base {
         }
 
         $manager->register( new Shipping_Calculator_Widget() );
-    }
-
-
-    /**
-     * Warn on the Elementor and HubGo screens when the licence is not active.
-     *
-     * @since 3.0.0
-     * @return void
-     */
-    public function render_license_notice() {
-        if ( License::is_active() || ! current_user_can( Menu::get_capability() ) ) {
-            return;
-        }
-
-        if ( ! $this->is_relevant_admin_screen() ) {
-            return;
-        }
-
-        printf(
-            '<div class="notice notice-warning"><p><strong>%1$s</strong> %2$s <a href="%3$s">%4$s</a></p></div>',
-            esc_html__( 'HubGo', 'hubgo' ),
-            esc_html__( 'The Elementor shipping calculator widget requires an active license and is unavailable. Pages already using the widget stop displaying it until the license is activated.', 'hubgo' ),
-            esc_url( Menu::get_page_url( Menu::LICENSE_PAGE_SLUG ) ),
-            esc_html__( 'Activate license', 'hubgo' )
-        );
-    }
-
-
-    /**
-     * Whether the current admin screen is one where the notice is useful.
-     *
-     * @since 3.0.0
-     * @return bool
-     */
-    private function is_relevant_admin_screen() {
-        if ( ! function_exists( 'get_current_screen' ) ) {
-            return false;
-        }
-
-        $screen = get_current_screen();
-
-        if ( ! $screen || empty( $screen->id ) ) {
-            return false;
-        }
-
-        // Elementor's own screens, plus the HubGo integrations page where the
-        // card advertises the feature.
-        return ( false !== strpos( $screen->id, 'elementor' ) )
-            || ( false !== strpos( $screen->id, Menu::INTEGRATIONS_PAGE_SLUG ) );
     }
 
 

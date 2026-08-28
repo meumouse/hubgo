@@ -2,13 +2,12 @@
 /**
  * IntegrationCard.vue — one integration in the Integrations grid.
  *
- * Renders the brand mark, the Pro badge for licensed integrations, the reason a
- * card cannot be enabled yet, and the actions available for its current state:
- * install the missing plugin, or open the settings modal.
+ * Renders the brand mark, the reason a card cannot be enabled yet, and the
+ * actions available for its current state: install the missing plugin, or open
+ * the settings modal.
  *
- * Every flag it reads (`plugin_active`, `is_locked`, `can_install`,
- * `disabled_message`) is resolved server-side, so this component stays a pure
- * renderer.
+ * Every flag it reads (`plugin_active`, `can_install`, `disabled_message`) is
+ * resolved server-side, so this component stays a pure renderer.
  *
  * @since 3.0.0
  * @version 3.1.0
@@ -17,7 +16,6 @@ import { computed } from 'vue';
 import { Package } from '@boxicons/vue';
 import { __, sprintf } from '../../../utils/i18n';
 import ToggleSwitch from '../../../components/toggles/ToggleSwitch.vue';
-import ProBadge from '../../../components/badges/ProBadge.vue';
 import BaseButton from '../../../components/buttons/BaseButton.vue';
 
 const props = defineProps({
@@ -32,8 +30,7 @@ const emit = defineEmits([ 'toggle', 'configure', 'install' ]);
 const hasSettings = computed( () => Boolean( props.card.has_settings ) );
 const isComingSoon = computed( () => Boolean( props.card.coming_soon ) );
 const missingPlugin = computed( () => Boolean( props.card.requires_plugin ) && ! props.card.plugin_active );
-const isLocked = computed( () => Boolean( props.card.is_locked ) );
-const toggleDisabled = computed( () => isComingSoon.value || missingPlugin.value || isLocked.value );
+const toggleDisabled = computed( () => isComingSoon.value || missingPlugin.value );
 const showConfigButton = computed( () => hasSettings.value && props.enabled && ! toggleDisabled.value );
 const showInstallButton = computed( () => Boolean( props.card.can_install ) && ! isComingSoon.value );
 // Resolved server-side too: declared by the integration, or read from the
@@ -70,10 +67,7 @@ const enabledProxy = computed( {
         </div>
 
         <div class="flex flex-1 flex-col px-6 py-6 text-center">
-            <div class="flex items-center justify-center gap-2">
-                <h3 class="m-0 text-[19px] font-semibold leading-7 text-slate-800">{{ card.title }}</h3>
-                <ProBadge v-if="card.requires_license" :locked="isLocked" size="sm" />
-            </div>
+            <h3 class="m-0 text-[19px] font-semibold leading-7 text-slate-800">{{ card.title }}</h3>
 
             <p v-if="card.author" class="mb-0 mt-1 text-[12px] leading-5 text-slate-400">
                 <a

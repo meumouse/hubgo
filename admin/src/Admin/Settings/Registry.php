@@ -379,19 +379,15 @@ class Registry {
     /**
      * Build the integration cards consumed by the Integrations screen.
      *
-     * Every runtime-dependent flag (is the plugin active, is the license valid,
-     * can this card be installed) is resolved here so the Vue side stays a pure
-     * renderer.
+     * Every runtime-dependent flag (is the plugin active, can this card be
+     * installed) is resolved here so the Vue side stays a pure renderer.
      *
      * @since 3.0.0
+     * @version 3.1.0
      * @return array<int,array<string,mixed>>
      */
     public static function get_integration_cards() {
         $settings = Repository::get_settings();
-        $licensed = License::is_active();
-        // With licensing off the Pro badge has nothing left to mean, so the
-        // flag is dropped from the payload instead of rendering as "unlocked".
-        $license_enabled = License::is_enabled();
         $can_install = current_user_can( 'install_plugins' );
         $cards = array();
 
@@ -399,7 +395,6 @@ class Registry {
             $requires_plugin = ! empty( $item['is_plugin'] );
             $plugin_active = Integrations_Base::is_plugin_dependency_active( $item['plugin_active'], $requires_plugin );
             $setting_key = (string) $item['setting_key'];
-            $locked = ! empty( $item['requires_license'] ) && ! $licensed;
             $installable = $requires_plugin && ! $plugin_active && ! empty( $item['install']['download_url'] );
 
             $author = array(
@@ -421,14 +416,12 @@ class Registry {
                 'enabled'          => '' !== $setting_key && 'yes' === ( $settings[ $setting_key ] ?? 'no' ),
                 'requires_plugin'  => $requires_plugin,
                 'plugin_active'    => $plugin_active,
-                'requires_license' => $license_enabled && ! empty( $item['requires_license'] ),
-                'is_locked'        => $locked,
                 'can_install'      => $installable && $can_install,
                 // A card is configurable when it has fields OR modal blocks:
                 // an integration may have nothing to tune and still need to
                 // explain something (Joinotify's dual-toggle notice does).
                 'has_settings'     => ! empty( $item['settings'] ) || ! empty( $item['modal']['blocks'] ),
-                'disabled_message' => self::get_integration_disabled_message( $item, $requires_plugin, $plugin_active, $locked ),
+                'disabled_message' => self::get_integration_disabled_message( $item, $requires_plugin, $plugin_active ),
             ) );
 
             $cards[] = $card;
@@ -483,20 +476,15 @@ class Registry {
      * @param array $item Normalized card.
      * @param bool $requires_plugin Whether the card declares a plugin dependency.
      * @param bool $plugin_active Whether that dependency is satisfied.
-     * @param bool $locked Whether the card needs a license the site does not hold.
      * @return string
      */
-    private static function get_integration_disabled_message( $item, $requires_plugin, $plugin_active, $locked ) {
+    private static function get_integration_disabled_message( $item, $requires_plugin, $plugin_active ) {
         if ( ! empty( $item['coming_soon'] ) ) {
             return __( 'This integration will be available soon.', 'hubgo' );
         }
 
         if ( $requires_plugin && ! $plugin_active ) {
             return __( 'The matching plugin must be installed and active to use this integration.', 'hubgo' );
-        }
-
-        if ( $locked ) {
-            return __( 'Activate your HubGo license to use this integration.', 'hubgo' );
         }
 
         return '';

@@ -92,10 +92,15 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 - The `Hubgo/Shipping_Calculator/Rates` filter now receives the matched zone as a third argument
 - **MDS PHP SDK to `^1.3`** (from `^1.1`). The update check is `POST /v2/update-check` with the site `domain`, the `product_slug` and the installed `current_version`, and it is no longer barred by the license being valid — it is barred by the update gate the server answers with
 - The SDK's license notices and its auto-registered submenu are switched off through the `features` map the SDK exposes since 1.2, instead of unhooking the notice callback from `admin_notices` after registration
+- **License activation is off, and it no longer takes the update check with it.** `License::ENABLED` used to switch off the whole SDK registration; it now governs the key alone. With it off HubGo registers under the SDK's `updates_only` preset — the check goes out with no `license_key` and MDS answers on the product's own gates, with the response still verified by ed25519 signature. This needs MDS to agree: a keyless check is only answered for a product whose update gate is open on the server
+- `License::is_configured()` answers for the MDS credentials alone, so the "Check for updates" link on the plugins list no longer disappears along with activation
+- `License::get_license_url()` returns an empty string while there is no License screen to link to, instead of a URL WordPress would refuse
 
 ### Removed
 
 - **The bespoke update checker** (`MeuMouse\Hubgo\API\Updater`), which polled a static JSON on packages.meumouse.com. Licensing, update checks, signature verification and rollback are the MDS SDK's job now
+- **The license activation flow**, while `License::ENABLED` stays off: the License screen and its Vue bundle, the `hubgo/v1/license/*` routes, the license heartbeat, rollback and the SDK's license notices. Nothing was deleted — the constant brings all of it back
+- **The Pro tier on the integrations catalog**: the `requires_license` card key, the `is_locked` runtime flag, the Pro badge component and the "activate your license" notices on the Integrations screen and in the Elementor card. The Elementor widget is registered whenever the integration is enabled, instead of only while a license was valid — which used to make the element vanish from pages already using it when a key lapsed
 
 ### Fixed
 

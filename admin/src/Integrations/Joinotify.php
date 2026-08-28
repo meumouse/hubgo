@@ -138,7 +138,6 @@ class Joinotify extends Integrations_Base {
             'setting_key'      => self::HUBGO_SETTING_KEY,
             'is_plugin'        => true,
             'plugin_active'    => array( self::PLUGIN_FILE ),
-            'requires_license' => true,
             'doc_url'          => 'https://ajuda.meumouse.com/docs/joinotify/overview',
             'install'          => array(
                 'plugin_slug' => self::PLUGIN_FILE,

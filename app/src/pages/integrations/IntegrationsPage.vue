@@ -34,7 +34,6 @@ const cards = ref( [] );
 const categories = ref( [] );
 const settings = reactive( {} );
 const savedSettings = ref( {} );
-const license = ref( {} );
 const version = ref( getBootstrapConfig().version || '' );
 
 const selectedSlug = ref( '' );
@@ -43,8 +42,6 @@ const modalOpen = ref( false );
 const { toasts, toast, dismissToast } = useToasts();
 
 const hasUnsavedChanges = computed( () => ! deepEqual( settings, savedSettings.value ) );
-const licenseUrl = computed( () => license.value?.url || getBootstrapConfig().pages?.license || '' );
-const showLicenseNotice = computed( () => Boolean( license.value ) && ! license.value.is_active );
 
 const selectedIntegration = computed(
     () => cards.value.find( ( card ) => card.slug === selectedSlug.value ) || null,
@@ -75,7 +72,6 @@ async function bootstrap() {
 
         cards.value = Array.isArray( data.cards ) ? data.cards : [];
         categories.value = Array.isArray( data.categories ) ? data.categories : [];
-        license.value = data.license || {};
         applySettings( data.settings || {} );
 
         if ( data.version ) {
@@ -164,7 +160,6 @@ async function refreshCards() {
         const data = await api.get( 'integrations' );
 
         cards.value = Array.isArray( data.cards ) ? data.cards : cards.value;
-        license.value = data.license || license.value;
     } catch ( error ) {
         // A stale catalog is harmless: the values the user just saved are
         // already persisted, so there is nothing to surface here.
@@ -230,26 +225,6 @@ onMounted( bootstrap );
             </Transition>
 
             <template v-if="! loadError">
-                <!--
-                    The notice comes and goes with the license state, which is
-                    refreshed after every save — it must not blink in and out.
-                -->
-                <Transition name="hubgo-fade">
-                    <div
-                        v-if="showLicenseNotice"
-                        class="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-[8px] border border-amber-200 bg-amber-50 px-5 py-4 text-[13px] leading-5 text-amber-800"
-                    >
-                        <span>{{ __( 'Integrations marked as Pro require an active HubGo license.' ) }}</span>
-                        <a
-                            v-if="licenseUrl"
-                            class="font-semibold text-amber-900 underline underline-offset-4"
-                            :href="licenseUrl"
-                        >
-                            {{ __( 'Activate license' ) }}
-                        </a>
-                    </div>
-                </Transition>
-
                 <section class="mt-8 rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
                     <div class="px-6 py-10 lg:px-10 lg:py-12">
                         <IntegrationsGrid

@@ -47,7 +47,7 @@ Vue bundle of its own.
 
 The plugin checks PHP and WooCommerce on `plugins_loaded` and, when something is
 missing, renders an admin notice instead of booting its components. The
-licensing layer is wired outside that gate, so it keeps working even without
+MDS registration is wired outside that gate, so updates keep working even without
 WooCommerce.
 
 For development you also need **Node.js 18+** (Vite build and translation
@@ -282,19 +282,29 @@ MDS credentials are compile-time constants, overridable from `wp-config.php`:
 - `HUBGO_MDS_API_KEY`
 - `HUBGO_MDS_PUBLIC_KEY`
 
-**License enforcement is currently switched off** (`License::ENABLED`), which
-ships every feature unlocked: the product is not registered with the SDK, the
-License screen and its REST routes are not created, and `License::is_active()`
-answers `true`, so nothing gates itself behind a key. Nothing was removed — the
-whole flow comes back by flipping the constant or defining it in
-`wp-config.php`:
+**License activation is currently switched off** (`License::ENABLED`), and it
+governs the key, not the product. HubGo is still registered with MDS and still
+checks for updates — under the SDK's `updates_only` preset, which sends the
+check with no `license_key` and lets MDS answer on the product's own gates. The
+response is still verified against the ed25519 public key; no preset switches
+that off.
+
+What is gone while the switch is off: the License screen and its Vue bundle,
+the `hubgo/v1/license/*` routes, the license heartbeat, rollback, the SDK
+notices, and every Pro gate — `License::is_active()` answers `true`, so nothing
+locks itself behind a key. Nothing was removed from the codebase: flip the
+constant, or define it in `wp-config.php`, and the activation flow comes back
+whole.
 
 ```php
 define( 'HUBGO_LICENSE_ENABLED', true );
 ```
 
-With enforcement on, the plugins list also gains a **Check for updates** link
-that forces a fresh MDS check over `POST hubgo/v1/updates/check`.
+This requires MDS to agree. With no key on the wire, `/v2/update-check` only
+answers for a product whose update gate is open on the server.
+
+The plugins list carries a **Check for updates** link either way, forcing a
+fresh MDS check over `POST hubgo/v1/updates/check`.
 
 ---
 
@@ -370,8 +380,8 @@ caching, a per-visitor rate limit and a store-wide daily ceiling.
 | `POST` | `/license/deactivate` | Deactivate this site |
 | `POST` | `/updates/check` | Force a fresh MDS update check |
 
-The license and update routes are only registered while license enforcement is
-on — see [Licensing and updates](#7-licensing-and-updates).
+The `/license*` routes are only registered while license activation is on; the
+update route is always there — see [Licensing and updates](#7-licensing-and-updates).
 
 ---
 
