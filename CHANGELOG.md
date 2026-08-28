@@ -8,11 +8,7 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 ## [Unreleased]
 
-### Added
-
-- **One-click install for Joinotify** on the Integrations screen — the card now installs and activates the plugin straight from wordpress.org, like the Melhor Envio and Frenet cards, instead of only pointing at the documentation
-
-## [3.0.0] - 2026-08-26
+## [3.0.0] - 2026-08-28
 
 ### Added
 
@@ -73,6 +69,7 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
     - Toasts come in from the right, leave without pushing the others, and the remaining ones slide into place
     - Everything respects the operating system's "reduce motion" preference: animations become a short fade, and loading indicators keep spinning
 - New public method `MeuMouse\Hubgo\Core\Delivery_Estimate::get_days_from_meta()`
+- **One-click install for Joinotify** on the Integrations screen — the card now installs and activates the plugin straight from wordpress.org, like the Melhor Envio and Frenet cards, instead of only pointing at the documentation
 - Optional `country` parameter on the `POST hubgo/v1/shipping/calculate` endpoint
 - With WooCommerce's shipping debug mode on, the endpoint returns the matched zone
 - New REST endpoints: `GET hubgo/v1/integrations`, `POST hubgo/v1/plugins/install`, `POST hubgo/v1/settings/reset`, `GET hubgo/v1/license`, `POST hubgo/v1/license/activate`, `POST hubgo/v1/license/deactivate`, `POST hubgo/v1/license/sync`, `POST hubgo/v1/updates/check`
