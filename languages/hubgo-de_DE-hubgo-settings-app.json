@@ -1,0 +1,1650 @@
+{
+  "domain": "hubgo",
+  "locale_data": {
+    "hubgo": {
+      "": {
+        "domain": "hubgo",
+        "lang": "de_DE",
+        "plural-forms": "nplurals=2; plural=(n != 1);"
+      },
+      "\"Delivery\" header": [
+        "\"Lieferung\" Kopfzeile"
+      ],
+      "\"I do not know my postcode\" link": [
+        "\"Ich kenne meine Postleitzahl nicht\" Link"
+      ],
+      "\"Order shipped\" status": [
+        "\"Bestellung versendet\" Status"
+      ],
+      "\"Price\" header": [
+        "\"Preis\" Kopfzeile"
+      ],
+      "*This result is only an estimate for this product. The final amount is the one calculated for the whole cart.": [
+        "*Dieses Ergebnis ist nur eine Schätzung für dieses Produkt. Der endgültige Betrag ist der, der für den gesamten Warenkorb berechnet wird."
+      ],
+      "%1$d code(s) imported.": [
+        "%1$d Code(s) importiert."
+      ],
+      "%1$d of %2$d order(s) processed.": [
+        "%1$d von %2$d Bestellung(en) verarbeitet."
+      ],
+      "%s business day": [
+        "%s Werktag"
+      ],
+      "%s order changed to \"Order shipped\".": [
+        "%s Bestellung geändert zu \"Bestellung versendet\"."
+      ],
+      "123 Flower Street - Curitiba/PR - Brazil (postcode: 80000-000)": [
+        "123 Flower Street - Curitiba/PR - Brasilien (Postleitzahl: 80000-000)"
+      ],
+      "450 Daisy Street - Curitiba/PR - Brazil (postcode: 80000-100)": [
+        "450 Daisy Street - Curitiba/PR - Brasilien (Postleitzahl: 80000-100)"
+      ],
+      "About": [
+        "Über"
+      ],
+      "Accent color used on links, icons and the selected option.": [
+        "Akzentfarbe, die für Links, Icons und die ausgewählte Option verwendet wird."
+      ],
+      "Account status": [
+        "Kontostatus"
+      ],
+      "Activate a key to receive automatic updates and to unlock every Pro integration.": [
+        "Aktivieren Sie einen Schlüssel, um automatische Updates zu erhalten und um jede Pro-Integration freizuschalten."
+      ],
+      "Activate license": [
+        "Lizenz aktivieren"
+      ],
+      "Activate the license to unlock the HubGo Pro features.": [
+        "Aktivieren Sie die Lizenz, um die HubGo Pro-Funktionen freizuschalten."
+      ],
+      "Activate WooCommerce": [
+        "WooCommerce aktivieren"
+      ],
+      "Activate your HubGo license to use this integration.": [
+        "Aktivieren Sie Ihre HubGo-Lizenz, um diese Integration zu nutzen."
+      ],
+      "Activate your license to receive automatic updates and unlock the Pro features. Questions? Visit our": [
+        "Aktivieren Sie Ihre Lizenz, um automatische Updates zu erhalten und die Pro-Funktionen freizuschalten. Fragen? Besuchen Sie unser"
+      ],
+      "Activate your license to receive updates.": [
+        "Aktivieren Sie Ihre Lizenz, um Updates zu erhalten."
+      ],
+      "Activated domain": [
+        "Aktivierte Domain"
+      ],
+      "Activations": [
+        "Aktivierungen"
+      ],
+      "Active": [
+        "Aktiv"
+      ],
+      "Add tracking code": [
+        "Tracking-Code hinzufügen"
+      ],
+      "Address": [
+        "Adresse"
+      ],
+      "Address box background": [
+        "Hintergrund des Adressfeldes"
+      ],
+      "Address lookup is disabled.": [
+        "Die Adresssuche ist deaktiviert."
+      ],
+      "Address lookup is not configured.": [
+        "Die Adresssuche ist nicht konfiguriert."
+      ],
+      "Address used in the tracking link. Use %1$s where the code should go.": [
+        "Adresse, die im Tracking-Link verwendet wird. Verwenden Sie %1$s, wo der Code platziert werden soll."
+      ],
+      "Addresses for the shipping calculator, served by your own Google Cloud project.": [
+        "Adressen für den Versandkostenrechner, bereitgestellt von Ihrem eigenen Google Cloud-Projekt."
+      ],
+      "Adds the order shipped status to WooCommerce.": [
+        "Fügt den Status 'Versendet' zu WooCommerce hinzu."
+      ],
+      "Adds the shipping calculator as an Elementor widget, with its own color, spacing and typography controls.": [
+        "Fügt den Versandkostenrechner als Elementor-Widget hinzu, mit eigenen Farb-, Abstands- und Typografie-Einstellungen."
+      ],
+      "After the add to cart button": [
+        "Nach der Schaltfläche 'In den Warenkorb'"
+      ],
+      "After the product meta": [
+        "Nach den Produktmetadaten"
+      ],
+      "All": [
+        "Alle"
+      ],
+      "Appearance": [
+        "Erscheinungsbild"
+      ],
+      "Apply the postcode at the checkout": [
+        "Wenden Sie die Postleitzahl an der Kasse an"
+      ],
+      "Are you sure you want to remove this tracking code?": [
+        "Sind Sie sicher, dass Sie diesen Tracking-Code entfernen möchten?"
+      ],
+      "Arrives free": [
+        "Kommt kostenlos an"
+      ],
+      "Arrives free by %s": [
+        "Kommt kostenlos am %s an"
+      ],
+      "Australia": [
+        "Australien"
+      ],
+      "Austria": [
+        "Österreich"
+      ],
+      "Automatic": [
+        "Automatisch"
+      ],
+      "Automatic calculation": [
+        "Automatische Berechnung"
+      ],
+      "Automatic updates": [
+        "Automatische Updates"
+      ],
+      "Automatic updates and license synchronization": [
+        "Automatische Updates und Lizenzsynchronisierung"
+      ],
+      "Backdrop blur": [
+        "Hintergrundunschärfe"
+      ],
+      "Background color": [
+        "Hintergrundfarbe"
+      ],
+      "Background color (hover)": [
+        "Hintergrundfarbe (Hover)"
+      ],
+      "Badge before the threshold": [
+        "Badge vor dem Schwellenwert"
+      ],
+      "Badge displayed at the top of the card. Leave both empty to hide it.": [
+        "Badge, das oben auf der Karte angezeigt wird. Beide Felder leer lassen, um es auszublenden."
+      ],
+      "Badge once reached": [
+        "Badge, sobald erreicht"
+      ],
+      "Base quantity": [
+        "Basismenge"
+      ],
+      "Base text size of the calculator.": [
+        "Basistextgröße des Rechners."
+      ],
+      "Before the add to cart button": [
+        "Vor dem In den Warenkorb legen Button"
+      ],
+      "Belgium": [
+        "Belgien"
+      ],
+      "Besides this switch, the \"HubGo\" card must also be enabled on the Joinotify Applications tab.": [
+        "Neben diesem Schalter muss auch die \"HubGo\"-Karte im Tab Joinotify-Anwendungen aktiviert sein."
+      ],
+      "Border color": [
+        "Randfarbe"
+      ],
+      "Both APIs are billed by Google to your own account, so restrict the key to your server. HubGo keeps the cost flat by caching each resolved postcode for a month and capping how many new ones it looks up per day.": [
+        "Beide APIs werden von Google auf Ihr eigenes Konto abgerechnet, daher beschränken Sie den Schlüssel auf Ihren Server. HubGo hält die Kosten stabil, indem es jede aufgelöste Postleitzahl einen Monat lang zwischenspeichert und die Anzahl der neuen Abfragen pro Tag begrenzt."
+      ],
+      "Box that wraps the whole calculator.": [
+        "Box, die den gesamten Rechner umschließt."
+      ],
+      "Brazil": [
+        "Brasilien"
+      ],
+      "Bring the tracking codes already registered in Shipment Tracking into HubGo.": [
+        "Bringen Sie die bereits in der Sendungsverfolgung registrierten Tracking-Codes in HubGo."
+      ],
+      "Brings the tracking code generated in Melhor Envio into the order as soon as the label is paid.": [
+        "Bringt den in Melhor Envio generierten Tracking-Code in die Bestellung, sobald das Etikett bezahlt ist."
+      ],
+      "Bundle": [
+        "Bündel"
+      ],
+      "Business days added to the carrier estimate before showing the delivery date.": [
+        "Arbeitstage, die zur Schätzung des Versanddienstleisters hinzugefügt werden, bevor das Lieferdatum angezeigt wird."
+      ],
+      "Business days promised at the checkout": [
+        "Arbeitstage, die an der Kasse versprochen werden"
+      ],
+      "Button text": [
+        "Schaltflächentext"
+      ],
+      "Buy a license": [
+        "Eine Lizenz kaufen"
+      ],
+      "By %s": [
+        "Von %s"
+      ],
+      "Calculate": [
+        "Berechnen"
+      ],
+      "Calculate automatically": [
+        "Automatisch berechnen"
+      ],
+      "Calculate button": [
+        "Berechnen-Schaltfläche"
+      ],
+      "Calculate shipping and delivery time": [
+        "Versand- und Lieferzeit berechnen"
+      ],
+      "Calculates shipping automatically using the customer saved postcode.": [
+        "Berechnet den Versand automatisch mit der vom Kunden gespeicherten Postleitzahl."
+      ],
+      "Calculating delivery for %s…": [
+        "Berechne die Lieferung für %s…"
+      ],
+      "Calculating delivery options…": [
+        "Berechne die Lieferoptionen…"
+      ],
+      "Calculator": [
+        "Rechner"
+      ],
+      "Canada": [
+        "Kanada"
+      ],
+      "Cancel": [
+        "Abbrechen"
+      ],
+      "Card title": [
+        "Kartentitel"
+      ],
+      "Carrier": [
+        "Transporteur"
+      ],
+      "Carrier name": [
+        "Name des Transporteurs"
+      ],
+      "Carrier not set": [
+        "Transporteur nicht festgelegt"
+      ],
+      "Carrier:": [
+        "Transporteur:"
+      ],
+      "Carries the delivery option the customer picked on the product page into the checkout.": [
+        "Überträgt die Lieferoption, die der Kunde auf der Produktseite ausgewählt hat, in den Checkout."
+      ],
+      "Change status to Order shipped": [
+        "Status auf Bestellung versendet ändern"
+      ],
+      "Cheating, huh?": [
+        "Schummeln, oder?"
+      ],
+      "Check for new orders": [
+        "Auf neue Bestellungen prüfen"
+      ],
+      "Check for updates": [
+        "Auf Updates prüfen"
+      ],
+      "Check the current status of your license and update it whenever necessary.": [
+        "Überprüfen Sie den aktuellen Status Ihrer Lizenz und aktualisieren Sie sie bei Bedarf."
+      ],
+      "Check the delivery time and price": [
+        "Lieferzeit und Preis überprüfen"
+      ],
+      "Checking for updates…": [
+        "Auf Updates prüfen…"
+      ],
+      "Choice confirmation": [
+        "Wahlbestätigung"
+      ],
+      "Choose another address": [
+        "Wählen Sie eine andere Adresse"
+      ],
+      "Clear link": [
+        "Link löschen"
+      ],
+      "Clear preference": [
+        "Präferenz löschen"
+      ],
+      "Clear the category filter to change the display mode.": [
+        "Löschen Sie den Kategorienfilter, um den Anzeigemodus zu ändern."
+      ],
+      "Click here to track your parcel": [
+        "Klicken Sie hier, um Ihr Paket zu verfolgen"
+      ],
+      "Close": [
+        "Schließen"
+      ],
+      "Code": [
+        "Code"
+      ],
+      "Code:": [
+        "Code:"
+      ],
+      "Color of the descriptions and notes.": [
+        "Farbe der Beschreibungen und Notizen."
+      ],
+      "Color of the titles and the amounts.": [
+        "Farbe der Titel und Beträge."
+      ],
+      "Colors and layout of the shipping table displayed in the store.": [
+        "Farben und Layout des Versandtisches, der im Shop angezeigt wird."
+      ],
+      "Colors and typography": [
+        "Farben und Typografie"
+      ],
+      "Coming soon": [
+        "Demnächst"
+      ],
+      "Configure": [
+        "Konfigurieren"
+      ],
+      "Confirm": [
+        "Bestätigen"
+      ],
+      "Confirmation": [
+        "Bestätigung"
+      ],
+      "Connect HubGo to other logistics plugins and services. If you need help, visit our": [
+        "Verbinden Sie HubGo mit anderen Logistik-Plugins und -Diensten. Wenn Sie Hilfe benötigen, besuchen Sie unser"
+      ],
+      "Container": [
+        "Container"
+      ],
+      "Copies the tracking codes stored by Shipment Tracking into HubGo tracking. The original data is kept, so nothing is lost if you need to roll back.": [
+        "Kopiert die von Shipment Tracking in HubGo gespeicherten Tracking-Codes. Die ursprünglichen Daten bleiben erhalten, sodass nichts verloren geht, wenn Sie zurückrollen müssen."
+      ],
+      "Corner radius": [
+        "Eckenradius"
+      ],
+      "Could not activate this license.": [
+        "Diese Lizenz konnte nicht aktiviert werden."
+      ],
+      "Could not calculate shipping. Please try again.": [
+        "Versand konnte nicht berechnet werden. Bitte versuchen Sie es erneut."
+      ],
+      "Could not check for updates. Please try again.": [
+        "Updates konnten nicht überprüft werden. Bitte versuchen Sie es erneut."
+      ],
+      "Could not complete the operation.": [
+        "Die Operation konnte nicht abgeschlossen werden."
+      ],
+      "Could not install the plugin.": [
+        "Das Plugin konnte nicht installiert werden."
+      ],
+      "Could not install the plugin. Try installing it manually.": [
+        "Das Plugin konnte nicht installiert werden. Versuchen Sie, es manuell zu installieren."
+      ],
+      "Could not load the integrations.": [
+        "Konnte die Integrationen nicht laden."
+      ],
+      "Could not load the license data.": [
+        "Konnte die Lizenzdaten nicht laden."
+      ],
+      "Could not load the settings.": [
+        "Konnte die Einstellungen nicht laden."
+      ],
+      "Could not reach the license server. Please try again.": [
+        "Konnte den Lizenzserver nicht erreichen. Bitte versuchen Sie es erneut."
+      ],
+      "Could not read the environment information.": [
+        "Konnte die Umgebungsinformationen nicht lesen."
+      ],
+      "Could not remove the tracking code. Please try again.": [
+        "Konnte den Tracking-Code nicht entfernen. Bitte versuchen Sie es erneut."
+      ],
+      "Could not resolve that postcode right now.": [
+        "Konnte die Postleitzahl gerade jetzt nicht auflösen."
+      ],
+      "Could not resolve the postcode.": [
+        "Konnte die Postleitzahl nicht auflösen."
+      ],
+      "Could not restore the settings.": [
+        "Konnte die Einstellungen nicht wiederherstellen."
+      ],
+      "Could not run the migration.": [
+        "Konnte die Migration nicht ausführen."
+      ],
+      "Could not save the tracking code. Please try again.": [
+        "Konnte den Tracking-Code nicht speichern. Bitte versuchen Sie es erneut."
+      ],
+      "Could not search addresses right now. Please try again.": [
+        "Konnte die Adressen gerade jetzt nicht suchen. Bitte versuchen Sie es erneut."
+      ],
+      "Could not search addresses.": [
+        "Konnte die Adressen nicht suchen."
+      ],
+      "Create a key at %s and enable two APIs on the same project: \"Places API (New)\" for the address search, and \"Geocoding API\" for the destination address shown on the quote.": [
+        "Erstellen Sie einen Schlüssel unter %s und aktivieren Sie zwei APIs im selben Projekt: \"Places API (New)\" für die Adresssuche und \"Geocoding API\" für die Zieladresse, die im Angebot angezeigt wird."
+      ],
+      "Custom carrier": [
+        "Benutzerdefinierter Anbieter"
+      ],
+      "Customer billing e-mail (WooCommerce)": [
+        "E-Mail-Adresse des Kunden (WooCommerce)"
+      ],
+      "Customer billing first name (WooCommerce)": [
+        "Vorname des Kunden (WooCommerce)"
+      ],
+      "Customer billing last name (WooCommerce)": [
+        "Nachname des Kunden (WooCommerce)"
+      ],
+      "Customer full billing address (WooCommerce)": [
+        "Vollständige Rechnungsadresse des Kunden (WooCommerce)"
+      ],
+      "Customer full shipping address (WooCommerce)": [
+        "Vollständige Lieferadresse des Kunden (WooCommerce)"
+      ],
+      "Czech Republic": [
+        "Tschechische Republik"
+      ],
+      "Danger zone": [
+        "Gefahrenzone"
+      ],
+      "Data migration": [
+        "Datenmigration"
+      ],
+      "day %s": [
+        "Tag %s"
+      ],
+      "days": [
+        "Tage"
+      ],
+      "Deactivate license": [
+        "Lizenz deaktivieren"
+      ],
+      "Deactivate the license on this site?": [
+        "Die Lizenz auf dieser Seite deaktivieren?"
+      ],
+      "Debug mode": [
+        "Debug-Modus"
+      ],
+      "default": [
+        "Standard"
+      ],
+      "Delivered today": [
+        "Heute geliefert"
+      ],
+      "Delivery": [
+        "Lieferung"
+      ],
+      "Delivery date promised at the checkout": [
+        "Lieferdatum, das an der Kasse versprochen wurde"
+      ],
+      "Delivery is late": [
+        "Lieferung ist verspätet"
+      ],
+      "Delivery options": [
+        "Lieferoptionen"
+      ],
+      "Delivery via %s": [
+        "Lieferung über %s"
+      ],
+      "Details window": [
+        "Details-Fenster"
+      ],
+      "Disabled": [
+        "Deaktiviert"
+      ],
+      "Discover Joinotify": [
+        "Entdecken Sie Joinotify"
+      ],
+      "Display mode": [
+        "Anzeigemodus"
+      ],
+      "Display position": [
+        "Anzeigeposition"
+      ],
+      "Display Shipment Tracking codes": [
+        "Versandverfolgungscodes anzeigen"
+      ],
+      "Displayed after the customer picks an option.": [
+        "Wird angezeigt, nachdem der Kunde eine Option ausgewählt hat."
+      ],
+      "Displayed below the delivery methods.": [
+        "Wird unter den Versandmethoden angezeigt."
+      ],
+      "Displayed elements": [
+        "Angezeigte Elemente"
+      ],
+      "Displayed when the product already qualifies for free shipping.": [
+        "Wird angezeigt, wenn das Produkt bereits für kostenlosen Versand qualifiziert ist."
+      ],
+      "Displays notifications when a new version is available.": [
+        "Zeigt Benachrichtigungen an, wenn eine neue Version verfügbar ist."
+      ],
+      "Displays Shipment Tracking codes inside HubGo and migrates the order data into native tracking.": [
+        "Zeigt Versandverfolgungscodes innerhalb von HubGo an und migriert die Bestelldaten in die native Verfolgung."
+      ],
+      "Displays the shipping calculator on the product page.": [
+        "Zeigt den Versandkostenrechner auf der Produktseite an."
+      ],
+      "Displays the tracking code metabox on the order screen.": [
+        "Zeigt das Metabox für den Verfolgungscode auf dem Bestellbildschirm an."
+      ],
+      "Doe": [
+        "Doe"
+      ],
+      "E-commerce": [
+        "E-Commerce"
+      ],
+      "Elementor": [
+        "Elementor"
+      ],
+      "Elementor widget only": [
+        "Nur Elementor-Widget"
+      ],
+      "Enable %s": [
+        "Aktivieren %s"
+      ],
+      "Enable the HubGo modules and choose where the calculator shows up.": [
+        "Aktivieren Sie die HubGo-Module und wählen Sie aus, wo der Rechner angezeigt wird."
+      ],
+      "Enable the integration to access its settings.": [
+        "Aktivieren Sie die Integration, um auf die Einstellungen zuzugreifen."
+      ],
+      "Enabled": [
+        "Aktiviert"
+      ],
+      "Enter a valid postcode": [
+        "Geben Sie eine gültige Postleitzahl ein"
+      ],
+      "Enter the license key.": [
+        "Geben Sie den Lizenzschlüssel ein."
+      ],
+      "Enter the tracking code.": [
+        "Geben Sie den Verfolgungscode ein."
+      ],
+      "Enter your license key to unlock the Pro features.": [
+        "Geben Sie Ihren Lizenzschlüssel ein, um die Pro-Funktionen freizuschalten."
+      ],
+      "Enter your postcode": [
+        "Geben Sie Ihre Postleitzahl ein"
+      ],
+      "Error": [
+        "Fehler"
+      ],
+      "Error saving the integrations.": [
+        "Fehler beim Speichern der Integrationen."
+      ],
+      "Error saving the settings.": [
+        "Fehler beim Speichern der Einstellungen."
+      ],
+      "Every HubGo option goes back to its original value. Order tracking codes are not affected.": [
+        "Jede HubGo-Option wird auf ihren ursprünglichen Wert zurückgesetzt. Die Sendungsverfolgungscodes sind nicht betroffen."
+      ],
+      "Every order has been migrated. You can now deactivate the Shipment Tracking plugin.": [
+        "Jede Bestellung wurde migriert. Sie können jetzt das Shipment Tracking-Plugin deaktivieren."
+      ],
+      "Every text displayed by the calculator and by the shipping table.": [
+        "Jeder Text, der vom Rechner und vom Versandtisch angezeigt wird."
+      ],
+      "Every tracking code on the order, one per line (carrier, code and link). It can also be used as the source of a loop action.": [
+        "Jeder Sendungsverfolgungscode zur Bestellung, einer pro Zeile (Transporteur, Code und Link). Kann auch als Quelle für eine Schleifenaktion verwendet werden."
+      ],
+      "Example text inside the postcode field.": [
+        "Beispieltext im Postleitzahlfeld."
+      ],
+      "Example: CM-0000-0000-0000": [
+        "Beispiel: CM-0000-0000-0000"
+      ],
+      "Expired": [
+        "Abgelaufen"
+      ],
+      "Expires on": [
+        "Läuft ab am"
+      ],
+      "Express Delivery": [
+        "Expresslieferung"
+      ],
+      "Feature available with an active license": [
+        "Funktion verfügbar mit einer aktiven Lizenz"
+      ],
+      "Features": [
+        "Funktionen"
+      ],
+      "Field placeholder": [
+        "Feldplatzhalter"
+      ],
+      "Fills in the shipping postcode when the customer has not entered an address yet.": [
+        "Füllt die Versand-Postleitzahl aus, wenn der Kunde noch keine Adresse eingegeben hat."
+      ],
+      "Fills the carrier on tracking codes added to orders shipped with Frenet, using the carrier Frenet quoted.": [
+        "Füllt den Transporteur bei Sendungsverfolgungscodes aus, die zu Bestellungen hinzugefügt wurden, die mit Frenet versendet wurden, unter Verwendung des von Frenet angegebenen Transporteurs."
+      ],
+      "Find my postcode": [
+        "Finde meine Postleitzahl"
+      ],
+      "Find postcode by address": [
+        "Postleitzahl anhand der Adresse finden"
+      ],
+      "Finland": [
+        "Finnland"
+      ],
+      "Fired once a day for each shipped order whose promised delivery date has passed.": [
+        "Einmal täglich für jede versendete Bestellung, deren versprochenes Lieferdatum überschritten ist."
+      ],
+      "Fired when a tracking code is saved on the order.": [
+        "Ausgelöst, wenn ein Tracking-Code auf der Bestellung gespeichert wird."
+      ],
+      "Fired when the order status changes to Order shipped.": [
+        "Ausgelöst, wenn der Bestellstatus auf 'Bestellung versendet' geändert wird."
+      ],
+      "Font": [
+        "Schriftart"
+      ],
+      "Font size": [
+        "Schriftgröße"
+      ],
+      "Footer note": [
+        "Fußnotiz"
+      ],
+      "Format used to list the returned delivery methods.": [
+        "Format, das verwendet wird, um die zurückgegebenen Versandmethoden aufzulisten."
+      ],
+      "France": [
+        "Frankreich"
+      ],
+      "Free": [
+        "Kostenlos"
+      ],
+      "Free shipping": [
+        "Kostenloser Versand"
+      ],
+      "Free shipping amount": [
+        "Betrag für kostenlosen Versand"
+      ],
+      "Free shipping badge": [
+        "Abzeichen für kostenlosen Versand"
+      ],
+      "Free shipping on this product": [
+        "Kostenloser Versand für dieses Produkt"
+      ],
+      "Free shipping over %s": [
+        "Kostenloser Versand über %s"
+      ],
+      "Frenet": [
+        "Frenet"
+      ],
+      "General": [
+        "Allgemein"
+      ],
+      "Germany": [
+        "Deutschland"
+      ],
+      "Get it by %s": [
+        "Erhalten Sie es bis %s"
+      ],
+      "Global": [
+        "Global"
+      ],
+      "Google API key": [
+        "Google API-Schlüssel"
+      ],
+      "Google Cloud Console": [
+        "Google Cloud Console"
+      ],
+      "Google Maps": [
+        "Google Maps"
+      ],
+      "Group by category": [
+        "Nach Kategorie gruppieren"
+      ],
+      "Handling days": [
+        "Bearbeitungstage"
+      ],
+      "Headers and notes displayed in the lookup result.": [
+        "Kopfzeilen und Notizen, die im Suchergebnis angezeigt werden."
+      ],
+      "Height": [
+        "Höhe"
+      ],
+      "Help center": [
+        "Hilfezentrum"
+      ],
+      "Help Center": [
+        "Hilfezentrum"
+      ],
+      "Hide": [
+        "Ausblenden"
+      ],
+      "Hide the Frenet simulator": [
+        "Den Frenet-Simulator ausblenden"
+      ],
+      "Hide the Melhor Envio simulator": [
+        "Den Melhor Envio-Simulator ausblenden"
+      ],
+      "Hint on the options list": [
+        "Hinweis zur Optionsliste"
+      ],
+      "How HubGo reads the shipping data generated by Frenet.": [
+        "Wie HubGo die von Frenet generierten Versanddaten liest."
+      ],
+      "How HubGo reads the shipping data generated by Melhor Envio.": [
+        "Wie HubGo die von Melhor Envio generierten Versanddaten liest."
+      ],
+      "How many days the customer choice is remembered in their browser.": [
+        "Wie viele Tage die Auswahl des Kunden im Browser gespeichert wird."
+      ],
+      "How much the page behind the window is blurred. Zero disables the effect.": [
+        "Wie stark die Seite hinter dem Fenster verschwommen ist. Null deaktiviert den Effekt."
+      ],
+      "How the delivery methods are presented to the customer.": [
+        "Wie die Liefermethoden dem Kunden präsentiert werden."
+      ],
+      "How to use the shipping calculator inside Elementor.": [
+        "Wie man den Versandrechner innerhalb von Elementor verwendet."
+      ],
+      "HTTPS": [
+        "HTTPS"
+      ],
+      "HubGo": [
+        "HubGo"
+      ],
+      "HubGo - Integrations": [
+        "HubGo - Integrationen"
+      ],
+      "HubGo - License": [
+        "HubGo - Lizenz"
+      ],
+      "HubGo - Settings": [
+        "HubGo - Einstellungen"
+      ],
+      "HubGo - Shipping Management": [
+        "HubGo - Versandverwaltung"
+      ],
+      "HubGo is also displaying the calculator automatically on product pages. Set the display position to \"Elementor widget only\" in HubGo → Settings → General to avoid showing it twice.": [
+        "HubGo zeigt den Rechner auch automatisch auf Produktseiten an. Setzen Sie die Anzeigeposition auf \"Elementor-Widget nur\" in HubGo → Einstellungen → Allgemein, um eine doppelte Anzeige zu vermeiden."
+      ],
+      "HubGo is up to date.": [
+        "HubGo ist auf dem neuesten Stand."
+      ],
+      "HubGo quotes Melhor Envio for the product being viewed instead of the shopper's cart, and reads the delivery time and the carrier straight from the quote, so the product page can promise a delivery date.": [
+        "HubGo zitiert Melhor Envio für das angezeigte Produkt anstelle des Warenkorbs des Käufers und liest die Lieferzeit und den Anbieter direkt aus dem Angebot, sodass die Produktseite ein Lieferdatum versprechen kann."
+      ],
+      "HubGo reads the delivery time and the carrier straight from the Frenet quote, so the product page can promise a delivery date. Fill in the \"Token\" field of the Frenet shipping method for the most accurate result.": [
+        "HubGo liest die Lieferzeit und den Anbieter direkt aus dem Frenet-Angebot, sodass die Produktseite ein Lieferdatum versprechen kann. Füllen Sie das Feld \"Token\" der Frenet-Versandmethode für das genaueste Ergebnis aus."
+      ],
+      "HubGo version": [
+        "HubGo-Version"
+      ],
+      "HubGo: interface build not found. Run \"npm run build\" in the plugin.": [
+        "HubGo: Schnittstellen-Build nicht gefunden. Führen Sie \"npm run build\" im Plugin aus."
+      ],
+      "I do not know my postcode": [
+        "Ich kenne meine Postleitzahl nicht"
+      ],
+      "If the license does not update right away, click Synchronize to fetch the latest status from the server.": [
+        "Wenn die Lizenz nicht sofort aktualisiert wird, klicken Sie auf Synchronisieren, um den neuesten Status vom Server abzurufen."
+      ],
+      "Import tracking": [
+        "Tracking importieren"
+      ],
+      "Importing tracking depends on Melhor Envio having synchronized the label: the code appears on the order once the shipment is paid and the plugin has fetched its data.": [
+        "Der Import von Tracking hängt davon ab, dass Melhor Envio das Etikett synchronisiert hat: Der Code erscheint in der Bestellung, sobald die Sendung bezahlt ist und das Plugin die Daten abgerufen hat."
+      ],
+      "Inactive": [
+        "Inaktiv"
+      ],
+      "India": [
+        "Indien"
+      ],
+      "Information text": [
+        "Informationstext"
+      ],
+      "Inherit from the settings": [
+        "Von den Einstellungen erben"
+      ],
+      "Inner spacing": [
+        "Innenabstand"
+      ],
+      "Input where the customer types the postcode.": [
+        "Eingabe, in der der Kunde die Postleitzahl eingibt."
+      ],
+      "Install Elementor": [
+        "Elementor installieren"
+      ],
+      "Install Frenet": [
+        "Frenet installieren"
+      ],
+      "Install Melhor Envio": [
+        "Melhor Envio installieren"
+      ],
+      "Install plugin": [
+        "Plugin installieren"
+      ],
+      "Install WooCommerce": [
+        "WooCommerce installieren"
+      ],
+      "Installed": [
+        "Installiert"
+      ],
+      "integration": [
+        "Integration"
+      ],
+      "Integration not found.": [
+        "Integration nicht gefunden."
+      ],
+      "Integration settings": [
+        "Integrations Einstellungen"
+      ],
+      "integrations": [
+        "Integrationen"
+      ],
+      "Integrations": [
+        "Integrationen"
+      ],
+      "Integrations marked as Pro require an active HubGo license.": [
+        "Integrationen, die als Pro gekennzeichnet sind, erfordern eine aktive HubGo-Lizenz."
+      ],
+      "Integrations saved successfully!": [
+        "Integrationen erfolgreich gespeichert!"
+      ],
+      "Invalid": [
+        "Ungültig"
+      ],
+      "Invalid address. Select one of the suggestions.": [
+        "Ungültige Adresse. Wählen Sie einen der Vorschläge aus."
+      ],
+      "Invalid order.": [
+        "Ungültige Bestellung."
+      ],
+      "Invalid postcode.": [
+        "Ungültige Postleitzahl."
+      ],
+      "Invalid postcode. Check the number you entered and try again.": [
+        "Ungültige Postleitzahl. Überprüfen Sie die eingegebene Nummer und versuchen Sie es erneut."
+      ],
+      "Invalid request.": [
+        "Ungültige Anfrage."
+      ],
+      "Ireland": [
+        "Irland"
+      ],
+      "Irreversible actions on the plugin configuration.": [
+        "Irreversible Aktionen in der Plugin-Konfiguration."
+      ],
+      "It will be pre-selected at the checkout": [
+        "Es wird an der Kasse vorab ausgewählt."
+      ],
+      "Italy": [
+        "Italien"
+      ],
+      "John": [
+        "John"
+      ],
+      "Joinotify": [
+        "Joinotify"
+      ],
+      "Label displayed at the top of the card.": [
+        "Label, das oben auf der Karte angezeigt wird."
+      ],
+      "Label of the calculate button.": [
+        "Bezeichnung des Berechnen-Buttons."
+      ],
+      "Last check": [
+        "Letzte Überprüfung"
+      ],
+      "Layout": [
+        "Layout"
+      ],
+      "Learn more": [
+        "Mehr erfahren"
+      ],
+      "Leave a field empty to keep the HubGo default.": [
+        "Lassen Sie ein Feld leer, um den HubGo-Standard beizubehalten."
+      ],
+      "Leave empty to hide the title.": [
+        "Leer lassen, um den Titel auszublenden."
+      ],
+      "Leave empty to not allow clearing the preference.": [
+        "Leer lassen, um das Löschen der Präferenz nicht zuzulassen."
+      ],
+      "Leave empty to read it automatically from the WooCommerce shipping zone.": [
+        "Leer lassen, um es automatisch aus der WooCommerce-Versandzone zu lesen."
+      ],
+      "Leave empty to use the primary color.": [
+        "Leer lassen, um die Primärfarbe zu verwenden."
+      ],
+      "Leave empty to use the text defined in HubGo → Settings → Texts.": [
+        "Leer lassen, um den Text zu verwenden, der in HubGo → Einstellungen → Texte definiert ist."
+      ],
+      "Let shoppers find their postcode by typing the address, and name the destination street on the shipping quote.": [
+        "Lassen Sie Käufer ihre Postleitzahl eingeben, indem sie die Adresse eingeben, und benennen Sie die Zielstraße im Versandangebot."
+      ],
+      "Let WooCommerce choose": [
+        "Lassen Sie WooCommerce wählen"
+      ],
+      "Lets HubGo update itself whenever possible.": [
+        "Lass HubGo sich selbst aktualisieren, wann immer es möglich ist."
+      ],
+      "License": [
+        "Lizenz"
+      ],
+      "License activated successfully!": [
+        "Lizenz erfolgreich aktiviert!"
+      ],
+      "License deactivated on this site.": [
+        "Lizenz auf dieser Seite deaktiviert."
+      ],
+      "License details": [
+        "Lizenzdetails"
+      ],
+      "License information": [
+        "Lizenzinformationen"
+      ],
+      "License key": [
+        "Lizenzschlüssel"
+      ],
+      "License status": [
+        "Lizenzstatus"
+      ],
+      "License synchronized successfully!": [
+        "Lizenz erfolgreich synchronisiert!"
+      ],
+      "License synchronized!": [
+        "Lizenz synchronisiert!"
+      ],
+      "Lifetime": [
+        "Lebenslang"
+      ],
+      "Link": [
+        "Link"
+      ],
+      "List": [
+        "Liste"
+      ],
+      "List of methods displayed in the details window.": [
+        "Liste der Methoden, die im Detailfenster angezeigt werden."
+      ],
+      "Logistics triggers available in the Joinotify flow builder.": [
+        "Logistik-Trigger, die im Joinotify-Flow-Builder verfügbar sind."
+      ],
+      "Maintenance and preferences": [
+        "Wartung und Einstellungen"
+      ],
+      "Maintenance, updates and environment information.": [
+        "Wartung, Updates und Umgebungsinformationen."
+      ],
+      "Mark as shipped": [
+        "Als versendet markieren"
+      ],
+      "Max execution time": [
+        "Maximale Ausführungszeit"
+      ],
+      "Melhor Envio": [
+        "Melhor Envio"
+      ],
+      "Memory limit": [
+        "Speicherlimit"
+      ],
+      "Methods display": [
+        "Anzeigemethoden"
+      ],
+      "Migrate data now": [
+        "Daten jetzt migrieren"
+      ],
+      "Migrate WooCommerce Shipment Tracking data": [
+        "WooCommerce Versandverfolgungsdaten migrieren"
+      ],
+      "Migrating orders... %1$d of %2$d.": [
+        "Bestellungen werden migriert... %1$d von %2$d."
+      ],
+      "Migrating...": [
+        "Migrieren..."
+      ],
+      "Migration completed: %1$d tracking code(s) across %2$d order(s).": [
+        "Migration abgeschlossen: %1$d Verfolgungscode(s) über %2$d Bestellung(en)."
+      ],
+      "Migration completed!": [
+        "Migration abgeschlossen!"
+      ],
+      "Migration not found.": [
+        "Migration nicht gefunden."
+      ],
+      "Modal opened by \"More details and delivery methods\".": [
+        "Modal geöffnet durch \"Weitere Details und Versandmethoden\"."
+      ],
+      "More details and delivery methods": [
+        "Weitere Details und Versandmethoden"
+      ],
+      "More options link": [
+        "Link zu weiteren Optionen"
+      ],
+      "More options window": [
+        "Fenster für weitere Optionen"
+      ],
+      "Moves the order to the \"Order shipped\" status the first time a Melhor Envio tracking code reaches it.": [
+        "Bewegt die Bestellung beim ersten Erreichen eines Melhor Envio Verfolgungscodes in den Status \"Bestellung versendet\"."
+      ],
+      "Names the street the informed postcode belongs to on the quote and in the delivery options window. Uses the Geocoding API.": [
+        "Nennt die Straße, zu der die angegebene Postleitzahl gehört, im Angebot und im Fenster der Lieferoptionen. Verwendet die Geocoding-API."
+      ],
+      "Netherlands": [
+        "Niederlande"
+      ],
+      "Neutral fill behind the postcode shown at the top of the window.": [
+        "Neutrale Füllung hinter der oben im Fenster angezeigten Postleitzahl."
+      ],
+      "New Zealand": [
+        "Neuseeland"
+      ],
+      "No": [
+        "Nein"
+      ],
+      "No address found. Try being more specific.": [
+        "Keine Adresse gefunden. Versuchen Sie, spezifischer zu sein."
+      ],
+      "No delivery method available for this postcode.": [
+        "Für diese Postleitzahl ist keine Liefermethode verfügbar."
+      ],
+      "No delivery method available.": [
+        "Keine Liefermethode verfügbar."
+      ],
+      "No delivery option available for postcode %s.": [
+        "Für die Postleitzahl %s ist keine Lieferoption verfügbar."
+      ],
+      "No integration available in this category.": [
+        "Keine Integration in dieser Kategorie verfügbar."
+      ],
+      "No license key is active on this site yet.": [
+        "Es ist noch kein Lizenzschlüssel auf dieser Seite aktiv."
+      ],
+      "No option available": [
+        "Keine Option verfügbar"
+      ],
+      "No product found. Choose \"Specific product\" to preview it here.": [
+        "Kein Produkt gefunden. Wählen Sie \"Spezifisches Produkt\", um es hier anzuzeigen."
+      ],
+      "No Shipment Tracking data was found on the orders of this store.": [
+        "Es wurden keine Sendungsverfolgungsdaten zu den Bestellungen dieses Shops gefunden."
+      ],
+      "No shipping date": [
+        "Kein Versanddatum"
+      ],
+      "Not activated": [
+        "Nicht aktiviert"
+      ],
+      "Not available": [
+        "Nicht verfügbar"
+      ],
+      "Not detected": [
+        "Nicht erkannt"
+      ],
+      "Note displayed below the result.": [
+        "Hinweis, der unter dem Ergebnis angezeigt wird."
+      ],
+      "Notifications": [
+        "Benachrichtigungen"
+      ],
+      "Number of tracking codes registered on the order": [
+        "Anzahl der auf der Bestellung registrierten Verfolgungscodes"
+      ],
+      "Only shown while the Google Maps integration is active. Leave empty to hide the link.": [
+        "Wird nur angezeigt, während die Google Maps-Integration aktiv ist. Lassen Sie es leer, um den Link auszublenden."
+      ],
+      "Open the Help Center": [
+        "Öffnen Sie das Hilfe-Center"
+      ],
+      "Opens the window with every delivery method.": [
+        "Öffnet das Fenster mit jeder Liefermethode."
+      ],
+      "Operational behaviour of the plugin.": [
+        "Betriebsverhalten des Plugins."
+      ],
+      "Option saved as your preference": [
+        "Option als Ihre Präferenz gespeichert"
+      ],
+      "Options format": [
+        "Optionsformat"
+      ],
+      "Order billing phone (WooCommerce)": [
+        "Rechnungs-Telefonnummer (WooCommerce)"
+      ],
+      "Order not found.": [
+        "Bestellung nicht gefunden."
+      ],
+      "Order number (WooCommerce)": [
+        "Bestellnummer (WooCommerce)"
+      ],
+      "Order shipped": [
+        "Bestellung versendet"
+      ],
+      "Order shipping phone (WooCommerce)": [
+        "Versand-Telefonnummer (WooCommerce)"
+      ],
+      "Order status (WooCommerce)": [
+        "Bestellstatus (WooCommerce)"
+      ],
+      "Order tables (HPOS)": [
+        "Bestelltabelle (HPOS)"
+      ],
+      "Order total (WooCommerce)": [
+        "Bestellsumme (WooCommerce)"
+      ],
+      "Order tracking (admin)": [
+        "Bestellverfolgung (Admin)"
+      ],
+      "Other": [
+        "Sonstiges"
+      ],
+      "Overlay color": [
+        "Überlagerungsfarbe"
+      ],
+      "Paste the license key you received with your purchase and click Activate to unlock every feature.": [
+        "Fügen Sie den Lizenzschlüssel ein, den Sie mit Ihrem Kauf erhalten haben, und klicken Sie auf Aktivieren, um alle Funktionen freizuschalten."
+      ],
+      "PHP": [
+        "PHP"
+      ],
+      "Plugin installed and activated successfully.": [
+        "Plugin erfolgreich installiert und aktiviert."
+      ],
+      "Plugin installed successfully!": [
+        "Plugin erfolgreich installiert!"
+      ],
+      "Poland": [
+        "Polen"
+      ],
+      "Postcode": [
+        "Postleitzahl"
+      ],
+      "Postcode %s": [
+        "Postleitzahl %s"
+      ],
+      "Postcode field": [
+        "Postleitzahl-Feld"
+      ],
+      "Postcode placeholder": [
+        "Postleitzahl Platzhalter"
+      ],
+      "Postcode:": [
+        "Postleitzahl:"
+      ],
+      "Pre-selects at the checkout the option the customer picked in the calculator.": [
+        "Wählt an der Kasse die Option vor, die der Kunde im Rechner ausgewählt hat."
+      ],
+      "Preference lifetime": [
+        "Präferenzlaufzeit"
+      ],
+      "Preferred method": [
+        "Bevorzugte Methode"
+      ],
+      "Preferred method choice": [
+        "Auswahl der bevorzugten Methode"
+      ],
+      "Preview:": [
+        "Vorschau:"
+      ],
+      "Price": [
+        "Preis"
+      ],
+      "Primary color": [
+        "Primärfarbe"
+      ],
+      "Pro": [
+        "Pro"
+      ],
+      "Pro feature unlocked": [
+        "Pro-Funktion freigeschaltet"
+      ],
+      "Pro integrations: Joinotify and the Elementor widget": [
+        "Pro-Integrationen: Joinotify und das Elementor-Widget"
+      ],
+      "Product": [
+        "Produkt"
+      ],
+      "Product ID": [
+        "Produkt-ID"
+      ],
+      "Product on the current page": [
+        "Produkt auf der aktuellen Seite"
+      ],
+      "Products and quantities purchased on the order, one per line": [
+        "Produkte und Mengen, die in der Bestellung gekauft wurden, jeweils eine pro Zeile"
+      ],
+      "Quick help": [
+        "Schnelle Hilfe"
+      ],
+      "Quick view of the WordPress, PHP and WooCommerce environment.": [
+        "Schneller Überblick über die WordPress-, PHP- und WooCommerce-Umgebung."
+      ],
+      "Read only": [
+        "Nur lesen"
+      ],
+      "Receive the order": [
+        "Bestellung empfangen"
+      ],
+      "Records extra error and process details in the WordPress log.": [
+        "Protokolliert zusätzliche Fehler- und Verarbeitungsdetails im WordPress-Log."
+      ],
+      "Remove": [
+        "Entfernen"
+      ],
+      "Removes the shipping simulator the Frenet plugin prints on the product page, so only the HubGo calculator is shown.": [
+        "Entfernt den Versand-Simulator, den das Frenet-Plugin auf der Produktseite anzeigt, sodass nur der HubGo-Rechner angezeigt wird."
+      ],
+      "Removes the shipping simulator the Melhor Envio plugin prints on the product page, so only the HubGo calculator is shown.": [
+        "Entfernt den Versand-Simulator, den das Melhor Envio-Plugin auf der Produktseite anzeigt, sodass nur der HubGo-Rechner angezeigt wird."
+      ],
+      "Renew subscription": [
+        "Abonnement erneuern"
+      ],
+      "requires PHP 7.4 or higher.": [
+        "erfordert PHP 7.4 oder höher."
+      ],
+      "requires WooCommerce 6.0 or higher.": [
+        "erfordert WooCommerce 6.0 oder höher."
+      ],
+      "requires WooCommerce to be installed and active.": [
+        "erfordert, dass WooCommerce installiert und aktiv ist."
+      ],
+      "Reset": [
+        "Zurücksetzen"
+      ],
+      "Restore": [
+        "Wiederherstellen"
+      ],
+      "Restore default settings": [
+        "Standardwerte wiederherstellen"
+      ],
+      "Restore the default settings?": [
+        "Die Standardwerte wiederherstellen?"
+      ],
+      "Restored": [
+        "Wiederhergestellt"
+      ],
+      "Romania": [
+        "Rumänien"
+      ],
+      "Save changes": [
+        "Änderungen speichern"
+      ],
+      "Save preferred method": [
+        "Bevorzugte Methode speichern"
+      ],
+      "Save tracking": [
+        "Tracking speichern"
+      ],
+      "Saved": [
+        "Gespeichert"
+      ],
+      "Saving…": [
+        "Speichern…"
+      ],
+      "Search...": [
+        "Suche..."
+      ],
+      "Searching addresses…": [
+        "Adressen werden gesucht…"
+      ],
+      "Secondary text color": [
+        "Sekundäre Textfarbe"
+      ],
+      "Select an option": [
+        "Wählen Sie eine Option"
+      ],
+      "Selected option background": [
+        "Hintergrund der ausgewählten Option"
+      ],
+      "Send automatic WhatsApp messages from logistics events such as order shipped and tracking code saved, connecting HubGo to Joinotify.": [
+        "Automatische WhatsApp-Nachrichten von Logistikereignissen wie versendetem Auftrag und gespeichertem Tracking-Code senden, HubGo mit Joinotify verbinden."
+      ],
+      "Send automatic WhatsApp messages when an order is shipped, a tracking code is saved or a delivery is running late.": [
+        "Automatische WhatsApp-Nachrichten senden, wenn eine Bestellung versendet wird, ein Tracking-Code gespeichert wird oder eine Lieferung verspätet ist."
+      ],
+      "Sent when the order is marked as shipped.": [
+        "Gesendet, wenn die Bestellung als versendet markiert wird."
+      ],
+      "Set up the shipping calculator, the order tracking and the HubGo appearance. If you need help, visit our": [
+        "Richten Sie den Versandrechner, die Auftragsverfolgung und das HubGo-Design ein. Wenn Sie Hilfe benötigen, besuchen Sie unser"
+      ],
+      "Settings": [
+        "Einstellungen"
+      ],
+      "Settings restored to their default values.": [
+        "Einstellungen auf die Standardwerte zurückgesetzt."
+      ],
+      "Settings restored.": [
+        "Einstellungen zurückgesetzt."
+      ],
+      "Settings saved successfully!": [
+        "Einstellungen erfolgreich gespeichert!"
+      ],
+      "Shipment Tracking": [
+        "Sendungsverfolgung"
+      ],
+      "Shipped on %s": [
+        "Versendet am %s"
+      ],
+      "Shipping and carriers": [
+        "Versand und Anbieter"
+      ],
+      "Shipping calculator": [
+        "Versandrechner"
+      ],
+      "Shipping date": [
+        "Versanddatum"
+      ],
+      "Shipping date:": [
+        "Versanddatum:"
+      ],
+      "Shipping method chosen at the checkout": [
+        "Versandmethode, die an der Kasse gewählt wurde"
+      ],
+      "Shipping result": [
+        "Versandsergebnis"
+      ],
+      "Shortcode only": [
+        "Shortcode nur"
+      ],
+      "Show": [
+        "Anzeigen"
+      ],
+      "Show the destination address": [
+        "Zieladresse anzeigen"
+      ],
+      "Shows a link below the postcode field that opens a free-text address search. Uses the Places API.": [
+        "Zeigt einen Link unter dem Postleitzahlenfeld an, der eine Freitext-Adressen-Suche öffnet. Verwendet die Places API."
+      ],
+      "Shows the codes stored by the other plugin on the HubGo screens, read-only, until the migration is run.": [
+        "Zeigt die von dem anderen Plugin auf den HubGo-Bildschirmen gespeicherten Codes an, schreibgeschützt, bis die Migration durchgeführt wird."
+      ],
+      "Single license": [
+        "Einzelne Lizenz"
+      ],
+      "Site language": [
+        "Sprache der Seite"
+      ],
+      "South African": [
+        "Südafrikanisch"
+      ],
+      "Specific product": [
+        "Spezifisches Produkt"
+      ],
+      "Status changed in bulk to Order shipped.": [
+        "Status wurde in großen Mengen auf Bestellung versendet geändert."
+      ],
+      "Street, number, city…": [
+        "Straße, Nummer, Stadt…"
+      ],
+      "Subscription": [
+        "Abonnement"
+      ],
+      "Support until": [
+        "Support bis"
+      ],
+      "Support, access and subscription updates": [
+        "Support, Zugang und Abonnement-Updates"
+      ],
+      "Sweden": [
+        "Schweden"
+      ],
+      "Synchronize license": [
+        "Lizenz synchronisieren"
+      ],
+      "System status": [
+        "Systemstatus"
+      ],
+      "Table": [
+        "Tabelle"
+      ],
+      "Tell us which integration should be installed.": [
+        "Teilen Sie uns mit, welche Integration installiert werden soll."
+      ],
+      "Tell us which migration should run.": [
+        "Teilen Sie uns mit, welche Migration durchgeführt werden soll."
+      ],
+      "Text color": [
+        "Textfarbe"
+      ],
+      "Text displayed above the postcode field.": [
+        "Text, der über dem Postleitzahlenfeld angezeigt wird."
+      ],
+      "Texts": [
+        "Texte"
+      ],
+      "Texts of the choice carried into the checkout.": [
+        "Texte der Auswahl, die in den Checkout übernommen werden."
+      ],
+      "Texts of the shipping lookup form.": [
+        "Texte des Versandabfrageformulars."
+      ],
+      "That address has no exact postcode. Try including the street and the number.": [
+        "Diese Adresse hat keine genaue Postleitzahl. Versuchen Sie, die Straße und die Nummer einzuschließen."
+      ],
+      "The address features stay off until an API key is saved below.": [
+        "Die Adressmerkmale bleiben deaktiviert, bis ein API-Schlüssel unten gespeichert wird."
+      ],
+      "The Elementor shipping calculator widget requires an active license and is unavailable. Pages already using the widget stop displaying it until the license is activated.": [
+        "Das Elementor-Versandrechner-Widget erfordert eine aktive Lizenz und ist nicht verfügbar. Seiten, die das Widget bereits verwenden, hören auf, es anzuzeigen, bis die Lizenz aktiviert ist."
+      ],
+      "The key stays on the server and is never sent to the browser.": [
+        "Der Schlüssel bleibt auf dem Server und wird niemals an den Browser gesendet."
+      ],
+      "The license is not valid for this site.": [
+        "Die Lizenz ist für diese Seite nicht gültig."
+      ],
+      "The licensing service is not available.": [
+        "Der Lizenzdienst ist nicht verfügbar."
+      ],
+      "The licensing service is not configured on this installation. Please contact support.": [
+        "Der Lizenzdienst ist auf dieser Installation nicht konfiguriert. Bitte kontaktieren Sie den Support."
+      ],
+      "The matching plugin must be installed and active to use this integration.": [
+        "Das passende Plugin muss installiert und aktiv sein, um diese Integration zu nutzen."
+      ],
+      "The migration copies the data: nothing is deleted from Shipment Tracking. Once you have migrated and checked the orders, you can safely deactivate the other plugin.": [
+        "Die Migration kopiert die Daten: Nichts wird aus der Sendungsverfolgung gelöscht. Sobald Sie migriert und die Bestellungen überprüft haben, können Sie das andere Plugin sicher deaktivieren."
+      ],
+      "The migration stopped before it finished. Run it again to carry on from where it left off.": [
+        "Die Migration wurde gestoppt, bevor sie abgeschlossen war. Führen Sie sie erneut aus, um dort fortzufahren, wo sie aufgehört hat."
+      ],
+      "The package source is not allowed.": [
+        "Die Paketquelle ist nicht erlaubt."
+      ],
+      "The plugin was downloaded, but its main file was not found.": [
+        "Das Plugin wurde heruntergeladen, aber die Hauptdatei wurde nicht gefunden."
+      ],
+      "The requested plugin is invalid.": [
+        "Das angeforderte Plugin ist ungültig."
+      ],
+      "The shipping calculator is disabled in the HubGo settings.": [
+        "Der Versandrechner ist in den HubGo-Einstellungen deaktiviert."
+      ],
+      "The site will stop receiving updates and the Pro features will be locked until a new activation.": [
+        "Die Seite wird keine Updates mehr erhalten und die Pro-Funktionen werden gesperrt, bis eine neue Aktivierung erfolgt."
+      ],
+      "The source data for this migration is not available.": [
+        "Die Quelldaten für diese Migration sind nicht verfügbar."
+      ],
+      "The stored key was refused by the server.": [
+        "Der gespeicherte Schlüssel wurde vom Server abgelehnt."
+      ],
+      "The update service is not available.": [
+        "Der Aktualisierungsdienst ist nicht verfügbar."
+      ],
+      "The widget requires an active license. Without one it stops being registered and disappears from the pages already using it — the calculator displayed automatically on the product page keeps working.": [
+        "Das Widget benötigt eine aktive Lizenz. Ohne diese wird es nicht mehr registriert und verschwindet von den bereits verwendeten Seiten – der automatisch auf der Produktseite angezeigte Rechner funktioniert weiterhin."
+      ],
+      "The window opens outside the widget but inherits these values automatically.": [
+        "Das Fenster öffnet sich außerhalb des Widgets, übernimmt jedoch automatisch diese Werte."
+      ],
+      "There are unsaved changes.": [
+        "Es gibt ungespeicherte Änderungen."
+      ],
+      "This action cannot be undone. Every HubGo setting goes back to its original value.": [
+        "Diese Aktion kann nicht rückgängig gemacht werden. Jede HubGo-Einstellung wird auf ihren ursprünglichen Wert zurückgesetzt."
+      ],
+      "This integration cannot be installed from the dashboard yet.": [
+        "Diese Integration kann derzeit noch nicht vom Dashboard aus installiert werden."
+      ],
+      "This integration has no additional settings.": [
+        "Diese Integration hat keine zusätzlichen Einstellungen."
+      ],
+      "This integration will be available soon.": [
+        "Diese Integration wird bald verfügbar sein."
+      ],
+      "Title of the delivery method column.": [
+        "Titel der Liefermethodenspalte."
+      ],
+      "Title of the price column.": [
+        "Titel der Preisspalte."
+      ],
+      "to %1$s (postcode %2$s)": [
+        "bis %1$s (Postleitzahl %2$s)"
+      ],
+      "To place the calculator through the widget alone, set the display position to \"Elementor widget only\" in Settings → General — otherwise product pages also show the automatic one.": [
+        "Um den Rechner nur über das Widget anzuzeigen, stellen Sie die Anzeigeposition in Einstellungen → Allgemein auf \"Nur Elementor-Widget\" ein – andernfalls werden die Produktseiten auch den automatischen Rechner anzeigen."
+      ],
+      "to postcode %s": [
+        "bis Postleitzahl %s"
+      ],
+      "Too many lookups in a short time. Wait a moment and try again.": [
+        "Zu viele Abfragen in kurzer Zeit. Warten Sie einen Moment und versuchen Sie es erneut."
+      ],
+      "Track": [
+        "Verfolgen"
+      ],
+      "Track shipment": [
+        "Sendung verfolgen"
+      ],
+      "Tracking": [
+        "Sendungsverfolgung"
+      ],
+      "Tracking - HubGo": [
+        "Sendungsverfolgung - HubGo"
+      ],
+      "Tracking code": [
+        "Sendungsverfolgungscode"
+      ],
+      "Tracking code generated in Melhor Envio.": [
+        "Sendungsverfolgungscode, der in Melhor Envio generiert wurde."
+      ],
+      "Tracking code saved on the order": [
+        "Sendungsverfolgungscode, der auf der Bestellung gespeichert ist"
+      ],
+      "Tracking code:": [
+        "Sendungsverfolgungscode:"
+      ],
+      "Tracking information": [
+        "Sendungsverfolgungsinformationen"
+      ],
+      "Tracking link": [
+        "Sendungsverfolgungslink"
+      ],
+      "Tracking link:": [
+        "Sendungsverfolgungslink:"
+      ],
+      "Tracking URL": [
+        "Sendungsverfolgungs-URL"
+      ],
+      "Turn the HubGo modules on or off.": [
+        "Aktivieren oder deaktivieren Sie die HubGo-Module."
+      ],
+      "Type your address and pick the right option.": [
+        "Geben Sie Ihre Adresse ein und wählen Sie die richtige Option aus."
+      ],
+      "United Kingdom": [
+        "Vereinigtes Königreich"
+      ],
+      "United States": [
+        "Vereinigte Staaten"
+      ],
+      "Update notices": [
+        "Aktualisierungsbenachrichtigungen"
+      ],
+      "Update now": [
+        "Jetzt aktualisieren"
+      ],
+      "Use %s where the minimum amount should appear.": [
+        "Verwenden Sie %s, wo der Mindestbetrag erscheinen sollte."
+      ],
+      "Use a high value for a pill-shaped badge.": [
+        "Verwenden Sie einen hohen Wert für ein pillenförmiges Badge."
+      ],
+      "Use Frenet quotes in the shipping calculation and bring the tracking code into the HubGo order screen.": [
+        "Verwenden Sie Frenet-Angebote in der Versandberechnung und bringen Sie den Sendungsverfolgungscode in den HubGo-Bestellbildschirm."
+      ],
+      "Use it when the calculator sits outside a product page.": [
+        "Verwenden Sie es, wenn der Rechner außerhalb einer Produktseite sitzt."
+      ],
+      "Use Melhor Envio quotes in the shipping calculation and bring the tracking code generated on the label into the order.": [
+        "Verwenden Sie Melhor Envio-Angebote in der Versandberechnung und bringen Sie den auf dem Etikett generierten Sendungsverfolgungscode in die Bestellung."
+      ],
+      "Use the same carrier, if available": [
+        "Verwenden Sie denselben Anbieter, wenn verfügbar"
+      ],
+      "Version": [
+        "Version"
+      ],
+      "Version %s is available.": [
+        "Version %s ist verfügbar."
+      ],
+      "View all": [
+        "Alle anzeigen"
+      ],
+      "We calculated the costs and delivery times for this address:": [
+        "Wir haben die Kosten und Lieferzeiten für diese Adresse berechnet:"
+      ],
+      "What to do when the preferred method is not available for the checkout address.": [
+        "Was zu tun ist, wenn die bevorzugte Methode für die Checkout-Adresse nicht verfügbar ist."
+      ],
+      "What you unlock": [
+        "Was Sie freischalten"
+      ],
+      "When a tracking code is saved on the order": [
+        "Wenn ein Tracking-Code auf der Bestellung gespeichert ist"
+      ],
+      "When the option is unavailable": [
+        "Wenn die Option nicht verfügbar ist"
+      ],
+      "Where and how the shipping calculator is displayed.": [
+        "Wo und wie der Versandkostenrechner angezeigt wird."
+      ],
+      "Where to display the calculator on the product page. The last two options place nothing automatically, so the calculator only shows where you insert it.": [
+        "Wo der Rechner auf der Produktseite angezeigt werden soll. Die letzten beiden Optionen platzieren nichts automatisch, sodass der Rechner nur dort angezeigt wird, wo Sie ihn einfügen."
+      ],
+      "With the integration enabled, drag the \"Shipping calculator\" widget (HubGo category) onto any page. Styles set on the widget apply to that instance only and take precedence over the Appearance tab.": [
+        "Mit aktivierter Integration ziehen Sie das Widget \"Versandkostenrechner\" (HubGo-Kategorie) auf eine beliebige Seite. Die im Widget festgelegten Stile gelten nur für diese Instanz und haben Vorrang vor dem Tab \"Design\"."
+      ],
+      "WooCommerce": [
+        "WooCommerce"
+      ],
+      "WooCommerce Shipment Tracking": [
+        "WooCommerce Versandverfolgung"
+      ],
+      "WordPress": [
+        "WordPress"
+      ],
+      "WP_DEBUG": [
+        "WP_DEBUG"
+      ],
+      "Yes": [
+        "Ja"
+      ],
+      "Yes, deactivate": [
+        "Ja, deaktivieren"
+      ],
+      "Yes, restore": [
+        "Ja, wiederherstellen"
+      ],
+      "You do not have permission to access this page.": [
+        "Sie haben keine Berechtigung, auf diese Seite zuzugreifen."
+      ],
+      "You do not have permission to install plugins.": [
+        "Sie haben keine Berechtigung, Plugins zu installieren."
+      ],
+      "Your installation is unlocked for full use.": [
+        "Ihre Installation ist für die volle Nutzung freigeschaltet."
+      ],
+      "Your license expired and the Pro features are locked.": [
+        "Ihre Lizenz ist abgelaufen und die Pro-Funktionen sind gesperrt."
+      ],
+      "Your license is active. You can keep it synchronized here whenever the status changes on the server.": [
+        "Ihre Lizenz ist aktiv. Sie können sie hier synchronisieren, wann immer sich der Status auf dem Server ändert."
+      ],
+      "Your license key": [
+        "Ihr Lizenzschlüssel"
+      ],
+      "Your order has been shipped": [
+        "Ihre Bestellung wurde versendet"
+      ],
+      "Your order has been shipped and is on its way.": [
+        "Ihre Bestellung wurde versendet und ist auf dem Weg."
+      ]
+    }
+  }
+}

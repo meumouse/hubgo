@@ -1,0 +1,19 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+node_modules
+dist
+*.local
+
+# Editor directories and files
+.vscode/*
+.idea
+.DS_Store
+
+.env
+.env.local
+.env.*.local
+
+package-lock.json

@@ -1,360 +1,216 @@
 /**
- * HubGo tracking metabox scripts.
+ * HubGo order tracking metabox (API-first, vanilla JS).
  *
- * @version 2.1.0
- * @since 2.1.0
- * @param {jQueryStatic} $ jQuery instance.
- * @return {void}
+ * Talks to the hubgo/v1 REST API to list, create and delete tracking items.
+ *
+ * @since 3.0.0
+ * @package HubGo
+ * @author MeuMouse.com
  */
-(function($){
+( function() {
     'use strict';
 
-    var hubgoTrackingProvider = {
-        /**
-         * Initialize tracking provider listeners.
-         *
-         * @version 2.1.0
-         * @since 2.1.0
-         * @param {void} _ Unused.
-         * @return {void}
-         */
-        init: function() {
-            $( '.custom_tracking_link_field, .custom_tracking_provider_field' ).hide();
+    var params = window.hubgoOrderTrackingParams || {};
+    var i18n = params.i18n || {};
+    var providers = params.providers || {};
 
-            $( '#hubgo_custom_tracking_link, #hubgo_tracking_number, #hubgo_tracking_provider' )
-                .on( 'change keyup', this.updateTrackingLink )
-                .trigger( 'change' );
-        },
+    var root;
+    var orderId;
 
-        /**
-         * Build and render tracking preview URL.
-         *
-         * @version 2.1.0
-         * @since 2.1.0
-         * @param {Event} event Trigger event.
-         * @return {void}
-         */
-        updateTrackingLink: function( event ) {
-            var tracking = $( '#hubgo_tracking_number' ).val();
-            var provider = $( '#hubgo_tracking_provider' ).val();
-            var providers = ( typeof hubgoTrackingProviderParams !== 'undefined' && hubgoTrackingProviderParams.providers )
-                ? hubgoTrackingProviderParams.providers
-                : {};
-            var postcode = $( '#_shipping_postcode' ).val();
-            var country = $( '#_shipping_country' ).val();
-            var link = '';
+    function qs( selector, ctx ) {
+        return ( ctx || document ).querySelector( selector );
+    }
 
-            if ( ! postcode || ! postcode.length ) {
-                postcode = $( '#_billing_postcode' ).val();
-            }
+    function apiFetch( path, options ) {
+        options = options || {};
+        options.credentials = 'same-origin';
+        options.headers = Object.assign( {
+            'Content-Type': 'application/json',
+            'X-WP-Nonce': params.nonce || '',
+        }, options.headers || {} );
 
-            postcode = encodeURIComponent( postcode || '' );
-            country = encodeURIComponent( country || '' );
-
-            if ( provider && providers[ provider ] ) {
-                link = providers[ provider ];
-                link = link.replace( '%251%24s', tracking || '' );
-                link = link.replace( '%252%24s', postcode );
-                link = link.replace( '%253%24s', country );
-                link = decodeURIComponent( link );
-
-                $( '.custom_tracking_link_field, .custom_tracking_provider_field' ).hide();
-            } else {
-                $( '.custom_tracking_link_field, .custom_tracking_provider_field' ).show();
-                link = $( '#hubgo_custom_tracking_link' ).val();
-            }
-
-            if ( link ) {
-                $( '.preview_tracking_link a' ).attr( 'href', link );
-                $( '.preview_tracking_link' ).show();
-            } else {
-                $( '.preview_tracking_link' ).hide();
-            }
-
-            void event;
-        }
-    };
-
-    var hubgoTrackingItems = {
-        /**
-         * Initialize metabox action listeners.
-         *
-         * @version 2.1.0
-         * @since 2.1.0
-         * @param {void} _ Unused.
-         * @return {void}
-         */
-        init: function() {
-            $( '#hubgo-order-tracking' )
-                .on( 'click', 'a.delete-tracking', this.deleteTracking )
-                .on( 'click', 'button.button-show-form', this.showForm )
-                .on( 'click', 'button.button-save-form', this.saveForm );
-        },
-
-        /**
-         * Resolve current order ID from admin contexts.
-         *
-         * @version 2.1.0
-         * @since 2.1.0
-         * @param {void} _ Unused.
-         * @return {number} Current order id.
-         */
-        getOrderId: function() {
-            return $( '#hubgo-order-tracking-inner' ).data( 'order-id' )
-                || hubgoOrderTrackingParams.order_id
-                || ( typeof woocommerce_admin_meta_boxes !== 'undefined' ? woocommerce_admin_meta_boxes.post_id : 0 )
-                || $( '#post_ID' ).val()
-                || 0;
-        },
-
-        /**
-         * Resolve nonce by operation type.
-         *
-         * @version 2.1.0
-         * @since 2.1.0
-         * @param {string} type Nonce type: create|delete|get.
-         * @return {string} Nonce value.
-         */
-        getNonce: function( type ) {
-            var localized = hubgoOrderTrackingParams.nonces && hubgoOrderTrackingParams.nonces[ type ]
-                ? hubgoOrderTrackingParams.nonces[ type ]
-                : '';
-
-            if ( localized ) {
-                return localized;
-            }
-
-            if ( type === 'create' ) {
-                return $( '#hubgo_tracking_create_nonce' ).val() || '';
-            }
-
-            if ( type === 'delete' ) {
-                return $( '#hubgo_tracking_delete_nonce' ).val() || '';
-            }
-
-            return $( '#hubgo_tracking_get_nonce' ).val() || '';
-        },
-
-        /**
-         * Get translated text with fallback.
-         *
-         * @version 2.1.0
-         * @since 2.1.0
-         * @param {string} key I18n key.
-         * @param {string} fallback Fallback text.
-         * @return {string} Translation string.
-         */
-        getI18n: function( key, fallback ) {
-            if ( hubgoOrderTrackingParams
-                && hubgoOrderTrackingParams.i18n
-                && hubgoOrderTrackingParams.i18n[ key ] ) {
-                return hubgoOrderTrackingParams.i18n[ key ];
-            }
-
-            return fallback || '';
-        },
-
-        /**
-         * Toggle loading state for a container.
-         *
-         * @version 2.1.0
-         * @since 2.1.0
-         * @param {jQuery} $el Target container.
-         * @param {boolean} status Loading status.
-         * @return {void}
-         */
-        setLoading: function( $el, status ) {
-            if ( status ) {
-                $el.addClass( 'hubgo-is-loading' );
-                $el.find( 'button, input, select, a.delete-tracking' ).prop( 'disabled', true );
-            } else {
-                $el.removeClass( 'hubgo-is-loading' );
-                $el.find( 'button, input, select, a.delete-tracking' ).prop( 'disabled', false );
-            }
-        },
-
-        /**
-         * Save tracking item through AJAX.
-         *
-         * @version 2.1.0
-         * @since 2.1.0
-         * @param {Event} event Click event.
-         * @return {boolean} Always false to prevent default behavior.
-         */
-        saveForm: function( event ) {
-            var trackingNumber = $( '#hubgo_tracking_number' ).val();
-            var $form = $( '#hubgo-shipment-tracking-form' );
-
-            if ( ! trackingNumber ) {
-                return false;
-            }
-
-            hubgoTrackingItems.setLoading( $form, true );
-
-            var nonce = hubgoTrackingItems.getNonce( 'create' );
-            var data = {
-                action: 'hubgo_tracking_save_item',
-                order_id: hubgoTrackingItems.getOrderId(),
-                tracking_provider: $( '#hubgo_tracking_provider' ).val(),
-                custom_tracking_provider: $( '#hubgo_custom_tracking_provider' ).val(),
-                custom_tracking_link: $( '#hubgo_custom_tracking_link' ).val(),
-                tracking_number: trackingNumber,
-                date_shipped: $( '#hubgo_date_shipped' ).val(),
-                security: nonce,
-                _ajax_nonce: nonce,
-                nonce: nonce
-            };
-
-            $.post( hubgoOrderTrackingParams.ajax_url, data )
-                .done( function( response ) {
-                    if ( response && response !== '-1' ) {
-                        $( '#hubgo-shipment-tracking-form' ).hide();
-                        $( '#hubgo-order-tracking #hubgo-tracking-items' ).append( response );
-                        $( '#hubgo-order-tracking button.button-show-form' ).show();
-                        $( '#hubgo_tracking_provider' ).val( '' ).trigger( 'change' );
-                        $( '#hubgo_custom_tracking_provider' ).val( '' );
-                        $( '#hubgo_custom_tracking_link' ).val( '' );
-                        $( '#hubgo_tracking_number' ).val( '' );
-                        $( '.preview_tracking_link' ).hide();
-                    }
-                })
-                .always( function() {
-                    hubgoTrackingItems.setLoading( $form, false );
-                } );
-
-            void event;
-            return false;
-        },
-
-        /**
-         * Show tracking form in metabox.
-         *
-         * @version 2.1.0
-         * @since 2.1.0
-         * @param {Event} event Click event.
-         * @return {void}
-         */
-        showForm: function( event ) {
-            $( '#hubgo-shipment-tracking-form' ).show();
-            $( '#hubgo-order-tracking button.button-show-form' ).hide();
-            void event;
-        },
-
-        /**
-         * Delete tracking item through AJAX.
-         *
-         * @version 2.1.0
-         * @since 2.1.0
-         * @param {Event} event Click event.
-         * @return {boolean} False when action is interrupted or completed.
-         */
-        deleteTracking: function( event ) {
-            if ( event ) {
-                event.preventDefault();
-            }
-
-            var confirmMessage = hubgoTrackingItems.getI18n(
-                'confirm_delete',
-                'Are you sure you want to remove this tracking item?'
-            );
-
-            if ( ! window.confirm( confirmMessage ) ) {
-                return false;
-            }
-
-            var trackingId = $( this ).attr( 'rel' );
-            var $item = $( this ).closest( '.tracking-item' );
-
-            if ( ! $item.length ) {
-                $item = $( '[id="tracking-item-' + trackingId + '"]' );
-            }
-            var nonce = hubgoTrackingItems.getNonce( 'delete' )
-                || $( '#hubgo_tracking_delete_nonce' ).val()
-                || ( typeof hubgo_tracking_params !== 'undefined' ? hubgo_tracking_params.nonce : '' )
-                || '';
-            var legacyNonce = $( '#hubgo_tracking_nonce' ).val() || '';
-            var ajaxUrl = ( hubgoOrderTrackingParams && hubgoOrderTrackingParams.ajax_url )
-                ? hubgoOrderTrackingParams.ajax_url
-                : ( typeof ajaxurl !== 'undefined' ? ajaxurl : '' );
-
-            if ( ! nonce && ! legacyNonce ) {
-                window.alert( hubgoTrackingItems.getI18n( 'missing_nonce', 'Could not validate the request. Please reload the page.' ) );
-                return false;
-            }
-
-            hubgoTrackingItems.setLoading( $item, true );
-
-            var data = {
-                action: 'hubgo_tracking_delete_item',
-                order_id: hubgoTrackingItems.getOrderId(),
-                tracking_id: trackingId,
-                security: nonce,
-                _ajax_nonce: nonce,
-                nonce: nonce,
-                hubgo_tracking_nonce: legacyNonce
-            };
-
-            $.post( ajaxUrl, data )
-                .done( function( response ) {
-                    if ( response && response.success ) {
-                        $item.stop( true, true ).slideUp( 220, function() {
-                            $( this ).remove();
-                        } );
-                        return;
-                    }
-
-                    window.alert(
-                        ( response && response.data && response.data.message )
-                            ? response.data.message
-                            : hubgoTrackingItems.getI18n( 'delete_error', 'Could not remove tracking item. Please try again.' )
-                    );
-                })
-                .fail( function() {
-                    window.alert( hubgoTrackingItems.getI18n( 'delete_error', 'Could not remove tracking item. Please try again.' ) );
-                })
-                .always( function() {
-                    hubgoTrackingItems.setLoading( $item, false );
-                } );
-
-            return false;
-        },
-
-        /**
-         * Refresh tracking item list from backend.
-         *
-         * @version 2.1.0
-         * @since 2.1.0
-         * @param {void} _ Unused.
-         * @return {void}
-         */
-        refreshItems: function() {
-            var nonce = hubgoTrackingItems.getNonce( 'get' );
-            var data = {
-                action: 'hubgo_tracking_get_items',
-                order_id: hubgoTrackingItems.getOrderId(),
-                security: nonce,
-                _ajax_nonce: nonce,
-                nonce: nonce
-            };
-
-            $.post( hubgoOrderTrackingParams.ajax_url, data, function( response ) {
-                if ( response && response !== '-1' ) {
-                    $( '#hubgo-order-tracking #hubgo-tracking-items' ).html( response );
+        return fetch( params.rest_url + path, options ).then( function( response ) {
+            return response.json().catch( function() {
+                return null;
+            } ).then( function( data ) {
+                if ( ! response.ok ) {
+                    throw new Error( data && data.message ? data.message : 'HTTP ' + response.status );
                 }
-            });
+
+                return data;
+            } );
+        } );
+    }
+
+    function escapeHtml( value ) {
+        var div = document.createElement( 'div' );
+        div.textContent = value == null ? '' : String( value );
+
+        return div.innerHTML;
+    }
+
+    function itemMarkup( item ) {
+        var id = item.tracking_id || '';
+        var provider = item.provider_label || '';
+        var number = item.tracking_number || '';
+        var link = item.tracking_link || '';
+        var date = item.date_label || '';
+
+        var linkHtml = link
+            ? ' - <a href="' + escapeHtml( link ) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml( i18n.track || 'Track' ) + '</a>'
+            : '';
+
+        return '' +
+            '<div class="tracking-item" id="tracking-item-' + escapeHtml( id ) + '">' +
+                '<p class="tracking-content"><strong>' + escapeHtml( provider ) + '</strong>' + linkHtml +
+                    '<br><em>' + escapeHtml( number ) + '</em></p>' +
+                '<p class="meta">' + escapeHtml( date ) +
+                    ' <a href="#" class="delete-tracking" rel="' + escapeHtml( id ) + '">' + escapeHtml( i18n.remove || 'Remove' ) + '</a></p>' +
+            '</div>';
+    }
+
+    function renderItems( items ) {
+        var container = qs( '#hubgo-tracking-items', root );
+
+        if ( ! container ) {
+            return;
         }
-    };
 
-    /**
-     * Initialize metabox modules and expose refresh callback.
-     *
-     * @version 2.1.0
-     * @since 2.1.0
-     * @param {void} _ Unused.
-     * @return {void}
-     */
-    hubgoTrackingProvider.init();
-    hubgoTrackingItems.init();
-    window.hubgo_tracking_refresh = hubgoTrackingItems.refreshItems;
+        container.innerHTML = ( items || [] ).map( itemMarkup ).join( '' );
+        bindDeleteLinks();
+    }
 
-})(jQuery);
+    function resetForm() {
+        [ '#hubgo_tracking_number', '#hubgo_custom_tracking_provider', '#hubgo_custom_tracking_link' ].forEach( function( sel ) {
+            var input = qs( sel, root );
+            if ( input ) input.value = '';
+        } );
+    }
+
+    function saveItem() {
+        var providerSelect = qs( '#hubgo_tracking_provider', root );
+        var number = qs( '#hubgo_tracking_number', root );
+
+        if ( ! number || number.value.trim() === '' ) {
+            if ( number ) number.focus();
+            return;
+        }
+
+        var payload = {
+            order_id: orderId,
+            tracking_number: number.value.trim(),
+            provider: providerSelect ? providerSelect.value : '',
+            custom_provider: ( qs( '#hubgo_custom_tracking_provider', root ) || {} ).value || '',
+            custom_url: ( qs( '#hubgo_custom_tracking_link', root ) || {} ).value || '',
+            ship_date: ( qs( '#hubgo_date_shipped', root ) || {} ).value || '',
+        };
+
+        var button = qs( '.button-save-form', root );
+
+        if ( button ) button.disabled = true;
+
+        apiFetch( '/tracking', { method: 'POST', body: JSON.stringify( payload ) } )
+            .then( function( data ) {
+                renderItems( data && data.items ? data.items : [] );
+                resetForm();
+            } )
+            .catch( function() {
+                window.alert( i18n.save_error || 'Could not save the tracking code.' );
+            } )
+            .finally( function() {
+                if ( button ) button.disabled = false;
+            } );
+    }
+
+    function deleteItem( trackingId ) {
+        if ( ! window.confirm( i18n.confirm_delete || 'Remove this tracking code?' ) ) {
+            return;
+        }
+
+        apiFetch( '/tracking/' + encodeURIComponent( trackingId ) + '?order_id=' + encodeURIComponent( orderId ), {
+            method: 'DELETE',
+        } )
+            .then( function( data ) {
+                renderItems( data && data.items ? data.items : [] );
+            } )
+            .catch( function() {
+                window.alert( i18n.delete_error || 'Could not remove the tracking code.' );
+            } );
+    }
+
+    function bindDeleteLinks() {
+        root.querySelectorAll( '.delete-tracking' ).forEach( function( link ) {
+            link.addEventListener( 'click', function( e ) {
+                e.preventDefault();
+                deleteItem( link.getAttribute( 'rel' ) );
+            } );
+        } );
+    }
+
+    function updatePreview() {
+        var providerSelect = qs( '#hubgo_tracking_provider', root );
+        var number = qs( '#hubgo_tracking_number', root );
+        var previewWrap = qs( '.preview_tracking_link', root );
+        var customWrap = qs( '.custom_tracking_provider_field', root );
+
+        if ( customWrap && providerSelect ) {
+            customWrap.style.display = providerSelect.value === '' ? '' : 'none';
+        }
+
+        if ( ! previewWrap || ! providerSelect ) {
+            return;
+        }
+
+        var anchor = previewWrap.querySelector( 'a' );
+        var format = providers[ providerSelect.value ] ? decodeURIComponent( providers[ providerSelect.value ] ) : '';
+        var code = number ? number.value.trim() : '';
+
+        if ( anchor && format && code ) {
+            anchor.href = format.replace( /%s|\{code\}|%code%/gi, code );
+            previewWrap.style.display = '';
+        } else {
+            previewWrap.style.display = 'none';
+        }
+    }
+
+    function bind() {
+        var showButton = qs( '.button-show-form', root );
+        var form = qs( '#hubgo-shipment-tracking-form', root );
+
+        if ( showButton && form ) {
+            form.style.display = 'none';
+            showButton.addEventListener( 'click', function() {
+                form.style.display = form.style.display === 'none' ? '' : 'none';
+            } );
+        }
+
+        var saveButton = qs( '.button-save-form', root );
+        if ( saveButton ) saveButton.addEventListener( 'click', saveItem );
+
+        var providerSelect = qs( '#hubgo_tracking_provider', root );
+        if ( providerSelect ) providerSelect.addEventListener( 'change', updatePreview );
+
+        var number = qs( '#hubgo_tracking_number', root );
+        if ( number ) number.addEventListener( 'input', updatePreview );
+
+        bindDeleteLinks();
+        updatePreview();
+    }
+
+    function init() {
+        root = qs( '#hubgo-order-tracking-inner' );
+
+        if ( ! root ) {
+            return;
+        }
+
+        orderId = root.getAttribute( 'data-order-id' ) || params.order_id || 0;
+        bind();
+    }
+
+    if ( document.readyState === 'loading' ) {
+        document.addEventListener( 'DOMContentLoaded', init );
+    } else {
+        init();
+    }
+} )();

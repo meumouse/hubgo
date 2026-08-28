@@ -1,0 +1,263 @@
+<script setup>
+/**
+ * IntegrationsPage.vue — HubGo integrations screen.
+ *
+ * Hydrates from GET hubgo/v1/integrations and persists through the same
+ * POST hubgo/v1/settings route the settings screen uses: integration toggles
+ * and their fields live in the very same `hubgo_settings` option, so there is
+ * one save path and one sanitizer for everything.
+ *
+ * @since 3.0.0
+ * @version 3.1.0
+ */
+import { computed, onMounted, reactive, ref } from 'vue';
+import { api, getBootstrapConfig } from '../../utils/api';
+import { __ } from '../../utils/i18n';
+import { cloneValue, deepEqual } from '../../utils/object';
+import { withMinimumDuration } from '../../utils/async';
+import { useToasts } from '../../composables/useToasts';
+import PageHeader from '../../components/layout/PageHeader.vue';
+import IntegrationsGrid from './components/IntegrationsGrid.vue';
+import IntegrationSettingsModal from '../../components/modals/IntegrationSettingsModal.vue';
+import SettingsActionBar from '../settings/components/SettingsActionBar.vue';
+import ToastStack from '../../components/toasts/ToastStack.vue';
+import PageShellSkeleton from '../../components/skeletons/PageShellSkeleton.vue';
+
+const DOCS_URL = 'https://ajuda.meumouse.com/docs/hubgo/overview';
+
+const loading = ref( true );
+const saving = ref( false );
+const loadError = ref( '' );
+const installingSlug = ref( '' );
+
+const cards = ref( [] );
+const categories = ref( [] );
+const settings = reactive( {} );
+const savedSettings = ref( {} );
+const version = ref( getBootstrapConfig().version || '' );
+
+const selectedSlug = ref( '' );
+const modalOpen = ref( false );
+
+const { toasts, toast, dismissToast } = useToasts();
+
+const hasUnsavedChanges = computed( () => ! deepEqual( settings, savedSettings.value ) );
+
+const selectedIntegration = computed(
+    () => cards.value.find( ( card ) => card.slug === selectedSlug.value ) || null,
+);
+
+/**
+ * Replace the reactive settings map and reset the dirty-check snapshot.
+ *
+ * @param {object} values Settings map.
+ * @return {void}
+ */
+function applySettings( values ) {
+    Object.keys( settings ).forEach( ( key ) => delete settings[ key ] );
+
+    Object.entries( values || {} ).forEach( ( [ key, value ] ) => {
+        settings[ key ] = value;
+    } );
+
+    savedSettings.value = cloneValue( settings );
+}
+
+async function bootstrap() {
+    loading.value = true;
+    loadError.value = '';
+
+    try {
+        const data = await api.get( 'integrations' );
+
+        cards.value = Array.isArray( data.cards ) ? data.cards : [];
+        categories.value = Array.isArray( data.categories ) ? data.categories : [];
+        applySettings( data.settings || {} );
+
+        if ( data.version ) {
+            version.value = data.version;
+        }
+    } catch ( error ) {
+        loadError.value = error.message || __( 'Could not load the integrations.' );
+    } finally {
+        loading.value = false;
+    }
+}
+
+/**
+ * Flip an integration toggle.
+ *
+ * @param {string} key Setting key of the integration.
+ * @return {void}
+ */
+function toggleIntegration( key ) {
+    if ( ! key ) {
+        return;
+    }
+
+    settings[ key ] = 'yes' === settings[ key ] ? 'no' : 'yes';
+}
+
+/**
+ * Update one field inside the settings modal.
+ *
+ * @param {string} key Field key.
+ * @param {*} value New value.
+ * @return {void}
+ */
+function updateSetting( key, value ) {
+    settings[ key ] = value;
+}
+
+/**
+ * Open the settings modal of an integration.
+ *
+ * @param {string} slug Integration slug.
+ * @return {void}
+ */
+function openConfig( slug ) {
+    selectedSlug.value = slug;
+    modalOpen.value = true;
+}
+
+function closeConfig() {
+    modalOpen.value = false;
+    selectedSlug.value = '';
+}
+
+async function save() {
+    if ( ! hasUnsavedChanges.value || saving.value ) {
+        return;
+    }
+
+    saving.value = true;
+
+    try {
+        // Held to a short floor so the button spinner is actually seen — a local
+        // save otherwise resolves before the loading state paints.
+        const response = await withMinimumDuration( api.post( 'settings', { settings: { ...settings } } ) );
+
+        applySettings( response.settings || settings );
+        toast( response.message || __( 'Integrations saved successfully!' ), 'success', __( 'Saved' ) );
+
+        // A toggle can change what the cards may do (a disabled integration
+        // hides its settings), so refresh the catalog from the server.
+        await refreshCards();
+    } catch ( error ) {
+        toast( error.message || __( 'Error saving the integrations.' ), 'error', __( 'Error' ) );
+    } finally {
+        saving.value = false;
+    }
+}
+
+/**
+ * Re-read the catalog without touching the pending settings edits.
+ *
+ * @return {Promise<void>}
+ */
+async function refreshCards() {
+    try {
+        const data = await api.get( 'integrations' );
+
+        cards.value = Array.isArray( data.cards ) ? data.cards : cards.value;
+    } catch ( error ) {
+        // A stale catalog is harmless: the values the user just saved are
+        // already persisted, so there is nothing to surface here.
+    }
+}
+
+/**
+ * Install and activate the plugin an integration depends on.
+ *
+ * @param {string} slug Integration slug.
+ * @return {Promise<void>}
+ */
+async function installPlugin( slug ) {
+    if ( installingSlug.value ) {
+        return;
+    }
+
+    installingSlug.value = slug;
+
+    try {
+        const response = await api.post( 'plugins/install', { slug } );
+
+        cards.value = Array.isArray( response.cards ) ? response.cards : cards.value;
+        toast( response.message || __( 'Plugin installed successfully!' ), 'success', __( 'Installed' ) );
+    } catch ( error ) {
+        toast( error.message || __( 'Could not install the plugin.' ), 'error', __( 'Error' ) );
+    } finally {
+        installingSlug.value = '';
+    }
+}
+
+onMounted( bootstrap );
+</script>
+
+<template>
+    <div class="hubgo-integrations min-h-screen w-full">
+        <Transition name="hubgo-fade" mode="out-in">
+        <PageShellSkeleton v-if="loading" />
+
+        <div v-else class="w-full">
+            <PageHeader :title="__( 'Integrations' )">
+                <template #description>
+                    {{ __( 'Connect HubGo to other logistics plugins and services. If you need help, visit our' ) }}
+                    <a class="font-semibold text-primary-700 underline underline-offset-4" :href="DOCS_URL" target="_blank" rel="noreferrer">
+                        {{ __( 'Help Center' ) }}
+                    </a>
+                </template>
+
+                <template #actions>
+                    <span
+                        v-if="version"
+                        class="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-800"
+                    >
+                        {{ __( 'Version' ) }} {{ version }}
+                    </span>
+                </template>
+            </PageHeader>
+
+            <Transition name="hubgo-fade">
+                <div v-if="loadError" class="mt-8 rounded-[8px] border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+                    {{ loadError }}
+                </div>
+            </Transition>
+
+            <template v-if="! loadError">
+                <section class="mt-8 rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
+                    <div class="px-6 py-10 lg:px-10 lg:py-12">
+                        <IntegrationsGrid
+                            :cards="cards"
+                            :categories="categories"
+                            :settings="settings"
+                            :installing-slug="installingSlug"
+                            @toggle="toggleIntegration"
+                            @configure="openConfig"
+                            @install="installPlugin"
+                        />
+                    </div>
+
+                    <SettingsActionBar
+                        :saving="saving"
+                        :has-unsaved-changes="hasUnsavedChanges"
+                        @save="save"
+                    />
+                </section>
+            </template>
+        </div>
+        </Transition>
+
+        <IntegrationSettingsModal
+            :open="modalOpen && !! selectedIntegration"
+            :integration="selectedIntegration"
+            :settings="settings"
+            @close="closeConfig"
+            @update-setting="updateSetting"
+            @toast="( message, tone ) => toast( message, tone )"
+            @refresh="refreshCards"
+        />
+
+        <ToastStack :toasts="toasts" @dismiss="dismissToast" />
+    </div>
+</template>

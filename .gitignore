@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+app/node_modules
+admin/vendor
+
+# Build artifacts. Neither is committed: `npm run build` regenerates both and
+# copies them into release/hubgo-<version>.zip, which is what ships. The build
+# refuses to package when either is missing, so a new Vite entry cannot silently
+# stay out of the release the way it could when app/dist was tracked.
+app/dist
+
+# Release output
+release/
+
+# Local tooling
+.history/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+.env
