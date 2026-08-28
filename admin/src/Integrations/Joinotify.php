@@ -79,6 +79,19 @@ class Joinotify extends Integrations_Base {
     const PLUGIN_FILE = 'joinotify/joinotify.php';
 
     /**
+     * Package URL served by wordpress.org.
+     *
+     * Joinotify is distributed on the official directory, so the card can be
+     * installed and activated in one click from the Integrations screen through
+     * {@see \MeuMouse\Hubgo\Core\Plugin_Installer} instead of sending the user
+     * off to the plugin search screen.
+     *
+     * @since 3.1.0
+     * @var string
+     */
+    const PACKAGE_URL = 'https://downloads.wordpress.org/plugin/joinotify.zip';
+
+    /**
      * Tracking manager used to normalize items.
      *
      * @since 3.0.0
@@ -124,6 +137,7 @@ class Joinotify extends Integrations_Base {
      * must be on for notifications to flow, which the modal spells out.
      *
      * @since 3.0.0
+     * @version 3.1.0
      * @param array $integrations Current catalog.
      * @return array
      */
@@ -140,8 +154,9 @@ class Joinotify extends Integrations_Base {
             'plugin_active'    => array( self::PLUGIN_FILE ),
             'doc_url'          => 'https://ajuda.meumouse.com/docs/joinotify/overview',
             'install'          => array(
-                'plugin_slug' => self::PLUGIN_FILE,
-                'label'       => __( 'Discover Joinotify', 'hubgo' ),
+                'plugin_slug'  => self::PLUGIN_FILE,
+                'download_url' => self::PACKAGE_URL,
+                'label'        => __( 'Install Joinotify', 'hubgo' ),
             ),
             'modal'            => array(
                 'title'       => __( 'Joinotify', 'hubgo' ),

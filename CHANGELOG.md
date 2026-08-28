@@ -8,6 +8,10 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 ## [Unreleased]
 
+### Added
+
+- **One-click install for Joinotify** on the Integrations screen — the card now installs and activates the plugin straight from wordpress.org, like the Melhor Envio and Frenet cards, instead of only pointing at the documentation
+
 ## [3.0.0] - 2026-08-26
 
 ### Added
