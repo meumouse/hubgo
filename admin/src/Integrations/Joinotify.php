@@ -4,6 +4,7 @@ namespace MeuMouse\Hubgo\Integrations;
 
 use MeuMouse\Hubgo\Admin\Settings;
 use MeuMouse\Hubgo\Core\Delivery_Promise;
+use MeuMouse\Hubgo\Core\Providers_Registry;
 use MeuMouse\Hubgo\Core\Tracking_Manager;
 
 use MeuMouse\Joinotify\Integrations\Woocommerce;
@@ -15,9 +16,11 @@ defined('ABSPATH') || exit;
  *
  * Uses ONLY the public functional API introduced in Joinotify v2
  * (joinotify_register_integration / joinotify_register_trigger /
- * joinotify_register_placeholders / joinotify_dispatch_trigger). The legacy v1
- * hook surface (Builder/Get_All_Triggers, Builder/Triggers(_Content),
- * Placeholders_List, Workflow_Processor::process_workflows) is no longer used.
+ * joinotify_register_placeholders / joinotify_register_conditions /
+ * joinotify_dispatch_trigger). The legacy v1 hook surface
+ * (Builder/Get_All_Triggers, Builder/Triggers(_Content), Placeholders_List,
+ * Workflow_Processor::process_workflows) is no longer used. Verified against
+ * Joinotify 2.3.4.
  *
  * Tracking data is always resolved through {@see Tracking_Manager} so the
  * carrier name and tracking link a notification carries are byte-for-byte the
@@ -25,6 +28,11 @@ defined('ABSPATH') || exit;
  * follow the same rule against {@see Delivery_Promise}: a message quotes the
  * date the shopper was actually promised at the checkout, never a fresh quote
  * that may have drifted since.
+ *
+ * Every order-scoped hook HubGo fires is exposed as a trigger — shipped, tracking
+ * code saved, tracking code removed, delivery promised and delivery late — except
+ * `Hubgo/Tracking/Items_Imported`, which replays a store's whole shipment history
+ * during a migration and would send one message per historical order.
  *
  * @since 2.1.0
  * @version 3.1.0
@@ -49,11 +57,46 @@ class Joinotify extends Integrations_Base {
     const CARD_SLUG = 'joinotify';
 
     /**
-     * Trigger identifiers.
+     * HubGo action hooks this integration listens to.
+     *
+     * Every order-scoped hook HubGo fires is here, except
+     * `Hubgo/Tracking/Items_Imported`: that one replays a store's whole shipment
+     * history during a migration and would send one message per historical order.
+     *
+     * @since 3.1.0
      */
-    const TRIGGER_ORDER_SHIPPED    = 'Hubgo/Tracking/Order_Shipped';
-    const TRIGGER_ITEM_SAVED       = 'Hubgo/Tracking/Item_Saved';
-    const TRIGGER_DELIVERY_OVERDUE = 'Hubgo/Delivery/Overdue';
+    const HOOK_ORDER_SHIPPED     = 'Hubgo/Tracking/Order_Shipped';
+    const HOOK_ITEM_SAVED        = 'Hubgo/Tracking/Item_Saved';
+    const HOOK_ITEM_DELETED      = 'Hubgo/Tracking/Deleted_Item';
+    const HOOK_DELIVERY_PROMISED = 'Hubgo/Delivery/Promise_Saved';
+    const HOOK_DELIVERY_OVERDUE  = 'Hubgo/Delivery/Overdue';
+
+    /**
+     * Trigger identifiers registered with Joinotify.
+     *
+     * These are deliberately NOT the HubGo hook names above. Joinotify runs a
+     * trigger slug through `sanitize_key()` on the way in — when the builder
+     * creates a workflow from a trigger (`Registry::create_workflow_from_trigger()`,
+     * `Rest\Builder_Create`) and again in `Api\Extensions::register_conditions()`.
+     * `sanitize_key()` lowercases and drops every character outside `a-z0-9_-`, so
+     * `Hubgo/Tracking/Item_Saved` was stored as `hubgotrackingitem_saved`: it no
+     * longer equalled the slug HubGo dispatched, and the strict comparison in
+     * `Workflow_Processor::matches_trigger()` meant no HubGo workflow ever ran and
+     * `Placeholders::get_placeholders_list()` never matched a HubGo token, so the
+     * builder listed none of them.
+     *
+     * A slug that survives `sanitize_key()` unchanged is therefore the contract,
+     * not a style choice. The hook a developer listens to from PHP stays the
+     * `HOOK_*` constant above; {@see self::get_trigger_hook()} maps one onto the
+     * other.
+     *
+     * @since 3.1.0
+     */
+    const TRIGGER_ORDER_SHIPPED     = 'hubgo_order_shipped';
+    const TRIGGER_ITEM_SAVED        = 'hubgo_tracking_saved';
+    const TRIGGER_ITEM_DELETED      = 'hubgo_tracking_deleted';
+    const TRIGGER_DELIVERY_PROMISED = 'hubgo_delivery_promised';
+    const TRIGGER_DELIVERY_OVERDUE  = 'hubgo_delivery_overdue';
 
     /**
      * Option key toggling the integration in Joinotify's settings.
@@ -92,6 +135,15 @@ class Joinotify extends Integrations_Base {
     const PACKAGE_URL = 'https://downloads.wordpress.org/plugin/joinotify.zip';
 
     /**
+     * Lowest Joinotify version carrying the functional registration API this
+     * integration is written against.
+     *
+     * @since 3.1.0
+     * @var string
+     */
+    const MIN_VERSION = '2.0';
+
+    /**
      * Tracking manager used to normalize items.
      *
      * @since 3.0.0
@@ -104,7 +156,7 @@ class Joinotify extends Integrations_Base {
      * Constructor.
      *
      * @since 3.0.0
-     * @version 3.0.0
+     * @version 3.1.0
      */
     public function __construct() {
         // The card is registered unconditionally: the Integrations screen must
@@ -119,9 +171,16 @@ class Joinotify extends Integrations_Base {
         $this->register();
 
         // Runtime dispatch listeners (HubGo -> Joinotify).
-        add_action( self::TRIGGER_ORDER_SHIPPED, array( $this, 'handle_order_shipped' ), 10, 2 );
-        add_action( self::TRIGGER_ITEM_SAVED, array( $this, 'handle_tracking_saved' ), 10, 3 );
-        add_action( self::TRIGGER_DELIVERY_OVERDUE, array( $this, 'handle_delivery_overdue' ), 10, 2 );
+        add_action( self::HOOK_ORDER_SHIPPED, array( $this, 'handle_order_shipped' ), 10, 2 );
+        add_action( self::HOOK_ITEM_SAVED, array( $this, 'handle_tracking_saved' ), 10, 3 );
+        add_action( self::HOOK_ITEM_DELETED, array( $this, 'handle_tracking_deleted' ), 10, 2 );
+        add_action( self::HOOK_DELIVERY_PROMISED, array( $this, 'handle_delivery_promised' ), 10, 2 );
+        add_action( self::HOOK_DELIVERY_OVERDUE, array( $this, 'handle_delivery_overdue' ), 10, 2 );
+
+        // Value inputs the builder renders for the HubGo-only conditions, and the
+        // carrier catalog behind the "Carrier" select.
+        add_filter( 'Joinotify/Builder/Condition_Value_Types', array( $this, 'register_condition_value_types' ) );
+        add_filter( 'Joinotify/Builder/Condition_Options', array( $this, 'register_condition_options' ) );
 
         // Give the builder's trigger cards the HubGo brand icon instead of the
         // generic fallback used for unregistered contexts.
@@ -144,7 +203,7 @@ class Joinotify extends Integrations_Base {
     public function add_integration_item( $integrations ) {
         $integrations[ self::CARD_SLUG ] = array(
             'title'            => __( 'Joinotify', 'hubgo' ),
-            'description'      => __( 'Send automatic WhatsApp messages when an order is shipped, a tracking code is saved or a delivery is running late.', 'hubgo' ),
+            'description'      => __( 'Send automatic WhatsApp messages from the logistics events: order shipped, tracking code saved or removed, delivery date promised at the checkout and delivery running late.', 'hubgo' ),
             'icon'             => $this->get_card_icon_svg(),
             'author'           => 'MeuMouse.com',
             'author_url'       => 'https://meumouse.com',
@@ -160,7 +219,7 @@ class Joinotify extends Integrations_Base {
             ),
             'modal'            => array(
                 'title'       => __( 'Joinotify', 'hubgo' ),
-                'description' => __( 'Logistics triggers available in the Joinotify flow builder.', 'hubgo' ),
+                'description' => __( 'Logistics triggers, placeholders and conditions available in the Joinotify flow builder.', 'hubgo' ),
                 'size'        => 'medium',
                 'blocks'      => array(
                     self::modal_notice_block(
@@ -189,17 +248,28 @@ class Joinotify extends Integrations_Base {
     /**
      * Version guard: only run against Joinotify v2+ with the functional API.
      *
+     * The function checks are the real gate — a host that ships the API under a
+     * version this constant does not know about still works. `MIN_VERSION` only
+     * rules out a v1 install that happens to autoload a same-named helper.
+     *
      * @since 3.0.0
+     * @version 3.1.0
      * @return bool
      */
     private function is_supported() {
-        if ( ! function_exists( 'joinotify_register_integration' )
-            || ! function_exists( 'joinotify_register_trigger' )
-            || ! function_exists( 'joinotify_dispatch_trigger' ) ) {
-            return false;
+        $required = array(
+            'joinotify_register_integration',
+            'joinotify_register_trigger',
+            'joinotify_dispatch_trigger',
+        );
+
+        foreach ( $required as $function ) {
+            if ( ! function_exists( $function ) ) {
+                return false;
+            }
         }
 
-        if ( defined( 'JOINOTIFY_VERSION' ) && version_compare( JOINOTIFY_VERSION, '2.0', '<' ) ) {
+        if ( defined( 'JOINOTIFY_VERSION' ) && version_compare( JOINOTIFY_VERSION, self::MIN_VERSION, '<' ) ) {
             return false;
         }
 
@@ -223,16 +293,87 @@ class Joinotify extends Integrations_Base {
 
 
     /**
+     * Every trigger slug this integration registers.
+     *
+     * @since 3.1.0
+     * @return array<int,string>
+     */
+    private function get_trigger_slugs() {
+        return array(
+            self::TRIGGER_ORDER_SHIPPED,
+            self::TRIGGER_ITEM_SAVED,
+            self::TRIGGER_ITEM_DELETED,
+            self::TRIGGER_DELIVERY_PROMISED,
+            self::TRIGGER_DELIVERY_OVERDUE,
+        );
+    }
+
+
+    /**
+     * Trigger slugs whose payload carries tracking data.
+     *
+     * `Hubgo/Delivery/Promise_Saved` fires while the order is being created, when
+     * nothing has shipped yet, so the tracking tokens are deliberately not offered
+     * there: the builder should not list a token that can only ever resolve empty.
+     *
+     * @since 3.1.0
+     * @return array<int,string>
+     */
+    private function get_tracking_trigger_slugs() {
+        return array(
+            self::TRIGGER_ORDER_SHIPPED,
+            self::TRIGGER_ITEM_SAVED,
+            self::TRIGGER_ITEM_DELETED,
+            self::TRIGGER_DELIVERY_OVERDUE,
+        );
+    }
+
+
+    /**
+     * The HubGo action hook behind each registered trigger slug.
+     *
+     * @since 3.1.0
+     * @return array<string,string> Trigger slug => HubGo hook name.
+     */
+    private function get_trigger_hooks() {
+        return array(
+            self::TRIGGER_ORDER_SHIPPED     => self::HOOK_ORDER_SHIPPED,
+            self::TRIGGER_ITEM_SAVED        => self::HOOK_ITEM_SAVED,
+            self::TRIGGER_ITEM_DELETED      => self::HOOK_ITEM_DELETED,
+            self::TRIGGER_DELIVERY_PROMISED => self::HOOK_DELIVERY_PROMISED,
+            self::TRIGGER_DELIVERY_OVERDUE  => self::HOOK_DELIVERY_OVERDUE,
+        );
+    }
+
+
+    /**
+     * The HubGo action hook a trigger slug stands for.
+     *
+     * @since 3.1.0
+     * @param string $trigger Registered trigger slug.
+     * @return string Empty string for an unknown slug.
+     */
+    public function get_trigger_hook( $trigger ) {
+        $hooks = $this->get_trigger_hooks();
+
+        return isset( $hooks[ $trigger ] ) ? $hooks[ $trigger ] : '';
+    }
+
+
+
+
+    /**
      * Register the integration card, triggers and placeholders.
      *
      * @since 3.0.0
+     * @version 3.1.0
      * @return void
      */
     public function register() {
         joinotify_register_integration( array(
             'slug'        => self::SLUG,
             'title'       => __( 'HubGo', 'hubgo' ),
-            'description' => __( 'Send automatic WhatsApp messages from logistics events such as order shipped and tracking code saved, connecting HubGo to Joinotify.', 'hubgo' ),
+            'description' => __( 'Send automatic WhatsApp messages from logistics events — order shipped, tracking code saved or removed, delivery date promised and delivery running late — connecting HubGo to Joinotify.', 'hubgo' ),
             'icon'        => $this->get_icon_svg(),
             'category'    => 'ecommerce',
             'setting_key' => self::SETTING_KEY,
@@ -258,6 +399,22 @@ class Joinotify extends Integrations_Base {
         ) );
 
         joinotify_register_trigger( self::SLUG, array(
+            'data_trigger'     => self::TRIGGER_ITEM_DELETED,
+            'title'            => __( 'When a tracking code is removed from the order', 'hubgo' ),
+            'description'      => __( 'Fired when a tracking code is deleted from the order. Meant for internal alerts to the shipping team rather than for the customer.', 'hubgo' ),
+            'require_settings' => false,
+            'icon'             => $this->get_icon_svg(),
+        ) );
+
+        joinotify_register_trigger( self::SLUG, array(
+            'data_trigger'     => self::TRIGGER_DELIVERY_PROMISED,
+            'title'            => __( 'Delivery date promised at the checkout', 'hubgo' ),
+            'description'      => __( 'Fired when the order is placed and HubGo stores the delivery date quoted at the checkout. Use it to confirm the estimate right after the purchase.', 'hubgo' ),
+            'require_settings' => false,
+            'icon'             => $this->get_icon_svg(),
+        ) );
+
+        joinotify_register_trigger( self::SLUG, array(
             'data_trigger'     => self::TRIGGER_DELIVERY_OVERDUE,
             'title'            => __( 'Delivery is late', 'hubgo' ),
             'description'      => __( 'Fired once a day for each shipped order whose promised delivery date has passed.', 'hubgo' ),
@@ -268,6 +425,204 @@ class Joinotify extends Integrations_Base {
         if ( function_exists( 'joinotify_register_placeholders' ) ) {
             joinotify_register_placeholders( self::SLUG, $this->get_placeholders() );
         }
+
+        $this->register_conditions();
+    }
+
+
+    /**
+     * Register the conditions a HubGo workflow can branch on.
+     *
+     * Two families. The WooCommerce ones are already resolvable by Joinotify's own
+     * engine — its `get_compare_value()` builds its context from `order_id`, which
+     * every HubGo payload carries — they were simply never *offered* for a HubGo
+     * trigger, so a condition node under one of them showed "no condition available
+     * for this action". The HubGo ones (carrier, tracking code, promised days, days
+     * late) need a resolver of their own, registered right below.
+     *
+     * @since 3.1.0
+     * @return void
+     */
+    private function register_conditions() {
+        if ( ! function_exists( 'joinotify_register_conditions' ) ) {
+            return;
+        }
+
+        $conditions = array(
+            'hubgo_carrier' => array(
+                'title'       => __( 'Carrier', 'hubgo' ),
+                'description' => __( 'The carrier on the tracking code, falling back to the one quoted at the checkout.', 'hubgo' ),
+            ),
+            'hubgo_tracking_code' => array(
+                'title'       => __( 'Tracking code', 'hubgo' ),
+                'description' => __( 'The tracking code the event is about.', 'hubgo' ),
+            ),
+            'hubgo_tracking_count' => array(
+                'title'       => __( 'Number of tracking codes', 'hubgo' ),
+                'description' => __( 'How many tracking codes the order carries.', 'hubgo' ),
+            ),
+            'hubgo_delivery_days' => array(
+                'title'       => __( 'Business days promised', 'hubgo' ),
+                'description' => __( 'The delivery estimate, in business days, quoted at the checkout.', 'hubgo' ),
+            ),
+            'hubgo_days_late' => array(
+                'title'       => __( 'Days late', 'hubgo' ),
+                'description' => __( 'How many days have passed since the promised delivery date.', 'hubgo' ),
+            ),
+            'hubgo_shipping_method' => array(
+                'title'       => __( 'Shipping method (HubGo)', 'hubgo' ),
+                'description' => __( 'The shipping method chosen at the checkout, as HubGo stored it on the order.', 'hubgo' ),
+            ),
+            // Resolved by Joinotify's own engine, from the order on the payload.
+            'order_status' => array(
+                'title'       => __( 'Order status', 'hubgo' ),
+                'description' => __( 'The current WooCommerce order status.', 'hubgo' ),
+            ),
+            'order_total' => array(
+                'title'       => __( 'Order total', 'hubgo' ),
+                'description' => __( 'The WooCommerce order total.', 'hubgo' ),
+            ),
+            'order_paid' => array(
+                'title'       => __( 'Order is paid', 'hubgo' ),
+                'description' => __( 'Whether the WooCommerce order has been paid.', 'hubgo' ),
+            ),
+            'products_purchased' => array(
+                'title'       => __( 'Products purchased', 'hubgo' ),
+                'description' => __( 'The products on the WooCommerce order.', 'hubgo' ),
+            ),
+            'payment_method' => array(
+                'title'       => __( 'Payment method', 'hubgo' ),
+                'description' => __( 'The payment gateway used on the order.', 'hubgo' ),
+            ),
+            'shipping_method' => array(
+                'title'       => __( 'Shipping method', 'hubgo' ),
+                'description' => __( 'The WooCommerce shipping method on the order.', 'hubgo' ),
+            ),
+            'customer_email' => array(
+                'title'       => __( 'Customer e-mail', 'hubgo' ),
+                'description' => __( 'The billing e-mail on the order.', 'hubgo' ),
+            ),
+        );
+
+        // `joinotify_register_conditions()` sanitize_key()s the slug it is given,
+        // which is why every trigger slug is already lowercase/underscore: the key
+        // it registers under has to be the one the builder looks the trigger up by.
+        foreach ( $this->get_trigger_slugs() as $trigger ) {
+            joinotify_register_conditions( $trigger, $conditions );
+        }
+
+        if ( ! function_exists( 'joinotify_register_condition_operators' ) || ! function_exists( 'joinotify_register_condition_value' ) ) {
+            return;
+        }
+
+        // A condition with no registered operator is dropped from the builder
+        // catalog, so these are what make the HubGo keys above selectable.
+        $operators = array(
+            'hubgo_carrier'         => array( 'is', 'is_not', 'contains', 'not_contain', 'empty', 'not_empty' ),
+            'hubgo_tracking_code'   => array( 'is', 'is_not', 'contains', 'not_contain', 'empty', 'not_empty' ),
+            'hubgo_tracking_count'  => array( 'is', 'is_not', 'bigger_than', 'less_than' ),
+            'hubgo_delivery_days'   => array( 'is', 'is_not', 'bigger_than', 'less_than' ),
+            'hubgo_days_late'       => array( 'is', 'is_not', 'bigger_than', 'less_than' ),
+            'hubgo_shipping_method' => array( 'is', 'is_not', 'contains', 'not_contain', 'empty', 'not_empty' ),
+        );
+
+        foreach ( $operators as $condition => $allowed ) {
+            joinotify_register_condition_operators( $condition, $allowed );
+        }
+
+        $resolvers = array(
+            'hubgo_carrier' => function( $value_map, $type, $payload ) {
+                $carrier = $this->tracking_value( $payload, 'carrier_name' );
+
+                return '' !== $carrier ? $carrier : $this->promise_value( $payload, 'carrier' );
+            },
+            'hubgo_tracking_code' => function( $value_map, $type, $payload ) {
+                return $this->tracking_value( $payload, 'tracking_code' );
+            },
+            'hubgo_tracking_count' => function( $value_map, $type, $payload ) {
+                return count( $this->payload_items( $payload ) );
+            },
+            'hubgo_delivery_days' => function( $value_map, $type, $payload ) {
+                return (int) $this->promise_value( $payload, 'days' );
+            },
+            'hubgo_days_late' => function( $value_map, $type, $payload ) {
+                return $this->get_days_late( $payload );
+            },
+            'hubgo_shipping_method' => function( $value_map, $type, $payload ) {
+                return $this->promise_value( $payload, 'method' );
+            },
+        );
+
+        foreach ( $resolvers as $condition => $callback ) {
+            joinotify_register_condition_value( $condition, $callback );
+        }
+    }
+
+
+    /**
+     * Declare how the builder renders the value input of each HubGo-only condition.
+     *
+     * Joinotify falls back to a free-text field for an unknown condition key; the
+     * numeric ones want a number input instead.
+     *
+     * @since 3.1.0
+     * @param array $types Condition key => {type, requires?}.
+     * @return array
+     */
+    public function register_condition_value_types( $types ) {
+        if ( ! is_array( $types ) ) {
+            $types = array();
+        }
+
+        $types['hubgo_tracking_count'] = array( 'type' => 'number' );
+        $types['hubgo_delivery_days'] = array( 'type' => 'number' );
+        $types['hubgo_days_late'] = array( 'type' => 'number' );
+
+        return $types;
+    }
+
+
+    /**
+     * Feed the carrier condition with HubGo's own carrier catalog.
+     *
+     * @since 3.1.0
+     * @param array $options Condition key => list of {label, value}.
+     * @return array
+     */
+    public function register_condition_options( $options ) {
+        if ( ! is_array( $options ) ) {
+            $options = array();
+        }
+
+        if ( ! class_exists( Providers_Registry::class ) ) {
+            return $options;
+        }
+
+        $carriers = array();
+
+        foreach ( Providers_Registry::get_providers() as $group ) {
+            foreach ( array_keys( (array) $group ) as $carrier ) {
+                $carrier = (string) $carrier;
+
+                // The registry groups carriers by country and the same carrier
+                // serves more than one group, while the stored value is the
+                // carrier key itself — so list each one once.
+                if ( '' === $carrier || isset( $carriers[ $carrier ] ) ) {
+                    continue;
+                }
+
+                $carriers[ $carrier ] = array(
+                    'label' => $carrier,
+                    'value' => $carrier,
+                );
+            }
+        }
+
+        ksort( $carriers );
+
+        $options['hubgo_carrier'] = array_values( $carriers );
+
+        return $options;
     }
 
 
@@ -290,139 +645,249 @@ class Joinotify extends Integrations_Base {
 
 
     /**
+     * Resolve the WooCommerce order behind a runtime payload.
+     *
+     * @since 3.1.0
+     * @param array $payload Runtime payload.
+     * @return \WC_Order|null
+     */
+    protected function payload_order( $payload ) {
+        $order_id = isset( $payload['order_id'] ) ? absint( $payload['order_id'] ) : 0;
+
+        if ( ! $order_id || ! function_exists( 'wc_get_order' ) ) {
+            return null;
+        }
+
+        $order = wc_get_order( $order_id );
+
+        return $order instanceof \WC_Order ? $order : null;
+    }
+
+
+    /**
+     * Read one field of the primary tracking item on a runtime payload.
+     *
+     * @since 3.1.0
+     * @param array $payload Runtime payload.
+     * @param string $key Key of the normalized tracking item.
+     * @return string
+     */
+    protected function tracking_value( $payload, $key ) {
+        $data = isset( $payload['tracking_data'] ) && is_array( $payload['tracking_data'] ) ? $payload['tracking_data'] : array();
+
+        return isset( $data[ $key ] ) ? (string) $data[ $key ] : '';
+    }
+
+
+    /**
+     * Every normalized tracking item on a runtime payload.
+     *
+     * @since 3.1.0
+     * @param array $payload Runtime payload.
+     * @return array<int,array<string,string>>
+     */
+    protected function payload_items( $payload ) {
+        return isset( $payload['tracking_items'] ) && is_array( $payload['tracking_items'] ) ? $payload['tracking_items'] : array();
+    }
+
+
+    /**
+     * Read one field of the delivery promise behind a runtime payload.
+     *
+     * The promise travels on the payload for the two delivery triggers and is read
+     * back off the order for the tracking ones, which know nothing about it. Either
+     * way a message quotes the date the shopper was actually promised at the
+     * checkout, never a fresh quote that may have drifted since.
+     *
+     * The order is also consulted when the payload's promise lacks the requested
+     * key: `Hubgo/Delivery/Promise_Saved` carries the promise as it was built, which
+     * has no `timestamp` — that one is derived by {@see Delivery_Promise::get()}.
+     *
+     * @since 3.1.0
+     * @param array $payload Runtime payload.
+     * @param string $key Key of the promise array.
+     * @return string
+     */
+    protected function promise_value( $payload, $key ) {
+        $promise = isset( $payload['delivery_promise'] ) && is_array( $payload['delivery_promise'] ) ? $payload['delivery_promise'] : array();
+
+        if ( ! isset( $promise[ $key ] ) ) {
+            $order_id = isset( $payload['order_id'] ) ? absint( $payload['order_id'] ) : 0;
+            $stored = $order_id ? Delivery_Promise::get( $order_id ) : array();
+            $promise = is_array( $stored ) ? array_merge( $promise, $stored ) : $promise;
+        }
+
+        return isset( $promise[ $key ] ) ? (string) $promise[ $key ] : '';
+    }
+
+
+    /**
+     * How many whole days have passed since the promised delivery date.
+     *
+     * @since 3.1.0
+     * @param array $payload Runtime payload.
+     * @return int Zero while the promise is still in the future (or unknown).
+     */
+    protected function get_days_late( $payload ) {
+        $timestamp = (int) $this->promise_value( $payload, 'timestamp' );
+
+        if ( $timestamp <= 0 ) {
+            return 0;
+        }
+
+        $elapsed = current_time( 'timestamp' ) - $timestamp;
+
+        return $elapsed > 0 ? (int) floor( $elapsed / DAY_IN_SECONDS ) : 0;
+    }
+
+
+    /**
+     * Format a stored ship date for presentation.
+     *
+     * @since 3.1.0
+     * @param string $date Raw stored date.
+     * @return string
+     */
+    protected function format_date( $date ) {
+        $date = (string) $date;
+        $timestamp = '' !== $date ? strtotime( $date ) : false;
+
+        return $timestamp ? wp_date( get_option( 'date_format' ), $timestamp ) : $date;
+    }
+
+
+    /**
      * Build the placeholder map with runtime (production) resolvers.
      *
      * Every 'production' value is a callable( array $payload ): string — Joinotify
      * resolves it at send time. Sandbox values are static previews for the builder.
      *
-     * Both triggers are listed on every token: since Joinotify 2.1 the `triggers`
-     * list is enforced at SEND time (the runtime payload carries the fired trigger
-     * slug), so a token missing the fired trigger is left unresolved in the
-     * message. The slugs must match the registered `data_trigger` values exactly.
+     * The `triggers` list is what scopes a token in the builder, and it is enforced
+     * at SEND time as well since Joinotify 2.1 (the runtime payload carries the
+     * fired trigger slug), so a token missing the fired trigger is left unresolved
+     * in the message. Which is why the list is scoped rather than blanket: the
+     * tracking tokens are offered only on the triggers that actually carry tracking
+     * data, and `{{ hubgo_days_late }}` only where a delivery is already late.
+     *
+     * Both sides compare against the slug the *workflow stored*, so these have to be
+     * the registered `data_trigger` values verbatim — see the constant block for why
+     * those are no longer the hook names.
+     *
+     * The WooCommerce tokens deliberately reuse the names of Joinotify's own
+     * WooCommerce context, so someone who has written a workflow there does not
+     * have to learn a second vocabulary to write one here.
      *
      * @since 3.0.0
+     * @version 3.1.0
      * @return array
      */
     private function get_placeholders() {
-        $triggers = array( self::TRIGGER_ORDER_SHIPPED, self::TRIGGER_ITEM_SAVED, self::TRIGGER_DELIVERY_OVERDUE );
+        $all = $this->get_trigger_slugs();
+        $tracking = $this->get_tracking_trigger_slugs();
+        $overdue = array( self::TRIGGER_DELIVERY_OVERDUE );
 
-        $order_from = function( $payload ) {
-            $order_id = isset( $payload['order_id'] ) ? absint( $payload['order_id'] ) : 0;
-
-            return ( $order_id && function_exists( 'wc_get_order' ) ) ? wc_get_order( $order_id ) : null;
-        };
-
-        $tracking_from = function( $payload, $key ) {
-            $data = isset( $payload['tracking_data'] ) && is_array( $payload['tracking_data'] ) ? $payload['tracking_data'] : array();
-
-            return isset( $data[ $key ] ) ? (string) $data[ $key ] : '';
-        };
-
-        // The delivery promise is read off the order rather than the payload, so
-        // the tokens resolve the same on every trigger — including the two that
-        // predate it and know nothing about a delivery date.
-        $promise_from = function( $payload, $key ) {
-            $order_id = isset( $payload['order_id'] ) ? absint( $payload['order_id'] ) : 0;
-            $promise = $order_id ? Delivery_Promise::get( $order_id ) : array();
-
-            return isset( $promise[ $key ] ) ? (string) $promise[ $key ] : '';
-        };
-
-        return array(
+        $placeholders = array(
             '{{ hubgo_carrier_name }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Carrier name', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => __( 'Express Delivery', 'hubgo' ),
-                    'production' => function( $payload ) use ( $tracking_from, $promise_from ) {
-                        $carrier = $tracking_from( $payload, 'carrier_name' );
+                    'production' => function( $payload ) {
+                        $carrier = $this->tracking_value( $payload, 'carrier_name' );
 
                         // No carrier typed on the tracking code yet: fall back to
                         // the one quoted at the checkout, which is the same name
                         // the customer saw on the product page.
-                        return '' !== $carrier ? $carrier : $promise_from( $payload, 'carrier' );
+                        return '' !== $carrier ? $carrier : $this->promise_value( $payload, 'carrier' );
                     },
                 ),
             ),
             '{{ hubgo_delivery_date }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Delivery date promised at the checkout', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => wp_date( get_option('date_format') ),
-                    'production' => function( $payload ) use ( $promise_from ) {
-                        return $promise_from( $payload, 'date_label' );
+                    'production' => function( $payload ) {
+                        return $this->promise_value( $payload, 'date_label' );
                     },
                 ),
             ),
             '{{ hubgo_delivery_days }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Business days promised at the checkout', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => '5',
-                    'production' => function( $payload ) use ( $promise_from ) {
-                        $days = $promise_from( $payload, 'days' );
+                    'production' => function( $payload ) {
+                        $days = $this->promise_value( $payload, 'days' );
 
                         return '0' !== $days ? $days : '';
                     },
                 ),
             ),
             '{{ hubgo_shipping_method }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Shipping method chosen at the checkout', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => __( 'Express Delivery', 'hubgo' ),
-                    'production' => function( $payload ) use ( $promise_from ) {
-                        return $promise_from( $payload, 'method' );
+                    'production' => function( $payload ) {
+                        return $this->promise_value( $payload, 'method' );
+                    },
+                ),
+            ),
+            '{{ hubgo_days_late }}' => array(
+                'triggers'    => $overdue,
+                'description' => __( 'Whole days elapsed since the promised delivery date', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => '2',
+                    'production' => function( $payload ) {
+                        $days = $this->get_days_late( $payload );
+
+                        return $days > 0 ? (string) $days : '';
                     },
                 ),
             ),
             '{{ hubgo_tracking_link }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $tracking,
                 'description' => __( 'Tracking link', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => 'https://carrier.example/tracking/BR1234567890',
-                    'production' => function( $payload ) use ( $tracking_from ) {
-                        return $tracking_from( $payload, 'tracking_link' );
+                    'production' => function( $payload ) {
+                        return $this->tracking_value( $payload, 'tracking_link' );
                     },
                 ),
             ),
             '{{ hubgo_tracking_code }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $tracking,
                 'description' => __( 'Tracking code', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => 'BR1234567890',
-                    'production' => function( $payload ) use ( $tracking_from ) {
-                        return $tracking_from( $payload, 'tracking_code' );
+                    'production' => function( $payload ) {
+                        return $this->tracking_value( $payload, 'tracking_code' );
                     },
                 ),
             ),
             '{{ hubgo_shipping_date }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $tracking,
                 'description' => __( 'Shipping date', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => wp_date( get_option( 'date_format' ) ),
-                    'production' => function( $payload ) use ( $tracking_from ) {
-                        $date = $tracking_from( $payload, 'shipping_date' );
-                        $timestamp = $date ? strtotime( $date ) : false;
-
-                        return $timestamp ? wp_date( get_option( 'date_format' ), $timestamp ) : $date;
+                    'production' => function( $payload ) {
+                        return $this->format_date( $this->tracking_value( $payload, 'shipping_date' ) );
                     },
                 ),
             ),
             '{{ hubgo_tracking_count }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $tracking,
                 'description' => __( 'Number of tracking codes registered on the order', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => '2',
                     'production' => function( $payload ) {
-                        $items = isset( $payload['tracking_items'] ) && is_array( $payload['tracking_items'] ) ? $payload['tracking_items'] : array();
-
-                        return (string) count( $items );
+                        return (string) count( $this->payload_items( $payload ) );
                     },
                 ),
             ),
             '{{ hubgo_tracking_list }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $tracking,
                 'description' => __( 'Every tracking code on the order, one per line (carrier, code and link). It can also be used as the source of a loop action.', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => "Express Delivery - BR1234567890 - https://carrier.example/tracking/BR1234567890\nStandard Post - JD9876543210 - https://carrier.example/tracking/JD9876543210",
@@ -431,61 +896,93 @@ class Joinotify extends Integrations_Base {
                     },
                 ),
             ),
+            '{{ hubgo_tracking_codes }}' => array(
+                'triggers'    => $tracking,
+                'description' => __( 'Every tracking code on the order, separated by commas', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => 'BR1234567890, JD9876543210',
+                    'production' => function( $payload ) {
+                        return implode( ', ', $this->collect_item_values( $payload, 'tracking_code' ) );
+                    },
+                ),
+            ),
+            '{{ hubgo_tracking_links }}' => array(
+                'triggers'    => $tracking,
+                'description' => __( 'Every tracking link on the order, one per line. It can also be used as the source of a loop action.', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => "https://carrier.example/tracking/BR1234567890\nhttps://carrier.example/tracking/JD9876543210",
+                    'production' => function( $payload ) {
+                        return implode( "\n", $this->collect_item_values( $payload, 'tracking_link' ) );
+                    },
+                ),
+            ),
+            '{{ hubgo_order_tracking_url }}' => array(
+                'triggers'    => $all,
+                'description' => __( "Link to the order page on the customer's account, where HubGo shows the tracking codes", 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => get_site_url() . '/my-account/view-order/12345/',
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
+
+                        return $order ? $order->get_view_order_url() : '';
+                    },
+                ),
+            ),
             '{{ wc_billing_first_name }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Customer billing first name (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => __( 'John', 'hubgo' ),
-                    'production' => function( $payload ) use ( $order_from ) {
-                        $order = $order_from( $payload );
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
 
                         return $order ? $order->get_billing_first_name() : '';
                     },
                 ),
             ),
             '{{ wc_billing_last_name }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Customer billing last name (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => __( 'Doe', 'hubgo' ),
-                    'production' => function( $payload ) use ( $order_from ) {
-                        $order = $order_from( $payload );
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
 
                         return $order ? $order->get_billing_last_name() : '';
                     },
                 ),
             ),
             '{{ wc_billing_email }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Customer billing e-mail (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => 'user@example.com',
-                    'production' => function( $payload ) use ( $order_from ) {
-                        $order = $order_from( $payload );
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
 
                         return $order ? $order->get_billing_email() : '';
                     },
                 ),
             ),
             '{{ wc_billing_phone }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Order billing phone (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => '+55 11 91234-5678',
-                    'production' => function( $payload ) use ( $order_from ) {
-                        $order = $order_from( $payload );
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
 
                         return $order ? $order->get_billing_phone() : '';
                     },
                 ),
             ),
             '{{ wc_shipping_phone }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Order shipping phone (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => '+55 41 91234-5678',
-                    'production' => function( $payload ) use ( $order_from ) {
-                        $order = $order_from( $payload );
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
 
                         // get_shipping_phone() only exists from WooCommerce 5.6.
                         if ( ! $order || ! method_exists( $order, 'get_shipping_phone' ) ) {
@@ -497,82 +994,276 @@ class Joinotify extends Integrations_Base {
                 ),
             ),
             '{{ wc_order_number }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Order number (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => '12345',
-                    'production' => function( $payload ) use ( $order_from ) {
-                        $order = $order_from( $payload );
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
 
                         return $order ? $order->get_order_number() : '';
                     },
                 ),
             ),
             '{{ wc_order_status }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Order status (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => __( 'Order shipped', 'hubgo' ),
-                    'production' => function( $payload ) use ( $order_from ) {
-                        $order = $order_from( $payload );
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
 
                         return ( $order && function_exists( 'wc_get_order_status_name' ) ) ? wc_get_order_status_name( $order->get_status() ) : '';
                     },
                 ),
             ),
+            '{{ wc_order_date }}' => array(
+                'triggers'    => $all,
+                'description' => __( 'Date the order was placed (WooCommerce)', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => wp_date( get_option('date_format') ),
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
+                        $created = $order ? $order->get_date_created() : null;
+
+                        return $created ? wp_date( get_option('date_format'), $created->getTimestamp() ) : '';
+                    },
+                ),
+            ),
             '{{ wc_order_total }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Order total (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
-                    'sandbox'    => function_exists( 'joinotify_format_plain_text' ) && function_exists( 'wc_price' ) ? joinotify_format_plain_text( wc_price( 150 ) ) : '150.00',
-                    'production' => function( $payload ) use ( $order_from ) {
-                        $order = $order_from( $payload );
+                    'sandbox'    => $this->format_price( 150 ),
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
 
-                        if ( ! $order || ! function_exists( 'joinotify_format_plain_text' ) || ! function_exists( 'wc_price' ) ) {
+                        return $order ? $this->format_price( $order->get_total(), $order->get_currency() ) : '';
+                    },
+                ),
+            ),
+            '{{ wc_total_discount }}' => array(
+                'triggers'    => $all,
+                'description' => __( 'Total discount on the order (WooCommerce)', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => $this->format_price( 20 ),
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
+
+                        return $order ? $this->format_price( $order->get_total_discount(), $order->get_currency() ) : '';
+                    },
+                ),
+            ),
+            '{{ wc_total_tax }}' => array(
+                'triggers'    => $all,
+                'description' => __( 'Total tax on the order (WooCommerce)', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => $this->format_price( 15 ),
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
+
+                        return $order ? $this->format_price( $order->get_total_tax(), $order->get_currency() ) : '';
+                    },
+                ),
+            ),
+            '{{ wc_currency_symbol }}' => array(
+                'triggers'    => $all,
+                'description' => __( 'Order currency symbol (WooCommerce)', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => function_exists( 'get_woocommerce_currency_symbol' ) ? $this->plain_text( get_woocommerce_currency_symbol() ) : '',
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
+
+                        if ( ! $order || ! function_exists( 'get_woocommerce_currency_symbol' ) ) {
                             return '';
                         }
 
-                        return joinotify_format_plain_text( wc_price( $order->get_total() ) );
+                        return $this->plain_text( get_woocommerce_currency_symbol( $order->get_currency() ) );
+                    },
+                ),
+            ),
+            '{{ wc_payment_method_title }}' => array(
+                'triggers'    => $all,
+                'description' => __( 'Payment method used on the order (WooCommerce)', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => __( 'Credit card', 'hubgo' ),
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
+
+                        if ( ! $order ) {
+                            return '';
+                        }
+
+                        // The title stored on the order is the one the customer saw
+                        // at the checkout; the gateway is only consulted when the
+                        // order carries no title of its own (older orders).
+                        $title = $order->get_payment_method_title();
+
+                        if ( '' === $title && function_exists( 'WC' ) && WC()->payment_gateways() ) {
+                            $gateways = WC()->payment_gateways()->payment_gateways();
+                            $id = $order->get_payment_method();
+                            $title = isset( $gateways[ $id ] ) ? $gateways[ $id ]->get_title() : '';
+                        }
+
+                        return $this->plain_text( $title );
+                    },
+                ),
+            ),
+            '{{ wc_coupon_codes }}' => array(
+                'triggers'    => $all,
+                'description' => __( 'Coupon codes used on the order, separated by commas (WooCommerce)', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => 'CUPOM10, FREESHIPPING',
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
+
+                        return $order ? implode( ', ', $order->get_coupon_codes() ) : '';
+                    },
+                ),
+            ),
+            '{{ wc_shipping_address }}' => array(
+                'triggers'    => $all,
+                'description' => __( 'Order shipping address as WooCommerce formats it', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => __( '450 Daisy Street, Curitiba, PR 80000-100, Brazil', 'hubgo' ),
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
+
+                        return $order ? $order->get_shipping_to_display() : '';
                     },
                 ),
             ),
             '{{ wc_billing_full_address }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Customer full billing address (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => __( '123 Flower Street - Curitiba/PR - Brazil (postcode: 80000-000)', 'hubgo' ),
-                    'production' => function( $payload ) use ( $order_from ) {
-                        $order = $order_from( $payload );
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
 
                         return ( $order && class_exists( Woocommerce::class ) ) ? Woocommerce::get_full_address( $order, 'billing' ) : '';
                     },
                 ),
             ),
             '{{ wc_shipping_full_address }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Customer full shipping address (WooCommerce)', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => __( '450 Daisy Street - Curitiba/PR - Brazil (postcode: 80000-100)', 'hubgo' ),
-                    'production' => function( $payload ) use ( $order_from ) {
-                        $order = $order_from( $payload );
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
 
                         return ( $order && class_exists( Woocommerce::class ) ) ? Woocommerce::get_full_address( $order, 'shipping' ) : '';
                     },
                 ),
             ),
             '{{ wc_purchased_items }}' => array(
-                'triggers'    => $triggers,
+                'triggers'    => $all,
                 'description' => __( 'Products and quantities purchased on the order, one per line', 'hubgo' ),
                 'replacement' => array(
                     'sandbox'    => "1x - Men's cotton t-shirt (sample product)\n1x - UV protection sunglasses (sample product)",
-                    'production' => function( $payload ) use ( $order_from ) {
-                        $order = $order_from( $payload );
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
 
                         return ( $order && class_exists( Woocommerce::class ) ) ? Woocommerce::get_purchased_items( $order ) : '';
                     },
                 ),
             ),
+            '{{ wc_review_links }}' => array(
+                'triggers'    => $all,
+                'description' => __( 'Review link for each purchased product, one per line. Pair it with a delay to ask for a review after the delivery.', 'hubgo' ),
+                'replacement' => array(
+                    'sandbox'    => get_site_url() . "/product/sample-t-shirt/#reviews\n" . get_site_url() . '/product/sample-sunglasses/#reviews',
+                    'production' => function( $payload ) {
+                        $order = $this->payload_order( $payload );
+
+                        return ( $order && class_exists( Woocommerce::class ) && method_exists( Woocommerce::class, 'get_review_links' ) ) ? Woocommerce::get_review_links( $order ) : '';
+                    },
+                ),
+            ),
+            // Resolved centrally by Joinotify (Placeholders::replace_placeholders())
+            // from the order_id every HubGo payload carries. Listed here without a
+            // replacement so the builder offers it, exactly as Joinotify's own
+            // WooCommerce context does.
+            '{{ wc_checkout_field=[FIELD_ID] }}' => array(
+                'triggers'    => $all,
+                'description' => __( 'Value of a specific checkout field on the order. Replace FIELD_ID with the field ID, for example: billing_email.', 'hubgo' ),
+                'replacement' => array(),
+            ),
         );
+
+        /**
+         * Filter the placeholders HubGo exposes to the Joinotify builder.
+         *
+         * @since 3.1.0
+         * @param array $placeholders Map of '{{ token }}' => {triggers, description, replacement}.
+         * @param array $triggers Every HubGo trigger slug.
+         */
+        return apply_filters( 'Hubgo/Integrations/Joinotify/Placeholders', $placeholders, $all );
+    }
+
+
+    /**
+     * Collect one field of every tracking item on the payload, dropping the blanks.
+     *
+     * @since 3.1.0
+     * @param array $payload Runtime payload.
+     * @param string $key Key of the normalized tracking item.
+     * @return array<int,string>
+     */
+    protected function collect_item_values( $payload, $key ) {
+        $values = array();
+
+        foreach ( $this->payload_items( $payload ) as $item ) {
+            $value = is_array( $item ) && isset( $item[ $key ] ) ? trim( (string) $item[ $key ] ) : '';
+
+            if ( '' !== $value ) {
+                $values[] = $value;
+            }
+        }
+
+        return $values;
+    }
+
+
+    /**
+     * Format a monetary amount the way Joinotify renders it in a message.
+     *
+     * @since 3.1.0
+     * @param float|string $value Amount.
+     * @param string $currency Optional currency code.
+     * @return string
+     */
+    protected function format_price( $value, $currency = '' ) {
+        if ( function_exists( 'joinotify_format_price' ) ) {
+            return joinotify_format_price( $value, $currency );
+        }
+
+        if ( ! function_exists( 'wc_price' ) ) {
+            return is_scalar( $value ) ? (string) $value : '';
+        }
+
+        $args = '' !== $currency ? array( 'currency' => $currency ) : array();
+
+        return $this->plain_text( wc_price( (float) $value, $args ) );
+    }
+
+
+    /**
+     * Strip the HTML WooCommerce wraps around a value so it reads as plain text.
+     *
+     * @since 3.1.0
+     * @param string $value Raw value.
+     * @return string
+     */
+    protected function plain_text( $value ) {
+        $value = is_scalar( $value ) ? (string) $value : '';
+
+        if ( function_exists( 'joinotify_format_plain_text' ) ) {
+            return joinotify_format_plain_text( $value );
+        }
+
+        return trim( wp_strip_all_tags( html_entity_decode( $value, ENT_QUOTES, 'UTF-8' ) ) );
     }
 
 
@@ -625,6 +1316,58 @@ class Joinotify extends Integrations_Base {
 
 
     /**
+     * Handle a tracking code being removed -> dispatch Joinotify trigger.
+     *
+     * `Hubgo/Tracking/Deleted_Item` reports the list that survived the deletion,
+     * not the item that went away, so the "primary" tracking item is whatever is
+     * left on the order — and nothing at all once the last code is removed. That
+     * is the useful shape here: an internal alert wants to say what the order
+     * still has.
+     *
+     * @since 3.1.0
+     * @param int $order_id Order ID.
+     * @param array $items Tracking items left on the order.
+     * @return void
+     */
+    public function handle_tracking_deleted( $order_id, $items = array() ) {
+        $items = is_array( $items ) ? array_values( array_filter( $items, 'is_array' ) ) : array();
+        $latest = ! empty( $items ) ? end( $items ) : array();
+
+        $this->dispatch(
+            self::TRIGGER_ITEM_DELETED,
+            absint( $order_id ),
+            is_array( $latest ) ? $latest : array(),
+            $items,
+            __( 'Tracking code removed from the order', 'hubgo' )
+        );
+    }
+
+
+    /**
+     * Handle the delivery promise being stored -> dispatch Joinotify trigger.
+     *
+     * Fires while the order is being created, so nothing has shipped yet: the
+     * payload carries the promise and no tracking data, which is exactly what the
+     * trigger's placeholder scope expects.
+     *
+     * @since 3.1.0
+     * @param int $order_id Order ID.
+     * @param array $promise Delivery promise stored on the order.
+     * @return void
+     */
+    public function handle_delivery_promised( $order_id, $promise = array() ) {
+        $this->dispatch(
+            self::TRIGGER_DELIVERY_PROMISED,
+            absint( $order_id ),
+            array(),
+            array(),
+            __( 'Delivery date promised at the checkout', 'hubgo' ),
+            array( 'delivery_promise' => is_array( $promise ) ? $promise : array() )
+        );
+    }
+
+
+    /**
      * Handle a late delivery -> dispatch Joinotify trigger.
      *
      * The order's tracking codes travel on the payload as well, so a "your
@@ -658,7 +1401,7 @@ class Joinotify extends Integrations_Base {
      *
      * @since 3.0.0
      * @version 3.1.0
-     * @param string $hook Trigger identifier.
+     * @param string $trigger Registered trigger slug.
      * @param int $order_id Order ID.
      * @param array $tracking_item Primary tracking item.
      * @param array $all_items Every tracking item on the order.
@@ -666,7 +1409,7 @@ class Joinotify extends Integrations_Base {
      * @param array $extra Extra payload entries merged into the dispatch.
      * @return void
      */
-    protected function dispatch( $hook, $order_id, $tracking_item, $all_items, $description, $extra = array() ) {
+    protected function dispatch( $trigger, $order_id, $tracking_item, $all_items, $description, $extra = array() ) {
         if ( ! function_exists( 'joinotify_dispatch_trigger' ) ) {
             return;
         }
@@ -684,18 +1427,23 @@ class Joinotify extends Integrations_Base {
             'tracking_data'  => $this->build_tracking_data( $order_id, $tracking_item ),
             'tracking_items' => $this->build_tracking_items( $order_id, $all_items ),
             'description'    => $description,
+            // The HubGo action hook behind the trigger, so a workflow (or a
+            // third party reading the payload) can tell them apart now that the
+            // trigger slug is no longer the hook name.
+            'hubgo_hook'     => $this->get_trigger_hook( $trigger ),
         ) );
 
         /**
          * Filter the HubGo payload before dispatching to Joinotify.
          *
          * @since 3.0.0
+         * @version 3.1.0
          * @param array $payload Dispatch payload.
-         * @param string $hook Trigger identifier.
+         * @param string $trigger Registered trigger slug (since 3.1.0 no longer the hook name).
          */
-        $payload = apply_filters( 'Hubgo/Integrations/Joinotify/Payload', $payload, $hook );
+        $payload = apply_filters( 'Hubgo/Integrations/Joinotify/Payload', $payload, $trigger );
 
-        joinotify_dispatch_trigger( $hook, self::SLUG, $payload );
+        joinotify_dispatch_trigger( $trigger, self::SLUG, $payload );
     }
 
 

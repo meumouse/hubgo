@@ -248,7 +248,7 @@ To add a component:
 2. Add it to the appropriate hook bucket in `get_hook_class_map()`.
 3. Give it a no-argument constructor that registers its own `add_action` / `add_filter` calls.
 
-Hook-bucket choice matters: integrations boot on `plugins_loaded` because host plugins (Joinotify) assemble their catalogs from filters early; admin/REST/asset classes boot on `init`; storefront views boot on `wp_loaded`.
+Hook-bucket choice matters: integrations boot on `init` (priority 5), early enough that host plugins (Joinotify) find their catalogs filled before any screen or REST route reads them, but late enough for the text domain to be loaded — the registration payloads are translated, and `plugins_loaded` would trigger the WordPress 6.7+ just-in-time translation notice. Admin/REST/asset classes share that `init` bucket; storefront views boot on `wp_loaded`.
 
 Classes that must work **without** WooCommerce (the MDS registration, which carries the update check) are wired outside the dependency gate — see `License::boot()` in `Plugin::init()`.
 
@@ -366,6 +366,8 @@ public function __construct() {
 `add_integration_item( $integrations )` returns the catalog with the card appended under its slug. Recognized keys: `title`, `description`, `icon` (inline brand SVG), `category`, `setting_key`, `is_plugin`, `plugin_active` (list of basenames — **any** match satisfies the dependency), `coming_soon`, `doc_url`, `install` (`plugin_slug` + `download_url`), `settings` (field definitions, same shape as the schema) and `modal` (`title`, `description`, `size`, `blocks`).
 
 Runtime flags (`enabled`, `plugin_active`, `can_install`, `has_settings`, `disabled_message`) are computed by `Registry::get_integration_cards()`. The Vue side is a pure renderer — never re-derive them in the frontend.
+
+**Joinotify trigger slugs must survive `sanitize_key()`** — lowercase, digits, `_` and `-` only. A `data_trigger` is not free-form text: Joinotify runs it through `sanitize_key()` when the builder creates a workflow from it (`Admin\Builder\Registry::create_workflow_from_trigger()`, `Rest\Builder_Create`) and again in `Api\Extensions::register_conditions()`, but *not* when it is registered or dispatched. A slug that does not round-trip is therefore stored in one shape and dispatched in another, and every comparison downstream is by string equality: `Workflow_Processor::matches_trigger()` never matches (the workflow never runs), `Placeholders::get_placeholders_list()` never matches (the builder offers none of the integration's tokens) and the condition map is keyed under the mangled name (the condition node says "no condition available for this action"). All three fail silently. This is why `Integrations\Joinotify` keeps its `TRIGGER_*` slugs (`hubgo_order_shipped`) separate from the `HOOK_*` HubGo action hooks they stand for (`Hubgo/Tracking/Order_Shipped`) instead of dispatching the hook name as the slug.
 
 ### Data migrations
 

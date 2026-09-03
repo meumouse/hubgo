@@ -8,8 +8,27 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 ## [Unreleased]
 
+### Added
+
+- **Joinotify: two more triggers, so every logistics hook HubGo fires can start a workflow**
+    - *Delivery date promised at the checkout* (`Hubgo/Delivery/Promise_Saved`) — fires as the order is placed, to confirm the estimate the shopper was just shown
+    - *When a tracking code is removed from the order* (`Hubgo/Tracking/Deleted_Item`) — an operations alert rather than a customer message
+    - `Hubgo/Tracking/Items_Imported` stays deliberately unexposed: it replays a store's whole shipment history during a migration, and one message per historical order is never what anyone wants
+- **Joinotify: eleven new placeholders**, 33 in total
+    - Tracking: `{{ hubgo_tracking_codes }}`, `{{ hubgo_tracking_links }}` (both usable as a loop source), `{{ hubgo_order_tracking_url }}` — the link to the order on the customer's account, where the tracking codes are listed
+    - Delivery: `{{ hubgo_days_late }}`, offered only on the late-delivery trigger
+    - Order: `{{ wc_order_date }}`, `{{ wc_payment_method_title }}`, `{{ wc_shipping_address }}`, `{{ wc_currency_symbol }}`, `{{ wc_total_discount }}`, `{{ wc_total_tax }}`, `{{ wc_coupon_codes }}`, `{{ wc_review_links }}` and the parametric `{{ wc_checkout_field=[FIELD_ID] }}`. They carry the same names as Joinotify's own WooCommerce context on purpose: writing a HubGo workflow does not mean learning a second vocabulary
+    - The tracking tokens are now offered only on the triggers that actually carry tracking data — the builder no longer lists a token that could only ever resolve empty
+    - New filter: `Hubgo/Integrations/Joinotify/Placeholders`
+- **Joinotify: conditions for the HubGo triggers.** A condition node under a HubGo trigger used to say "no condition available for this action" — the WooCommerce conditions Joinotify can already evaluate from the order were simply never offered there. Order status, total, paid, products, payment method, shipping method and customer e-mail are now selectable, alongside six HubGo ones: carrier (a select fed by HubGo's own carrier catalog), tracking code, number of tracking codes, business days promised, days late and the checkout shipping method
+
 ### Fixed
 
+- **No HubGo workflow in Joinotify ever ran, and the builder offered none of the HubGo placeholders.** The `data_trigger` was the HubGo hook name itself — `Hubgo/Tracking/Item_Saved`. Joinotify runs that slug through `sanitize_key()` when the builder creates the workflow, which lowercases it and drops every character outside `a-z0-9_-`, so what reached the database was `hubgotrackingitem_saved` while HubGo went on dispatching the original. Everything downstream compares those two strings for equality, so all of it failed at once and without a word: the workflow never matched the fired event, the placeholder catalogue never matched a HubGo token — which is why the builder listed only the global ones — and the condition map was keyed under the mangled name, so a condition node fell back to "no condition available for this action"
+    - The triggers are now registered under slugs that survive `sanitize_key()` unchanged: `hubgo_order_shipped`, `hubgo_tracking_saved`, `hubgo_tracking_deleted`, `hubgo_delivery_promised` and `hubgo_delivery_overdue`
+    - The HubGo action hooks are untouched and remain the plugin's public API. They are now separate `HOOK_*` constants, and the dispatch payload carries the hook a trigger stands for as `hubgo_hook`
+    - **Heads-up:** a HubGo workflow drawn before this release stored one of the mangled slugs. Joinotify flags it in the builder ("the trigger used by this workflow is no longer registered"); re-picking the HubGo trigger on the workflow's first node repairs it. Nothing else in the flow has to be redrawn
+- Verified against Joinotify 2.3.4: every registration goes through the functional API (`joinotify_register_integration` / `_trigger` / `_placeholders` / `_conditions` / `_condition_operators` / `_condition_value` / `_dispatch_trigger`) and the version floor is now the `MIN_VERSION` constant, with the `function_exists()` checks as the real gate
 - **The calculator quoted a line the shopper had already changed.** The quote was built once, from the quantity and the variation selected when the postcode was submitted, and never revisited — so a card quoting one unit sat next to a cart holding forty, and the two freights disagreed. The quantity field and the variation picker are now followed, and a change re-quotes the line with the weight and the dimensions actually being bought
 - The calculator's package now carries `cart_subtotal`, matching what WooCommerce sends from the cart, so shipping methods that price insurance or a declared value read the same number in both places
 - Quantity and variation are read from the add-to-cart form that sells the quoted product rather than from the first one on the page, so a `[hubgo_shipping_calculator]` shortcode no longer follows another product's fields
