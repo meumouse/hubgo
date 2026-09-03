@@ -86,7 +86,8 @@ app/                        Vue 3 + Vite apps (admin SPA + storefront)
   src/components/           Shared admin UI: fields, toggles, buttons, cards, modals,
                             toasts, skeletons, layout, brand
   src/storefront/           Storefront calculator: components/, tokens.js, api.js,
-                            useShippingQuote.js, styles/calculator.css
+                            useShippingQuote.js, productLine.js,
+                            styles/calculator.css
   src/utils/                api.js (REST client), i18n.js, bootstrap.js (mountPage)
   src/styles/main.css       Tailwind entry + design tokens, scoped to .hubgo-app
   dist/                     Vite build output — generated, git-ignored
@@ -495,6 +496,8 @@ Rendering is uniform across all three entry points — the product-page hook, th
 `Views\Shipping_Calculator::get_config()` builds that config in one place, so the three can never drift; `app/src/storefront/mount.js` scans for the nodes and mounts one Vue app per node, re-scanning on Elementor's `frontend/element_ready` so the editor preview stays live.
 
 The published DOM events `hubgo:shipping_calculated` and `hubgo:shipping_error` are part of the contract and survived the rewrite; `hubgo:shipping_preference_changed` was added.
+
+A quote is only valid for the line it was built from, so `app/src/storefront/productLine.js` owns every read of that line — the product, the chosen variation and the quantity — and watches the add-to-cart form for changes to any of them. `useShippingQuote` re-quotes when the signature moves, which is what keeps the card's freight equal to the cart's. Two rules there: the reads are scoped to the form that sells the quoted product (never document-wide, or a shortcode follows a neighbour's fields), and the watcher is wired through jQuery as well as native listeners, because WooCommerce's variation events and most theme +/- buttons are `$.fn.trigger()` calls that never reach a native listener.
 
 `assets/admin/` (the order tracking metabox and the plugins-list update check) remains **plain, unbundled** CSS/JS enqueued directly. Do not migrate it into the Vite build — those surfaces are core admin screens that never load the SPA, so their strings are passed in through `wp_localize_script()` instead of `wp.i18n`.
 

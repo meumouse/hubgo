@@ -14,7 +14,7 @@
  * @since 3.0.0
  * @version 3.1.0
  */
-import { computed, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { ChevronRight, Truck } from '@boxicons/vue';
 import CepForm from './CepForm.vue';
 import CepFinderModal from './CepFinderModal.vue';
@@ -42,10 +42,13 @@ const {
     loading,
     error,
     hasQuoted,
+    stale,
     isPreferenceEnabled,
     calculate,
     selectMethod,
     clearPreference,
+    watchLine,
+    unwatchProductLine,
 } = useShippingQuote( props.config );
 
 const texts = computed( () => props.config.texts || {} );
@@ -177,7 +180,13 @@ onMounted( () => {
     if ( postcode.value ) {
         calculate( postcode.value );
     }
+
+    // The quantity field and the variation picker both change what a quote is
+    // worth, and neither of them goes through this component.
+    watchLine();
 } );
+
+onBeforeUnmount( unwatchProductLine );
 </script>
 
 <template>
@@ -223,7 +232,7 @@ onMounted( () => {
             <div v-else key="quoted">
                 <div class="hubgo-calc__result">
                     <Transition name="hubgo-calc-fade" mode="out-in">
-                        <div v-if="loading && ! preferredRate" key="loading" class="hubgo-calc__loading">
+                        <div v-if="loading && ( stale || ! preferredRate )" key="loading" class="hubgo-calc__loading">
                             <span class="hubgo-calc__spinner" aria-hidden="true" />
                             {{ interpolate( __( 'Calculating delivery for %s…' ), formatCep( postcode ) ) }}
                         </div>
@@ -263,6 +272,7 @@ onMounted( () => {
             :rates="rates"
             :preferred-id="preferredId"
             :loading="loading"
+            :stale="stale"
             :error="error"
             :texts="texts"
             :display="config.display || 'list'"

@@ -8,6 +8,12 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 ## [Unreleased]
 
+### Fixed
+
+- **The calculator quoted a line the shopper had already changed.** The quote was built once, from the quantity and the variation selected when the postcode was submitted, and never revisited — so a card quoting one unit sat next to a cart holding forty, and the two freights disagreed. The quantity field and the variation picker are now followed, and a change re-quotes the line with the weight and the dimensions actually being bought
+- The calculator's package now carries `cart_subtotal`, matching what WooCommerce sends from the cart, so shipping methods that price insurance or a declared value read the same number in both places
+- Quantity and variation are read from the add-to-cart form that sells the quoted product rather than from the first one on the page, so a `[hubgo_shipping_calculator]` shortcode no longer follows another product's fields
+
 ## [3.0.0] - 2026-08-28
 
 ### Added

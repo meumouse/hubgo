@@ -39,7 +39,7 @@ defined('ABSPATH') || exit;
  * session or the checkout rate cache.
  *
  * @since 3.0.0
- * @version 3.0.0
+ * @version 3.1.0
  * @package MeuMouse\Hubgo\Core
  * @author MeuMouse.com
  */
@@ -652,6 +652,7 @@ class Shipping_Calculator_Service {
      * Build the shipping package for a single product line.
      *
      * @since 3.0.0
+     * @version 3.1.0
      * @param \WC_Product $product Product (or variation) being quoted.
      * @param int $product_id Parent product ID.
      * @param int $variation_id Variation ID.
@@ -680,6 +681,10 @@ class Shipping_Calculator_Service {
             'user'             => array( 'ID' => get_current_user_id() ),
             'contents'         => array(),
             'contents_cost'    => $line_total,
+            // Carried for parity with WC_Cart::get_shipping_packages(): methods
+            // that price insurance or a declared value read this key, and a
+            // package without it quotes the line as if it were worth nothing.
+            'cart_subtotal'    => $this->get_displayed_line_subtotal( $line_total, $line_tax ),
         );
 
         $package['contents'][ $cart_id ] = array(
@@ -704,6 +709,27 @@ class Shipping_Calculator_Service {
          * @param int $quantity Quantity.
          */
         return apply_filters( 'Hubgo/Shipping_Calculator/Package', $package, $product_id, $postcode, $quantity );
+    }
+
+
+    /**
+     * Line subtotal as the cart would display it.
+     *
+     * Mirrors WC_Cart::get_displayed_subtotal(): tax is included only when the
+     * store displays prices that way, because that is the number the shipping
+     * methods reading `cart_subtotal` were written against.
+     *
+     * @since 3.1.0
+     * @param float $line_total Line total excluding tax.
+     * @param float $line_tax Tax for the line.
+     * @return float
+     */
+    private function get_displayed_line_subtotal( $line_total, $line_tax ) {
+        if ( wc_tax_enabled() && 'incl' === get_option( 'woocommerce_tax_display_cart' ) ) {
+            return (float) $line_total + (float) $line_tax;
+        }
+
+        return (float) $line_total;
     }
 
 

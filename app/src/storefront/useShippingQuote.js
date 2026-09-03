@@ -11,12 +11,14 @@
  * detail of the pair.
  *
  * @since 3.0.0
+ * @version 3.1.0
  */
 import { computed, ref, shallowRef } from 'vue';
 import { storefrontApi } from './api';
 import { deleteCookie, readCookie, writeCookie } from './cookies';
 import { cepDigits, isCompleteCep, resolvePreferredRate } from './format';
 import { getPreferenceConfig } from './params';
+import { lineSignature, readProductLine, watchProductLine } from './productLine';
 import { __ } from '../utils/i18n';
 
 /**
@@ -62,47 +64,6 @@ function persistPreference( postcode, rateId ) {
 }
 
 /**
- * Resolve which product line to quote.
- *
- * The widget config carries the product it was rendered for, but a variable
- * product only reveals the chosen variation once the shopper picks the
- * attributes — so the live DOM wins over the static config when it has an
- * answer.
- *
- * @param {object} config Widget config.
- * @return {{ product: number, variation_id: number }}
- */
-function detectProduct( config ) {
-    const variationInput = document.querySelector( 'input[name="variation_id"]' );
-    const variationId = variationInput ? parseInt( variationInput.value, 10 ) : 0;
-
-    if ( variationId > 0 ) {
-        return { product: Number( config.product ) || 0, variation_id: variationId };
-    }
-
-    const addToCart = document.querySelector( '*[name="add-to-cart"]' );
-    const fromForm = addToCart ? parseInt( addToCart.value, 10 ) : 0;
-
-    return {
-        product: Number( config.product ) || fromForm || 0,
-        variation_id: 0,
-    };
-}
-
-/**
- * Resolve the quantity currently selected on the page.
- *
- * @param {object} config Widget config.
- * @return {number}
- */
-function detectQuantity( config ) {
-    const input = document.querySelector( '.quantity input.qty' );
-    const fromDom = input ? parseInt( input.value, 10 ) : 0;
-
-    return Math.max( 1, fromDom || Number( config.quantity ) || 1 );
-}
-
-/**
  * Build the reactive state for one calculator instance.
  *
  * @param {object} config Widget config parsed from the mount node.
@@ -119,8 +80,15 @@ export function useShippingQuote( config ) {
     const loading = ref( false );
     const error = ref( '' );
     const hasQuoted = ref( false );
+    const stale = ref( false );
 
     let pending = null;
+
+    // The line the rates on screen were quoted for. Compared against the live
+    // one to decide whether a change on the page is worth a new request.
+    let quotedLine = '';
+
+    let unwatchLine = null;
 
     const preferredRate = computed( () => resolvePreferredRate( rates.value, preferredId.value ) );
 
@@ -179,15 +147,21 @@ export function useShippingQuote( config ) {
 
         persistPreference( digits, isPreferenceEnabled.value ? preferredId.value : '' );
 
-        const detected = detectProduct( config );
+        // Read once and quote exactly what was read: the shopper can change
+        // the quantity while the request is in flight, and remembering the line
+        // the answer belongs to is what lets the watcher notice and re-quote.
+        const line = readProductLine( config );
 
         try {
             const payload = await storefrontApi.calculate( {
-                product: detected.product,
-                variation_id: detected.variation_id,
-                qty: detectQuantity( config ),
+                product: line.product,
+                variation_id: line.variation_id,
+                qty: line.qty,
                 postcode: digits,
             }, controller.signal );
+
+            quotedLine = lineSignature( line );
+            stale.value = false;
 
             rates.value = Array.isArray( payload.rates ) ? payload.rates : [];
             freeShipping.value = payload.free_shipping || {};
@@ -213,6 +187,7 @@ export function useShippingQuote( config ) {
             // postcode.
             context.value = {};
             hasQuoted.value = true;
+            stale.value = false;
             error.value = requestError.message || __( 'Could not calculate shipping. Please try again.' );
 
             emitEvent( 'hubgo:shipping_error', { message: error.value } );
@@ -226,6 +201,60 @@ export function useShippingQuote( config ) {
             }
         }
     }
+
+    /**
+     * Re-quote when the line on the page no longer matches the one on screen.
+     *
+     * The guard is what keeps this cheap: the watcher fires on every quantity
+     * keystroke and on every variation event, and most of them leave the line
+     * exactly where it was.
+     *
+     * @return {void}
+     */
+    function refresh() {
+        if ( ! isCompleteCep( postcode.value ) ) {
+            return;
+        }
+
+        if ( lineSignature( readProductLine( config ) ) === quotedLine ) {
+            return;
+        }
+
+        // The price on screen is now known to be wrong. Saying so before the
+        // request goes out is what stops the shopper from reading a freight for
+        // one unit while they are buying forty.
+        stale.value = true;
+
+        calculate( postcode.value );
+    }
+
+
+    /**
+     * Follow the quantity field and the variation picker.
+     *
+     * @return {Function} Unsubscribe.
+     */
+    function watchLine() {
+        if ( ! unwatchLine ) {
+            unwatchLine = watchProductLine( config, refresh );
+        }
+
+        return unwatchLine;
+    }
+
+
+    /**
+     * Stop following them.
+     *
+     * @return {void}
+     */
+    function unwatchProductLine() {
+        if ( unwatchLine ) {
+            unwatchLine();
+            unwatchLine = null;
+        }
+    }
+
 
     /**
      * Record the shopper's preferred method.
@@ -272,7 +301,9 @@ export function useShippingQuote( config ) {
         freeShipping.value = {};
         context.value = {};
         hasQuoted.value = false;
+        stale.value = false;
         error.value = '';
+        quotedLine = '';
     }
 
     /**
@@ -301,8 +332,12 @@ export function useShippingQuote( config ) {
         loading,
         error,
         hasQuoted,
+        stale,
         isPreferenceEnabled,
         calculate,
+        refresh,
+        watchLine,
+        unwatchProductLine,
         selectMethod,
         clearPreference,
         resetPostcode,

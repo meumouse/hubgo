@@ -27,6 +27,7 @@ const props = defineProps({
     rates: { type: Array, default: () => [] },
     preferredId: { type: String, default: '' },
     loading: { type: Boolean, default: false },
+    stale: { type: Boolean, default: false },
     error: { type: String, default: '' },
     texts: { type: Object, default: () => ({}) },
     display: { type: String, default: 'list' },
@@ -141,7 +142,7 @@ function submitCep( value ) {
 
         <div class="hubgo-calc-modal__section">
             <Transition name="hubgo-calc-fade" mode="out-in">
-            <div v-if="loading && ! rates.length" key="loading" class="hubgo-calc__loading">
+            <div v-if="loading && ( stale || ! rates.length )" key="loading" class="hubgo-calc__loading">
                 <span class="hubgo-calc__spinner" aria-hidden="true" />
                 {{ __( 'Calculating delivery options…' ) }}
             </div>
