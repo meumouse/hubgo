@@ -8,6 +8,8 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-09-03
+
 ### Added
 
 - **Joinotify: two more triggers, so every logistics hook HubGo fires can start a workflow**
@@ -255,7 +257,8 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 - Initial release
 
-[Unreleased]: https://github.com/meumouse/hubgo/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/meumouse/hubgo/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/meumouse/hubgo/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/meumouse/hubgo/compare/v2.2.0...v3.0.0
 [2.2.0]: https://github.com/meumouse/hubgo/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/meumouse/hubgo/compare/v2.0.0...v2.1.0
