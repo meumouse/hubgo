@@ -29,11 +29,49 @@ class Tracking_Manager {
     const META_KEY = '_hubgo_tracking_items';
 
     /**
+     * Whether the shipped-status listener has already been wired this request.
+     *
+     * A single request builds several managers — the bootstrap
+     * (Plugin::init_tracking()), every tracking REST route, the WooCommerce
+     * Shipment Tracking migration, the Melhor Envio integration and the Joinotify
+     * one. WordPress keys a callback by the object it is bound to, so each instance
+     * used to add a listener of its own and a single status change fired
+     * `Hubgo/Tracking/Order_Shipped` once per live manager: the customer received
+     * the same WhatsApp message — and the same shipping e-mail — two or three
+     * times. The event belongs to the order, not to the instance that happens to
+     * observe it, so it is wired exactly once.
+     *
+     * @since 3.1.0
+     * @var bool
+     */
+    protected static $shipped_listener_registered = false;
+
+    /**
+     * Orders whose shipped event has already been dispatched this request.
+     *
+     * Second line of defence, for the case the guard above cannot cover: an order
+     * driven through the shipped status twice in the same request (a bulk action
+     * re-saving it, an integration flipping the status back and forth) fires the
+     * WooCommerce hook twice, and every firing is a customer-visible notification.
+     *
+     * @since 3.1.0
+     * @var array<int,bool>
+     */
+    protected static $shipped_dispatched = array();
+
+    /**
      * Constructor
      *
      * @since 2.1.0
+     * @version 3.1.0
      */
     public function __construct() {
+        if ( self::$shipped_listener_registered ) {
+            return;
+        }
+
+        self::$shipped_listener_registered = true;
+
         add_action( 'woocommerce_order_status_shipped-order', array( $this, 'trigger_shipped_event' ) );
     }
 
@@ -529,10 +567,20 @@ class Tracking_Manager {
      * Trigger shipped event
      *
      * @since 2.1.0
+     * @version 3.1.0
      * @param int $order_id Order ID.
      * @return void
      */
     public function trigger_shipped_event( $order_id ) {
+        $order_id = absint( $order_id );
+
+        // One notification per order per request. See self::$shipped_dispatched.
+        if ( ! $order_id || isset( self::$shipped_dispatched[ $order_id ] ) ) {
+            return;
+        }
+
+        self::$shipped_dispatched[ $order_id ] = true;
+
         $items = $this->get_items( $order_id );
 
         /**

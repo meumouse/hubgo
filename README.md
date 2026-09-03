@@ -233,7 +233,7 @@ distributed on wordpress.org.
 
 | Integration | What it does |
 | --- | --- |
-| **Joinotify** | WhatsApp automation triggers and placeholders (tracking, delivery date, carrier, shipping method, late delivery) |
+| **Joinotify** | WhatsApp automation: five triggers (order shipped, tracking code saved or removed, delivery date promised, delivery late), 33 placeholders and the conditions to branch on them |
 | **Melhor Envio** | Stores the carrier that actually moves the parcel and the delivery time as standard rate meta, and makes the official plugin quote correctly from the product page |
 | **Frenet** | Recovers the delivery forecast and the carrier from the Frenet response and puts the promised date back on the calculator |
 | **WooCommerce Shipment Tracking** | Read-only bridge for its tracking items, plus a batched migration into HubGo |
