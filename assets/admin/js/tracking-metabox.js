@@ -42,6 +42,29 @@
         } );
     }
 
+    /**
+     * Whether an element is currently hidden, stylesheet rules included.
+     *
+     * The metabox stylesheet hides the form and the link preview with
+     * `display: none`, so the inline style alone does not describe what the
+     * user sees: an element carrying no inline value is still hidden by the
+     * rule.
+     */
+    function isHidden( el ) {
+        return window.getComputedStyle( el ).display === 'none';
+    }
+
+    /**
+     * Show or hide an element with an explicit inline value.
+     *
+     * Clearing the inline style instead hands the element back to the
+     * stylesheet rule above and leaves it hidden, which is what made the
+     * "Add tracking code" button look inert.
+     */
+    function setVisible( el, visible ) {
+        el.style.display = visible ? 'block' : 'none';
+    }
+
     function escapeHtml( value ) {
         var div = document.createElement( 'div' );
         div.textContent = value == null ? '' : String( value );
@@ -154,7 +177,7 @@
         var customWrap = qs( '.custom_tracking_provider_field', root );
 
         if ( customWrap && providerSelect ) {
-            customWrap.style.display = providerSelect.value === '' ? '' : 'none';
+            setVisible( customWrap, providerSelect.value === '' );
         }
 
         if ( ! previewWrap || ! providerSelect ) {
@@ -165,12 +188,13 @@
         var format = providers[ providerSelect.value ] ? decodeURIComponent( providers[ providerSelect.value ] ) : '';
         var code = number ? number.value.trim() : '';
 
-        if ( anchor && format && code ) {
+        var hasPreview = !! ( anchor && format && code );
+
+        if ( hasPreview ) {
             anchor.href = format.replace( /%s|\{code\}|%code%/gi, code );
-            previewWrap.style.display = '';
-        } else {
-            previewWrap.style.display = 'none';
         }
+
+        setVisible( previewWrap, hasPreview );
     }
 
     function bind() {
@@ -178,9 +202,8 @@
         var form = qs( '#hubgo-shipment-tracking-form', root );
 
         if ( showButton && form ) {
-            form.style.display = 'none';
             showButton.addEventListener( 'click', function() {
-                form.style.display = form.style.display === 'none' ? '' : 'none';
+                setVisible( form, isHidden( form ) );
             } );
         }
 
