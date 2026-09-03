@@ -185,6 +185,26 @@ class Joinotify extends Integrations_Base {
         // Give the builder's trigger cards the HubGo brand icon instead of the
         // generic fallback used for unregistered contexts.
         add_filter( 'Joinotify/Builder/Trigger_Context_Icons', array( $this, 'register_context_icon' ) );
+
+        // Repair workflows saved with the pre-3.1.0 trigger slugs. Admin-only and
+        // once per site: the builder is the only place the result is read, and a
+        // storefront request should never pay for a post query it cannot use.
+        add_action( 'admin_init', array( $this, 'migrate_legacy_triggers' ) );
+    }
+
+
+    /**
+     * Rewrite the trigger slug of workflows built against HubGo 3.0.x.
+     *
+     * @since 3.1.0
+     * @return void
+     */
+    public function migrate_legacy_triggers() {
+        $migration = new Joinotify_Trigger_Migration(
+            Joinotify_Trigger_Migration::build_map( $this->get_trigger_hooks() )
+        );
+
+        $migration->run();
     }
 
 

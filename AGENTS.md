@@ -394,6 +394,15 @@ Two rules are load-bearing:
   replaying it over a store's history would send one WhatsApp message per
   historical shipment. Use `Hubgo/Tracking/Items_Imported` instead.
 
+Not every one-time data fix belongs in this framework.
+`Integrations\Joinotify_Trigger_Migration` repairs HubGo's *own* past output
+inside Joinotify's workflow posts: a handful of records, nothing to page over,
+nothing for the user to start or watch, so it runs silently on `admin_init`
+behind an option marker instead of extending `Abstract_Migration`. Reach for the
+base class when the work is a user-driven import that has to be batched over
+orders and reported on; write a plain one-shot class when it is a correction the
+user should never have to know about.
+
 Source data is copied, never deleted, so a store can roll back by re-activating
 the other plugin. A migration surfaces on the Integrations screen through a
 `migration` modal block (`Integrations_Base::modal_migration_block()`), which
