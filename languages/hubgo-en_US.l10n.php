@@ -35,6 +35,7 @@ return [
 		'Address box background' => 'Address box background',
 		'Address lookup is disabled.' => 'Address lookup is disabled.',
 		'Address lookup is not configured.' => 'Address lookup is not configured.',
+		'Address used in the tracking link. Use %1$s where the code should go, and %2$s for the carrier.' => 'Address used in the tracking link. Use %1$s where the code should go, and %2$s for the carrier.',
 		'Address used in the tracking link. Use %1$s where the code should go.' => 'Address used in the tracking link. Use %1$s where the code should go.',
 		'Addresses for the shipping calculator, served by your own Google Cloud project.' => 'Addresses for the shipping calculator, served by your own Google Cloud project.',
 		'Adds the order shipped status to WooCommerce.' => 'Adds the order shipped status to WooCommerce.',

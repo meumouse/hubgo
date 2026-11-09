@@ -35,6 +35,7 @@ return [
 		'Address box background' => 'Fundo da caixa de endereço',
 		'Address lookup is disabled.' => 'A pesquisa de endereço está desativada.',
 		'Address lookup is not configured.' => 'A pesquisa de endereço não está configurada.',
+		'Address used in the tracking link. Use %1$s where the code should go, and %2$s for the carrier.' => 'Endereço utilizado no link de rastreamento. Use %1$s onde o código deve ir, e %2$s para a transportadora.',
 		'Address used in the tracking link. Use %1$s where the code should go.' => 'Endereço utilizado no link de rastreamento. Use %1$s onde o código deve ir.',
 		'Addresses for the shipping calculator, served by your own Google Cloud project.' => 'Endereços para o calculador de envio, servidos pelo seu próprio projeto Google Cloud.',
 		'Adds the order shipped status to WooCommerce.' => 'Adiciona o status de pedido enviado ao WooCommerce.',

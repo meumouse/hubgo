@@ -39,7 +39,7 @@ defined('ABSPATH') || exit;
  *   the product page. With HubGo's calculator on, the page rendered two.
  *
  * @since 3.0.0
- * @version 3.1.0
+ * @version 3.1.1
  * @package MeuMouse\Hubgo\Integrations
  * @author MeuMouse.com
  */
@@ -103,12 +103,34 @@ class Frenet extends Integrations_Base {
 
     /**
      * Tracking URL template. %1$s receives the url-encoded tracking code, the
-     * same placeholder contract every entry in Providers_Registry uses.
+     * same placeholder contract every entry in Providers_Registry uses, and
+     * %2$s the carrier segment Frenet's public tracking page routes on.
+     *
+     * The previous address — `painel.frenet.com.br/tracking/<code>` — is gone:
+     * it answers with the panel's login screen now, so every store still on the
+     * default was handing customers a dead link. The page that replaced it
+     * lives on its own host and takes the carrier in the path; without that
+     * segment it answers 404, which is why this template needs a second
+     * placeholder. {@see Frenet::add_carrier_code()} fills it.
      *
      * @since 3.0.0
+     * @version 3.1.1
      * @var string
      */
-    const DEFAULT_TRACKING_URL = 'https://painel.frenet.com.br/tracking/%1$s';
+    const DEFAULT_TRACKING_URL = 'https://rastreio.frenet.com.br/%2$s/%1$s';
+
+    /**
+     * Carrier segment used when the quoted carrier matches nothing known.
+     *
+     * Safe as a guess rather than merely common: Frenet resolves the shipment
+     * from the code alone, so a segment naming the wrong carrier still renders
+     * the right history. It only has to be a carrier Frenet publishes — an
+     * absent segment is what turns the page into a 404.
+     *
+     * @since 3.1.1
+     * @var string
+     */
+    const DEFAULT_CARRIER_CODE = 'COR';
 
     /**
      * Previous `quoteByProduct` value, keyed by method instance.
@@ -135,7 +157,7 @@ class Frenet extends Integrations_Base {
      * Constructor.
      *
      * @since 3.0.0
-     * @version 3.1.0
+     * @version 3.1.1
      */
     public function __construct() {
         $this->register_integration_card( 30 );
@@ -145,6 +167,12 @@ class Frenet extends Integrations_Base {
         }
 
         add_filter( 'Hubgo/Tracking/Get_Providers', array( $this, 'register_provider' ) );
+
+        // Feeds the %2$s of the template registered just above. The two are
+        // added together deliberately: a template carrying a placeholder that
+        // nothing fills is an ArgumentCountError out of vsprintf(), not merely
+        // a broken link.
+        add_filter( 'Hubgo/Tracking/Provider_Url_Values', array( $this, 'add_carrier_code' ), 10, 5 );
 
         Frenet_Quote_Listener::listen();
 
@@ -170,7 +198,7 @@ class Frenet extends Integrations_Base {
      * Register the card on the Integrations screen.
      *
      * @since 3.0.0
-     * @version 3.1.0
+     * @version 3.1.1
      * @param array $integrations Current catalog.
      * @return array
      */
@@ -205,7 +233,7 @@ class Frenet extends Integrations_Base {
                 self::field_text(
                     'frenet_tracking_url',
                     __( 'Tracking URL', 'hubgo' ),
-                    __( 'Address used in the tracking link. Use %1$s where the code should go.', 'hubgo' ),
+                    __( 'Address used in the tracking link. Use %1$s where the code should go, and %2$s for the carrier.', 'hubgo' ),
                     array( 'placeholder' => self::DEFAULT_TRACKING_URL )
                 ),
             ),
@@ -245,6 +273,149 @@ class Frenet extends Integrations_Base {
         $providers['Brazil'][ self::PROVIDER_NAME ] = '' !== trim( $url ) ? $url : self::DEFAULT_TRACKING_URL;
 
         return $providers;
+    }
+
+
+    /**
+     * Supply the carrier segment the Frenet tracking URL is built from.
+     *
+     * Registered on the registry's own placeholder-values filter rather than
+     * resolved inside the template, because the template is a plain string a
+     * shop owner may overwrite in the settings — a store that kept the default
+     * gets the carrier routed for it, a store that typed its own address keeps
+     * full control of the shape and simply never references %2$s.
+     *
+     * The carrier is read from the checkout promise and not from the tracking
+     * item: this filter is handed an order, not an item, and the promise is the
+     * same source {@see Frenet::fill_tracking_provider()} labels the item with,
+     * so the link and the label can never disagree.
+     *
+     * @since 3.1.1
+     * @param array $values Placeholder values indexed by sprintf position.
+     * @param string $provider Provider name.
+     * @param string $tracking_number Tracking number.
+     * @param string $country Country/region key.
+     * @param int $order_id Order ID.
+     * @return array
+     */
+    public function add_carrier_code( $values, $provider, $tracking_number, $country, $order_id ) {
+        if ( ! is_array( $values ) || self::PROVIDER_NAME !== (string) $provider ) {
+            return $values;
+        }
+
+        $values[2] = rawurlencode( self::resolve_carrier_code( $order_id ) );
+
+        // The registry flattens this map with array_values(), so the keys have
+        // to be in sprintf order before it does — another filter may well have
+        // appended a position of its own ahead of this one.
+        ksort( $values );
+
+        return $values;
+    }
+
+
+    /**
+     * Resolve the carrier segment for an order.
+     *
+     * @since 3.1.1
+     * @param int $order_id Order ID.
+     * @return string Carrier code, never empty.
+     */
+    public static function resolve_carrier_code( $order_id ) {
+        $carrier = self::normalize_carrier( Delivery_Promise::get_carrier( $order_id ) );
+
+        if ( '' === $carrier ) {
+            return self::DEFAULT_CARRIER_CODE;
+        }
+
+        $codes = self::get_carrier_codes();
+
+        if ( isset( $codes[ $carrier ] ) ) {
+            return $codes[ $carrier ];
+        }
+
+        // Frenet names a carrier more fully than the catalog does ("Jadlog
+        // Package", "Correios Mini Envios"), so an exact miss is still worth a
+        // prefix pass before giving up. Longest key first, so "jtexpress" is
+        // never shadowed by a shorter entry that happens to also match.
+        $keys = array_keys( $codes );
+
+        usort( $keys, function( $a, $b ) {
+            return strlen( $b ) - strlen( $a );
+        });
+
+        foreach ( $keys as $key ) {
+            if ( false !== strpos( $carrier, $key ) ) {
+                return $codes[ $key ];
+            }
+        }
+
+        return self::DEFAULT_CARRIER_CODE;
+    }
+
+
+    /**
+     * Carrier name to Frenet tracking segment.
+     *
+     * Keys are normalized by {@see Frenet::normalize_carrier()}, so they carry
+     * no spaces, accents or punctuation. The list is the one Frenet publishes
+     * on its public tracking page; a carrier it adds later only needs an entry
+     * here, since the URL shape itself does not change.
+     *
+     * Only carriers Frenet routes on belong here. A posting point such as
+     * Drops is named in the same catalog but is not a tracking segment — its
+     * code lands on the "rastreio não encontrado" page, which is worse than
+     * falling back to {@see Frenet::DEFAULT_CARRIER_CODE}.
+     *
+     * @since 3.1.1
+     * @return array<string,string>
+     */
+    public static function get_carrier_codes() {
+        $codes = array(
+            'correios'      => 'COR',
+            'jadlog'        => 'JAD',
+            'loggi'         => 'LOG',
+            'carriers'      => 'CARR',
+            'totalexpress'  => 'TOT',
+            'anjun'         => 'AJN',
+            'imile'         => 'IMI',
+            'jtexpress'     => 'JTE',
+            'jt'            => 'JTE',
+            'optimuscargas' => 'OPT',
+            'optimus'       => 'OPT',
+            'jamef'         => 'JAM',
+        );
+
+        /**
+         * Filter the carrier name to Frenet tracking segment map.
+         *
+         * @since 3.1.1
+         * @param array $codes Normalized carrier name => Frenet carrier code.
+         */
+        return apply_filters( 'Hubgo/Integrations/Frenet/Carrier_Codes', $codes );
+    }
+
+
+    /**
+     * Reduce a carrier name to a comparable key.
+     *
+     * @since 3.1.1
+     * @param string $carrier Carrier name as quoted by Frenet.
+     * @return string Lowercase, accent-free, alphanumeric-only name.
+     */
+    private static function normalize_carrier( $carrier ) {
+        $carrier = (string) $carrier;
+
+        if ( '' === trim( $carrier ) ) {
+            return '';
+        }
+
+        // remove_accents() keeps "Correios Expresso" and "Côrreios" comparable
+        // without each needing its own entry in the map.
+        $carrier = remove_accents( $carrier );
+        $carrier = strtolower( $carrier );
+
+        return (string) preg_replace( '/[^a-z0-9]/', '', $carrier );
     }
 
 

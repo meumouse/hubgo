@@ -8,6 +8,16 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 ## [Unreleased]
 
+### Added
+
+- **New filter `Hubgo/Integrations/Frenet/Carrier_Codes`**, mapping a carrier name to the segment Frenet routes its tracking page on — the hook to reach for when Frenet adds a carrier after this release
+
+### Fixed
+
+- **The Frenet tracking link was dead on every store that kept the default address.** `https://painel.frenet.com.br/tracking/<code>` answers with the panel's login screen today, so the link in the shipping e-mail, on the "My account" order page and behind `{{ hubgo_tracking_link }}` in a Joinotify message took the customer to a sign-in form instead of their shipment
+    - The default is now `https://rastreio.frenet.com.br/%2$s/%1$s`, Frenet's public tracking page. That page routes on the carrier and answers 404 without it, so the template carries a second placeholder: `%2$s` is filled from the carrier quoted at the checkout — Correios, Jadlog, Loggi, Carriers, Total Express, Anjun, Imile, J&T Express, Optimus Cargas or Jamef — and falls back to Correios when the quote names none of them
+    - Nothing is rewritten for you: a store that typed its own address in **Integrations → Frenet → Tracking URL** keeps exactly what it typed, and an address written with only `%1$s` goes on working. A store that typed the old `painel.frenet.com.br` address by hand has to update that field itself
+
 ## [3.1.0] - 2026-09-03
 
 ### Added
