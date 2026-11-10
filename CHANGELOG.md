@@ -16,6 +16,7 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 - The Frenet tracking link now opens Frenet's public tracking page instead of the panel's login screen.
 - A tracking URL typed by hand is left untouched, so a store that customized that field has to update it itself.
+- The delivery options in the details window are aligned to the left again on themes that centre button text.
 
 ## [3.1.0] - 2026-09-03
 

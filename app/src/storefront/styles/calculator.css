@@ -18,7 +18,7 @@
  * nothing outside `.hubgo-shipping-calculator` is touched.
  *
  * @since 3.0.0
- * @version 3.1.0
+ * @version 3.1.1
  */
 
 /*
@@ -449,9 +449,21 @@ button.hubgo-calc__finder-link:hover {
     gap: 10px;
 }
 
-.hubgo-calc__option {
+/* Every rule below is written as a descendant of `.hubgo-calc__options` for
+   its specificity, not for its scope: a row is a <button>, so the scoped reset
+   above (`.hubgo-calc-modal button`, one class and one element) outweighed a
+   bare `.hubgo-calc__option` and was stripping the border and the background
+   back off each row. The same weight is what keeps a theme's own `button`
+   rules — centred text and `align-items: center` are the usual pair — from
+   winning on load order and pushing the labels into the middle of the row.
+
+   `justify-content` and `text-align` are therefore declared rather than left
+   to their initial values: the row has to state its own alignment to override
+   a theme that states a different one. */
+.hubgo-calc__options .hubgo-calc__option {
     display: flex;
     align-items: flex-start;
+    justify-content: flex-start;
     gap: 12px;
     width: 100%;
     padding: 14px 16px;
@@ -463,7 +475,7 @@ button.hubgo-calc__finder-link:hover {
                 box-shadow var(--hubgo-calc-motion-fast) ease-in-out;
 }
 
-.hubgo-calc__option:hover {
+.hubgo-calc__options .hubgo-calc__option:hover {
     border-color: var(--hubgo-calc-accent);
 }
 
@@ -472,12 +484,12 @@ button.hubgo-calc__finder-link:hover {
    The ring is drawn INSIDE the border box: an outer one sits beyond the
    element and was being sliced flush against the edges of the modal body,
    which is a scroll container and therefore clips on both axes. */
-.hubgo-calc__option.is-selected {
+.hubgo-calc__options .hubgo-calc__option.is-selected {
     border-color: var(--hubgo-calc-accent);
     box-shadow: inset 0 0 0 1px var(--hubgo-calc-accent);
 }
 
-.hubgo-calc__option-radio {
+.hubgo-calc__options .hubgo-calc__option-radio {
     position: relative;
     width: 18px;
     height: 18px;
@@ -488,7 +500,7 @@ button.hubgo-calc__finder-link:hover {
     transition: border-color var(--hubgo-calc-motion-fast) ease-in-out;
 }
 
-.hubgo-calc__option.is-selected .hubgo-calc__option-radio {
+.hubgo-calc__options .hubgo-calc__option.is-selected .hubgo-calc__option-radio {
     border-color: var(--hubgo-calc-accent);
 }
 
@@ -496,7 +508,7 @@ button.hubgo-calc__finder-link:hover {
    pseudo-element that only exists on `.is-selected` is created and destroyed
    rather than changed, and there is nothing for a transition to interpolate
    between. */
-.hubgo-calc__option-radio::after {
+.hubgo-calc__options .hubgo-calc__option-radio::after {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -509,30 +521,32 @@ button.hubgo-calc__finder-link:hover {
     content: "";
 }
 
-.hubgo-calc__option.is-selected .hubgo-calc__option-radio::after {
+.hubgo-calc__options .hubgo-calc__option.is-selected .hubgo-calc__option-radio::after {
     transform: translate(-50%, -50%) scale(1);
 }
 
-.hubgo-calc__option-body {
+.hubgo-calc__options .hubgo-calc__option-body {
     flex: 1 1 auto;
     min-width: 0;
+    text-align: left;
 }
 
-.hubgo-calc__option-label {
+.hubgo-calc__options .hubgo-calc__option-label {
     display: block;
     color: var(--hubgo-calc-text);
 }
 
-.hubgo-calc__option-delivery {
+.hubgo-calc__options .hubgo-calc__option-delivery {
     display: block;
     margin-top: 4px;
     color: var(--hubgo-calc-text-muted);
     font-size: var(--hubgo-calc-small-size);
 }
 
-.hubgo-calc__option-price {
+.hubgo-calc__options .hubgo-calc__option-price {
     flex: 0 0 auto;
     padding-left: 8px;
+    text-align: right;
     font-weight: 600;
     color: var(--hubgo-calc-text);
     white-space: nowrap;
