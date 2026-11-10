@@ -1,6 +1,7 @@
-# Dependencies
+# Dependencies. `app/` and `languages/` are npm workspaces of the root
+# package: one install at the root, one node_modules/, one package-lock.json
+# (and that lockfile IS committed).
 node_modules/
-app/node_modules
 admin/vendor
 
 # Build artifacts. Neither is committed: `npm run build` regenerates both and

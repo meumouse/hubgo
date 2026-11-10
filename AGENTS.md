@@ -110,6 +110,14 @@ dist/                       Legacy release artifacts kept from before 3.0.0
 
 Run from the plugin root unless stated otherwise.
 
+`app/` and `languages/` are **npm workspaces** of the root `package.json`: the project has one `node_modules/` and one `package-lock.json`, both at the root, and both cover all three packages.
+
+```bash
+npm install
+```
+
+Never run `npm install` inside `app/` or `languages/` — npm would not see the root manifest and would recreate the per-package `node_modules` this layout replaced. Add a dependency to a workspace from the root: `npm install <pkg> -w hubgo-app` (or `-w hubgo-translations`). Workspace scripts run the same way, which is what every `npm run` below does under the hood.
+
 ```bash
 npm run build
 ```
@@ -584,7 +592,7 @@ The changelog ships inside the zip and is read by store owners, so describe what
 - Don't enable Tailwind preflight, use `:root` tokens, or emit unscoped CSS.
 - Don't bundle `@wordpress/i18n`.
 - Don't rename or remove published hooks, REST routes, option keys or setting keys.
-- Don't edit `admin/vendor/` or `app/node_modules/` by hand.
+- Don't edit `admin/vendor/` or `node_modules/` by hand.
 - Don't introduce new build tooling, test frameworks, linters or dependencies without being asked.
 - Don't write source strings, identifiers, comments, changelog entries or documentation in Portuguese — en-US is the source language everywhere; locale copy belongs in `languages/`.
 - Don't call `__()` (or any sibling) before `init` — see section 7.

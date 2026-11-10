@@ -24,7 +24,7 @@
  *   --skip-translations   Don't touch translations (reuse existing artifacts).
  *   --translate           Re-translate .po files via AI before compiling (needs API keys).
  *   --engine=<name>       Translation engine for --translate (default: openai).
- *   --no-install          Skip dependency install steps (npm ci / npm install).
+ *   --no-install          Skip the npm install (reuse the existing node_modules/).
  *   --no-zip              Stage files but don't create the .zip.
  */
 
@@ -93,23 +93,28 @@ function run( command, args, cwd ) {
     }
 }
 
+// Both build stages ask for the install; a single pass covers both.
+let dependenciesInstalled = false;
+
 /**
- * Install a workspace's dependencies.
+ * Install every workspace's dependencies in one pass.
  *
- * `npm ci` needs a lockfile, and only `app/` ships one — `languages/` keeps its
- * lockfile out of git, so a clean clone has to fall back to `npm install`.
+ * `app/` and `languages/` are npm workspaces of the root package, so one
+ * install at the root hoists all three dependency sets into `node_modules/`.
+ * Never install from inside a workspace: npm would not see the root manifest
+ * and would recreate the per-package `node_modules` this layout replaced.
  *
- * @param {string} cwd Workspace directory.
  * @return {void}
  */
-function installDependencies( cwd ) {
-    if ( ! opts.install ) {
+function installDependencies() {
+    if ( ! opts.install || dependenciesInstalled ) {
         return;
     }
 
-    const useCi = existsSync( path.join( cwd, 'package-lock.json' ) );
+    const useCi = existsSync( path.join( root, 'package-lock.json' ) );
 
-    run( 'npm', useCi ? [ 'ci' ] : [ 'install' ], cwd );
+    run( 'npm', useCi ? [ 'ci' ] : [ 'install' ], root );
+    dependenciesInstalled = true;
 }
 
 /**
@@ -239,10 +244,8 @@ function buildFrontend() {
         return;
     }
 
-    const appDir = path.join( root, 'app' );
-
-    installDependencies( appDir );
-    run( 'npm', [ 'run', 'build' ], appDir );
+    installDependencies();
+    run( 'npm', [ 'run', 'build', '-w', 'hubgo-app' ], root );
     ok('Frontend built (app/dist).');
 }
 
@@ -278,22 +281,23 @@ function buildTranslations() {
         return;
     }
 
-    const langDir = path.join( root, 'languages' );
+    installDependencies();
 
-    installDependencies( langDir );
+    // `-w` runs each script with its cwd inside languages/, which is what
+    // translate-cli.js's dotenv.config() needs to find languages/.env.
+    const lang = ( script ) => run( 'npm', [ 'run', script, '-w', 'hubgo-translations' ], root );
 
     // Refresh the template from current source.
-    run( 'npm', [ 'run', 'pot' ], langDir );
+    lang('pot');
 
     if ( opts.translate ) {
         // Re-fill every .po via the chosen engine (needs API keys in languages/.env).
-        const script = opts.engine === 'google' ? 'translate' : 'translate:ai';
-        run( 'npm', [ 'run', script ], langDir );
+        lang( opts.engine === 'google' ? 'translate' : 'translate:ai' );
     }
 
     // Compile .po -> .mo and .l10n.php so WordPress can load them at runtime.
-    run( 'npm', [ 'run', 'compile:mo' ], langDir );
-    run( 'npm', [ 'run', 'compile:php' ], langDir );
+    lang('compile:mo');
+    lang('compile:php');
     ok('Translations compiled (languages/*.mo, *.l10n.php).');
 }
 

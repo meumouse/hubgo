@@ -3,17 +3,21 @@
     "private": true,
     "version": "3.1.0",
     "description": "HubGo - Gerenciamento de Frete para WooCommerce",
+    "workspaces": [
+        "app",
+        "languages"
+    ],
     "scripts": {
-        "dev": "npm run dev --prefix app",
+        "dev": "npm run dev -w hubgo-app",
         "build": "node scripts/build.mjs",
         "build:fast": "node scripts/build.mjs --skip-app --skip-composer --skip-translations --no-install",
         "build:translate": "node scripts/build.mjs --translate",
-        "build:app": "npm run build --prefix app",
+        "build:app": "npm run build -w hubgo-app",
         "release": "node scripts/build.mjs",
-        "pot": "npm run pot --prefix languages",
-        "translate": "npm run translate --prefix languages",
-        "translate:ai": "npm run translate:ai --prefix languages",
-        "compile:translations": "npm run compile:mo --prefix languages && npm run compile:php --prefix languages"
+        "pot": "npm run pot -w hubgo-translations",
+        "translate": "npm run translate -w hubgo-translations",
+        "translate:ai": "npm run translate:ai -w hubgo-translations",
+        "compile:translations": "npm run compile:mo -w hubgo-translations && npm run compile:php -w hubgo-translations"
     },
     "devDependencies": {
         "archiver": "^7.0.1"
