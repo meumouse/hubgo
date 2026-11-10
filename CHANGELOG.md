@@ -8,6 +8,8 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 ## [Unreleased]
 
+## [3.1.1] - 2026-11-10
+
 ### Added
 
 - New filter `Hubgo/Integrations/Frenet/Carrier_Codes`, which maps a carrier name to the segment Frenet routes its tracking page on.
@@ -215,7 +217,8 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 - Initial release.
 
-[Unreleased]: https://github.com/meumouse/hubgo/compare/v3.1.0...HEAD
+[Unreleased]: https://github.com/meumouse/hubgo/compare/v3.1.1...HEAD
+[3.1.1]: https://github.com/meumouse/hubgo/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/meumouse/hubgo/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/meumouse/hubgo/compare/v2.2.0...v3.0.0
 [2.2.0]: https://github.com/meumouse/hubgo/compare/v2.1.0...v2.2.0
