@@ -555,11 +555,11 @@ Release artifacts go to `dist/` (`hubgo.zip`, `versions/<version>/`).
 - A `## [Unreleased]` section on top. Work in progress is written there as it lands and is renamed to `## [x.y.z] - YYYY-MM-DD` when the version ships.
 - One heading per release, newest first, dated in ISO format (`2026-08-08`, never `08/08/2026`).
 - Entries grouped under `### Added`, `### Changed`, `### Deprecated`, `### Removed`, `### Fixed`, `### Security` — in that order, omitting the empty ones. Do not invent section names and do not translate them.
-- One bold lead-in per entry, with the details as indented sub-bullets when an item needs them. Class names, hooks, filters, option keys, REST routes and placeholders go in `backticks`.
+- **One entry is one short sentence** — what changed, from the store owner's side, and nothing else. No bold lead-in, no indented sub-bullets, no account of the mechanics; an item that seems to need a paragraph is either two entries or a docblock. Class names, hooks, filters, option keys, REST routes and placeholders go in `backticks`.
 - A breaking change is prefixed **BREAKING:** inside its section.
 - Compare links are defined at the bottom of the file; a version with no tag keeps a plain heading, without brackets.
 
-The changelog ships inside the zip and is read by store owners, so describe what changed for them and why — not the commits that got you there.
+The changelog ships inside the zip and is read by store owners, so describe what changed for them — not the commits that got you there. The reasoning, the failure a fix stands against and the constraint behind a decision belong in the code's comments and docblocks, where the next developer looks for them. A store owner opening the zip wants one line per change.
 
 ---
 
@@ -582,7 +582,7 @@ The changelog ships inside the zip and is read by store owners, so describe what
 - Keep the SPA thin and the REST contract stable; the SPA must render whatever the schema returns.
 - Bump `@version` tags and the plugin version when behaviour changes.
 - Rebuild and commit `app/dist/` and `languages/` artifacts when their sources change.
-- Record every user-visible change in `CHANGELOG.md` under `[Unreleased]`, in en-US, as part of the change itself — see section 8.
+- Record every user-visible change in `CHANGELOG.md` under `[Unreleased]`, in en-US, as one short sentence, as part of the change itself — see section 8.
 - Flag genuine bugs you notice in passing instead of silently fixing unrelated code.
 
 **Don't**

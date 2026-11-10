@@ -4,268 +4,215 @@ All notable changes to HubGo are recorded here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Two notes on the history below. Releases before 2.0.0 did not strictly follow SemVer — a bug fix shipped as a minor (1.4.0) and a feature shipped as a patch (1.2.5) — so the numbering of that period cannot be read as a compatibility promise. And the entries before 3.0.0 were carried over from the original history, keeping the level of detail they had at the time.
+Two notes on the history below. Releases before 2.0.0 did not strictly follow SemVer — a bug fix shipped as a minor (1.4.0) and a feature shipped as a patch (1.2.5) — so the numbering of that period cannot be read as a compatibility promise. And the entries before 3.0.0 were carried over from the original history, which recorded little more than "bug fixes" at the time.
 
 ## [Unreleased]
 
 ### Added
 
-- **New filter `Hubgo/Integrations/Frenet/Carrier_Codes`**, mapping a carrier name to the segment Frenet routes its tracking page on — the hook to reach for when Frenet adds a carrier after this release
+- New filter `Hubgo/Integrations/Frenet/Carrier_Codes`, which maps a carrier name to the segment Frenet routes its tracking page on.
 
 ### Fixed
 
-- **The Frenet tracking link was dead on every store that kept the default address.** `https://painel.frenet.com.br/tracking/<code>` answers with the panel's login screen today, so the link in the shipping e-mail, on the "My account" order page and behind `{{ hubgo_tracking_link }}` in a Joinotify message took the customer to a sign-in form instead of their shipment
-    - The default is now `https://rastreio.frenet.com.br/%2$s/%1$s`, Frenet's public tracking page. That page routes on the carrier and answers 404 without it, so the template carries a second placeholder: `%2$s` is filled from the carrier quoted at the checkout — Correios, Jadlog, Loggi, Carriers, Total Express, Anjun, Imile, J&T Express, Optimus Cargas or Jamef — and falls back to Correios when the quote names none of them
-    - Nothing is rewritten for you: a store that typed its own address in **Integrations → Frenet → Tracking URL** keeps exactly what it typed, and an address written with only `%1$s` goes on working. A store that typed the old `painel.frenet.com.br` address by hand has to update that field itself
+- The Frenet tracking link now opens Frenet's public tracking page instead of the panel's login screen.
+- A tracking URL typed by hand is left untouched, so a store that customized that field has to update it itself.
 
 ## [3.1.0] - 2026-09-03
 
 ### Added
 
-- **Joinotify: two more triggers, so every logistics hook HubGo fires can start a workflow**
-    - *Delivery date promised at the checkout* (`Hubgo/Delivery/Promise_Saved`) — fires as the order is placed, to confirm the estimate the shopper was just shown
-    - *When a tracking code is removed from the order* (`Hubgo/Tracking/Deleted_Item`) — an operations alert rather than a customer message
-    - `Hubgo/Tracking/Items_Imported` stays deliberately unexposed: it replays a store's whole shipment history during a migration, and one message per historical order is never what anyone wants
-- **Joinotify: eleven new placeholders**, 33 in total
-    - Tracking: `{{ hubgo_tracking_codes }}`, `{{ hubgo_tracking_links }}` (both usable as a loop source), `{{ hubgo_order_tracking_url }}` — the link to the order on the customer's account, where the tracking codes are listed
-    - Delivery: `{{ hubgo_days_late }}`, offered only on the late-delivery trigger
-    - Order: `{{ wc_order_date }}`, `{{ wc_payment_method_title }}`, `{{ wc_shipping_address }}`, `{{ wc_currency_symbol }}`, `{{ wc_total_discount }}`, `{{ wc_total_tax }}`, `{{ wc_coupon_codes }}`, `{{ wc_review_links }}` and the parametric `{{ wc_checkout_field=[FIELD_ID] }}`. They carry the same names as Joinotify's own WooCommerce context on purpose: writing a HubGo workflow does not mean learning a second vocabulary
-    - The tracking tokens are now offered only on the triggers that actually carry tracking data — the builder no longer lists a token that could only ever resolve empty
-    - New filter: `Hubgo/Integrations/Joinotify/Placeholders`
-- **Joinotify: conditions for the HubGo triggers.** A condition node under a HubGo trigger used to say "no condition available for this action" — the WooCommerce conditions Joinotify can already evaluate from the order were simply never offered there. Order status, total, paid, products, payment method, shipping method and customer e-mail are now selectable, alongside six HubGo ones: carrier (a select fed by HubGo's own carrier catalog), tracking code, number of tracking codes, business days promised, days late and the checkout shipping method
+- Joinotify gained two triggers: the delivery date promised at the checkout, and a tracking code removed from an order.
+- Joinotify gained eleven placeholders, 33 in all, covering tracking codes and links, days late, and the order's date, payment method, address, currency, discounts, taxes, coupons and review links.
+- Tracking placeholders are now offered only on the triggers that carry tracking data.
+- A condition node under a HubGo trigger now offers the WooCommerce conditions plus six HubGo ones: carrier, tracking code, number of codes, business days promised, days late and the checkout shipping method.
+- New filter `Hubgo/Integrations/Joinotify/Placeholders`.
 
 ### Fixed
 
-- **No HubGo workflow in Joinotify ever ran, and the builder offered none of the HubGo placeholders.** The `data_trigger` was the HubGo hook name itself — `Hubgo/Tracking/Item_Saved`. Joinotify runs that slug through `sanitize_key()` when the builder creates the workflow, which lowercases it and drops every character outside `a-z0-9_-`, so what reached the database was `hubgotrackingitem_saved` while HubGo went on dispatching the original. Everything downstream compares those two strings for equality, so all of it failed at once and without a word: the workflow never matched the fired event, the placeholder catalogue never matched a HubGo token — which is why the builder listed only the global ones — and the condition map was keyed under the mangled name, so a condition node fell back to "no condition available for this action"
-    - The triggers are now registered under slugs that survive `sanitize_key()` unchanged: `hubgo_order_shipped`, `hubgo_tracking_saved`, `hubgo_tracking_deleted`, `hubgo_delivery_promised` and `hubgo_delivery_overdue`
-    - The HubGo action hooks are untouched and remain the plugin's public API. They are now separate `HOOK_*` constants, and the dispatch payload carries the hook a trigger stands for as `hubgo_hook`
-    - **Workflows already saved with the old slug repair themselves.** A one-time pass on the first admin request rewrites the stored trigger of every HubGo workflow built under 3.0.x — content and Joinotify's queryable `_joinotify_trigger_hook` index alike — so a flow drawn before the upgrade starts working without being redrawn. It only touches a trigger node whose context is HubGo's and whose slug is one HubGo itself emitted, fires no Joinotify hook (repairing a workflow can never send a message) and is idempotent: a canonical slug is not in the rewrite map, so a second pass matches nothing
-    - Note that the builder ships the placeholder list once in its bootstrap payload, so after changing a trigger by hand the page has to be reloaded before the new tokens are offered
-- Verified against Joinotify 2.3.4: every registration goes through the functional API (`joinotify_register_integration` / `_trigger` / `_placeholders` / `_conditions` / `_condition_operators` / `_condition_value` / `_dispatch_trigger`) and the version floor is now the `MIN_VERSION` constant, with the `function_exists()` checks as the real gate
-- **The shipped-order notification went out two or three times.** `Tracking_Manager` wired its `woocommerce_order_status_shipped-order` listener from the constructor, and a request builds several managers — the bootstrap, each tracking REST route, the migration, the Melhor Envio and Joinotify integrations. WordPress keys a callback by the object it is bound to, so every instance kept a listener of its own and one status change fired `Hubgo/Tracking/Order_Shipped` once per live manager: the customer received the same WhatsApp message, and the same shipping e-mail, once per instance. The listener is now wired once, and an order dispatches the event at most once per request
-- **The calculator quoted a line the shopper had already changed.** The quote was built once, from the quantity and the variation selected when the postcode was submitted, and never revisited — so a card quoting one unit sat next to a cart holding forty, and the two freights disagreed. The quantity field and the variation picker are now followed, and a change re-quotes the line with the weight and the dimensions actually being bought
-- The calculator's package now carries `cart_subtotal`, matching what WooCommerce sends from the cart, so shipping methods that price insurance or a declared value read the same number in both places
-- Quantity and variation are read from the add-to-cart form that sells the quoted product rather than from the first one on the page, so a `[hubgo_shipping_calculator]` shortcode no longer follows another product's fields
-- **"Add tracking code" did nothing on the order screen.** The button cleared the form's inline `display` to reveal it, which handed the element straight back to the stylesheet rule that hides it, so the form never opened and the tracking code could not be entered. The same clearing hid the carrier link preview
+- No HubGo workflow in Joinotify ever ran, because Joinotify stored the trigger slug in a different shape than HubGo dispatched it.
+- Workflows saved under the old slugs repair themselves on the first admin request, without being redrawn.
+- The shipped-order notification went out two or three times per order and now fires once.
+- The calculator quoted a line the shopper had already changed, and now re-quotes when the quantity or the variation moves.
+- The calculator's package carries `cart_subtotal`, so methods that price insurance or a declared value read the same number as the cart.
+- Quantity and variation are read from the form that sells the quoted product, so a shortcode no longer follows another product's fields.
+- "Add tracking code" did nothing on the order screen: the form never opened and the carrier link preview stayed hidden.
+- The Joinotify integration was verified against Joinotify 2.3.4, with the supported floor declared as `MIN_VERSION`.
 
 ## [3.0.0] - 2026-08-28
 
 ### Added
 
-- **A modular, extensible foundation** — an integration registry and a filterable settings schema, so a setting, a card or an endpoint is added by declaring it rather than by editing the UI
-- **A HubGo menu of its own in the admin panel**, with the Settings, Integrations and License subpages
-    - The Settings page has the General, Appearance, Texts and About tabs
-    - The About tab gathers the maintenance preferences, the system status and the restore-defaults action
-    - The `hubgo-settings` slug remains valid: old links keep working
-- **Integrations page** with an application grid, a category filter and a settings modal per integration
-    - Joinotify (Pro), Melhor Envio and Frenet
-    - Install and activate the integration's plugin straight from the admin panel
-    - "Pro" badge on the integrations that depend on an active license
-- **A License screen of its own**, with the activation, sync and site deactivation forms
-- **Licensing and updates through the MDS PHP SDK** (`meumouse/mds-php-sdk` ^1.1), installed via Composer
-    - "HubGo - License" screen to activate, deactivate and revalidate the key, with a notice when the license is missing, invalid or expired
-    - Signed update check (ed25519) restricted to valid licenses, with a 12-hour cache and a daily heartbeat via WP-Cron
-    - Bundle license support: a single key covers several products (e.g. "Clube M"), with the included products available from `MeuMouse\Hubgo\Core\License::get_bundle()`
-    - Plan data, renewal URL, support expiry and the activation limit available from `License::get_data()` without a new request
-    - An "Automatic updates" toggle on the About tab lets HubGo update itself whenever the license allows
-- **"Check for updates" link on the HubGo row of the Plugins list** (`MeuMouse\Hubgo\Core\Update_Checker`)
-    - The check is asynchronous (`POST hubgo/v1/updates/check`) and the result appears next to the link, without reloading the page
-    - It forces a fresh check against MDS: the 12-hour update cache and the rollback version list are cleared and the license is revalidated before answering
-    - When a new version is available, the "Update now" link goes straight to the WordPress update
-    - Without JavaScript, the link itself runs the check on the server and returns the result as a notice
-    - New filter: `Hubgo/Core/Update_Checker/Payload`
-- **The delivery date promised at the checkout is now stored on the order** (`MeuMouse\Hubgo\Core\Delivery_Promise`)
-    - Stores the estimate in business days, the promised date, the carrier and the shipping method, from the meta WooCommerce copies from the shipping method onto the order item
-    - Works on the classic checkout and on the block checkout (Store API)
-    - New filters: `Hubgo/Delivery/Promise_Days`, `Hubgo/Delivery/Carrier_Meta_Keys`. New action: `Hubgo/Delivery/Promise_Saved`
-- **Daily check for late deliveries** (`MeuMouse\Hubgo\Core\Delivery_Watcher`)
-    - Orders in the "Order shipped" status whose promised date has passed fire the `Hubgo/Delivery/Overdue` action, once per order
-    - Processed in batches of 50 orders per run, with a one-day grace period
-    - New filters: `Hubgo/Delivery/Overdue_Enabled`, `Hubgo/Delivery/Overdue_Grace_Days`, `Hubgo/Delivery/Overdue_Query`
-- **Joinotify: new "Late delivery" trigger and new placeholders**
-    - `{{ hubgo_delivery_date }}`, `{{ hubgo_delivery_days }}` and `{{ hubgo_shipping_method }}`, available on every HubGo trigger
-    - `{{ hubgo_carrier_name }}` now uses the carrier quoted at the checkout when the tracking code has no carrier of its own yet
-- **Compatibility with the Frenet plugin (Frenet Shipping Gateway)** — everything solved on HubGo's side, without touching the third-party plugin
-    - The delivery time and the carrier (Correios, Jadlog, Loggi) are read from the Frenet API response and stored as standard shipping method meta (`delivery_time` and `carrier`), which puts the promised date back on the calculator ("Get it by <date>"). On stores with no token (SOAP mode), the delivery time is read from the shipping method label
-- **Compatibility with the official Melhor Envio plugin** — everything solved on HubGo's side, without touching the third-party plugin
-    - The integration card points to the official plugin (`melhor-envio-cotacao`), with a one-click install from the WordPress repository
-    - The carrier that actually moves the parcel (Correios, Jadlog, Loggi, Azul) is stored as standard shipping method meta (`carrier`), which makes the carrier's name — and not the intermediary's — appear in the notifications and in the tracking. The delivery time is read from what the plugin writes to `delivery_time`
-    - The integration is free rather than Pro, like Frenet's: what it does is stop two plugins the store already uses from contradicting each other, and that should not depend on a license
-    - New "Tracking URL" option on the integration card, defaulting to Melhor Rastreio
-    - New filters: `Hubgo/Integrations/Melhor_Envio/Plugin_Files`, `Hubgo/Integrations/Melhor_Envio/Package_Url`, `Hubgo/Integrations/Melhor_Envio/Skip_Compositions`
-- **State resolution from the postcode** (official Correios ranges) via `MeuMouse\Hubgo\Core\Postcode_Locator`
-- **The "State" field of the postcode finder uses HubGo's modern select**, with search by name or abbreviation, keyboard navigation and the same look as the other fields
-    - The states come from the WooCommerce list (`WC()->countries->get_states()`), showing the state name with the abbreviation next to it, instead of the abbreviation alone
-- **Measurement field (`dimension` type) in the appearance settings**, with a unit picker (rem, em, px and %)
-    - Radii, spacing, height, font size and blur are no longer sliders and now accept the chosen unit
-    - The value is stored with its unit ("1.5rem"); values stored before remain valid and are read as px
-    - The Elementor widget offers the same units on the equivalent controls
-- **Smooth transitions across the whole interface, in the admin panel and on the storefront**
-    - Modals fade in and out with a slight shift, instead of appearing all at once
-    - The page behind the modal is locked from scrolling while it is open, without shifting the wp-admin content
-    - The loading skeleton of the three screens gives way to the content in a transition, instead of swapping all at once
-    - Switching tabs in the settings, filtering by category on the integrations screen and activating the license swap the panel in a transition
-    - On the storefront calculator: switching between the postcode form and the quote, the cascading entrance of the shipping methods, selecting an option and the address lookup
-    - Toasts come in from the right, leave without pushing the others, and the remaining ones slide into place
-    - Everything respects the operating system's "reduce motion" preference: animations become a short fade, and loading indicators keep spinning
-- New public method `MeuMouse\Hubgo\Core\Delivery_Estimate::get_days_from_meta()`
-- **One-click install for Joinotify** on the Integrations screen — the card now installs and activates the plugin straight from wordpress.org, like the Melhor Envio and Frenet cards, instead of only pointing at the documentation
-- Optional `country` parameter on the `POST hubgo/v1/shipping/calculate` endpoint
-- With WooCommerce's shipping debug mode on, the endpoint returns the matched zone
-- New REST endpoints: `GET hubgo/v1/integrations`, `POST hubgo/v1/plugins/install`, `POST hubgo/v1/settings/reset`, `GET hubgo/v1/license`, `POST hubgo/v1/license/activate`, `POST hubgo/v1/license/deactivate`, `POST hubgo/v1/license/sync`, `POST hubgo/v1/updates/check`
-- New calculator filters: `Hubgo/Shipping_Calculator/Postcode_State_Map`, `Hubgo/Shipping_Calculator/Resolved_State`, `Hubgo/Shipping_Calculator/Country`, `Hubgo/Shipping_Calculator/Destination`, `Hubgo/Shipping_Calculator/Zone`
-- New admin and integration filters: `Hubgo/Integrations/Cards`, `Hubgo/Integrations/Card`, `Hubgo/Integrations/Categories`, `Hubgo/Admin/Integrations/Cards`, `Hubgo/Admin/Integrations/Bootstrap_Data`, `Hubgo/Admin/System_Status`, `Hubgo/Core/Assets/Admin_Pages`, `Hubgo/Core/License/Payload`, `Hubgo/Core/Plugin_Installer/Allowed_Hosts`
-- `MeuMouse\Hubgo\Core\License::allows_updates()` and `::allows_downloads()`, the two permissions MDS now answers the update check with. Every update surface asks these instead of `is_active()` — the server can waive a gate for a single license, which is how a customer who bought before HubGo required a key keeps updating, and a client that decided on its own would refuse the update before MDS ever got to honour its own waiver
-- Both permissions travel in the license summary (`allows_updates`, `allows_downloads`), so a screen never has to infer "is this site still being served?" from the license status
-- `Hubgo/Core/Update_Checker/Payload` gained `allows_updates`, `allows_downloads` and `can_install`. A release MDS announces without handing over the package now reads as "Version x.y.z is available, but installing it needs an active license" and carries no update link, instead of offering a one-click update that could only end in "Update package not available"
-- The License screen tells a customer whose key is not active that this site is still receiving updates, when that is what the server says
-- `Requires at least: 6.0` in the plugin header, matching the product metadata registered on MDS (`requires` 6.0, `tested` 7.1, `requires_php` 7.4)
+- A modular foundation: an integration registry and a filterable settings schema, so a setting, a card or an endpoint is added by declaring it.
+- A HubGo menu of its own, with the Settings, Integrations and License subpages, and the old `hubgo-settings` links still working.
+- Four tabs on the settings screen: General, Appearance, Texts and About.
+- An Integrations page with an application grid, a category filter and a settings modal per integration.
+- One-click install and activation of an integration's plugin from the Integrations page, Joinotify included.
+- A License screen to activate, deactivate and revalidate the key.
+- Licensing and signed updates (ed25519) through the MDS PHP SDK, with bundle licenses, plan data and an "Automatic updates" toggle.
+- A "Check for updates" link on the HubGo row of the Plugins list, which forces a fresh check without reloading the page.
+- The delivery date promised at the checkout is stored on the order, on both the classic and the block checkout.
+- A daily check fires `Hubgo/Delivery/Overdue` for shipped orders whose promised date has passed, in batches, with a one-day grace period.
+- Joinotify gained a "Late delivery" trigger and the delivery date, delivery days and shipping method placeholders.
+- Compatibility with the Frenet Shipping Gateway: the delivery time and the carrier are read from Frenet's own response, which puts the promised date back on the calculator.
+- Compatibility with the official Melhor Envio plugin, which records the carrier that actually moves the parcel instead of the intermediary's name.
+- A "Tracking URL" option on the Melhor Envio card, defaulting to Melhor Rastreio.
+- State resolution from the postcode, using the official Correios ranges.
+- The postcode finder's "State" field uses HubGo's own select, searchable by name or abbreviation and fed by WooCommerce's state list.
+- A measurement field with a unit picker (rem, em, px and %) for the radii, spacing, height, font size and blur on the Appearance tab.
+- Smooth transitions across the admin panel and the storefront, honouring the system's "reduce motion" preference.
+- Optional `country` parameter on `POST hubgo/v1/shipping/calculate`, which also returns the matched zone while WooCommerce's shipping debug mode is on.
+- New public method `Core\Delivery_Estimate::get_days_from_meta()`.
+- New REST endpoints: `GET hubgo/v1/integrations`, `POST hubgo/v1/plugins/install`, `POST hubgo/v1/settings/reset`, `GET hubgo/v1/license`, `POST hubgo/v1/license/activate`, `POST hubgo/v1/license/deactivate`, `POST hubgo/v1/license/sync` and `POST hubgo/v1/updates/check`.
+- New calculator filters: `Hubgo/Shipping_Calculator/Postcode_State_Map`, `Hubgo/Shipping_Calculator/Resolved_State`, `Hubgo/Shipping_Calculator/Country`, `Hubgo/Shipping_Calculator/Destination` and `Hubgo/Shipping_Calculator/Zone`.
+- New delivery filters and action: `Hubgo/Delivery/Promise_Days`, `Hubgo/Delivery/Carrier_Meta_Keys`, `Hubgo/Delivery/Overdue_Enabled`, `Hubgo/Delivery/Overdue_Grace_Days`, `Hubgo/Delivery/Overdue_Query` and `Hubgo/Delivery/Promise_Saved`.
+- New integration filters: `Hubgo/Integrations/Cards`, `Hubgo/Integrations/Card`, `Hubgo/Integrations/Categories`, `Hubgo/Integrations/Melhor_Envio/Plugin_Files`, `Hubgo/Integrations/Melhor_Envio/Package_Url` and `Hubgo/Integrations/Melhor_Envio/Skip_Compositions`.
+- New admin and core filters: `Hubgo/Admin/Integrations/Cards`, `Hubgo/Admin/Integrations/Bootstrap_Data`, `Hubgo/Admin/System_Status`, `Hubgo/Core/Assets/Admin_Pages`, `Hubgo/Core/License/Payload` and `Hubgo/Core/Plugin_Installer/Allowed_Hosts`.
+- `Core\License::allows_updates()` and `::allows_downloads()`, the two permissions every update surface now asks instead of `is_active()`, so MDS can keep serving a site whose key has lapsed.
+- Both permissions travel in the license summary, so a screen never has to infer them from the license status.
+- `Hubgo/Core/Update_Checker/Payload` gained `allows_updates`, `allows_downloads` and `can_install`, so a release announced without a package says an active license is needed instead of offering a dead update link.
+- The License screen tells a customer whose key is not active that the site is still receiving updates, when that is what the server says.
+- `Requires at least: 6.0` in the plugin header, matching the product metadata registered on MDS.
 
 ### Changed
 
-- **BREAKING: the settings interface was rewritten in Vue 3 + Vite** (Joinotify pattern), and the server-rendered settings form is gone
-- **BREAKING: every legacy AJAX action was replaced by the REST API** (`hubgo/v1` namespace). Anything hooked to the old `admin-ajax.php` actions has to move to the REST routes
-- **Joinotify v2 compatibility** (new functional API: triggers, placeholders and workflow dispatch)
-- **Visual standardisation of the admin fields**: same height (3rem), same radius and same border on inputs, selects, password and colour
-    - The colour picker has a 3rem square swatch next to the hex code field, with a button to reset to the default colour
-    - Focus is a 2px border in the primary colour, with no shadow
-    - Buttons declare their own appearance instead of inheriting the browser's, since Tailwind's preflight is disabled
-- The `Hubgo/Shipping_Calculator/Rates` filter now receives the matched zone as a third argument
-- **MDS PHP SDK to `^1.3`** (from `^1.1`). The update check is `POST /v2/update-check` with the site `domain`, the `product_slug` and the installed `current_version`, and it is no longer barred by the license being valid — it is barred by the update gate the server answers with
-- The SDK's license notices and its auto-registered submenu are switched off through the `features` map the SDK exposes since 1.2, instead of unhooking the notice callback from `admin_notices` after registration
-- **License activation is off, and it no longer takes the update check with it.** `License::ENABLED` used to switch off the whole SDK registration; it now governs the key alone. With it off HubGo registers under the SDK's `updates_only` preset — the check goes out with no `license_key` and MDS answers on the product's own gates, with the response still verified by ed25519 signature. This needs MDS to agree: a keyless check is only answered for a product whose update gate is open on the server
-- `License::is_configured()` answers for the MDS credentials alone, so the "Check for updates" link on the plugins list no longer disappears along with activation
-- `License::get_license_url()` returns an empty string while there is no License screen to link to, instead of a URL WordPress would refuse
+- **BREAKING:** the settings interface was rewritten in Vue 3 + Vite, and the server-rendered settings form is gone.
+- **BREAKING:** every legacy AJAX action was replaced by the `hubgo/v1` REST API, so anything hooked to the old `admin-ajax.php` actions has to move.
+- Compatibility with Joinotify v2 and its functional API for triggers, placeholders and workflow dispatch.
+- The admin fields were standardised on one height, radius and border, with a square swatch on the colour picker and focus as a 2px primary border without a shadow.
+- `Hubgo/Shipping_Calculator/Rates` now receives the matched zone as a third argument.
+- MDS PHP SDK to `^1.3`, whose update check is no longer barred by the license being valid but by the update gate the server answers with.
+- The SDK's license notices and its auto-registered submenu are switched off through the `features` map it exposes.
+- License activation is off and no longer takes the update check with it: HubGo registers under the SDK's `updates_only` preset.
+- `License::is_configured()` answers for the MDS credentials alone, so the "Check for updates" link no longer disappears with activation.
+- `License::get_license_url()` returns an empty string while there is no License screen to link to.
 
 ### Removed
 
-- **The bespoke update checker** (`MeuMouse\Hubgo\API\Updater`), which polled a static JSON on packages.meumouse.com. Licensing, update checks, signature verification and rollback are the MDS SDK's job now
-- **The license activation flow**, while `License::ENABLED` stays off: the License screen and its Vue bundle, the `hubgo/v1/license/*` routes, the license heartbeat, rollback and the SDK's license notices. Nothing was deleted — the constant brings all of it back
-- **The Pro tier on the integrations catalog**: the `requires_license` card key, the `is_locked` runtime flag, the Pro badge component and the "activate your license" notices on the Integrations screen and in the Elementor card. The Elementor widget is registered whenever the integration is enabled, instead of only while a license was valid — which used to make the element vanish from pages already using it when a key lapsed
+- The bespoke update checker, which polled a static JSON on packages.meumouse.com.
+- The license activation flow, while `License::ENABLED` stays off; nothing was deleted, and the constant brings all of it back.
+- The Pro tier on the integrations catalog, so the Elementor widget no longer vanishes from pages already using it when a key lapses.
 
 ### Fixed
 
-- **The shipping calculator did not respect shipping zone priority** for the postcode entered. The destination state was read from the customer session (or from the store's base address) instead of being derived from the postcode, letting a per-state zone with a lower order beat the zones the postcode actually covered
-- The shipping calculator changed the customer's cart (adding and removing the product) to evaluate free shipping
-- The shipping calculator overwrote the billing and shipping postcode saved in the customer session
-- Free shipping was injected into the table by hand, ignoring the zone, the `woocommerce_package_rates` filter and the option to hide the other rates
-- The calculation wrote to the same session cache used by the checkout
-- An invalid postcode returned the "no shipping method available" message instead of a validation error
-- The plugin silently changed WooCommerce's `woocommerce_default_customer_address` option
-- **Frenet (Frenet Shipping Gateway)**
-    - HubGo's calculator was quoting with a declared value of R$ 0.00. The Frenet plugin reads the cart total, which is empty on the product page, and services quoted by declared value simply did not show up. Quoting by product is now enabled on HubGo's packages only
-    - The product page showed two calculators. The Frenet plugin's simulator is now removed when HubGo's calculator is active, with a new "Hide the Frenet simulator" option on the integration card
-    - The "Import tracking" option now has a real effect: on orders shipped through Frenet, tracking codes with no carrier set get Frenet as the provider (for the link) and the quoted carrier as the displayed name. Nothing is written to the database — the fill-in happens at display time only
-- **Melhor Envio**
-    - HubGo's calculator did not work with Melhor Envio active. The plugin quotes the customer's cart unless the package identifies itself as a product-page quote; without that, either the quote came out with the wrong items (cart filled) or the request broke while reading data that did not exist in the package (empty cart). HubGo's package is now assembled in the shape the plugin expects (`product_page_calculation` and `formatted_data`), using Melhor Envio's own product factory — which keeps bundles and composite products normalized the same way. This fix applies whenever the Melhor Envio plugin is active, even with the integration switched off: it is what keeps HubGo's calculator standing, not a feature of the integration
-    - The "Import tracking" option now has a real effect: as soon as Melhor Envio writes the tracking code onto the order, it is imported into HubGo's tracking with Melhor Envio as the provider (for the link) and the quoted carrier as the displayed name, firing the e-mails and the Joinotify automations like a code typed by hand. Codes predating the integration are still displayed from the other plugin's data, read-only
-    - The "Mark as shipped" option now has a real effect, and stands on its own rather than depending on "Import tracking" being switched on as well: the order moves to the "Order shipped" status the first time a Melhor Envio code arrives, once per order, without touching cancelled, refunded or failed orders
-    - The product page showed two calculators. The Melhor Envio plugin's simulator is now removed when HubGo's calculator is active, with a new "Hide the Melhor Envio simulator" option on the integration card
-    - Bundles and composite products (WPC Product Bundles and WPC Composite Products) got the wrong quote. Outside the cart the Melhor Envio plugin only sees the parent product's dimensions, which are usually empty — so much so that its own simulator refuses to quote and asks for the calculation to be done in the cart. Melhor Envio's shipping methods are now left out of the calculator in those cases, instead of showing a price the store will not be able to honour. New filter for stores that have filled in the bundle's dimensions: `Hubgo/Integrations/Melhor_Envio/Skip_Compositions`
-    - The delivery time appeared twice on the calculator. The plugin repeats the delivery window inside the shipping method name ("Correios Pac (3 a 5 dias úteis)") as well as storing it as meta, and HubGo already turns that meta into a promised date — which starts to disagree with the text as soon as the store sets a handling time. The part in parentheses is now removed, on HubGo calculator packages only
+- The shipping calculator ignored shipping zone priority, because the destination state came from the customer session instead of the informed postcode.
+- The shipping calculator changed the customer's cart, adding and removing the product, to evaluate free shipping.
+- The shipping calculator overwrote the billing and shipping postcode saved in the customer session.
+- Free shipping was injected into the table by hand, ignoring the zone, the `woocommerce_package_rates` filter and the option to hide the other rates.
+- The calculation wrote to the same session cache used by the checkout.
+- An invalid postcode returned the "no shipping method available" message instead of a validation error.
+- The plugin silently changed WooCommerce's `woocommerce_default_customer_address` option.
+- Frenet: the calculator quoted with a declared value of R$ 0.00, so services priced by declared value never appeared.
+- Frenet: the product page showed two calculators, and a new "Hide the Frenet simulator" option turns the other one off.
+- Frenet: "Import tracking" now has a real effect, filling the provider and the carrier name at display time without writing to the database.
+- Melhor Envio: HubGo's calculator did not work with the plugin active, because the package never identified itself as a product-page quote.
+- Melhor Envio: "Import tracking" now has a real effect, importing the code as soon as the plugin writes it and firing the e-mails and automations.
+- Melhor Envio: "Mark as shipped" now has a real effect, moving the order to "Order shipped" once per order and leaving cancelled, refunded and failed orders alone.
+- Melhor Envio: the product page showed two calculators, and a new "Hide the Melhor Envio simulator" option turns the other one off.
+- Melhor Envio: bundles and composite products got the wrong quote, so those methods are left out of the calculator rather than showing a price the store cannot honour.
+- Melhor Envio: the delivery time appeared twice on the calculator, once as a promised date and once inside the shipping method's name.
 
 ### Security
 
-- REST endpoints now require a capability check plus the `wp_rest` nonce
+- REST endpoints now require a capability check plus the `wp_rest` nonce.
 
 ## [2.2.0] - 2026-03-12
 
 ### Added
 
-- "Order shipped" status in the bulk actions of the orders page
+- "Order shipped" status in the bulk actions of the orders page.
 
 ### Fixed
 
-- Orders in the "Order shipped" status were not listed on the orders page
+- Orders in the "Order shipped" status were not listed on the orders page.
 
 ## [2.1.0] - 2026-03-06
 
 ### Added
 
-- New order status: "Order shipped"
-- Order metabox for entering the tracking code
-- Joinotify integration
+- New order status: "Order shipped".
+- Order metabox for entering the tracking code.
+- Joinotify integration.
 
 ## [2.0.0] - 2026-02-25
 
 ### Changed
 
-- **Architecture change to MACI** (Modular Autoload Class Initialization)
-- Optimizations
+- Architecture change to MACI (Modular Autoload Class Initialization).
+- Optimizations.
 
 ### Fixed
 
-- Melhor Envio compatibility
+- Melhor Envio compatibility.
 
 ## [1.4.0] - 2025-08-11
 
 ### Fixed
 
-- Loading of the shipping options
+- Loading of the shipping options.
 
 ## [1.3.0] - 2024-02-16
 
 ### Added
 
-- Automatic shipping calculation
+- Automatic shipping calculation.
 
 ### Changed
 
-- Optimizations
+- Optimizations.
 
 ### Fixed
 
-- Bug fixes
+- Bug fixes.
 
 ## [1.2.6] - 2023-12-18
 
 ### Fixed
 
-- Bug fixes
+- Bug fixes.
 
 ## [1.2.5] - 2023-10-31
 
 ### Added
 
-- WooCommerce High Performance Order Storage (HPOS) compatibility
+- WooCommerce High Performance Order Storage (HPOS) compatibility.
 
 ## 1.2.0 - 2023-10-09
 
 ### Changed
 
-- Optimizations
+- Optimizations.
 
 ### Fixed
 
-- Bug fixes
+- Bug fixes.
 
 ## 1.1.7 - 2023-07-26
 
 ### Changed
 
-- Optimizations
+- Optimizations.
 
 ### Fixed
 
-- Bug fixes
+- Bug fixes.
 
 ## 1.1.5 - 2023-07-19
 
 ### Fixed
 
-- Bug fixes
+- Bug fixes.
 
 ## 1.1.0 - 2023-07-14
 
 ### Fixed
 
-- Bug fixes
+- Bug fixes.
 
 ## 1.0.0 - 2023-07-13
 
 ### Added
 
-- Initial release
+- Initial release.
 
 [Unreleased]: https://github.com/meumouse/hubgo/compare/v3.1.0...HEAD
 [3.1.0]: https://github.com/meumouse/hubgo/compare/v3.0.0...v3.1.0
