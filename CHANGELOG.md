@@ -8,6 +8,12 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 ## [Unreleased]
 
+### Fixed
+
+- The shipping calculator no longer fails with "Cookie check failed" when the product page was served from a cache or left open for a long time.
+- A shopper who is not signed in is no longer sent a security token the calculator never needed.
+- An unexpected server error now shows the calculator's own message instead of the raw wording WordPress returned.
+
 ## [3.1.1] - 2026-11-10
 
 ### Added

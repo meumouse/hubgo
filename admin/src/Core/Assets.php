@@ -110,7 +110,7 @@ class Assets {
      * Enqueue frontend (storefront) assets.
      *
      * @since 2.0.0
-     * @version 3.0.0
+     * @version 3.1.2
      * @return void
      */
     public function enqueue_frontend_assets() {
@@ -137,7 +137,16 @@ class Assets {
 
         $front_params = array(
             'rest_url'           => $this->rest_root(),
-            'nonce'              => wp_create_nonce( 'wp_rest' ),
+            // Only a signed-in visitor gains anything from the nonce: it is what
+            // lets the storefront request resolve them, which role-based rates
+            // read off the shipping package. A guest runs as user 0 with or
+            // without it, so a nonce printed into page HTML that a cache may
+            // serve for hours can only lose: once it ages out of its tick,
+            // `rest_cookie_check_errors()` answers 403 "Cookie check failed" for
+            // every route, public ones included, before their permission
+            // callback is ever consulted. Issuing none keeps that failure away
+            // from the shoppers who had nothing to gain from it.
+            'nonce'              => is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : '',
             'auto_shipping'      => Settings::get_setting( 'enable_auto_shipping_calculator', 'no' ),
             'current_product_id' => $this->get_current_product_id(),
             // Tells the storefront whether the CEP finder can be offered at all,
