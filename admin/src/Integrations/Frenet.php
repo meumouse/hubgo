@@ -4,8 +4,10 @@ namespace MeuMouse\Hubgo\Integrations;
 
 use MeuMouse\Hubgo\Admin\Settings;
 use MeuMouse\Hubgo\Core\Delivery_Promise;
+use MeuMouse\Hubgo\Core\Tracking_Manager;
 use MeuMouse\Hubgo\Views\Shipping_Calculator;
 
+use WC_Order;
 use WC_Shipping_Rate;
 
 defined('ABSPATH') || exit;
@@ -37,9 +39,13 @@ defined('ABSPATH') || exit;
  *   is what lets a notification name the carrier instead of the reseller.
  * - **Duplicate calculator.** The gateway prints its own shipping simulator on
  *   the product page. With HubGo's calculator on, the page rendered two.
+ * - **Tracking code.** The gateway stores no tracking code at all. The Frenet
+ *   platform reports it by adding an order note to the store ("Seu código de
+ *   rastreio é o AE176599145BR"), so {@see Frenet::import_note_code()} reads the
+ *   code out of that note and saves it as a HubGo tracking item.
  *
  * @since 3.0.0
- * @version 3.1.1
+ * @version 3.2.0
  * @package MeuMouse\Hubgo\Integrations
  * @author MeuMouse.com
  */
@@ -152,12 +158,24 @@ class Frenet extends Integrations_Base {
      */
     private $frenet_orders = array();
 
+    /**
+     * Orders whose note is being imported right now, keyed by order ID.
+     *
+     * Saving the tracking item saves the order, and whatever listens to
+     * `Hubgo/Tracking/Item_Saved` may add a note of its own; neither may start a
+     * second import of the same order.
+     *
+     * @since 3.2.0
+     * @var array<int,bool>
+     */
+    private static $importing = array();
+
 
     /**
      * Constructor.
      *
      * @since 3.0.0
-     * @version 3.1.1
+     * @version 3.2.0
      */
     public function __construct() {
         $this->register_integration_card( 30 );
@@ -185,6 +203,10 @@ class Frenet extends Integrations_Base {
 
         if ( self::syncs_tracking() ) {
             add_filter( 'Hubgo/Tracking/Get_Items', array( $this, 'fill_tracking_provider' ), 10, 2 );
+
+            // The order note is the only place the Frenet platform puts the
+            // code, so it is the only signal there is to import it from.
+            add_action( 'woocommerce_order_note_added', array( $this, 'import_note_code' ), 10, 2 );
         }
 
         if ( self::disables_native_simulator() ) {
@@ -198,7 +220,7 @@ class Frenet extends Integrations_Base {
      * Register the card on the Integrations screen.
      *
      * @since 3.0.0
-     * @version 3.1.1
+     * @version 3.2.0
      * @param array $integrations Current catalog.
      * @return array
      */
@@ -223,7 +245,7 @@ class Frenet extends Integrations_Base {
                 self::field_toggle(
                     'frenet_sync_tracking',
                     __( 'Import tracking', 'hubgo' ),
-                    __( 'Fills the carrier on tracking codes added to orders shipped with Frenet, using the carrier Frenet quoted.', 'hubgo' )
+                    __( 'On orders shipped with Frenet, saves the tracking code Frenet adds as an order note and fills in the carrier Frenet quoted.', 'hubgo' )
                 ),
                 self::field_toggle(
                     'frenet_disable_simulator',
@@ -570,6 +592,143 @@ class Frenet extends Integrations_Base {
         unset( $item );
 
         return $items;
+    }
+
+
+    /**
+     * Save the tracking code the Frenet platform reports in an order note.
+     *
+     * The gateway plugin writes no tracking meta and fires no hook: when a label
+     * is posted, the Frenet platform updates the order through the WooCommerce
+     * REST API and adds a customer note carrying the code. That note is the only
+     * place the code reaches the store, so without this the order had a code the
+     * customer could read and HubGo could not, and every tracking token resolved
+     * empty.
+     *
+     * Goes through {@see Tracking_Manager::add_item()} rather than the import path
+     * used by migrations, for the reason {@see Melhor_Envio::import_code()} does:
+     * this is a shipment happening now, so the e-mails and the Joinotify "tracking
+     * code saved" automation must fire exactly as they do for a code typed by hand.
+     *
+     * Limited to orders shipped with Frenet, which is what the "Import tracking"
+     * card promises and what makes reading a code out of free text safe enough.
+     *
+     * @since 3.2.0
+     * @param int $note_id Order note (comment) ID.
+     * @param WC_Order $order Order the note was added to.
+     * @return void
+     */
+    public function import_note_code( $note_id, $order ) {
+        if ( ! $order instanceof WC_Order ) {
+            return;
+        }
+
+        $order_id = $order->get_id();
+
+        if ( ! $order_id || isset( self::$importing[ $order_id ] ) || ! $this->order_used_frenet( $order_id ) ) {
+            return;
+        }
+
+        $note = get_comment( $note_id );
+        $code = $note ? self::parse_tracking_code( $note->comment_content ) : '';
+
+        if ( '' === $code ) {
+            return;
+        }
+
+        self::$importing[ $order_id ] = true;
+
+        $this->import_code( $order_id, $code );
+
+        unset( self::$importing[ $order_id ] );
+    }
+
+
+    /**
+     * Read a tracking code out of an order note.
+     *
+     * The patterns anchor on the sentence around the code, not on the code's own
+     * shape: Frenet moves Correios codes (AE176599145BR) as well as purely numeric
+     * Jadlog and Loggi ones, so no single code format covers every carrier. A
+     * match must still contain a digit, which is what keeps a sentence such as
+     * "o código de rastreio estará disponível" from yielding the word "estará".
+     *
+     * @since 3.2.0
+     * @param string $note Note content, HTML allowed.
+     * @return string The code, or an empty string when the note carries none.
+     */
+    public static function parse_tracking_code( $note ) {
+        $text = html_entity_decode( wp_strip_all_tags( (string) $note ), ENT_QUOTES, 'UTF-8' );
+        $text = (string) preg_replace( '/\s+/u', ' ', $text );
+
+        if ( '' === trim( $text ) ) {
+            return '';
+        }
+
+        $code = '(?=[A-Za-z\-]*\d)([A-Za-z0-9][A-Za-z0-9\-]{4,39})';
+
+        $patterns = array(
+            // "Seu código de rastreio é o AE176599145BR", "Código de rastreamento: 123".
+            '/c[óo]digo\s+de\s+rastr(?:eio|eamento)\s*(?:[ée]\s+)?(?:o\s+)?:?\s*' . $code . '/iu',
+            // "Your tracking code is AE176599145BR", "Tracking number: 123".
+            '/tracking\s+(?:code|number)\s*(?:is\s+)?:?\s*' . $code . '/iu',
+        );
+
+        /**
+         * Filter the patterns a tracking code is read from in a Frenet order note.
+         *
+         * Each one is a full PCRE pattern whose first capture group is the code.
+         *
+         * @since 3.2.0
+         * @param array $patterns PCRE patterns.
+         * @param string $text Note text, tags stripped.
+         */
+        $patterns = apply_filters( 'Hubgo/Integrations/Frenet/Tracking_Note_Patterns', $patterns, $text );
+
+        foreach ( (array) $patterns as $pattern ) {
+            if ( is_string( $pattern ) && '' !== $pattern && preg_match( $pattern, $text, $matches ) && ! empty( $matches[1] ) ) {
+                return trim( (string) $matches[1], '-' );
+            }
+        }
+
+        return '';
+    }
+
+
+    /**
+     * Save a tracking code as a HubGo tracking item, unless the order has it.
+     *
+     * Items bridged read-only by another integration are ignored when looking
+     * for a duplicate: they are display copies, not HubGo's own records.
+     *
+     * @since 3.2.0
+     * @param int $order_id Order ID.
+     * @param string $code Tracking code.
+     * @return bool Whether an item was added.
+     */
+    private function import_code( $order_id, $code ) {
+        $manager = new Tracking_Manager();
+
+        foreach ( $manager->get_items( $order_id ) as $item ) {
+            if ( ! is_array( $item ) || ! empty( $item['read_only'] ) || empty( $item['tracking_number'] ) ) {
+                continue;
+            }
+
+            if ( 0 === strcasecmp( trim( (string) $item['tracking_number'] ), $code ) ) {
+                return false;
+            }
+        }
+
+        $manager->add_item( $order_id, array(
+            'tracking_number' => $code,
+            'provider'        => self::PROVIDER_NAME,
+            // Frenet resolves the link; the carrier quoted at the checkout is
+            // the name the customer actually needs to read.
+            'custom_provider' => Delivery_Promise::get_carrier( $order_id ),
+            'ship_date'       => current_time('Y-m-d'),
+        ) );
+
+        return true;
     }
 
 

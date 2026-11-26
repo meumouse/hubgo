@@ -12,6 +12,8 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 - The HubGo tracking and delivery placeholders, such as `{{ hubgo_tracking_link }}`, now also work in Joinotify workflows started by a WooCommerce order trigger.
 - New filter `Hubgo/Integrations/Joinotify/Order_Triggers`, which lists the Joinotify WooCommerce triggers those placeholders are offered on.
+- With "Import tracking" on, the tracking code Frenet posts as an order note is now saved on the order in HubGo.
+- New filter `Hubgo/Integrations/Frenet/Tracking_Note_Patterns`, which sets how a tracking code is read from a Frenet order note.
 
 ### Fixed
 
