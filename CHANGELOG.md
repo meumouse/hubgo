@@ -8,6 +8,11 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 ## [Unreleased]
 
+### Added
+
+- The HubGo tracking and delivery placeholders, such as `{{ hubgo_tracking_link }}`, now also work in Joinotify workflows started by a WooCommerce order trigger.
+- New filter `Hubgo/Integrations/Joinotify/Order_Triggers`, which lists the Joinotify WooCommerce triggers those placeholders are offered on.
+
 ### Fixed
 
 - The shipping calculator no longer fails with "Cookie check failed" when the product page was served from a cache or left open for a long time.

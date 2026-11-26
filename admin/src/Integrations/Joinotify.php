@@ -7,6 +7,7 @@ use MeuMouse\Hubgo\Core\Delivery_Promise;
 use MeuMouse\Hubgo\Core\Providers_Registry;
 use MeuMouse\Hubgo\Core\Tracking_Manager;
 
+use MeuMouse\Joinotify\Builder\Triggers;
 use MeuMouse\Joinotify\Integrations\Woocommerce;
 
 defined('ABSPATH') || exit;
@@ -34,8 +35,12 @@ defined('ABSPATH') || exit;
  * `Hubgo/Tracking/Items_Imported`, which replays a store's whole shipment history
  * during a migration and would send one message per historical order.
  *
+ * The HubGo tokens are also offered on Joinotify's own WooCommerce order
+ * triggers, resolved from the order's tracking codes, since that is where most
+ * stores send their tracking message from.
+ *
  * @since 2.1.0
- * @version 3.1.0
+ * @version 3.2.0
  * @package MeuMouse\Hubgo\Integrations
  * @author MeuMouse.com
  */
@@ -151,12 +156,20 @@ class Joinotify extends Integrations_Base {
      */
     protected $tracking = null;
 
+    /**
+     * HubGo tokens scoped to Joinotify's WooCommerce order triggers, built once per request.
+     *
+     * @since 3.2.0
+     * @var array|null
+     */
+    private $order_trigger_placeholders = null;
+
 
     /**
      * Constructor.
      *
      * @since 3.0.0
-     * @version 3.1.0
+     * @version 3.2.0
      */
     public function __construct() {
         // The card is registered unconditionally: the Integrations screen must
@@ -169,6 +182,11 @@ class Joinotify extends Integrations_Base {
         }
 
         $this->register();
+
+        // Offer the HubGo tokens on Joinotify's own WooCommerce order triggers too.
+        // Priority 30 because Joinotify *assigns* its `woocommerce` group at 10
+        // rather than merging into it, which would wipe anything added earlier.
+        add_filter( 'Joinotify/Builder/Placeholders_List', array( $this, 'add_order_trigger_placeholders' ), 30, 2 );
 
         // Runtime dispatch listeners (HubGo -> Joinotify).
         add_action( self::HOOK_ORDER_SHIPPED, array( $this, 'handle_order_shipped' ), 10, 2 );
@@ -1220,6 +1238,167 @@ class Joinotify extends Integrations_Base {
          * @param array $triggers Every HubGo trigger slug.
          */
         return apply_filters( 'Hubgo/Integrations/Joinotify/Placeholders', $placeholders, $all );
+    }
+
+
+    /**
+     * Offer the HubGo tokens on Joinotify's WooCommerce order triggers.
+     *
+     * A store usually sends its tracking message from a WooCommerce workflow ("order
+     * completed") rather than from a HubGo trigger. The HubGo tokens were scoped to
+     * HubGo triggers only, and Joinotify enforces that scope at send time too —
+     * `Placeholders::get_placeholders_list()` loads only the group of the integration
+     * that fired — so on a WooCommerce workflow `{{ hubgo_tracking_link }}` reached
+     * the customer as literal text.
+     *
+     * The tokens therefore also join the `woocommerce` group, scoped to the order
+     * triggers, which is what makes the builder list them and the send resolve them.
+     * Joinotify keys the group by integration, not by token prefix, so this is the
+     * only place a token can be added to a WooCommerce workflow.
+     *
+     * @since 3.2.0
+     * @param array $list Placeholders grouped by integration slug.
+     * @param array $context Placeholder context (the runtime payload at send time).
+     * @return array
+     */
+    public function add_order_trigger_placeholders( $list, $context = array() ) {
+        if ( ! is_array( $list ) ) {
+            $list = array();
+        }
+
+        $placeholders = $this->get_order_trigger_placeholders();
+
+        if ( empty( $placeholders ) ) {
+            return $list;
+        }
+
+        if ( ! isset( $list['woocommerce'] ) || ! is_array( $list['woocommerce'] ) ) {
+            $list['woocommerce'] = array();
+        }
+
+        // A union rather than array_merge(): a token Joinotify itself defines in
+        // the group keeps its own entry.
+        $list['woocommerce'] += $placeholders;
+
+        return $list;
+    }
+
+
+    /**
+     * The HubGo tokens as Joinotify's WooCommerce order triggers see them.
+     *
+     * Each resolver is the HubGo one, fed a payload rebuilt from the order by
+     * {@see self::build_order_payload()}: a WooCommerce payload carries the order ID
+     * and nothing about tracking. The `wc_*` tokens stay out because Joinotify
+     * already resolves its own, and `{{ hubgo_days_late }}` stays out for the reason
+     * it is scoped to the overdue trigger on the HubGo side.
+     *
+     * Built once per request: Joinotify runs the placeholder filter for every
+     * message it renders, and the resolvers read the order only when called.
+     *
+     * @since 3.2.0
+     * @return array Map of '{{ token }}' => {triggers, description, replacement}.
+     */
+    private function get_order_trigger_placeholders() {
+        if ( null !== $this->order_trigger_placeholders ) {
+            return $this->order_trigger_placeholders;
+        }
+
+        $triggers = $this->get_woocommerce_order_triggers();
+
+        // Not cached while empty: the filter can run before Joinotify has
+        // registered its triggers, and the request would then never see them.
+        if ( empty( $triggers ) ) {
+            return array();
+        }
+
+        $placeholders = array();
+
+        foreach ( $this->get_placeholders() as $token => $details ) {
+            $token = (string) $token;
+
+            if ( ! is_array( $details ) || 0 !== strpos( $token, '{{ hubgo_' ) || '{{ hubgo_days_late }}' === $token ) {
+                continue;
+            }
+
+            $production = isset( $details['replacement']['production'] ) ? $details['replacement']['production'] : null;
+
+            if ( is_callable( $production ) ) {
+                $details['replacement']['production'] = function( $payload ) use ( $production ) {
+                    return call_user_func( $production, $this->build_order_payload( $payload ) );
+                };
+            }
+
+            $details['triggers'] = $triggers;
+            $placeholders[ $token ] = $details;
+        }
+
+        $this->order_trigger_placeholders = $placeholders;
+
+        return $placeholders;
+    }
+
+
+    /**
+     * Joinotify's WooCommerce triggers that run for an order.
+     *
+     * Joinotify 2.7.0 publishes that list itself. An older host only knows every
+     * WooCommerce trigger, customer and stock ones included; those carry no order,
+     * so a HubGo token there simply resolves empty.
+     *
+     * @since 3.2.0
+     * @return array<int,string>
+     */
+    private function get_woocommerce_order_triggers() {
+        $triggers = array();
+
+        if ( class_exists( Woocommerce::class ) && method_exists( Woocommerce::class, 'get_order_trigger_names' ) ) {
+            $triggers = Woocommerce::get_order_trigger_names();
+        } elseif ( class_exists( Triggers::class ) && method_exists( Triggers::class, 'get_trigger_names' ) ) {
+            $triggers = Triggers::get_trigger_names('woocommerce');
+        }
+
+        /**
+         * Filter the Joinotify WooCommerce triggers the HubGo tokens are offered on.
+         *
+         * @since 3.2.0
+         * @param array $triggers WooCommerce trigger slugs.
+         */
+        $triggers = apply_filters( 'Hubgo/Integrations/Joinotify/Order_Triggers', $triggers );
+
+        return is_array( $triggers ) ? array_values( array_filter( $triggers, 'is_string' ) ) : array();
+    }
+
+
+    /**
+     * Rebuild a HubGo payload from the order a WooCommerce payload points at.
+     *
+     * Mirrors what {@see self::dispatch()} sends for a HubGo trigger: the most
+     * recently added tracking code is the primary one and the full list travels
+     * alongside it. Read through {@see Tracking_Manager::get_items()}, so the
+     * carrier an integration fills in (Frenet) is on it as well.
+     *
+     * @since 3.2.0
+     * @param array $payload WooCommerce runtime payload.
+     * @return array
+     */
+    protected function build_order_payload( $payload ) {
+        $payload = is_array( $payload ) ? $payload : array();
+        $order_id = isset( $payload['order_id'] ) ? absint( $payload['order_id'] ) : 0;
+
+        if ( ! $order_id ) {
+            return $payload;
+        }
+
+        $items = $this->tracking()->get_items( $order_id );
+        $items = is_array( $items ) ? array_values( array_filter( $items, 'is_array' ) ) : array();
+        $latest = ! empty( $items ) ? end( $items ) : array();
+
+        return array_merge( $payload, array(
+            'order_id'       => $order_id,
+            'tracking_data'  => $this->build_tracking_data( $order_id, is_array( $latest ) ? $latest : array() ),
+            'tracking_items' => $this->build_tracking_items( $order_id, $items ),
+        ) );
     }
 
 
