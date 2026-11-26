@@ -40,6 +40,9 @@
       "450 Daisy Street - Curitiba/PR - Brazil (postcode: 80000-100)": [
         "450 Daisy Street - Curitiba/PR - Brasile (codice postale: 80000-100)"
       ],
+      "450 Daisy Street, Curitiba, PR 80000-100, Brazil": [
+        "450 Daisy Street, Curitiba, PR 80000-100, Brasile"
+      ],
       "About": [
         "Informazioni"
       ],
@@ -60,9 +63,6 @@
       ],
       "Activate WooCommerce": [
         "Attiva WooCommerce"
-      ],
-      "Activate your HubGo license to use this integration.": [
-        "Attiva la tua licenza HubGo per utilizzare questa integrazione."
       ],
       "Activate your license to receive automatic updates and unlock the Pro features. Questions? Visit our": [
         "Attiva la tua licenza per ricevere aggiornamenti automatici e sbloccare le funzionalità Pro. Domande? Visita il nostro"
@@ -93,6 +93,9 @@
       ],
       "Address lookup is not configured.": [
         "La ricerca dell'indirizzo non è configurata."
+      ],
+      "Address used in the tracking link. Use %1$s where the code should go, and %2$s for the carrier.": [
+        "Indirizzo usato nel link di tracciamento. Usa %1$s dove va inserito il codice e %2$s per il corriere."
       ],
       "Address used in the tracking link. Use %1$s where the code should go.": [
         "Indirizzo utilizzato nel link di tracciamento. Usa %1$s dove dovrebbe andare il codice."
@@ -204,6 +207,9 @@
       ],
       "Business days added to the carrier estimate before showing the delivery date.": [
         "Giorni lavorativi aggiunti alla stima del corriere prima di mostrare la data di consegna."
+      ],
+      "Business days promised": [
+        "Giorni lavorativi promessi"
       ],
       "Business days promised at the checkout": [
         "Giorni lavorativi promessi al checkout"
@@ -406,8 +412,14 @@
       "Could not search addresses.": [
         "Impossibile cercare indirizzi."
       ],
+      "Coupon codes used on the order, separated by commas (WooCommerce)": [
+        "Codici coupon usati nell'ordine, separati da virgole (WooCommerce)"
+      ],
       "Create a key at %s and enable two APIs on the same project: \"Places API (New)\" for the address search, and \"Geocoding API\" for the destination address shown on the quote.": [
         "Crea una chiave su %s e abilita due API sullo stesso progetto: \"Places API (New)\" per la ricerca degli indirizzi e \"Geocoding API\" per l'indirizzo di destinazione mostrato nel preventivo."
+      ],
+      "Credit card": [
+        "Carta di credito"
       ],
       "Custom carrier": [
         "Corriere personalizzato"
@@ -420,6 +432,9 @@
       ],
       "Customer billing last name (WooCommerce)": [
         "Cognome del cliente per la fatturazione (WooCommerce)"
+      ],
+      "Customer e-mail": [
+        "E-mail del cliente"
       ],
       "Customer full billing address (WooCommerce)": [
         "Indirizzo completo di fatturazione del cliente (WooCommerce)"
@@ -436,11 +451,17 @@
       "Data migration": [
         "Migrazione dei dati"
       ],
+      "Date the order was placed (WooCommerce)": [
+        "Data in cui è stato effettuato l'ordine (WooCommerce)"
+      ],
       "day %s": [
         "giorno %s"
       ],
       "days": [
         "giorni"
+      ],
+      "Days late": [
+        "Giorni di ritardo"
       ],
       "Deactivate license": [
         "Disattiva licenza"
@@ -477,9 +498,6 @@
       ],
       "Disabled": [
         "Disabilitato"
-      ],
-      "Discover Joinotify": [
-        "Scopri Joinotify"
       ],
       "Display mode": [
         "Modalità di visualizzazione"
@@ -574,6 +592,12 @@
       "Every tracking code on the order, one per line (carrier, code and link). It can also be used as the source of a loop action.": [
         "Ogni codice di tracciamento sull'ordine, uno per riga (corriere, codice e link). Può anche essere utilizzato come sorgente di un'azione di ciclo."
       ],
+      "Every tracking code on the order, separated by commas": [
+        "Tutti i codici di tracciamento dell'ordine, separati da virgole"
+      ],
+      "Every tracking link on the order, one per line. It can also be used as the source of a loop action.": [
+        "Tutti i link di tracciamento dell'ordine, uno per riga. Può essere usato anche come origine di un'azione di ciclo."
+      ],
       "Example text inside the postcode field.": [
         "Testo di esempio all'interno del campo codice postale."
       ],
@@ -589,9 +613,6 @@
       "Express Delivery": [
         "Consegna Espressa"
       ],
-      "Feature available with an active license": [
-        "Funzionalità disponibile con una licenza attiva"
-      ],
       "Features": [
         "Funzionalità"
       ],
@@ -600,9 +621,6 @@
       ],
       "Fills in the shipping postcode when the customer has not entered an address yet.": [
         "Compila il codice postale di spedizione quando il cliente non ha ancora inserito un indirizzo."
-      ],
-      "Fills the carrier on tracking codes added to orders shipped with Frenet, using the carrier Frenet quoted.": [
-        "Compila il corriere sui codici di tracciamento aggiunti agli ordini spediti con Frenet, utilizzando il corriere quotato da Frenet."
       ],
       "Find my postcode": [
         "Trova il mio codice postale"
@@ -616,8 +634,14 @@
       "Fired once a day for each shipped order whose promised delivery date has passed.": [
         "Attivato una volta al giorno per ogni ordine spedito la cui data di consegna promessa è scaduta."
       ],
+      "Fired when a tracking code is deleted from the order. Meant for internal alerts to the shipping team rather than for the customer.": [
+        "Attivato quando un codice di tracciamento viene eliminato dall'ordine. Pensato per avvisi interni al team di spedizione, non per il cliente."
+      ],
       "Fired when a tracking code is saved on the order.": [
         "Attivato quando un codice di tracciamento viene salvato sull'ordine."
+      ],
+      "Fired when the order is placed and HubGo stores the delivery date quoted at the checkout. Use it to confirm the estimate right after the purchase.": [
+        "Attivato quando l'ordine viene effettuato e HubGo salva la data di consegna stimata al checkout. Usalo per confermare la stima subito dopo l'acquisto."
       ],
       "Fired when the order status changes to Order shipped.": [
         "Attivato quando lo stato dell'ordine cambia in Ordine spedito."
@@ -715,8 +739,14 @@
       "How HubGo reads the shipping data generated by Melhor Envio.": [
         "Come HubGo legge i dati di spedizione generati da Melhor Envio."
       ],
+      "How many days have passed since the promised delivery date.": [
+        "Quanti giorni sono trascorsi dalla data di consegna promessa."
+      ],
       "How many days the customer choice is remembered in their browser.": [
         "Quanti giorni la scelta del cliente viene ricordata nel loro browser."
+      ],
+      "How many tracking codes the order carries.": [
+        "Quanti codici di tracciamento contiene l'ordine."
       ],
       "How much the page behind the window is blurred. Zero disables the effect.": [
         "Quanto è sfocata la pagina dietro la finestra. Zero disabilita l'effetto."
@@ -799,6 +829,9 @@
       "Install Frenet": [
         "Installa Frenet"
       ],
+      "Install Joinotify": [
+        "Installa Joinotify"
+      ],
       "Install Melhor Envio": [
         "Installa Melhor Envio"
       ],
@@ -825,9 +858,6 @@
       ],
       "Integrations": [
         "Integrazioni"
-      ],
-      "Integrations marked as Pro require an active HubGo license.": [
-        "Le integrazioni contrassegnate come Pro richiedono una licenza HubGo attiva."
       ],
       "Integrations saved successfully!": [
         "Integrazioni salvate con successo!"
@@ -943,14 +973,17 @@
       "Link": [
         "Collegamento"
       ],
+      "Link to the order page on the customer's account, where HubGo shows the tracking codes": [
+        "Link alla pagina dell'ordine nell'account del cliente, dove HubGo mostra i codici di tracciamento"
+      ],
       "List": [
         "Elenco"
       ],
       "List of methods displayed in the details window.": [
         "Elenco dei metodi visualizzati nella finestra dei dettagli."
       ],
-      "Logistics triggers available in the Joinotify flow builder.": [
-        "Attivatori logistici disponibili nel costruttore di flussi di Joinotify."
+      "Logistics triggers, placeholders and conditions available in the Joinotify flow builder.": [
+        "Trigger, segnaposto e condizioni logistiche disponibili nel costruttore di flussi di Joinotify."
       ],
       "Maintenance and preferences": [
         "Manutenzione e preferenze"
@@ -1069,8 +1102,14 @@
       "Notifications": [
         "Notifiche"
       ],
+      "Number of tracking codes": [
+        "Numero di codici di tracciamento"
+      ],
       "Number of tracking codes registered on the order": [
         "Numero di codici di tracciamento registrati sull'ordine"
+      ],
+      "On orders shipped with Frenet, saves the tracking code Frenet adds as an order note and fills in the carrier Frenet quoted.": [
+        "Negli ordini spediti con Frenet, salva il codice di tracciamento che Frenet aggiunge come nota dell'ordine e compila il corriere quotato da Frenet."
       ],
       "Only shown while the Google Maps integration is active. Leave empty to hide the link.": [
         "Mostrato solo mentre l'integrazione di Google Maps è attiva. Lascia vuoto per nascondere il link."
@@ -1093,6 +1132,12 @@
       "Order billing phone (WooCommerce)": [
         "Telefono di fatturazione dell'ordine (WooCommerce)"
       ],
+      "Order currency symbol (WooCommerce)": [
+        "Simbolo della valuta dell'ordine (WooCommerce)"
+      ],
+      "Order is paid": [
+        "L'ordine è pagato"
+      ],
       "Order not found.": [
         "Ordine non trovato."
       ],
@@ -1102,14 +1147,23 @@
       "Order shipped": [
         "Ordine spedito"
       ],
+      "Order shipping address as WooCommerce formats it": [
+        "Indirizzo di spedizione dell'ordine nel formato di WooCommerce"
+      ],
       "Order shipping phone (WooCommerce)": [
         "Telefono di spedizione dell'ordine (WooCommerce)"
+      ],
+      "Order status": [
+        "Stato dell'ordine"
       ],
       "Order status (WooCommerce)": [
         "Stato dell'ordine (WooCommerce)"
       ],
       "Order tables (HPOS)": [
         "Tabelle degli ordini (HPOS)"
+      ],
+      "Order total": [
+        "Totale dell'ordine"
       ],
       "Order total (WooCommerce)": [
         "Totale dell'ordine (WooCommerce)"
@@ -1125,6 +1179,12 @@
       ],
       "Paste the license key you received with your purchase and click Activate to unlock every feature.": [
         "Incolla la chiave di licenza ricevuta con il tuo acquisto e fai clic su Attiva per sbloccare tutte le funzionalità."
+      ],
+      "Payment method": [
+        "Metodo di pagamento"
+      ],
+      "Payment method used on the order (WooCommerce)": [
+        "Metodo di pagamento usato nell'ordine (WooCommerce)"
       ],
       "PHP": [
         "PHP"
@@ -1174,12 +1234,6 @@
       "Primary color": [
         "Colore primario"
       ],
-      "Pro": [
-        "Pro"
-      ],
-      "Pro feature unlocked": [
-        "Funzione Pro sbloccata"
-      ],
       "Pro integrations: Joinotify and the Elementor widget": [
         "Integrazioni Pro: Joinotify e il widget Elementor"
       ],
@@ -1194,6 +1248,9 @@
       ],
       "Products and quantities purchased on the order, one per line": [
         "Prodotti e quantità acquistati nell'ordine, uno per riga"
+      ],
+      "Products purchased": [
+        "Prodotti acquistati"
       ],
       "Quick help": [
         "Aiuto rapido"
@@ -1246,6 +1303,9 @@
       "Restored": [
         "Ripristinato"
       ],
+      "Review link for each purchased product, one per line. Pair it with a delay to ask for a review after the delivery.": [
+        "Link di recensione per ogni prodotto acquistato, uno per riga. Abbinalo a un ritardo per chiedere una recensione dopo la consegna."
+      ],
       "Romania": [
         "Romania"
       ],
@@ -1279,11 +1339,11 @@
       "Selected option background": [
         "Sfondo dell'opzione selezionata"
       ],
-      "Send automatic WhatsApp messages from logistics events such as order shipped and tracking code saved, connecting HubGo to Joinotify.": [
-        "Invia messaggi automatici su WhatsApp dagli eventi logistici come ordine spedito e codice di tracciamento salvato, collegando HubGo a Joinotify."
+      "Send automatic WhatsApp messages from logistics events — order shipped, tracking code saved or removed, delivery date promised and delivery running late — connecting HubGo to Joinotify.": [
+        "Invia messaggi WhatsApp automatici dagli eventi logistici — ordine spedito, codice di tracciamento salvato o rimosso, data di consegna promessa e consegna in ritardo — collegando HubGo a Joinotify."
       ],
-      "Send automatic WhatsApp messages when an order is shipped, a tracking code is saved or a delivery is running late.": [
-        "Invia messaggi automatici su WhatsApp quando un ordine viene spedito, un codice di tracciamento è salvato o una consegna è in ritardo."
+      "Send automatic WhatsApp messages from the logistics events: order shipped, tracking code saved or removed, delivery date promised at the checkout and delivery running late.": [
+        "Invia messaggi WhatsApp automatici dagli eventi logistici: ordine spedito, codice di tracciamento salvato o rimosso, data di consegna promessa al checkout e consegna in ritardo."
       ],
       "Sent when the order is marked as shipped.": [
         "Inviato quando l'ordine è contrassegnato come spedito."
@@ -1320,6 +1380,12 @@
       ],
       "Shipping date:": [
         "Data di spedizione:"
+      ],
+      "Shipping method": [
+        "Metodo di spedizione"
+      ],
+      "Shipping method (HubGo)": [
+        "Metodo di spedizione (HubGo)"
       ],
       "Shipping method chosen at the checkout": [
         "Metodo di spedizione scelto al checkout"
@@ -1408,8 +1474,17 @@
       "The address features stay off until an API key is saved below.": [
         "Le funzionalità dell'indirizzo rimangono disattivate finché non viene salvata una chiave API qui sotto."
       ],
-      "The Elementor shipping calculator widget requires an active license and is unavailable. Pages already using the widget stop displaying it until the license is activated.": [
-        "Il widget del calcolatore di spedizione Elementor richiede una licenza attiva ed è non disponibile. Le pagine che già utilizzano il widget smettono di visualizzarlo fino a quando la licenza non viene attivata."
+      "The billing e-mail on the order.": [
+        "L'e-mail di fatturazione dell'ordine."
+      ],
+      "The carrier on the tracking code, falling back to the one quoted at the checkout.": [
+        "Il corriere del codice di tracciamento o, in mancanza, quello quotato al checkout."
+      ],
+      "The current WooCommerce order status.": [
+        "Lo stato attuale dell'ordine WooCommerce."
+      ],
+      "The delivery estimate, in business days, quoted at the checkout.": [
+        "La stima di consegna, in giorni lavorativi, quotata al checkout."
       ],
       "The key stays on the server and is never sent to the browser.": [
         "La chiave rimane sul server e non viene mai inviata al browser."
@@ -1435,14 +1510,23 @@
       "The package source is not allowed.": [
         "La fonte del pacco non è consentita."
       ],
+      "The payment gateway used on the order.": [
+        "Il gateway di pagamento usato nell'ordine."
+      ],
       "The plugin was downloaded, but its main file was not found.": [
         "Il plugin è stato scaricato, ma il suo file principale non è stato trovato."
+      ],
+      "The products on the WooCommerce order.": [
+        "I prodotti dell'ordine WooCommerce."
       ],
       "The requested plugin is invalid.": [
         "Il plugin richiesto non è valido."
       ],
       "The shipping calculator is disabled in the HubGo settings.": [
         "Il calcolatore di spedizione è disabilitato nelle impostazioni di HubGo."
+      ],
+      "The shipping method chosen at the checkout, as HubGo stored it on the order.": [
+        "Il metodo di spedizione scelto al checkout, così come HubGo lo ha salvato nell'ordine."
       ],
       "The site will stop receiving updates and the Pro features will be locked until a new activation.": [
         "Il sito smetterà di ricevere aggiornamenti e le funzionalità Pro saranno bloccate fino a una nuova attivazione."
@@ -1453,14 +1537,20 @@
       "The stored key was refused by the server.": [
         "La chiave memorizzata è stata rifiutata dal server."
       ],
+      "The tracking code the event is about.": [
+        "Il codice di tracciamento a cui si riferisce l'evento."
+      ],
       "The update service is not available.": [
         "Il servizio di aggiornamento non è disponibile."
       ],
-      "The widget requires an active license. Without one it stops being registered and disappears from the pages already using it — the calculator displayed automatically on the product page keeps working.": [
-        "Il widget richiede una licenza attiva. Senza di essa smette di essere registrato e scompare dalle pagine che lo utilizzano già — il calcolatore visualizzato automaticamente nella pagina del prodotto continua a funzionare."
-      ],
       "The window opens outside the widget but inherits these values automatically.": [
         "La finestra si apre al di fuori del widget ma eredita automaticamente questi valori."
+      ],
+      "The WooCommerce order total.": [
+        "Il totale dell'ordine WooCommerce."
+      ],
+      "The WooCommerce shipping method on the order.": [
+        "Il metodo di spedizione WooCommerce dell'ordine."
       ],
       "There are unsaved changes.": [
         "Ci sono modifiche non salvate."
@@ -1495,6 +1585,12 @@
       "Too many lookups in a short time. Wait a moment and try again.": [
         "Troppe ricerche in un breve periodo. Aspetta un momento e riprova."
       ],
+      "Total discount on the order (WooCommerce)": [
+        "Sconto totale dell'ordine (WooCommerce)"
+      ],
+      "Total tax on the order (WooCommerce)": [
+        "Imposte totali dell'ordine (WooCommerce)"
+      ],
       "Track": [
         "Traccia"
       ],
@@ -1512,6 +1608,9 @@
       ],
       "Tracking code generated in Melhor Envio.": [
         "Codice di tracciamento generato in Melhor Envio."
+      ],
+      "Tracking code removed from the order": [
+        "Codice di tracciamento rimosso dall'ordine"
       ],
       "Tracking code saved on the order": [
         "Codice di tracciamento salvato sull'ordine"
@@ -1567,8 +1666,14 @@
       "Use the same carrier, if available": [
         "Usa lo stesso corriere, se disponibile"
       ],
+      "Value of a specific checkout field on the order. Replace FIELD_ID with the field ID, for example: billing_email.": [
+        "Valore di un campo specifico del checkout nell'ordine. Sostituisci FIELD_ID con l'ID del campo, ad esempio: billing_email."
+      ],
       "Version": [
         "Versione"
+      ],
+      "Version %s is available, but installing it needs an active license.": [
+        "La versione %s è disponibile, ma per installarla serve una licenza attiva."
       ],
       "Version %s is available.": [
         "La versione %s è disponibile."
@@ -1585,6 +1690,9 @@
       "What you unlock": [
         "Cosa sblocchi"
       ],
+      "When a tracking code is removed from the order": [
+        "Quando un codice di tracciamento viene rimosso dall'ordine"
+      ],
       "When a tracking code is saved on the order": [
         "Quando un codice di tracciamento è salvato sull'ordine"
       ],
@@ -1596,6 +1704,12 @@
       ],
       "Where to display the calculator on the product page. The last two options place nothing automatically, so the calculator only shows where you insert it.": [
         "Dove visualizzare il calcolatore nella pagina del prodotto. Le ultime due opzioni non posizionano nulla automaticamente, quindi il calcolatore mostra solo dove lo inserisci."
+      ],
+      "Whether the WooCommerce order has been paid.": [
+        "Se l'ordine WooCommerce è stato pagato."
+      ],
+      "Whole days elapsed since the promised delivery date": [
+        "Giorni interi trascorsi dalla data di consegna promessa"
       ],
       "With the integration enabled, drag the \"Shipping calculator\" widget (HubGo category) onto any page. Styles set on the widget apply to that instance only and take precedence over the Appearance tab.": [
         "Con l'integrazione abilitata, trascina il widget \"Calcolatore di spedizione\" (categoria HubGo) su qualsiasi pagina. Gli stili impostati sul widget si applicano solo a quell'istanza e hanno la precedenza sulla scheda Aspetto."
@@ -1635,6 +1749,12 @@
       ],
       "Your license is active. You can keep it synchronized here whenever the status changes on the server.": [
         "La tua licenza è attiva. Puoi mantenerla sincronizzata qui ogni volta che lo stato cambia sul server."
+      ],
+      "Your license is not active, but this site is still receiving updates. Renew it to keep them coming.": [
+        "La tua licenza non è attiva, ma questo sito riceve ancora gli aggiornamenti. Rinnovala per continuare a riceverli."
+      ],
+      "Your license is not active. New versions are still announced here, but installing them needs an active license.": [
+        "La tua licenza non è attiva. Le nuove versioni vengono ancora annunciate qui, ma per installarle serve una licenza attiva."
       ],
       "Your license key": [
         "La tua chiave di licenza"

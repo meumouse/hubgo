@@ -40,6 +40,9 @@
       "450 Daisy Street - Curitiba/PR - Brazil (postcode: 80000-100)": [
         "450 Daisy Street - Curitiba/PR - Brazil (postcode: 80000-100)"
       ],
+      "450 Daisy Street, Curitiba, PR 80000-100, Brazil": [
+        "450 Daisy Street, Curitiba, PR 80000-100, Brazil"
+      ],
       "About": [
         "About"
       ],
@@ -60,9 +63,6 @@
       ],
       "Activate WooCommerce": [
         "Activate WooCommerce"
-      ],
-      "Activate your HubGo license to use this integration.": [
-        "Activate your HubGo license to use this integration."
       ],
       "Activate your license to receive automatic updates and unlock the Pro features. Questions? Visit our": [
         "Activate your license to receive automatic updates and unlock the Pro features. Questions? Visit our"
@@ -93,6 +93,9 @@
       ],
       "Address lookup is not configured.": [
         "Address lookup is not configured."
+      ],
+      "Address used in the tracking link. Use %1$s where the code should go, and %2$s for the carrier.": [
+        "Address used in the tracking link. Use %1$s where the code should go, and %2$s for the carrier."
       ],
       "Address used in the tracking link. Use %1$s where the code should go.": [
         "Address used in the tracking link. Use %1$s where the code should go."
@@ -204,6 +207,9 @@
       ],
       "Business days added to the carrier estimate before showing the delivery date.": [
         "Business days added to the carrier estimate before showing the delivery date."
+      ],
+      "Business days promised": [
+        "Business days promised"
       ],
       "Business days promised at the checkout": [
         "Business days promised at the checkout"
@@ -406,8 +412,14 @@
       "Could not search addresses.": [
         "Could not search addresses."
       ],
+      "Coupon codes used on the order, separated by commas (WooCommerce)": [
+        "Coupon codes used on the order, separated by commas (WooCommerce)"
+      ],
       "Create a key at %s and enable two APIs on the same project: \"Places API (New)\" for the address search, and \"Geocoding API\" for the destination address shown on the quote.": [
         "Create a key at %s and enable two APIs on the same project: \"Places API (New)\" for the address search, and \"Geocoding API\" for the destination address shown on the quote."
+      ],
+      "Credit card": [
+        "Credit card"
       ],
       "Custom carrier": [
         "Custom carrier"
@@ -420,6 +432,9 @@
       ],
       "Customer billing last name (WooCommerce)": [
         "Customer billing last name (WooCommerce)"
+      ],
+      "Customer e-mail": [
+        "Customer e-mail"
       ],
       "Customer full billing address (WooCommerce)": [
         "Customer full billing address (WooCommerce)"
@@ -436,11 +451,17 @@
       "Data migration": [
         "Data migration"
       ],
+      "Date the order was placed (WooCommerce)": [
+        "Date the order was placed (WooCommerce)"
+      ],
       "day %s": [
         "day %s"
       ],
       "days": [
         "days"
+      ],
+      "Days late": [
+        "Days late"
       ],
       "Deactivate license": [
         "Deactivate license"
@@ -477,9 +498,6 @@
       ],
       "Disabled": [
         "Disabled"
-      ],
-      "Discover Joinotify": [
-        "Discover Joinotify"
       ],
       "Display mode": [
         "Display mode"
@@ -574,6 +592,12 @@
       "Every tracking code on the order, one per line (carrier, code and link). It can also be used as the source of a loop action.": [
         "Every tracking code on the order, one per line (carrier, code and link). It can also be used as the source of a loop action."
       ],
+      "Every tracking code on the order, separated by commas": [
+        "Every tracking code on the order, separated by commas"
+      ],
+      "Every tracking link on the order, one per line. It can also be used as the source of a loop action.": [
+        "Every tracking link on the order, one per line. It can also be used as the source of a loop action."
+      ],
       "Example text inside the postcode field.": [
         "Example text inside the postcode field."
       ],
@@ -589,9 +613,6 @@
       "Express Delivery": [
         "Express Delivery"
       ],
-      "Feature available with an active license": [
-        "Feature available with an active license"
-      ],
       "Features": [
         "Features"
       ],
@@ -600,9 +621,6 @@
       ],
       "Fills in the shipping postcode when the customer has not entered an address yet.": [
         "Fills in the shipping postcode when the customer has not entered an address yet."
-      ],
-      "Fills the carrier on tracking codes added to orders shipped with Frenet, using the carrier Frenet quoted.": [
-        "Fills the carrier on tracking codes added to orders shipped with Frenet, using the carrier Frenet quoted."
       ],
       "Find my postcode": [
         "Find my postcode"
@@ -616,8 +634,14 @@
       "Fired once a day for each shipped order whose promised delivery date has passed.": [
         "Fired once a day for each shipped order whose promised delivery date has passed."
       ],
+      "Fired when a tracking code is deleted from the order. Meant for internal alerts to the shipping team rather than for the customer.": [
+        "Fired when a tracking code is deleted from the order. Meant for internal alerts to the shipping team rather than for the customer."
+      ],
       "Fired when a tracking code is saved on the order.": [
         "Fired when a tracking code is saved on the order."
+      ],
+      "Fired when the order is placed and HubGo stores the delivery date quoted at the checkout. Use it to confirm the estimate right after the purchase.": [
+        "Fired when the order is placed and HubGo stores the delivery date quoted at the checkout. Use it to confirm the estimate right after the purchase."
       ],
       "Fired when the order status changes to Order shipped.": [
         "Fired when the order status changes to Order shipped."
@@ -715,8 +739,14 @@
       "How HubGo reads the shipping data generated by Melhor Envio.": [
         "How HubGo reads the shipping data generated by Melhor Envio."
       ],
+      "How many days have passed since the promised delivery date.": [
+        "How many days have passed since the promised delivery date."
+      ],
       "How many days the customer choice is remembered in their browser.": [
         "How many days the customer choice is remembered in their browser."
+      ],
+      "How many tracking codes the order carries.": [
+        "How many tracking codes the order carries."
       ],
       "How much the page behind the window is blurred. Zero disables the effect.": [
         "How much the page behind the window is blurred. Zero disables the effect."
@@ -799,6 +829,9 @@
       "Install Frenet": [
         "Install Frenet"
       ],
+      "Install Joinotify": [
+        "Install Joinotify"
+      ],
       "Install Melhor Envio": [
         "Install Melhor Envio"
       ],
@@ -825,9 +858,6 @@
       ],
       "Integrations": [
         "Integrations"
-      ],
-      "Integrations marked as Pro require an active HubGo license.": [
-        "Integrations marked as Pro require an active HubGo license."
       ],
       "Integrations saved successfully!": [
         "Integrations saved successfully!"
@@ -943,14 +973,17 @@
       "Link": [
         "Link"
       ],
+      "Link to the order page on the customer's account, where HubGo shows the tracking codes": [
+        "Link to the order page on the customer's account, where HubGo shows the tracking codes"
+      ],
       "List": [
         "List"
       ],
       "List of methods displayed in the details window.": [
         "List of methods displayed in the details window."
       ],
-      "Logistics triggers available in the Joinotify flow builder.": [
-        "Logistics triggers available in the Joinotify flow builder."
+      "Logistics triggers, placeholders and conditions available in the Joinotify flow builder.": [
+        "Logistics triggers, placeholders and conditions available in the Joinotify flow builder."
       ],
       "Maintenance and preferences": [
         "Maintenance and preferences"
@@ -1069,8 +1102,14 @@
       "Notifications": [
         "Notifications"
       ],
+      "Number of tracking codes": [
+        "Number of tracking codes"
+      ],
       "Number of tracking codes registered on the order": [
         "Number of tracking codes registered on the order"
+      ],
+      "On orders shipped with Frenet, saves the tracking code Frenet adds as an order note and fills in the carrier Frenet quoted.": [
+        "On orders shipped with Frenet, saves the tracking code Frenet adds as an order note and fills in the carrier Frenet quoted."
       ],
       "Only shown while the Google Maps integration is active. Leave empty to hide the link.": [
         "Only shown while the Google Maps integration is active. Leave empty to hide the link."
@@ -1093,6 +1132,12 @@
       "Order billing phone (WooCommerce)": [
         "Order billing phone (WooCommerce)"
       ],
+      "Order currency symbol (WooCommerce)": [
+        "Order currency symbol (WooCommerce)"
+      ],
+      "Order is paid": [
+        "Order is paid"
+      ],
       "Order not found.": [
         "Order not found."
       ],
@@ -1102,14 +1147,23 @@
       "Order shipped": [
         "Order shipped"
       ],
+      "Order shipping address as WooCommerce formats it": [
+        "Order shipping address as WooCommerce formats it"
+      ],
       "Order shipping phone (WooCommerce)": [
         "Order shipping phone (WooCommerce)"
+      ],
+      "Order status": [
+        "Order status"
       ],
       "Order status (WooCommerce)": [
         "Order status (WooCommerce)"
       ],
       "Order tables (HPOS)": [
         "Order tables (HPOS)"
+      ],
+      "Order total": [
+        "Order total"
       ],
       "Order total (WooCommerce)": [
         "Order total (WooCommerce)"
@@ -1125,6 +1179,12 @@
       ],
       "Paste the license key you received with your purchase and click Activate to unlock every feature.": [
         "Paste the license key you received with your purchase and click Activate to unlock every feature."
+      ],
+      "Payment method": [
+        "Payment method"
+      ],
+      "Payment method used on the order (WooCommerce)": [
+        "Payment method used on the order (WooCommerce)"
       ],
       "PHP": [
         "PHP"
@@ -1174,12 +1234,6 @@
       "Primary color": [
         "Primary color"
       ],
-      "Pro": [
-        "Pro"
-      ],
-      "Pro feature unlocked": [
-        "Pro feature unlocked"
-      ],
       "Pro integrations: Joinotify and the Elementor widget": [
         "Pro integrations: Joinotify and the Elementor widget"
       ],
@@ -1194,6 +1248,9 @@
       ],
       "Products and quantities purchased on the order, one per line": [
         "Products and quantities purchased on the order, one per line"
+      ],
+      "Products purchased": [
+        "Products purchased"
       ],
       "Quick help": [
         "Quick help"
@@ -1246,6 +1303,9 @@
       "Restored": [
         "Restored"
       ],
+      "Review link for each purchased product, one per line. Pair it with a delay to ask for a review after the delivery.": [
+        "Review link for each purchased product, one per line. Pair it with a delay to ask for a review after the delivery."
+      ],
       "Romania": [
         "Romania"
       ],
@@ -1279,11 +1339,11 @@
       "Selected option background": [
         "Selected option background"
       ],
-      "Send automatic WhatsApp messages from logistics events such as order shipped and tracking code saved, connecting HubGo to Joinotify.": [
-        "Send automatic WhatsApp messages from logistics events such as order shipped and tracking code saved, connecting HubGo to Joinotify."
+      "Send automatic WhatsApp messages from logistics events — order shipped, tracking code saved or removed, delivery date promised and delivery running late — connecting HubGo to Joinotify.": [
+        "Send automatic WhatsApp messages from logistics events — order shipped, tracking code saved or removed, delivery date promised and delivery running late — connecting HubGo to Joinotify."
       ],
-      "Send automatic WhatsApp messages when an order is shipped, a tracking code is saved or a delivery is running late.": [
-        "Send automatic WhatsApp messages when an order is shipped, a tracking code is saved or a delivery is running late."
+      "Send automatic WhatsApp messages from the logistics events: order shipped, tracking code saved or removed, delivery date promised at the checkout and delivery running late.": [
+        "Send automatic WhatsApp messages from the logistics events: order shipped, tracking code saved or removed, delivery date promised at the checkout and delivery running late."
       ],
       "Sent when the order is marked as shipped.": [
         "Sent when the order is marked as shipped."
@@ -1320,6 +1380,12 @@
       ],
       "Shipping date:": [
         "Shipping date:"
+      ],
+      "Shipping method": [
+        "Shipping method"
+      ],
+      "Shipping method (HubGo)": [
+        "Shipping method (HubGo)"
       ],
       "Shipping method chosen at the checkout": [
         "Shipping method chosen at the checkout"
@@ -1408,8 +1474,17 @@
       "The address features stay off until an API key is saved below.": [
         "The address features stay off until an API key is saved below."
       ],
-      "The Elementor shipping calculator widget requires an active license and is unavailable. Pages already using the widget stop displaying it until the license is activated.": [
-        "The Elementor shipping calculator widget requires an active license and is unavailable. Pages already using the widget stop displaying it until the license is activated."
+      "The billing e-mail on the order.": [
+        "The billing e-mail on the order."
+      ],
+      "The carrier on the tracking code, falling back to the one quoted at the checkout.": [
+        "The carrier on the tracking code, falling back to the one quoted at the checkout."
+      ],
+      "The current WooCommerce order status.": [
+        "The current WooCommerce order status."
+      ],
+      "The delivery estimate, in business days, quoted at the checkout.": [
+        "The delivery estimate, in business days, quoted at the checkout."
       ],
       "The key stays on the server and is never sent to the browser.": [
         "The key stays on the server and is never sent to the browser."
@@ -1435,14 +1510,23 @@
       "The package source is not allowed.": [
         "The package source is not allowed."
       ],
+      "The payment gateway used on the order.": [
+        "The payment gateway used on the order."
+      ],
       "The plugin was downloaded, but its main file was not found.": [
         "The plugin was downloaded, but its main file was not found."
+      ],
+      "The products on the WooCommerce order.": [
+        "The products on the WooCommerce order."
       ],
       "The requested plugin is invalid.": [
         "The requested plugin is invalid."
       ],
       "The shipping calculator is disabled in the HubGo settings.": [
         "The shipping calculator is disabled in the HubGo settings."
+      ],
+      "The shipping method chosen at the checkout, as HubGo stored it on the order.": [
+        "The shipping method chosen at the checkout, as HubGo stored it on the order."
       ],
       "The site will stop receiving updates and the Pro features will be locked until a new activation.": [
         "The site will stop receiving updates and the Pro features will be locked until a new activation."
@@ -1453,14 +1537,20 @@
       "The stored key was refused by the server.": [
         "The stored key was refused by the server."
       ],
+      "The tracking code the event is about.": [
+        "The tracking code the event is about."
+      ],
       "The update service is not available.": [
         "The update service is not available."
       ],
-      "The widget requires an active license. Without one it stops being registered and disappears from the pages already using it — the calculator displayed automatically on the product page keeps working.": [
-        "The widget requires an active license. Without one it stops being registered and disappears from the pages already using it — the calculator displayed automatically on the product page keeps working."
-      ],
       "The window opens outside the widget but inherits these values automatically.": [
         "The window opens outside the widget but inherits these values automatically."
+      ],
+      "The WooCommerce order total.": [
+        "The WooCommerce order total."
+      ],
+      "The WooCommerce shipping method on the order.": [
+        "The WooCommerce shipping method on the order."
       ],
       "There are unsaved changes.": [
         "There are unsaved changes."
@@ -1495,6 +1585,12 @@
       "Too many lookups in a short time. Wait a moment and try again.": [
         "Too many lookups in a short time. Wait a moment and try again."
       ],
+      "Total discount on the order (WooCommerce)": [
+        "Total discount on the order (WooCommerce)"
+      ],
+      "Total tax on the order (WooCommerce)": [
+        "Total tax on the order (WooCommerce)"
+      ],
       "Track": [
         "Track"
       ],
@@ -1512,6 +1608,9 @@
       ],
       "Tracking code generated in Melhor Envio.": [
         "Tracking code generated in Melhor Envio."
+      ],
+      "Tracking code removed from the order": [
+        "Tracking code removed from the order"
       ],
       "Tracking code saved on the order": [
         "Tracking code saved on the order"
@@ -1567,8 +1666,14 @@
       "Use the same carrier, if available": [
         "Use the same carrier, if available"
       ],
+      "Value of a specific checkout field on the order. Replace FIELD_ID with the field ID, for example: billing_email.": [
+        "Value of a specific checkout field on the order. Replace FIELD_ID with the field ID, for example: billing_email."
+      ],
       "Version": [
         "Version"
+      ],
+      "Version %s is available, but installing it needs an active license.": [
+        "Version %s is available, but installing it needs an active license."
       ],
       "Version %s is available.": [
         "Version %s is available."
@@ -1585,6 +1690,9 @@
       "What you unlock": [
         "What you unlock"
       ],
+      "When a tracking code is removed from the order": [
+        "When a tracking code is removed from the order"
+      ],
       "When a tracking code is saved on the order": [
         "When a tracking code is saved on the order"
       ],
@@ -1596,6 +1704,12 @@
       ],
       "Where to display the calculator on the product page. The last two options place nothing automatically, so the calculator only shows where you insert it.": [
         "Where to display the calculator on the product page. The last two options place nothing automatically, so the calculator only shows where you insert it."
+      ],
+      "Whether the WooCommerce order has been paid.": [
+        "Whether the WooCommerce order has been paid."
+      ],
+      "Whole days elapsed since the promised delivery date": [
+        "Whole days elapsed since the promised delivery date"
       ],
       "With the integration enabled, drag the \"Shipping calculator\" widget (HubGo category) onto any page. Styles set on the widget apply to that instance only and take precedence over the Appearance tab.": [
         "With the integration enabled, drag the \"Shipping calculator\" widget (HubGo category) onto any page. Styles set on the widget apply to that instance only and take precedence over the Appearance tab."
@@ -1635,6 +1749,12 @@
       ],
       "Your license is active. You can keep it synchronized here whenever the status changes on the server.": [
         "Your license is active. You can keep it synchronized here whenever the status changes on the server."
+      ],
+      "Your license is not active, but this site is still receiving updates. Renew it to keep them coming.": [
+        "Your license is not active, but this site is still receiving updates. Renew it to keep them coming."
+      ],
+      "Your license is not active. New versions are still announced here, but installing them needs an active license.": [
+        "Your license is not active. New versions are still announced here, but installing them needs an active license."
       ],
       "Your license key": [
         "Your license key"

@@ -49,13 +49,17 @@ msgid "%s order changed to \"Order shipped\"."
 msgid_plural "%s orders changed to \"Order shipped\"."
 msgstr[0] "%s ordine cambiato in \"Ordine spedito\"."
 
-#: admin/src/Integrations/Joinotify.php:529
+#: admin/src/Integrations/Joinotify.php:1178
 msgid "123 Flower Street - Curitiba/PR - Brazil (postcode: 80000-000)"
 msgstr "123 Flower Street - Curitiba/PR - Brasile (codice postale: 80000-000)"
 
-#: admin/src/Integrations/Joinotify.php:541
+#: admin/src/Integrations/Joinotify.php:1190
 msgid "450 Daisy Street - Curitiba/PR - Brazil (postcode: 80000-100)"
 msgstr "450 Daisy Street - Curitiba/PR - Brasile (codice postale: 80000-100)"
+
+#: admin/src/Integrations/Joinotify.php:1166
+msgid "450 Daisy Street, Curitiba, PR 80000-100, Brazil"
+msgstr "450 Daisy Street, Curitiba, PR 80000-100, Brasile"
 
 #: admin/src/Admin/Settings/Registry.php:260
 msgid "About"
@@ -65,11 +69,11 @@ msgstr "Informazioni"
 msgid "Accent color used on links, icons and the selected option."
 msgstr "Colore accentato usato su link, icone e l'opzione selezionata."
 
-#: app/src/pages/license/LicensePage.vue:354
+#: app/src/pages/license/LicensePage.vue:373
 msgid "Account status"
 msgstr "Stato dell'account"
 
-#: app/src/pages/license/LicensePage.vue:113
+#: app/src/pages/license/LicensePage.vue:132
 msgid ""
 "Activate a key to receive automatic updates and to unlock every Pro "
 "integration."
@@ -77,15 +81,13 @@ msgstr ""
 "Attiva una chiave per ricevere aggiornamenti automatici e sbloccare ogni "
 "integrazione Pro."
 
-#: admin/src/Integrations/Elementor.php:199
-#: app/src/pages/integrations/IntegrationsPage.vue:248
 #: app/src/pages/license/LicensePage.vue:89
-#: app/src/pages/license/LicensePage.vue:401
-#: app/src/pages/license/LicensePage.vue:423
+#: app/src/pages/license/LicensePage.vue:420
+#: app/src/pages/license/LicensePage.vue:442
 msgid "Activate license"
 msgstr "Attiva licenza"
 
-#: app/src/pages/license/LicensePage.vue:457
+#: app/src/pages/license/LicensePage.vue:485
 msgid "Activate the license to unlock the HubGo Pro features."
 msgstr "Attiva la licenza per sbloccare le funzionalità Pro di HubGo."
 
@@ -93,11 +95,7 @@ msgstr "Attiva la licenza per sbloccare le funzionalità Pro di HubGo."
 msgid "Activate WooCommerce"
 msgstr "Attiva WooCommerce"
 
-#: admin/src/Admin/Settings/Registry.php:495
-msgid "Activate your HubGo license to use this integration."
-msgstr "Attiva la tua licenza HubGo per utilizzare questa integrazione."
-
-#: app/src/pages/license/LicensePage.vue:256
+#: app/src/pages/license/LicensePage.vue:275
 msgid ""
 "Activate your license to receive automatic updates and unlock the Pro "
 "features. Questions? Visit our"
@@ -105,7 +103,7 @@ msgstr ""
 "Attiva la tua licenza per ricevere aggiornamenti automatici e sbloccare le "
 "funzionalità Pro. Domande? Visita il nostro"
 
-#: admin/src/Core/Update_Checker.php:219
+#: admin/src/Core/Update_Checker.php:237
 msgid "Activate your license to receive updates."
 msgstr "Attiva la tua licenza per ricevere aggiornamenti."
 
@@ -146,9 +144,13 @@ msgstr "La ricerca dell'indirizzo è disabilitata."
 msgid "Address lookup is not configured."
 msgstr "La ricerca dell'indirizzo non è configurata."
 
-#: admin/src/Integrations/Frenet.php:236
-msgid "Address used in the tracking link. Use %1$s where the code should go, and %2$s for the carrier."
+#: admin/src/Integrations/Frenet.php:258
+msgid ""
+"Address used in the tracking link. Use %1$s where the code should go, and "
+"%2$s for the carrier."
 msgstr ""
+"Indirizzo usato nel link di tracciamento. Usa %1$s dove va inserito il "
+"codice e %2$s per il corriere."
 
 #: admin/src/Integrations/Melhor_Envio.php:295
 msgid "Address used in the tracking link. Use %1$s where the code should go."
@@ -168,7 +170,7 @@ msgstr ""
 msgid "Adds the order shipped status to WooCommerce."
 msgstr "Aggiunge lo stato dell'ordine spedito a WooCommerce."
 
-#: admin/src/Integrations/Elementor.php:112
+#: admin/src/Integrations/Elementor.php:102
 msgid ""
 "Adds the shipping calculator as an Elementor widget, with its own color, "
 "spacing and typography controls."
@@ -196,15 +198,15 @@ msgstr "Aspetto"
 msgid "Apply the postcode at the checkout"
 msgstr "Applica il codice postale al checkout"
 
-#: admin/src/Core/Assets.php:366
+#: admin/src/Core/Assets.php:384
 msgid "Are you sure you want to remove this tracking code?"
 msgstr "Sei sicuro di voler rimuovere questo codice di tracciamento?"
 
-#: app/src/storefront/components/ShippingCalculator.vue:115
+#: app/src/storefront/components/ShippingCalculator.vue:118
 msgid "Arrives free"
 msgstr "Arriva gratis"
 
-#: app/src/storefront/components/ShippingCalculator.vue:114
+#: app/src/storefront/components/ShippingCalculator.vue:117
 msgid "Arrives free by %s"
 msgstr "Arriva gratis entro %s"
 
@@ -228,7 +230,7 @@ msgstr "Calcolo automatico"
 msgid "Automatic updates"
 msgstr "Aggiornamenti automatici"
 
-#: app/src/pages/license/LicensePage.vue:116
+#: app/src/pages/license/LicensePage.vue:135
 msgid "Automatic updates and license synchronization"
 msgstr "Aggiornamenti automatici e sincronizzazione della licenza"
 
@@ -285,7 +287,7 @@ msgstr "Prima del pulsante aggiungi al carrello"
 msgid "Belgium"
 msgstr "Belgio"
 
-#: admin/src/Integrations/Joinotify.php:153
+#: admin/src/Integrations/Joinotify.php:264
 msgid ""
 "Besides this switch, the \"HubGo\" card must also be enabled on the "
 "Joinotify Applications tab."
@@ -345,7 +347,11 @@ msgstr ""
 "Giorni lavorativi aggiunti alla stima del corriere prima di mostrare la "
 "data di consegna."
 
-#: admin/src/Integrations/Joinotify.php:345
+#: admin/src/Integrations/Joinotify.php:503
+msgid "Business days promised"
+msgstr "Giorni lavorativi promessi"
+
+#: admin/src/Integrations/Joinotify.php:855
 msgid "Business days promised at the checkout"
 msgstr "Giorni lavorativi promessi al checkout"
 
@@ -354,18 +360,18 @@ msgstr "Giorni lavorativi promessi al checkout"
 msgid "Button text"
 msgstr "Testo del pulsante"
 
-#: app/src/pages/license/LicensePage.vue:290
-#: app/src/pages/license/LicensePage.vue:431
+#: app/src/pages/license/LicensePage.vue:309
+#: app/src/pages/license/LicensePage.vue:450
 msgid "Buy a license"
 msgstr "Acquista una licenza"
 
-#: app/src/pages/integrations/components/IntegrationCard.vue:41
+#: app/src/pages/integrations/components/IntegrationCard.vue:38
 msgid "By %s"
 msgstr "Di %s"
 
 #: admin/src/Admin/Default_Options.php:44
-#: app/src/storefront/components/ShippingCalculator.vue:211
-#: app/src/storefront/components/ShippingOptionsModal.vue:101
+#: app/src/storefront/components/ShippingCalculator.vue:220
+#: app/src/storefront/components/ShippingOptionsModal.vue:102
 msgid "Calculate"
 msgstr "Calcola"
 
@@ -388,11 +394,11 @@ msgstr ""
 "Calcola automaticamente le spese di spedizione utilizzando il codice "
 "postale salvato dal cliente."
 
-#: app/src/storefront/components/ShippingCalculator.vue:228
+#: app/src/storefront/components/ShippingCalculator.vue:237
 msgid "Calculating delivery for %s…"
 msgstr "Calcolando la consegna per %s…"
 
-#: app/src/storefront/components/ShippingOptionsModal.vue:146
+#: app/src/storefront/components/ShippingOptionsModal.vue:147
 msgid "Calculating delivery options…"
 msgstr "Calcolando le opzioni di consegna…"
 
@@ -415,15 +421,16 @@ msgstr "Annulla"
 msgid "Card title"
 msgstr "Titolo della scheda"
 
+#: admin/src/Integrations/Joinotify.php:491
 #: templates/email/hubgo-tracking-info.php:15
 msgid "Carrier"
 msgstr "Corriere"
 
-#: admin/src/Integrations/Joinotify.php:320
+#: admin/src/Integrations/Joinotify.php:830
 msgid "Carrier name"
 msgstr "Nome del corriere"
 
-#: admin/src/Core/Tracking_Manager.php:422
+#: admin/src/Core/Tracking_Manager.php:460
 msgid "Carrier not set"
 msgstr "Corriere non impostato"
 
@@ -455,7 +462,7 @@ msgstr "Barare, eh?"
 msgid "Check for new orders"
 msgstr "Controlla nuovi ordini"
 
-#: admin/src/Core/Update_Checker.php:89
+#: admin/src/Core/Update_Checker.php:90
 msgid "Check for updates"
 msgstr "Controlla aggiornamenti"
 
@@ -467,7 +474,7 @@ msgstr "Controlla lo stato attuale della tua licenza e aggiornalo quando necessa
 msgid "Check the delivery time and price"
 msgstr "Controlla il tempo di consegna e il prezzo"
 
-#: admin/src/Core/Assets.php:414
+#: admin/src/Core/Assets.php:432
 msgid "Checking for updates…"
 msgstr "Controllo aggiornamenti…"
 
@@ -475,7 +482,7 @@ msgstr "Controllo aggiornamenti…"
 msgid "Choice confirmation"
 msgstr "Conferma scelta"
 
-#: app/src/storefront/components/ShippingOptionsModal.vue:131
+#: app/src/storefront/components/ShippingOptionsModal.vue:132
 msgid "Choose another address"
 msgstr "Scegli un altro indirizzo"
 
@@ -529,12 +536,12 @@ msgstr "Colori e layout della tabella di spedizione visualizzata nel negozio."
 msgid "Colors and typography"
 msgstr "Colori e tipografia"
 
-#: app/src/pages/integrations/components/IntegrationCard.vue:108
+#: app/src/pages/integrations/components/IntegrationCard.vue:102
 msgid "Coming soon"
 msgstr "In arrivo"
 
-#: admin/src/Integrations/Integrations_Base.php:357
-#: app/src/pages/integrations/components/IntegrationCard.vue:42
+#: admin/src/Integrations/Integrations_Base.php:355
+#: app/src/pages/integrations/components/IntegrationCard.vue:39
 msgid "Configure"
 msgstr "Configura"
 
@@ -546,7 +553,7 @@ msgstr "Conferma"
 msgid "Confirmation"
 msgstr "Conferma"
 
-#: app/src/pages/integrations/IntegrationsPage.vue:210
+#: app/src/pages/integrations/IntegrationsPage.vue:205
 msgid ""
 "Connect HubGo to other logistics plugins and services. If you need help, "
 "visit our"
@@ -587,22 +594,22 @@ msgstr "Raggio d'angolo"
 msgid "Could not activate this license."
 msgstr "Impossibile attivare questa licenza."
 
-#: admin/src/Core/Assets.php:147
-#: app/src/storefront/api.js:28
-#: app/src/storefront/api.js:83
-#: app/src/storefront/useShippingQuote.js:216
+#: admin/src/Core/Assets.php:163
+#: app/src/storefront/api.js:33
+#: app/src/storefront/api.js:105
+#: app/src/storefront/useShippingQuote.js:191
 msgid "Could not calculate shipping. Please try again."
 msgstr "Impossibile calcolare la spedizione. Riprova."
 
-#: admin/src/Core/Assets.php:416
+#: admin/src/Core/Assets.php:434
 msgid "Could not check for updates. Please try again."
 msgstr "Impossibile controllare gli aggiornamenti. Riprova."
 
-#: app/src/pages/license/LicensePage.vue:213
+#: app/src/pages/license/LicensePage.vue:232
 msgid "Could not complete the operation."
 msgstr "Impossibile completare l'operazione."
 
-#: app/src/pages/integrations/IntegrationsPage.vue:193
+#: app/src/pages/integrations/IntegrationsPage.vue:188
 msgid "Could not install the plugin."
 msgstr "Impossibile installare il plugin."
 
@@ -610,11 +617,11 @@ msgstr "Impossibile installare il plugin."
 msgid "Could not install the plugin. Try installing it manually."
 msgstr "Impossibile installare il plugin. Prova a installarlo manualmente."
 
-#: app/src/pages/integrations/IntegrationsPage.vue:85
+#: app/src/pages/integrations/IntegrationsPage.vue:81
 msgid "Could not load the integrations."
 msgstr "Impossibile caricare le integrazioni."
 
-#: app/src/pages/license/LicensePage.vue:181
+#: app/src/pages/license/LicensePage.vue:200
 msgid "Could not load the license data."
 msgstr "Impossibile caricare i dati della licenza."
 
@@ -622,8 +629,8 @@ msgstr "Impossibile caricare i dati della licenza."
 msgid "Could not load the settings."
 msgstr "Impossibile caricare le impostazioni."
 
-#: admin/src/Core/License.php:441
-#: admin/src/Core/License.php:484
+#: admin/src/Core/License.php:540
+#: admin/src/Core/License.php:597
 msgid "Could not reach the license server. Please try again."
 msgstr "Impossibile raggiungere il server di licenza. Riprova."
 
@@ -631,7 +638,7 @@ msgstr "Impossibile raggiungere il server di licenza. Riprova."
 msgid "Could not read the environment information."
 msgstr "Impossibile leggere le informazioni sull'ambiente."
 
-#: admin/src/Core/Assets.php:367
+#: admin/src/Core/Assets.php:385
 msgid "Could not remove the tracking code. Please try again."
 msgstr "Impossibile rimuovere il codice di tracciamento. Riprova."
 
@@ -651,7 +658,7 @@ msgstr "Impossibile ripristinare le impostazioni."
 msgid "Could not run the migration."
 msgstr "Impossibile eseguire la migrazione."
 
-#: admin/src/Core/Assets.php:368
+#: admin/src/Core/Assets.php:386
 msgid "Could not save the tracking code. Please try again."
 msgstr "Impossibile salvare il codice di tracciamento. Riprova."
 
@@ -664,6 +671,10 @@ msgstr "Impossibile cercare indirizzi in questo momento. Riprova."
 msgid "Could not search addresses."
 msgstr "Impossibile cercare indirizzi."
 
+#: admin/src/Integrations/Joinotify.php:1152
+msgid "Coupon codes used on the order, separated by commas (WooCommerce)"
+msgstr "Codici coupon usati nell'ordine, separati da virgole (WooCommerce)"
+
 #: admin/src/Integrations/Google_Maps.php:271
 msgid ""
 "Create a key at %s and enable two APIs on the same project: \"Places API "
@@ -674,27 +685,35 @@ msgstr ""
 "(New)\" per la ricerca degli indirizzi e \"Geocoding API\" per l'indirizzo "
 "di destinazione mostrato nel preventivo."
 
+#: admin/src/Integrations/Joinotify.php:1127
+msgid "Credit card"
+msgstr "Carta di credito"
+
 #: admin/src/Admin/Order_Tracking_Meta_Box.php:129
 msgid "Custom carrier"
 msgstr "Corriere personalizzato"
 
-#: admin/src/Integrations/Joinotify.php:446
+#: admin/src/Integrations/Joinotify.php:995
 msgid "Customer billing e-mail (WooCommerce)"
 msgstr "E-mail di fatturazione del cliente (WooCommerce)"
 
-#: admin/src/Integrations/Joinotify.php:422
+#: admin/src/Integrations/Joinotify.php:971
 msgid "Customer billing first name (WooCommerce)"
 msgstr "Nome di battesimo del cliente per la fatturazione (WooCommerce)"
 
-#: admin/src/Integrations/Joinotify.php:434
+#: admin/src/Integrations/Joinotify.php:983
 msgid "Customer billing last name (WooCommerce)"
 msgstr "Cognome del cliente per la fatturazione (WooCommerce)"
 
-#: admin/src/Integrations/Joinotify.php:527
+#: admin/src/Integrations/Joinotify.php:540
+msgid "Customer e-mail"
+msgstr "E-mail del cliente"
+
+#: admin/src/Integrations/Joinotify.php:1176
 msgid "Customer full billing address (WooCommerce)"
 msgstr "Indirizzo completo di fatturazione del cliente (WooCommerce)"
 
-#: admin/src/Integrations/Joinotify.php:539
+#: admin/src/Integrations/Joinotify.php:1188
 msgid "Customer full shipping address (WooCommerce)"
 msgstr "Indirizzo completo di spedizione del cliente (WooCommerce)"
 
@@ -710,6 +729,10 @@ msgstr "Zona pericolosa"
 msgid "Data migration"
 msgstr "Migrazione dei dati"
 
+#: admin/src/Integrations/Joinotify.php:1060
+msgid "Date the order was placed (WooCommerce)"
+msgstr "Data in cui è stato effettuato l'ordine (WooCommerce)"
+
 #: admin/src/Core/Delivery_Estimate.php:382
 msgid "day %s"
 msgstr "giorno %s"
@@ -719,11 +742,15 @@ msgstr "giorno %s"
 msgid "days"
 msgstr "giorni"
 
-#: app/src/pages/license/LicensePage.vue:326
+#: admin/src/Integrations/Joinotify.php:507
+msgid "Days late"
+msgstr "Giorni di ritardo"
+
+#: app/src/pages/license/LicensePage.vue:345
 msgid "Deactivate license"
 msgstr "Disattiva licenza"
 
-#: app/src/pages/license/LicensePage.vue:479
+#: app/src/pages/license/LicensePage.vue:507
 msgid "Deactivate the license on this site?"
 msgstr "Disattivare la licenza su questo sito?"
 
@@ -743,22 +770,24 @@ msgstr "Consegnato oggi"
 msgid "Delivery"
 msgstr "Consegna"
 
-#: admin/src/Integrations/Joinotify.php:335
+#: admin/src/Integrations/Joinotify.php:449
+#: admin/src/Integrations/Joinotify.php:845
+#: admin/src/Integrations/Joinotify.php:1563
 msgid "Delivery date promised at the checkout"
 msgstr "Data di consegna promessa al checkout"
 
-#: admin/src/Integrations/Joinotify.php:248
-#: admin/src/Integrations/Joinotify.php:636
+#: admin/src/Integrations/Joinotify.php:457
+#: admin/src/Integrations/Joinotify.php:1592
 msgid "Delivery is late"
 msgstr "La consegna è in ritardo"
 
 #: admin/src/Admin/Settings/Registry.php:170
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:410
-#: app/src/storefront/components/ShippingOptionsModal.vue:86
+#: app/src/storefront/components/ShippingOptionsModal.vue:87
 msgid "Delivery options"
 msgstr "Opzioni di consegna"
 
-#: app/src/storefront/components/ShippingCalculator.vue:118
+#: app/src/storefront/components/ShippingCalculator.vue:121
 msgid "Delivery via %s"
 msgstr "Consegna tramite %s"
 
@@ -771,10 +800,6 @@ msgstr "Finestra dettagli"
 #: admin/src/Admin/System_Status.php:55
 msgid "Disabled"
 msgstr "Disabilitato"
-
-#: admin/src/Integrations/Joinotify.php:145
-msgid "Discover Joinotify"
-msgstr "Scopri Joinotify"
 
 #: app/src/pages/integrations/components/IntegrationsGrid.vue:199
 msgid "Display mode"
@@ -826,7 +851,7 @@ msgstr ""
 "Visualizza la metabox del codice di tracciamento nella schermata "
 "dell'ordine."
 
-#: admin/src/Integrations/Joinotify.php:436
+#: admin/src/Integrations/Joinotify.php:985
 msgid "Doe"
 msgstr "Doe"
 
@@ -834,8 +859,8 @@ msgstr "Doe"
 msgid "E-commerce"
 msgstr "E-commerce"
 
-#: admin/src/Integrations/Elementor.php:111
-#: admin/src/Integrations/Elementor.php:128
+#: admin/src/Integrations/Elementor.php:101
+#: admin/src/Integrations/Elementor.php:117
 msgid "Elementor"
 msgstr "Elementor"
 
@@ -843,7 +868,7 @@ msgstr "Elementor"
 msgid "Elementor widget only"
 msgstr "Solo widget Elementor"
 
-#: app/src/pages/integrations/components/IntegrationCard.vue:132
+#: app/src/pages/integrations/components/IntegrationCard.vue:126
 msgid "Enable %s"
 msgstr "Abilita %s"
 
@@ -851,7 +876,7 @@ msgstr "Abilita %s"
 msgid "Enable the HubGo modules and choose where the calculator shows up."
 msgstr "Abilita i moduli HubGo e scegli dove mostrare il calcolatore."
 
-#: app/src/pages/integrations/components/IntegrationCard.vue:124
+#: app/src/pages/integrations/components/IntegrationCard.vue:118
 msgid "Enable the integration to access its settings."
 msgstr "Abilita l'integrazione per accedere alle sue impostazioni."
 
@@ -861,12 +886,12 @@ msgid "Enabled"
 msgstr "Abilitato"
 
 #: app/src/storefront/components/CepForm.vue:62
-#: app/src/storefront/useShippingQuote.js:159
+#: app/src/storefront/useShippingQuote.js:127
 msgid "Enter a valid postcode"
 msgstr "Inserisci un codice postale valido"
 
 #: admin/src/API/Routes/License_Activate.php:35
-#: app/src/pages/license/LicensePage.vue:223
+#: app/src/pages/license/LicensePage.vue:242
 msgid "Enter the license key."
 msgstr "Inserisci la chiave di licenza."
 
@@ -882,15 +907,15 @@ msgstr "Inserisci la tua chiave di licenza per sbloccare le funzionalità Pro."
 msgid "Enter your postcode"
 msgstr "Inserisci il tuo codice postale"
 
-#: app/src/pages/integrations/IntegrationsPage.vue:151
-#: app/src/pages/integrations/IntegrationsPage.vue:193
-#: app/src/pages/license/LicensePage.vue:213
+#: app/src/pages/integrations/IntegrationsPage.vue:147
+#: app/src/pages/integrations/IntegrationsPage.vue:188
+#: app/src/pages/license/LicensePage.vue:232
 #: app/src/pages/settings/SettingsPage.vue:161
 #: app/src/pages/settings/SettingsPage.vue:185
 msgid "Error"
 msgstr "Errore"
 
-#: app/src/pages/integrations/IntegrationsPage.vue:151
+#: app/src/pages/integrations/IntegrationsPage.vue:147
 msgid "Error saving the integrations."
 msgstr "Errore durante il salvataggio delle integrazioni."
 
@@ -918,7 +943,7 @@ msgstr ""
 msgid "Every text displayed by the calculator and by the shipping table."
 msgstr "Ogni testo visualizzato dal calcolatore e dalla tabella di spedizione."
 
-#: admin/src/Integrations/Joinotify.php:412
+#: admin/src/Integrations/Joinotify.php:929
 msgid ""
 "Every tracking code on the order, one per line (carrier, code and link). It "
 "can also be used as the source of a loop action."
@@ -926,11 +951,23 @@ msgstr ""
 "Ogni codice di tracciamento sull'ordine, uno per riga (corriere, codice e "
 "link). Può anche essere utilizzato come sorgente di un'azione di ciclo."
 
+#: admin/src/Integrations/Joinotify.php:939
+msgid "Every tracking code on the order, separated by commas"
+msgstr "Tutti i codici di tracciamento dell'ordine, separati da virgole"
+
+#: admin/src/Integrations/Joinotify.php:949
+msgid ""
+"Every tracking link on the order, one per line. It can also be used as the "
+"source of a loop action."
+msgstr ""
+"Tutti i link di tracciamento dell'ordine, uno per riga. Può essere usato "
+"anche come origine di un'azione di ciclo."
+
 #: admin/src/Admin/Settings/Registry.php:221
 msgid "Example text inside the postcode field."
 msgstr "Testo di esempio all'interno del campo codice postale."
 
-#: app/src/pages/license/LicensePage.vue:125
+#: app/src/pages/license/LicensePage.vue:144
 msgid "Example: CM-0000-0000-0000"
 msgstr "Esempio: CM-0000-0000-0000"
 
@@ -942,14 +979,10 @@ msgstr "Scaduto"
 msgid "Expires on"
 msgstr "Scade il"
 
-#: admin/src/Integrations/Joinotify.php:322
-#: admin/src/Integrations/Joinotify.php:359
+#: admin/src/Integrations/Joinotify.php:832
+#: admin/src/Integrations/Joinotify.php:869
 msgid "Express Delivery"
 msgstr "Consegna Espressa"
-
-#: app/src/components/badges/ProBadge.vue:42
-msgid "Feature available with an active license"
-msgstr "Funzionalità disponibile con una licenza attiva"
 
 #: admin/src/Admin/Settings/Registry.php:49
 msgid "Features"
@@ -967,14 +1000,6 @@ msgstr ""
 "Compila il codice postale di spedizione quando il cliente non ha ancora "
 "inserito un indirizzo."
 
-#: admin/src/Integrations/Frenet.php:198
-msgid ""
-"Fills the carrier on tracking codes added to orders shipped with Frenet, "
-"using the carrier Frenet quoted."
-msgstr ""
-"Compila il corriere sui codici di tracciamento aggiunti agli ordini spediti "
-"con Frenet, utilizzando il corriere quotato da Frenet."
-
 #: app/src/storefront/components/CepFinderModal.vue:197
 msgid "Find my postcode"
 msgstr "Trova il mio codice postale"
@@ -987,7 +1012,7 @@ msgstr "Trova il codice postale per indirizzo"
 msgid "Finland"
 msgstr "Finlandia"
 
-#: admin/src/Integrations/Joinotify.php:249
+#: admin/src/Integrations/Joinotify.php:458
 msgid ""
 "Fired once a day for each shipped order whose promised delivery date has "
 "passed."
@@ -995,11 +1020,27 @@ msgstr ""
 "Attivato una volta al giorno per ogni ordine spedito la cui data di "
 "consegna promessa è scaduta."
 
-#: admin/src/Integrations/Joinotify.php:241
+#: admin/src/Integrations/Joinotify.php:442
+msgid ""
+"Fired when a tracking code is deleted from the order. Meant for internal "
+"alerts to the shipping team rather than for the customer."
+msgstr ""
+"Attivato quando un codice di tracciamento viene eliminato dall'ordine. "
+"Pensato per avvisi interni al team di spedizione, non per il cliente."
+
+#: admin/src/Integrations/Joinotify.php:434
 msgid "Fired when a tracking code is saved on the order."
 msgstr "Attivato quando un codice di tracciamento viene salvato sull'ordine."
 
-#: admin/src/Integrations/Joinotify.php:233
+#: admin/src/Integrations/Joinotify.php:450
+msgid ""
+"Fired when the order is placed and HubGo stores the delivery date quoted at "
+"the checkout. Use it to confirm the estimate right after the purchase."
+msgstr ""
+"Attivato quando l'ordine viene effettuato e HubGo salva la data di consegna "
+"stimata al checkout. Usalo per confermare la stima subito dopo l'acquisto."
+
+#: admin/src/Integrations/Joinotify.php:426
 msgid "Fired when the order status changes to Order shipped."
 msgstr "Attivato quando lo stato dell'ordine cambia in Ordine spedito."
 
@@ -1025,9 +1066,9 @@ msgstr "Formato utilizzato per elencare i metodi di consegna restituiti."
 msgid "France"
 msgstr "Francia"
 
-#: app/src/storefront/components/ShippingCalculator.vue:145
-#: app/src/storefront/components/ShippingOptionsModal.vue:176
-#: app/src/storefront/components/ShippingOptionsModal.vue:208
+#: app/src/storefront/components/ShippingCalculator.vue:148
+#: app/src/storefront/components/ShippingOptionsModal.vue:177
+#: app/src/storefront/components/ShippingOptionsModal.vue:209
 msgid "Free"
 msgstr "Gratuito"
 
@@ -1053,9 +1094,9 @@ msgstr "Spedizione gratuita su questo prodotto"
 msgid "Free shipping over %s"
 msgstr "Spedizione gratuita oltre %s"
 
-#: admin/src/Integrations/Frenet.php:179
-#: admin/src/Integrations/Frenet.php:213
-#: admin/src/Integrations/Frenet.php:589
+#: admin/src/Integrations/Frenet.php:229
+#: admin/src/Integrations/Frenet.php:263
+#: admin/src/Integrations/Frenet.php:919
 msgid "Frenet"
 msgstr "Frenet"
 
@@ -1111,8 +1152,8 @@ msgstr "Altezza"
 msgid "Help center"
 msgstr "Centro assistenza"
 
-#: app/src/pages/integrations/IntegrationsPage.vue:212
-#: app/src/pages/license/LicensePage.vue:258
+#: app/src/pages/integrations/IntegrationsPage.vue:207
+#: app/src/pages/license/LicensePage.vue:277
 #: app/src/pages/settings/SettingsPage.vue:209
 msgid "Help Center"
 msgstr "Centro assistenza"
@@ -1122,7 +1163,7 @@ msgstr "Centro assistenza"
 msgid "Hide"
 msgstr "Nascondi"
 
-#: admin/src/Integrations/Frenet.php:202
+#: admin/src/Integrations/Frenet.php:252
 msgid "Hide the Frenet simulator"
 msgstr "Nascondi il simulatore Frenet"
 
@@ -1134,7 +1175,7 @@ msgstr "Nascondi il simulatore Melhor Envio"
 msgid "Hint on the options list"
 msgstr "Suggerimento sulla lista delle opzioni"
 
-#: admin/src/Integrations/Frenet.php:214
+#: admin/src/Integrations/Frenet.php:264
 msgid "How HubGo reads the shipping data generated by Frenet."
 msgstr "Come HubGo legge i dati di spedizione generati da Frenet."
 
@@ -1142,9 +1183,17 @@ msgstr "Come HubGo legge i dati di spedizione generati da Frenet."
 msgid "How HubGo reads the shipping data generated by Melhor Envio."
 msgstr "Come HubGo legge i dati di spedizione generati da Melhor Envio."
 
+#: admin/src/Integrations/Joinotify.php:508
+msgid "How many days have passed since the promised delivery date."
+msgstr "Quanti giorni sono trascorsi dalla data di consegna promessa."
+
 #: admin/src/Admin/Settings/Registry.php:94
 msgid "How many days the customer choice is remembered in their browser."
 msgstr "Quanti giorni la scelta del cliente viene ricordata nel loro browser."
+
+#: admin/src/Integrations/Joinotify.php:500
+msgid "How many tracking codes the order carries."
+msgstr "Quanti codici di tracciamento contiene l'ordine."
 
 #: admin/src/Admin/Settings/Registry.php:186
 msgid "How much the page behind the window is blurred. Zero disables the effect."
@@ -1154,7 +1203,7 @@ msgstr "Quanto è sfocata la pagina dietro la finestra. Zero disabilita l'effett
 msgid "How the delivery methods are presented to the customer."
 msgstr "Come i metodi di consegna vengono presentati al cliente."
 
-#: admin/src/Integrations/Elementor.php:129
+#: admin/src/Integrations/Elementor.php:118
 msgid "How to use the shipping calculator inside Elementor."
 msgstr "Come utilizzare il calcolatore di spedizione all'interno di Elementor."
 
@@ -1162,12 +1211,11 @@ msgstr "Come utilizzare il calcolatore di spedizione all'interno di Elementor."
 msgid "HTTPS"
 msgstr "HTTPS"
 
-#: admin/src/Admin/Menu.php:79
+#: admin/src/Admin/Menu.php:81
 #: admin/src/Core/Plugin.php:388
-#: admin/src/Core/Update_Checker.php:158
-#: admin/src/Integrations/Elementor.php:157
-#: admin/src/Integrations/Elementor.php:196
-#: admin/src/Integrations/Joinotify.php:220
+#: admin/src/Core/Update_Checker.php:159
+#: admin/src/Integrations/Elementor.php:137
+#: admin/src/Integrations/Joinotify.php:413
 #: app/src/components/brand/BrandMark.vue:17
 #: app/src/components/brand/BrandMark.vue:18
 #: app/src/components/layout/PageHeader.vue:33
@@ -1175,19 +1223,19 @@ msgstr "HTTPS"
 msgid "HubGo"
 msgstr "HubGo"
 
-#: admin/src/Admin/Menu.php:100
+#: admin/src/Admin/Menu.php:102
 msgid "HubGo - Integrations"
 msgstr "HubGo - Integrazioni"
 
-#: admin/src/Admin/Menu.php:109
+#: admin/src/Admin/Menu.php:113
 msgid "HubGo - License"
 msgstr "HubGo - Licenza"
 
-#: admin/src/Admin/Menu.php:91
+#: admin/src/Admin/Menu.php:93
 msgid "HubGo - Settings"
 msgstr "HubGo - Impostazioni"
 
-#: admin/src/Admin/Menu.php:78
+#: admin/src/Admin/Menu.php:80
 msgid "HubGo - Shipping Management"
 msgstr "HubGo - Gestione Spedizioni"
 
@@ -1202,7 +1250,7 @@ msgstr ""
 "Elementor\" in HubGo → Impostazioni → Generale per evitare di mostrarlo due "
 "volte."
 
-#: admin/src/Core/Update_Checker.php:221
+#: admin/src/Core/Update_Checker.php:239
 msgid "HubGo is up to date."
 msgstr "HubGo è aggiornato."
 
@@ -1217,7 +1265,7 @@ msgstr ""
 "quotazione, in modo che la pagina del prodotto possa promettere una data di "
 "consegna."
 
-#: admin/src/Integrations/Frenet.php:218
+#: admin/src/Integrations/Frenet.php:268
 msgid ""
 "HubGo reads the delivery time and the carrier straight from the Frenet "
 "quote, so the product page can promise a delivery date. Fill in the "
@@ -1232,7 +1280,7 @@ msgstr ""
 msgid "HubGo version"
 msgstr "Versione di HubGo"
 
-#: admin/src/Core/Assets.php:204
+#: admin/src/Core/Assets.php:220
 msgid "HubGo: interface build not found. Run \"npm run build\" in the plugin."
 msgstr "HubGo: interfaccia build non trovata. Esegui \"npm run build\" nel plugin."
 
@@ -1240,7 +1288,7 @@ msgstr "HubGo: interfaccia build non trovata. Esegui \"npm run build\" nel plugi
 msgid "I do not know my postcode"
 msgstr "Non conosco il mio codice postale"
 
-#: app/src/pages/license/LicensePage.vue:367
+#: app/src/pages/license/LicensePage.vue:386
 msgid ""
 "If the license does not update right away, click Synchronize to fetch the "
 "latest status from the server."
@@ -1248,7 +1296,7 @@ msgstr ""
 "Se la licenza non si aggiorna immediatamente, fai clic su Sincronizza per "
 "recuperare lo stato più recente dal server."
 
-#: admin/src/Integrations/Frenet.php:197
+#: admin/src/Integrations/Frenet.php:247
 #: admin/src/Integrations/Melhor_Envio.php:279
 msgid "Import tracking"
 msgstr "Importa tracciamento"
@@ -1289,20 +1337,24 @@ msgstr "Spaziatura interna"
 msgid "Input where the customer types the postcode."
 msgstr "Input dove il cliente digita il codice postale."
 
-#: admin/src/Integrations/Elementor.php:125
+#: admin/src/Integrations/Elementor.php:114
 msgid "Install Elementor"
 msgstr "Installa Elementor"
 
-#: admin/src/Integrations/Frenet.php:192
+#: admin/src/Integrations/Frenet.php:242
 msgid "Install Frenet"
 msgstr "Installa Frenet"
+
+#: admin/src/Integrations/Joinotify.php:256
+msgid "Install Joinotify"
+msgstr "Installa Joinotify"
 
 #: admin/src/Integrations/Melhor_Envio.php:274
 msgid "Install Melhor Envio"
 msgstr "Installa Melhor Envio"
 
-#: admin/src/Integrations/Integrations_Base.php:336
-#: app/src/pages/integrations/components/IntegrationCard.vue:43
+#: admin/src/Integrations/Integrations_Base.php:334
+#: app/src/pages/integrations/components/IntegrationCard.vue:40
 msgid "Install plugin"
 msgstr "Installa plugin"
 
@@ -1310,7 +1362,7 @@ msgstr "Installa plugin"
 msgid "Install WooCommerce"
 msgstr "Installa WooCommerce"
 
-#: app/src/pages/integrations/IntegrationsPage.vue:191
+#: app/src/pages/integrations/IntegrationsPage.vue:186
 msgid "Installed"
 msgstr "Installato"
 
@@ -1330,17 +1382,13 @@ msgstr "Impostazioni integrazione"
 msgid "integrations"
 msgstr "integrazioni"
 
-#: admin/src/Admin/Menu.php:101
+#: admin/src/Admin/Menu.php:103
 #: app/src/components/modals/IntegrationSettingsModal.vue:43
-#: app/src/pages/integrations/IntegrationsPage.vue:208
+#: app/src/pages/integrations/IntegrationsPage.vue:203
 msgid "Integrations"
 msgstr "Integrazioni"
 
-#: app/src/pages/integrations/IntegrationsPage.vue:242
-msgid "Integrations marked as Pro require an active HubGo license."
-msgstr "Le integrazioni contrassegnate come Pro richiedono una licenza HubGo attiva."
-
-#: app/src/pages/integrations/IntegrationsPage.vue:145
+#: app/src/pages/integrations/IntegrationsPage.vue:141
 msgid "Integrations saved successfully!"
 msgstr "Integrazioni salvate con successo!"
 
@@ -1385,12 +1433,12 @@ msgstr "Sarà pre-selezionato al checkout"
 msgid "Italy"
 msgstr "Italia"
 
-#: admin/src/Integrations/Joinotify.php:424
+#: admin/src/Integrations/Joinotify.php:973
 msgid "John"
 msgstr "John"
 
-#: admin/src/Integrations/Joinotify.php:132
-#: admin/src/Integrations/Joinotify.php:148
+#: admin/src/Integrations/Joinotify.php:243
+#: admin/src/Integrations/Joinotify.php:259
 msgid "Joinotify"
 msgstr "Joinotify"
 
@@ -1410,7 +1458,7 @@ msgstr "Ultimo controllo"
 msgid "Layout"
 msgstr "Layout"
 
-#: app/src/pages/integrations/components/IntegrationCard.vue:166
+#: app/src/pages/integrations/components/IntegrationCard.vue:160
 msgid "Learn more"
 msgstr "Scopri di più"
 
@@ -1459,22 +1507,22 @@ msgstr "Lascia che WooCommerce scelga"
 msgid "Lets HubGo update itself whenever possible."
 msgstr "Consenti a HubGo di aggiornarsi ogni volta che è possibile."
 
-#: admin/src/Admin/Menu.php:110
-#: admin/src/Core/License.php:625
-#: app/src/pages/license/LicensePage.vue:210
-#: app/src/pages/license/LicensePage.vue:223
-#: app/src/pages/license/LicensePage.vue:254
-#: app/src/pages/license/LicensePage.vue:282
+#: admin/src/Admin/Menu.php:114
+#: admin/src/Core/License.php:745
+#: app/src/pages/license/LicensePage.vue:229
+#: app/src/pages/license/LicensePage.vue:242
+#: app/src/pages/license/LicensePage.vue:273
+#: app/src/pages/license/LicensePage.vue:301
 msgid "License"
 msgstr "Licenza"
 
 #: admin/src/API/Routes/License_Activate.php:57
-#: app/src/pages/license/LicensePage.vue:228
+#: app/src/pages/license/LicensePage.vue:247
 msgid "License activated successfully!"
 msgstr "Licenza attivata con successo!"
 
 #: admin/src/API/Routes/License_Deactivate.php:35
-#: app/src/pages/license/LicensePage.vue:242
+#: app/src/pages/license/LicensePage.vue:261
 msgid "License deactivated on this site."
 msgstr "Licenza disattivata su questo sito."
 
@@ -1482,11 +1530,11 @@ msgstr "Licenza disattivata su questo sito."
 msgid "License details"
 msgstr "Dettagli della licenza"
 
-#: app/src/pages/license/LicensePage.vue:312
+#: app/src/pages/license/LicensePage.vue:331
 msgid "License information"
 msgstr "Informazioni sulla licenza"
 
-#: app/src/pages/license/LicensePage.vue:124
+#: app/src/pages/license/LicensePage.vue:143
 msgid "License key"
 msgstr "Chiave di licenza"
 
@@ -1498,17 +1546,25 @@ msgstr "Stato della licenza"
 msgid "License synchronized successfully!"
 msgstr "Licenza sincronizzata con successo!"
 
-#: app/src/pages/license/LicensePage.vue:236
+#: app/src/pages/license/LicensePage.vue:255
 msgid "License synchronized!"
 msgstr "Licenza sincronizzata!"
 
-#: app/src/pages/license/LicensePage.vue:136
+#: app/src/pages/license/LicensePage.vue:155
 msgid "Lifetime"
 msgstr "A vita"
 
 #: templates/email/hubgo-tracking-info.php:18
 msgid "Link"
 msgstr "Collegamento"
+
+#: admin/src/Integrations/Joinotify.php:959
+msgid ""
+"Link to the order page on the customer's account, where HubGo shows the "
+"tracking codes"
+msgstr ""
+"Link alla pagina dell'ordine nell'account del cliente, dove HubGo mostra i "
+"codici di tracciamento"
 
 #: admin/src/Admin/Settings/Registry.php:201
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:175
@@ -1519,9 +1575,13 @@ msgstr "Elenco"
 msgid "List of methods displayed in the details window."
 msgstr "Elenco dei metodi visualizzati nella finestra dei dettagli."
 
-#: admin/src/Integrations/Joinotify.php:149
-msgid "Logistics triggers available in the Joinotify flow builder."
-msgstr "Attivatori logistici disponibili nel costruttore di flussi di Joinotify."
+#: admin/src/Integrations/Joinotify.php:260
+msgid ""
+"Logistics triggers, placeholders and conditions available in the Joinotify "
+"flow builder."
+msgstr ""
+"Trigger, segnaposto e condizioni logistiche disponibili nel costruttore di "
+"flussi di Joinotify."
 
 #: admin/src/Admin/Settings/Registry.php:267
 msgid "Maintenance and preferences"
@@ -1635,15 +1695,15 @@ msgstr "No"
 msgid "No address found. Try being more specific."
 msgstr "Nessun indirizzo trovato. Prova a essere più specifico."
 
-#: app/src/storefront/components/ShippingOptionsModal.vue:150
+#: app/src/storefront/components/ShippingOptionsModal.vue:151
 msgid "No delivery method available for this postcode."
 msgstr "Nessun metodo di consegna disponibile per questo codice postale."
 
-#: admin/src/Core/Assets.php:146
+#: admin/src/Core/Assets.php:162
 msgid "No delivery method available."
 msgstr "Nessun metodo di consegna disponibile."
 
-#: app/src/storefront/components/ShippingCalculator.vue:239
+#: app/src/storefront/components/ShippingCalculator.vue:248
 msgid "No delivery option available for postcode %s."
 msgstr "Nessuna opzione di consegna disponibile per il codice postale %s."
 
@@ -1671,7 +1731,7 @@ msgstr ""
 "Nessun dato di tracciamento della spedizione trovato sugli ordini di questo "
 "negozio."
 
-#: admin/src/Core/Tracking_Manager.php:520
+#: admin/src/Core/Tracking_Manager.php:558
 msgid "No shipping date"
 msgstr "Nessuna data di spedizione"
 
@@ -1683,7 +1743,7 @@ msgstr "Non attivato"
 #: app/src/pages/license/LicensePage.vue:79
 #: app/src/pages/license/LicensePage.vue:84
 #: app/src/pages/license/LicensePage.vue:86
-#: app/src/pages/license/LicensePage.vue:154
+#: app/src/pages/license/LicensePage.vue:173
 msgid "Not available"
 msgstr "Non disponibile"
 
@@ -1699,9 +1759,21 @@ msgstr "Nota visualizzata sotto il risultato."
 msgid "Notifications"
 msgstr "Notifiche"
 
-#: admin/src/Integrations/Joinotify.php:400
+#: admin/src/Integrations/Joinotify.php:499
+msgid "Number of tracking codes"
+msgstr "Numero di codici di tracciamento"
+
+#: admin/src/Integrations/Joinotify.php:919
 msgid "Number of tracking codes registered on the order"
 msgstr "Numero di codici di tracciamento registrati sull'ordine"
+
+#: admin/src/Integrations/Frenet.php:248
+msgid ""
+"On orders shipped with Frenet, saves the tracking code Frenet adds as an "
+"order note and fills in the carrier Frenet quoted."
+msgstr ""
+"Negli ordini spediti con Frenet, salva il codice di tracciamento che Frenet "
+"aggiunge come nota dell'ordine e compila il corriere quotato da Frenet."
 
 #: admin/src/Admin/Settings/Registry.php:223
 msgid ""
@@ -1711,7 +1783,7 @@ msgstr ""
 "Mostrato solo mentre l'integrazione di Google Maps è attiva. Lascia vuoto "
 "per nascondere il link."
 
-#: app/src/pages/license/LicensePage.vue:377
+#: app/src/pages/license/LicensePage.vue:396
 msgid "Open the Help Center"
 msgstr "Apri il Centro assistenza"
 
@@ -1731,15 +1803,23 @@ msgstr "Opzione salvata come tua preferenza"
 msgid "Options format"
 msgstr "Formato opzioni"
 
-#: admin/src/Integrations/Joinotify.php:458
+#: admin/src/Integrations/Joinotify.php:1007
 msgid "Order billing phone (WooCommerce)"
 msgstr "Telefono di fatturazione dell'ordine (WooCommerce)"
+
+#: admin/src/Integrations/Joinotify.php:1109
+msgid "Order currency symbol (WooCommerce)"
+msgstr "Simbolo della valuta dell'ordine (WooCommerce)"
+
+#: admin/src/Integrations/Joinotify.php:524
+msgid "Order is paid"
+msgstr "L'ordine è pagato"
 
 #: admin/src/Admin/Order_Tracking_Meta_Box.php:108
 msgid "Order not found."
 msgstr "Ordine non trovato."
 
-#: admin/src/Integrations/Joinotify.php:487
+#: admin/src/Integrations/Joinotify.php:1036
 msgid "Order number (WooCommerce)"
 msgstr "Numero dell'ordine (WooCommerce)"
 
@@ -1749,17 +1829,25 @@ msgstr "Numero dell'ordine (WooCommerce)"
 #: admin/src/Core/Order_Status.php:145
 #: admin/src/Emails/Email_Shipped_Order.php:25
 #: admin/src/Emails/Email_Shipped_Order.php:60
-#: admin/src/Integrations/Joinotify.php:232
-#: admin/src/Integrations/Joinotify.php:501
-#: admin/src/Integrations/Joinotify.php:586
+#: admin/src/Integrations/Joinotify.php:425
+#: admin/src/Integrations/Joinotify.php:1050
+#: admin/src/Integrations/Joinotify.php:1490
 msgid "Order shipped"
 msgstr "Ordine spedito"
 
-#: admin/src/Integrations/Joinotify.php:470
+#: admin/src/Integrations/Joinotify.php:1164
+msgid "Order shipping address as WooCommerce formats it"
+msgstr "Indirizzo di spedizione dell'ordine nel formato di WooCommerce"
+
+#: admin/src/Integrations/Joinotify.php:1019
 msgid "Order shipping phone (WooCommerce)"
 msgstr "Telefono di spedizione dell'ordine (WooCommerce)"
 
-#: admin/src/Integrations/Joinotify.php:499
+#: admin/src/Integrations/Joinotify.php:516
+msgid "Order status"
+msgstr "Stato dell'ordine"
+
+#: admin/src/Integrations/Joinotify.php:1048
 msgid "Order status (WooCommerce)"
 msgstr "Stato dell'ordine (WooCommerce)"
 
@@ -1767,7 +1855,11 @@ msgstr "Stato dell'ordine (WooCommerce)"
 msgid "Order tables (HPOS)"
 msgstr "Tabelle degli ordini (HPOS)"
 
-#: admin/src/Integrations/Joinotify.php:511
+#: admin/src/Integrations/Joinotify.php:520
+msgid "Order total"
+msgstr "Totale dell'ordine"
+
+#: admin/src/Integrations/Joinotify.php:1073
 msgid "Order total (WooCommerce)"
 msgstr "Totale dell'ordine (WooCommerce)"
 
@@ -1783,13 +1875,21 @@ msgstr "Altro"
 msgid "Overlay color"
 msgstr "Colore di sovrapposizione"
 
-#: app/src/pages/license/LicensePage.vue:406
+#: app/src/pages/license/LicensePage.vue:425
 msgid ""
 "Paste the license key you received with your purchase and click Activate to "
 "unlock every feature."
 msgstr ""
 "Incolla la chiave di licenza ricevuta con il tuo acquisto e fai clic su "
 "Attiva per sbloccare tutte le funzionalità."
+
+#: admin/src/Integrations/Joinotify.php:532
+msgid "Payment method"
+msgstr "Metodo di pagamento"
+
+#: admin/src/Integrations/Joinotify.php:1125
+msgid "Payment method used on the order (WooCommerce)"
+msgstr "Metodo di pagamento usato nell'ordine (WooCommerce)"
 
 #: admin/src/Admin/System_Status.php:34
 msgid "PHP"
@@ -1799,7 +1899,7 @@ msgstr "PHP"
 msgid "Plugin installed and activated successfully."
 msgstr "Plugin installato e attivato con successo."
 
-#: app/src/pages/integrations/IntegrationsPage.vue:191
+#: app/src/pages/integrations/IntegrationsPage.vue:186
 msgid "Plugin installed successfully!"
 msgstr "Plugin installato con successo!"
 
@@ -1811,7 +1911,7 @@ msgstr "Polonia"
 msgid "Postcode"
 msgstr "Codice postale"
 
-#: app/src/storefront/components/ShippingOptionsModal.vue:121
+#: app/src/storefront/components/ShippingOptionsModal.vue:122
 msgid "Postcode %s"
 msgstr "Codice postale %s"
 
@@ -1824,7 +1924,7 @@ msgstr "Campo codice postale"
 msgid "Postcode placeholder"
 msgstr "Segnaposto codice postale"
 
-#: app/src/storefront/components/ShippingOptionsModal.vue:126
+#: app/src/storefront/components/ShippingOptionsModal.vue:127
 msgid "Postcode:"
 msgstr "Codice postale:"
 
@@ -1862,15 +1962,7 @@ msgstr "Prezzo"
 msgid "Primary color"
 msgstr "Colore primario"
 
-#: app/src/components/badges/ProBadge.vue:17
-msgid "Pro"
-msgstr "Pro"
-
-#: app/src/components/badges/ProBadge.vue:42
-msgid "Pro feature unlocked"
-msgstr "Funzione Pro sbloccata"
-
-#: app/src/pages/license/LicensePage.vue:117
+#: app/src/pages/license/LicensePage.vue:136
 msgid "Pro integrations: Joinotify and the Elementor widget"
 msgstr "Integrazioni Pro: Joinotify e il widget Elementor"
 
@@ -1886,11 +1978,15 @@ msgstr "ID prodotto"
 msgid "Product on the current page"
 msgstr "Prodotto nella pagina corrente"
 
-#: admin/src/Integrations/Joinotify.php:551
+#: admin/src/Integrations/Joinotify.php:1200
 msgid "Products and quantities purchased on the order, one per line"
 msgstr "Prodotti e quantità acquistati nell'ordine, uno per riga"
 
-#: app/src/pages/license/LicensePage.vue:365
+#: admin/src/Integrations/Joinotify.php:528
+msgid "Products purchased"
+msgstr "Prodotti acquistati"
+
+#: app/src/pages/license/LicensePage.vue:384
 msgid "Quick help"
 msgstr "Aiuto rapido"
 
@@ -1902,7 +1998,7 @@ msgstr "Panoramica rapida dell'ambiente WordPress, PHP e WooCommerce."
 msgid "Read only"
 msgstr "Solo lettura"
 
-#: app/src/storefront/components/ShippingOptionsModal.vue:154
+#: app/src/storefront/components/ShippingOptionsModal.vue:155
 msgid "Receive the order"
 msgstr "Ricevi l'ordine"
 
@@ -1911,11 +2007,11 @@ msgid "Records extra error and process details in the WordPress log."
 msgstr "Registra errori extra e dettagli di processo nel log di WordPress."
 
 #: admin/src/Admin/Order_Tracking_Meta_Box.php:272
-#: admin/src/Core/Assets.php:370
+#: admin/src/Core/Assets.php:388
 msgid "Remove"
 msgstr "Rimuovi"
 
-#: admin/src/Integrations/Frenet.php:203
+#: admin/src/Integrations/Frenet.php:253
 msgid ""
 "Removes the shipping simulator the Frenet plugin prints on the product "
 "page, so only the HubGo calculator is shown."
@@ -1931,7 +2027,7 @@ msgstr ""
 "Rimuove il simulatore di spedizione che il plugin Melhor Envio stampa nella "
 "pagina del prodotto, quindi viene mostrato solo il calcolatore HubGo."
 
-#: app/src/pages/license/LicensePage.vue:386
+#: app/src/pages/license/LicensePage.vue:405
 msgid "Renew subscription"
 msgstr "Rinnova abbonamento"
 
@@ -1969,6 +2065,14 @@ msgstr "Ripristinare le impostazioni predefinite?"
 msgid "Restored"
 msgstr "Ripristinato"
 
+#: admin/src/Integrations/Joinotify.php:1212
+msgid ""
+"Review link for each purchased product, one per line. Pair it with a delay "
+"to ask for a review after the delivery."
+msgstr ""
+"Link di recensione per ogni prodotto acquistato, uno per riga. Abbinalo a "
+"un ritardo per chiedere una recensione dopo la consegna."
+
 #: admin/src/Core/Providers_Registry.php:203
 msgid "Romania"
 msgstr "Romania"
@@ -1985,7 +2089,7 @@ msgstr "Salva metodo preferito"
 msgid "Save tracking"
 msgstr "Salva tracciamento"
 
-#: app/src/pages/integrations/IntegrationsPage.vue:145
+#: app/src/pages/integrations/IntegrationsPage.vue:141
 #: app/src/pages/settings/SettingsPage.vue:159
 msgid "Saved"
 msgstr "Salvato"
@@ -2016,21 +2120,25 @@ msgstr "Seleziona un'opzione"
 msgid "Selected option background"
 msgstr "Sfondo dell'opzione selezionata"
 
-#: admin/src/Integrations/Joinotify.php:221
+#: admin/src/Integrations/Joinotify.php:414
 msgid ""
-"Send automatic WhatsApp messages from logistics events such as order "
-"shipped and tracking code saved, connecting HubGo to Joinotify."
+"Send automatic WhatsApp messages from logistics events — order shipped, "
+"tracking code saved or removed, delivery date promised and delivery running "
+"late — connecting HubGo to Joinotify."
 msgstr ""
-"Invia messaggi automatici su WhatsApp dagli eventi logistici come ordine "
-"spedito e codice di tracciamento salvato, collegando HubGo a Joinotify."
+"Invia messaggi WhatsApp automatici dagli eventi logistici — ordine spedito, "
+"codice di tracciamento salvato o rimosso, data di consegna promessa e "
+"consegna in ritardo — collegando HubGo a Joinotify."
 
-#: admin/src/Integrations/Joinotify.php:133
+#: admin/src/Integrations/Joinotify.php:244
 msgid ""
-"Send automatic WhatsApp messages when an order is shipped, a tracking code "
-"is saved or a delivery is running late."
+"Send automatic WhatsApp messages from the logistics events: order shipped, "
+"tracking code saved or removed, delivery date promised at the checkout and "
+"delivery running late."
 msgstr ""
-"Invia messaggi automatici su WhatsApp quando un ordine viene spedito, un "
-"codice di tracciamento è salvato o una consegna è in ritardo."
+"Invia messaggi WhatsApp automatici dagli eventi logistici: ordine spedito, "
+"codice di tracciamento salvato o rimosso, data di consegna promessa al "
+"checkout e consegna in ritardo."
 
 #: admin/src/Emails/Email_Shipped_Order.php:26
 msgid "Sent when the order is marked as shipped."
@@ -2044,7 +2152,7 @@ msgstr ""
 "Configura il calcolatore di spedizione, il tracciamento degli ordini e "
 "l'aspetto di HubGo. Se hai bisogno di aiuto, visita il nostro"
 
-#: admin/src/Admin/Menu.php:92
+#: admin/src/Admin/Menu.php:94
 #: admin/src/Core/Plugin.php:582
 #: app/src/pages/settings/SettingsPage.vue:205
 msgid "Settings"
@@ -2067,7 +2175,7 @@ msgstr "Impostazioni salvate con successo!"
 msgid "Shipment Tracking"
 msgstr "Tracciamento della spedizione"
 
-#: admin/src/Core/Tracking_Manager.php:524
+#: admin/src/Core/Tracking_Manager.php:562
 msgid "Shipped on %s"
 msgstr "Spedito il %s"
 
@@ -2080,7 +2188,7 @@ msgstr "Spedizione e corrieri"
 msgid "Shipping calculator"
 msgstr "Calcolatore di spedizione"
 
-#: admin/src/Integrations/Joinotify.php:387
+#: admin/src/Integrations/Joinotify.php:909
 #: templates/email/hubgo-tracking-info.php:17
 msgid "Shipping date"
 msgstr "Data di spedizione"
@@ -2091,7 +2199,15 @@ msgstr "Data di spedizione"
 msgid "Shipping date:"
 msgstr "Data di spedizione:"
 
-#: admin/src/Integrations/Joinotify.php:357
+#: admin/src/Integrations/Joinotify.php:536
+msgid "Shipping method"
+msgstr "Metodo di spedizione"
+
+#: admin/src/Integrations/Joinotify.php:511
+msgid "Shipping method (HubGo)"
+msgstr "Metodo di spedizione (HubGo)"
+
+#: admin/src/Integrations/Joinotify.php:867
 msgid "Shipping method chosen at the checkout"
 msgstr "Metodo di spedizione scelto al checkout"
 
@@ -2160,7 +2276,7 @@ msgstr "Abbonamento"
 msgid "Support until"
 msgstr "Supporto fino a"
 
-#: app/src/pages/license/LicensePage.vue:118
+#: app/src/pages/license/LicensePage.vue:137
 msgid "Support, access and subscription updates"
 msgstr "Supporto, accesso e aggiornamenti dell'abbonamento"
 
@@ -2168,7 +2284,7 @@ msgstr "Supporto, accesso e aggiornamenti dell'abbonamento"
 msgid "Sweden"
 msgstr "Svezia"
 
-#: app/src/pages/license/LicensePage.vue:333
+#: app/src/pages/license/LicensePage.vue:352
 msgid "Synchronize license"
 msgstr "Sincronizza licenza"
 
@@ -2228,15 +2344,25 @@ msgstr ""
 "Le funzionalità dell'indirizzo rimangono disattivate finché non viene "
 "salvata una chiave API qui sotto."
 
-#: admin/src/Integrations/Elementor.php:197
+#: admin/src/Integrations/Joinotify.php:541
+msgid "The billing e-mail on the order."
+msgstr "L'e-mail di fatturazione dell'ordine."
+
+#: admin/src/Integrations/Joinotify.php:492
 msgid ""
-"The Elementor shipping calculator widget requires an active license and is "
-"unavailable. Pages already using the widget stop displaying it until the "
-"license is activated."
+"The carrier on the tracking code, falling back to the one quoted at the "
+"checkout."
 msgstr ""
-"Il widget del calcolatore di spedizione Elementor richiede una licenza "
-"attiva ed è non disponibile. Le pagine che già utilizzano il widget "
-"smettono di visualizzarlo fino a quando la licenza non viene attivata."
+"Il corriere del codice di tracciamento o, in mancanza, quello quotato al "
+"checkout."
+
+#: admin/src/Integrations/Joinotify.php:517
+msgid "The current WooCommerce order status."
+msgstr "Lo stato attuale dell'ordine WooCommerce."
+
+#: admin/src/Integrations/Joinotify.php:504
+msgid "The delivery estimate, in business days, quoted at the checkout."
+msgstr "La stima di consegna, in giorni lavorativi, quotata al checkout."
 
 #: admin/src/Integrations/Google_Maps.php:209
 msgid "The key stays on the server and is never sent to the browser."
@@ -2246,11 +2372,11 @@ msgstr "La chiave rimane sul server e non viene mai inviata al browser."
 msgid "The license is not valid for this site."
 msgstr "La licenza non è valida per questo sito."
 
-#: admin/src/Core/License.php:582
+#: admin/src/Core/License.php:702
 msgid "The licensing service is not available."
 msgstr "Il servizio di licenza non è disponibile."
 
-#: app/src/pages/license/LicensePage.vue:274
+#: app/src/pages/license/LicensePage.vue:293
 msgid ""
 "The licensing service is not configured on this installation. Please "
 "contact support."
@@ -2258,7 +2384,7 @@ msgstr ""
 "Il servizio di licenza non è configurato su questa installazione. Contatta "
 "il supporto."
 
-#: admin/src/Admin/Settings/Registry.php:491
+#: admin/src/Admin/Settings/Registry.php:487
 msgid "The matching plugin must be installed and active to use this integration."
 msgstr ""
 "Il plugin corrispondente deve essere installato e attivo per utilizzare "
@@ -2286,9 +2412,17 @@ msgstr ""
 msgid "The package source is not allowed."
 msgstr "La fonte del pacco non è consentita."
 
+#: admin/src/Integrations/Joinotify.php:533
+msgid "The payment gateway used on the order."
+msgstr "Il gateway di pagamento usato nell'ordine."
+
 #: admin/src/Core/Plugin_Installer.php:132
 msgid "The plugin was downloaded, but its main file was not found."
 msgstr "Il plugin è stato scaricato, ma il suo file principale non è stato trovato."
+
+#: admin/src/Integrations/Joinotify.php:529
+msgid "The products on the WooCommerce order."
+msgstr "I prodotti dell'ordine WooCommerce."
 
 #: admin/src/Core/Plugin_Installer.php:98
 msgid "The requested plugin is invalid."
@@ -2298,7 +2432,13 @@ msgstr "Il plugin richiesto non è valido."
 msgid "The shipping calculator is disabled in the HubGo settings."
 msgstr "Il calcolatore di spedizione è disabilitato nelle impostazioni di HubGo."
 
-#: app/src/pages/license/LicensePage.vue:480
+#: admin/src/Integrations/Joinotify.php:512
+msgid "The shipping method chosen at the checkout, as HubGo stored it on the order."
+msgstr ""
+"Il metodo di spedizione scelto al checkout, così come HubGo lo ha salvato "
+"nell'ordine."
+
+#: app/src/pages/license/LicensePage.vue:508
 msgid ""
 "The site will stop receiving updates and the Pro features will be locked "
 "until a new activation."
@@ -2314,26 +2454,27 @@ msgstr "I dati sorgente per questa migrazione non sono disponibili."
 msgid "The stored key was refused by the server."
 msgstr "La chiave memorizzata è stata rifiutata dal server."
 
-#: admin/src/Core/Update_Checker.php:174
+#: admin/src/Integrations/Joinotify.php:496
+msgid "The tracking code the event is about."
+msgstr "Il codice di tracciamento a cui si riferisce l'evento."
+
+#: admin/src/Core/Update_Checker.php:175
 msgid "The update service is not available."
 msgstr "Il servizio di aggiornamento non è disponibile."
-
-#: admin/src/Integrations/Elementor.php:137
-msgid ""
-"The widget requires an active license. Without one it stops being "
-"registered and disappears from the pages already using it — the calculator "
-"displayed automatically on the product page keeps working."
-msgstr ""
-"Il widget richiede una licenza attiva. Senza di essa smette di essere "
-"registrato e scompare dalle pagine che lo utilizzano già — il calcolatore "
-"visualizzato automaticamente nella pagina del prodotto continua a "
-"funzionare."
 
 #: admin/src/Integrations/Widgets/Shipping_Calculator_Widget.php:440
 msgid "The window opens outside the widget but inherits these values automatically."
 msgstr ""
 "La finestra si apre al di fuori del widget ma eredita automaticamente "
 "questi valori."
+
+#: admin/src/Integrations/Joinotify.php:521
+msgid "The WooCommerce order total."
+msgstr "Il totale dell'ordine WooCommerce."
+
+#: admin/src/Integrations/Joinotify.php:537
+msgid "The WooCommerce shipping method on the order."
+msgstr "Il metodo di spedizione WooCommerce dell'ordine."
 
 #: app/src/pages/settings/components/SettingsActionBar.vue:39
 msgid "There are unsaved changes."
@@ -2355,7 +2496,7 @@ msgstr "Questa integrazione non può ancora essere installata dalla dashboard."
 msgid "This integration has no additional settings."
 msgstr "Questa integrazione non ha impostazioni aggiuntive."
 
-#: admin/src/Admin/Settings/Registry.php:487
+#: admin/src/Admin/Settings/Registry.php:483
 msgid "This integration will be available soon."
 msgstr "Questa integrazione sarà disponibile a breve."
 
@@ -2367,11 +2508,11 @@ msgstr "Titolo della colonna del metodo di consegna."
 msgid "Title of the price column."
 msgstr "Titolo della colonna del prezzo."
 
-#: app/src/storefront/components/ShippingCalculator.vue:134
+#: app/src/storefront/components/ShippingCalculator.vue:137
 msgid "to %1$s (postcode %2$s)"
 msgstr "a %1$s (codice postale %2$s)"
 
-#: admin/src/Integrations/Elementor.php:134
+#: admin/src/Integrations/Elementor.php:96
 msgid ""
 "To place the calculator through the widget alone, set the display position "
 "to \"Elementor widget only\" in Settings → General — otherwise product "
@@ -2382,7 +2523,7 @@ msgstr ""
 "Generale — altrimenti le pagine dei prodotti mostrano anche quello "
 "automatico."
 
-#: app/src/storefront/components/ShippingCalculator.vue:135
+#: app/src/storefront/components/ShippingCalculator.vue:138
 msgid "to postcode %s"
 msgstr "al codice postale %s"
 
@@ -2391,8 +2532,16 @@ msgstr "al codice postale %s"
 msgid "Too many lookups in a short time. Wait a moment and try again."
 msgstr "Troppe ricerche in un breve periodo. Aspetta un momento e riprova."
 
+#: admin/src/Integrations/Joinotify.php:1085
+msgid "Total discount on the order (WooCommerce)"
+msgstr "Sconto totale dell'ordine (WooCommerce)"
+
+#: admin/src/Integrations/Joinotify.php:1097
+msgid "Total tax on the order (WooCommerce)"
+msgstr "Imposte totali dell'ordine (WooCommerce)"
+
 #: admin/src/Admin/Order_Tracking_Meta_Box.php:256
-#: admin/src/Core/Assets.php:369
+#: admin/src/Core/Assets.php:387
 msgid "Track"
 msgstr "Traccia"
 
@@ -2409,7 +2558,8 @@ msgstr "Tracciamento"
 msgid "Tracking - HubGo"
 msgstr "Tracciamento - HubGo"
 
-#: admin/src/Integrations/Joinotify.php:377
+#: admin/src/Integrations/Joinotify.php:495
+#: admin/src/Integrations/Joinotify.php:899
 msgid "Tracking code"
 msgstr "Codice di tracciamento"
 
@@ -2417,7 +2567,11 @@ msgstr "Codice di tracciamento"
 msgid "Tracking code generated in Melhor Envio."
 msgstr "Codice di tracciamento generato in Melhor Envio."
 
-#: admin/src/Integrations/Joinotify.php:608
+#: admin/src/Integrations/Joinotify.php:1540
+msgid "Tracking code removed from the order"
+msgstr "Codice di tracciamento rimosso dall'ordine"
+
+#: admin/src/Integrations/Joinotify.php:1512
 msgid "Tracking code saved on the order"
 msgstr "Codice di tracciamento salvato sull'ordine"
 
@@ -2432,7 +2586,7 @@ msgstr "Codice di tracciamento:"
 msgid "Tracking information"
 msgstr "Informazioni sul tracciamento"
 
-#: admin/src/Integrations/Joinotify.php:367
+#: admin/src/Integrations/Joinotify.php:889
 msgid "Tracking link"
 msgstr "Link di tracciamento"
 
@@ -2441,7 +2595,7 @@ msgstr "Link di tracciamento"
 msgid "Tracking link:"
 msgstr "Link di tracciamento:"
 
-#: admin/src/Integrations/Frenet.php:207
+#: admin/src/Integrations/Frenet.php:257
 #: admin/src/Integrations/Melhor_Envio.php:294
 msgid "Tracking URL"
 msgstr "URL di tracciamento"
@@ -2466,7 +2620,7 @@ msgstr "Stati Uniti"
 msgid "Update notices"
 msgstr "Aggiornamenti delle notifiche"
 
-#: admin/src/Core/Assets.php:415
+#: admin/src/Core/Assets.php:433
 msgid "Update now"
 msgstr "Aggiorna ora"
 
@@ -2478,7 +2632,7 @@ msgstr "Usa %s dove dovrebbe apparire l'importo minimo."
 msgid "Use a high value for a pill-shaped badge."
 msgstr "Usa un valore elevato per un badge a forma di pillola."
 
-#: admin/src/Integrations/Frenet.php:180
+#: admin/src/Integrations/Frenet.php:230
 msgid ""
 "Use Frenet quotes in the shipping calculation and bring the tracking code "
 "into the HubGo order screen."
@@ -2502,12 +2656,24 @@ msgstr ""
 msgid "Use the same carrier, if available"
 msgstr "Usa lo stesso corriere, se disponibile"
 
-#: app/src/pages/integrations/IntegrationsPage.vue:221
+#: admin/src/Integrations/Joinotify.php:1228
+msgid ""
+"Value of a specific checkout field on the order. Replace FIELD_ID with the "
+"field ID, for example: billing_email."
+msgstr ""
+"Valore di un campo specifico del checkout nell'ordine. Sostituisci FIELD_ID "
+"con l'ID del campo, ad esempio: billing_email."
+
+#: app/src/pages/integrations/IntegrationsPage.vue:216
 #: app/src/pages/settings/SettingsPage.vue:218
 msgid "Version"
 msgstr "Versione"
 
-#: admin/src/Core/Update_Checker.php:217
+#: admin/src/Core/Update_Checker.php:235
+msgid "Version %s is available, but installing it needs an active license."
+msgstr "La versione %s è disponibile, ma per installarla serve una licenza attiva."
+
+#: admin/src/Core/Update_Checker.php:232
 msgid "Version %s is available."
 msgstr "La versione %s è disponibile."
 
@@ -2515,7 +2681,7 @@ msgstr "La versione %s è disponibile."
 msgid "View all"
 msgstr "Visualizza tutto"
 
-#: app/src/storefront/components/ShippingOptionsModal.vue:91
+#: app/src/storefront/components/ShippingOptionsModal.vue:92
 msgid "We calculated the costs and delivery times for this address:"
 msgstr "Abbiamo calcolato i costi e i tempi di consegna per questo indirizzo:"
 
@@ -2527,11 +2693,15 @@ msgstr ""
 "Cosa fare quando il metodo preferito non è disponibile per l'indirizzo di "
 "checkout."
 
-#: app/src/pages/license/LicensePage.vue:453
+#: app/src/pages/license/LicensePage.vue:481
 msgid "What you unlock"
 msgstr "Cosa sblocchi"
 
-#: admin/src/Integrations/Joinotify.php:240
+#: admin/src/Integrations/Joinotify.php:441
+msgid "When a tracking code is removed from the order"
+msgstr "Quando un codice di tracciamento viene rimosso dall'ordine"
+
+#: admin/src/Integrations/Joinotify.php:433
 msgid "When a tracking code is saved on the order"
 msgstr "Quando un codice di tracciamento è salvato sull'ordine"
 
@@ -2553,7 +2723,15 @@ msgstr ""
 "opzioni non posizionano nulla automaticamente, quindi il calcolatore mostra "
 "solo dove lo inserisci."
 
-#: admin/src/Integrations/Elementor.php:133
+#: admin/src/Integrations/Joinotify.php:525
+msgid "Whether the WooCommerce order has been paid."
+msgstr "Se l'ordine WooCommerce è stato pagato."
+
+#: admin/src/Integrations/Joinotify.php:877
+msgid "Whole days elapsed since the promised delivery date"
+msgstr "Giorni interi trascorsi dalla data di consegna promessa"
+
+#: admin/src/Integrations/Elementor.php:95
 msgid ""
 "With the integration enabled, drag the \"Shipping calculator\" widget "
 "(HubGo category) onto any page. Styles set on the widget apply to that "
@@ -2585,7 +2763,7 @@ msgstr "WP_DEBUG"
 msgid "Yes"
 msgstr "Sì"
 
-#: app/src/pages/license/LicensePage.vue:481
+#: app/src/pages/license/LicensePage.vue:509
 msgid "Yes, deactivate"
 msgstr "Sì, disattiva"
 
@@ -2593,7 +2771,7 @@ msgstr "Sì, disattiva"
 msgid "Yes, restore"
 msgstr "Sì, ripristina"
 
-#: admin/src/Admin/Menu.php:201
+#: admin/src/Admin/Menu.php:211
 msgid "You do not have permission to access this page."
 msgstr "Non hai il permesso di accedere a questa pagina."
 
@@ -2609,13 +2787,29 @@ msgstr "La tua installazione è sbloccata per un uso completo."
 msgid "Your license expired and the Pro features are locked."
 msgstr "La tua licenza è scaduta e le funzionalità Pro sono bloccate."
 
-#: app/src/pages/license/LicensePage.vue:112
+#: app/src/pages/license/LicensePage.vue:131
 msgid ""
 "Your license is active. You can keep it synchronized here whenever the "
 "status changes on the server."
 msgstr ""
 "La tua licenza è attiva. Puoi mantenerla sincronizzata qui ogni volta che "
 "lo stato cambia sul server."
+
+#: app/src/pages/license/LicensePage.vue:125
+msgid ""
+"Your license is not active, but this site is still receiving updates. Renew "
+"it to keep them coming."
+msgstr ""
+"La tua licenza non è attiva, ma questo sito riceve ancora gli "
+"aggiornamenti. Rinnovala per continuare a riceverli."
+
+#: app/src/pages/license/LicensePage.vue:126
+msgid ""
+"Your license is not active. New versions are still announced here, but "
+"installing them needs an active license."
+msgstr ""
+"La tua licenza non è attiva. Le nuove versioni vengono ancora annunciate "
+"qui, ma per installarle serve una licenza attiva."
 
 #: app/src/pages/license/LicensePage.vue:86
 msgid "Your license key"
