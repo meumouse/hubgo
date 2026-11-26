@@ -8,6 +8,8 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 ## [Unreleased]
 
+## [3.2.0] - 2026-11-26
+
 ### Added
 
 - The HubGo tracking and delivery placeholders, such as `{{ hubgo_tracking_link }}`, now also work in Joinotify workflows started by a WooCommerce order trigger.
@@ -230,7 +232,8 @@ Two notes on the history below. Releases before 2.0.0 did not strictly follow Se
 
 - Initial release.
 
-[Unreleased]: https://github.com/meumouse/hubgo/compare/v3.1.1...HEAD
+[Unreleased]: https://github.com/meumouse/hubgo/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/meumouse/hubgo/compare/v3.1.1...v3.2.0
 [3.1.1]: https://github.com/meumouse/hubgo/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/meumouse/hubgo/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/meumouse/hubgo/compare/v2.2.0...v3.0.0
